@@ -12,4 +12,6 @@ urlpatterns = [
     path("users/<int:id>", views.OneUser, name="OneUser"),
     path("countries", views.AllCountries, name="AllCountries"),
     path("countries/<int:id>", views.OneCountry, name="OneCountry"),
+    path("posts", views.AllPosts, name="AllPosts"),
+    path("posts/<int:id>", views.OnePost, name="OnePost"),
 ]

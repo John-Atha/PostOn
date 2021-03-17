@@ -7,6 +7,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .models import *
+from datetime import datetime
 
 
 def index(request):
@@ -120,3 +121,56 @@ def AllCountries(request):
         return JsonResponse([country.serialize() for country in countries], safe=False, status=200)
     else:
         return JsonResponse({"error": "Only GET method is allowed."}, status=400)
+
+def OnePost(request, id):
+    post = None
+    try:
+        post = Post.objects.get(id=id)
+    except Post.DoesNotExist:
+        return JsonResponse({"error": f"Invalid post id ({id})."}, status=400)
+    if request.method=="GET":
+        return(JsonResponse(post.serialize(), status=200))
+    elif request.method=="PUT":
+        data = json.loads(request.body)
+        if data.get("text") is not None:
+            if post.text!=data["text"]:
+                post.text = data["text"]
+                post.date = str(datetime.now())
+                post.save()
+                return JsonResponse(post.serialize(), status=200)
+    else:
+        return JsonResponse({"error": "Only GET and PUT methods are allowed."}, status=400)
+
+def AllPosts(request):
+    if request.method=="GET":
+        allPosts = Post.objects.all()
+        if len(allPosts)==0:
+            return JsonResponse({"error": "No posts found."}, status=402)
+        else:
+            return JsonResponse([post.serialize() for post in allPosts], safe=False, status=200)
+    elif request.method=="POST":
+        data = json.loads(request.body)
+        if data.get("owner") is not None:
+            if data.get("owner").get("id") is not None:
+                ownId = data["owner"]["id"]
+                try:
+                    owner = User.objects.get(id=ownId)
+                    if data.get("text") is not None:
+                        if len(str(data["text"])):
+                            post = Post(owner=owner, text=str(data["text"]))
+                            post.save()
+                            return JsonResponse(post.serialize(), status=200)
+                        else:
+                            return JsonResponse({"error": "No text given."}, status=400)   
+                    else:
+                        return JsonResponse({"error": "No text given."}, status=400)        
+                except User.DoesNotExist:
+                    return JsonResponse({"error": "Bad owner given."}, status=400)        
+            else:
+                return JsonResponse({"error": "Bad owner given."}, status=400)
+        else:
+            return JsonResponse({"error": "No owner given."}, status=400)
+            
+    else:
+        return JsonResponse({"error": "Only GET and POST methods are allowed."}, status=400)
+
