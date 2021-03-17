@@ -4,17 +4,17 @@ from datetime import datetime
 
 class Country(models.Model):
     title = models.CharField(max_length=128, null=False)
-    continent_code = models.CharField(max_length=10, null=False)
+    code = models.CharField(max_length=10, null=False)
 
     def __str__(self):
-        return f"{self.title}, {self.continent_code}"
+        return f"{self.title}, {self.code}"
 
 class User(AbstractUser):
     photo = models.ImageField(default="", null=True, blank=True)
     country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True)
 
     def __str__(self):
-        return f"{self.username}, {self.country}"
+        return f"{self.username}, {self.email}, {self.country}"
 
 class Post(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts", null=False)
