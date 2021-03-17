@@ -65,17 +65,39 @@ def register(request):
         return render(request, "network/register.html")
 
 
-def getUser(request, id):
-    if request.method!="GET":
-        return JsonResponse({"error": "GET request required."}, status=400)
-    else:
-        try:
-            user = User.objects.get(id=id).serialize()
-        except User.DoesNotExist:
-            return JsonResponse({"error": f"Invalid user id ({id})."}, status=400)
-        return JsonResponse(user)
+def OneUser(request, id):
+    user = None
+    try:
+        user = User.objects.get(id=id)
+    except User.DoesNotExist:
+        return JsonResponse({"error": f"Invalid user id ({id})."}, status=400) 
+ 
+    if request.method=="PUT":
+        smthNew = False
+        data = json.loads(request.body)
+        if data.get("username") is not None:  
+            user.username = data["username"]
+            smthNew = True
+        if data.get("moto") is not None:
+            user.moto = data["moto"]
+            smthNew = True
+        if smthNew:
+            try:
+                user.save()
+                return JsonResponse(user.serialize(), status=200)
+            except:
+                return JsonResponse({"error": "Username probably already exists"} , status=400)
 
-def getAllUsers(request):
+        else:
+            return JsonResponse({"error": "Give new username and/or moto field"} , status=400)
+        
+    elif request.method=="GET":
+        return JsonResponse(user.serialize())
+    else:
+        return JsonResponse({"error": "Only GET and PUT methods allowed."}, status=400)
+
+
+def AllUsers(request):
     if request.method!="GET":
         return JsonResponse({"error": "GET request required."}, status=400)
     else:
