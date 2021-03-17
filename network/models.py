@@ -4,7 +4,7 @@ from datetime import datetime
 
 class Country(models.Model):
     title = models.CharField(max_length=128, null=False)
-    continent_code = models.CharField(max_length="10", null=False)
+    continent_code = models.CharField(max_length=10, null=False)
 
     def __str__(self):
         return f"{self.title}, {self.continent_code}"
@@ -36,7 +36,7 @@ class Comment(models.Model):
 
 
 class Like(models.Model):
-    owner = models.Foreignkey(User, on_delete=models.CASCADE, related_name="likes", null=False)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="likes", null=False)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes", null=False)
     date = models.DateTimeField(default=datetime.now)
 
@@ -44,7 +44,7 @@ class Like(models.Model):
         return f"{self.owner}, {self.post}, {self.date}"
 
 class LikeComment(models.Model):
-    owner = models.Foreignkey(User, on_delete=models.CASCADE, related_name="liked_comments", null=False)
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="liked_comments", null=False)
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="likes", null=False)
     date = models.DateTimeField(default=datetime.now)
 
@@ -53,7 +53,7 @@ class LikeComment(models.Model):
 
 
 class Follow(models.Model):
-    following = models.Foreignkey(User, on_delete=models.CASCADE, related_nam="follows", null=False)
+    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follows", null=False)
     followed = models.ForeignKey(User, on_delete=models.CASCADE, related_name="followers", null=False)
     date = models.DateTimeField(default=datetime.now)
 
