@@ -9,5 +9,7 @@ urlpatterns = [
     path("logout", views.logout_view, name="logout"),
     path("register", views.register, name="register"),
     path("users", views.AllUsers, name="AllUsers"),
-    path("users/<int:id>", views.OneUser, name="OneUser")
+    path("users/<int:id>", views.OneUser, name="OneUser"),
+    path("countries", views.AllCountries, name="AllCountries"),
+    path("countries/<int:id>", views.OneCountry, name="OneCountry"),
 ]
