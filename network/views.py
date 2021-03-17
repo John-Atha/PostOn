@@ -1,10 +1,12 @@
+import json
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
+from django.http import JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 
-from .models import User
+from .models import *
 
 
 def index(request):
@@ -61,3 +63,23 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "network/register.html")
+
+
+def getUser(request, id):
+    if request.method!="GET":
+        return JsonResponse({"error": "GET request required."}, status=400)
+    else:
+        try:
+            user = User.objects.get(id=id).serialize()
+        except User.DoesNotExist:
+            return JsonResponse({"error": f"Invalid user id ({id})."}, status=400)
+        return JsonResponse(user)
+
+def getAllUsers(request):
+    if request.method!="GET":
+        return JsonResponse({"error": "GET request required."}, status=400)
+    else:
+        users = User.objects.all()
+        if len(users)==0:
+            return JsonResponse({"error": "No users found."}, status=402)
+        return JsonResponse([user.serialize() for user in users], safe=False)

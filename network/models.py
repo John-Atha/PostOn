@@ -28,7 +28,7 @@ class User(AbstractUser):
             "id": self.id,
             "username": self.username,
             "email": self.email,
-            "photo": self.photo,
+            #"photo": self.photo,
             "country": self.country.serialize(),
         }
 
@@ -46,7 +46,7 @@ class Post(models.Model):
         return {
             "id": self.id,
             "owner": self.owner.serialize(),
-            "media": self.media,
+            #"media": self.media,
             "text": self.text,
             "date": self.date,
         }
