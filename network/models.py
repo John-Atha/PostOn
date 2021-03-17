@@ -19,15 +19,17 @@ class Country(models.Model):
 class User(AbstractUser):
     photo = models.ImageField(default="", null=True, blank=True)
     country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True)
+    moto = models.TextField(null = True)
 
     def __str__(self):
-        return f"{self.username}, {self.email}, {self.country}"
+        return f"{self.username}, {self.email}, {self.moto}, {self.country}"
 
     def serialize(self):
         return{
             "id": self.id,
             "username": self.username,
             "email": self.email,
+            "moto": self.moto,
             #"photo": self.photo,
             "country": self.country.serialize(),
         }
