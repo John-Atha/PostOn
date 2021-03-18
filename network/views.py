@@ -400,3 +400,64 @@ def OneLike(request, id):
         elif request.method=="DELETE":
             like.delete()
             return JsonResponse({"message": "Like deleted succesfully"}, status=200)
+
+def UserLikes(request, id):
+    if request.method=="GET":
+        try:
+            user = User.objects.get(id=id)
+            likes = user.likes.order_by('-date')
+            if request.GET.get("start"):
+                try:
+                    start = int(request.GET.get("start"))
+                    if start<1:
+                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
+                    likes = likes[start-1:]
+                    if request.GET.get("end"):
+                        try:
+                            end = int(request.GET.get("end"))
+                            if (end<start):
+                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
+                            likes = likes[:end-start+1]
+                        except ValueError:
+                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
+                except ValueError:
+                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
+            if len(likes)==0:
+                return JsonResponse({"error": "No likes found for this user"}, status=402)
+            else:
+                return JsonResponse([likes.serialize() for likes in likes], safe=False, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id"}, status=400)
+    else:
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+
+def UserLiked(request, id):
+    if request.method=="GET":
+        try:
+            user = User.objects.get(id=id)
+            posts = Post.objects.filter(owner=user)
+            likes = Like.objects.filter(post__in=posts)
+            if request.GET.get("start"):
+                try:
+                    start = int(request.GET.get("start"))
+                    if start<1:
+                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
+                    likes = likes[start-1:]
+                    if request.GET.get("end"):
+                        try:
+                            end = int(request.GET.get("end"))
+                            if (end<start):
+                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
+                            likes = likes[:end-start+1]
+                        except ValueError:
+                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
+                except ValueError:
+                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
+            if len(likes)==0:
+                return JsonResponse({"error": "No likes found for this user"}, status=402)
+            else:
+                return JsonResponse([likes.serialize() for likes in likes], safe=False, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id"}, status=400)
+    else:
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
