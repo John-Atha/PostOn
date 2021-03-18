@@ -243,7 +243,31 @@ def OneFollow(request, id):
             return JsonResponse({"message": "Follow deleted successfully"}, status=200)
 
 def UserFollows(request, id):
-    pass
+    if request.method=="GET":
+        try:
+            user = User.objects.get(id=id)
+            follows = user.follows.all()
+            if len(follows)==0:
+                return JsonResponse({"error": "No follows found for this user"}, status=402)
+            else:
+                return JsonResponse([follow.serialize() for follow in follows], safe=False, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id"}, status=400)
+
+    else:
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
 
 def UserFollowers(request, id):
-    pass 
+    if request.method=="GET":
+        try:
+            user = User.objects.get(id=id)
+            follows = user.followers.all()
+            if len(follows)==0:
+                return JsonResponse({"error": "No follows found for this user"}, status=402)
+            else:
+                return JsonResponse([follow.serialize() for follow in follows], safe=False, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id"}, status=400)
+
+    else:
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400) 
