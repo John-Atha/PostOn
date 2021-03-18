@@ -1,4 +1,5 @@
 import json
+from typing import Type
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -159,12 +160,12 @@ def UserPosts(request, id):
                     if request.GET.get("end"):
                         try:
                             end = int(request.GET.get("end"))
-                            if end<1 or end<start:
-                                return JsonResponse({"error": "Bad end parameter given"}, status=400)
+                            if end<start:
+                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
                             posts = posts[:end-start+1]
-                        except TypeError:
+                        except ValueError:
                             return JsonResponse({"error": "Bad end parameter given"}, status=400)
-                except TypeError:
+                except ValueError:
                     return JsonResponse({"error": "Bad start parameter given"}, status=400)
             if len(posts)==0:
                 return JsonResponse({"error": "No posts found for this user"}, status=402)
@@ -186,7 +187,7 @@ def AllPosts(request):
                     try:
                         end =  int(request.GET.get("end"))
                         if end<start or end<1:
-                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
+                            return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
                         posts = posts[:end-start+1]
                     except ValueError:
                         return JsonResponse({"error": "Bad params given."}, status=400)
@@ -278,6 +279,22 @@ def UserFollows(request, id):
         try:
             user = User.objects.get(id=id)
             follows = user.follows.all()
+            if request.GET.get("start"):
+                try:
+                    start = int(request.GET.get("start"))
+                    if start<1:
+                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
+                    follows = follows[start-1:]
+                    if request.GET.get("end"):
+                        try:
+                            end = int(request.GET.get("end"))
+                            if (end<start):
+                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
+                            follows = follows[:end-start+1]
+                        except ValueError:
+                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
+                except ValueError:
+                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
             if len(follows)==0:
                 return JsonResponse({"error": "No follows found for this user"}, status=402)
             else:
@@ -293,6 +310,22 @@ def UserFollowers(request, id):
         try:
             user = User.objects.get(id=id)
             follows = user.followers.all()
+            if request.GET.get("start"):
+                try:
+                    start = int(request.GET.get("start"))
+                    if start<1:
+                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
+                    follows = follows[start-1:]
+                    if request.GET.get("end"):
+                        try:
+                            end = int(request.GET.get("end"))
+                            if (end<start):
+                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
+                            follows = follows[:end-start+1]
+                        except ValueError:
+                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
+                except ValueError:
+                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
             if len(follows)==0:
                 return JsonResponse({"error": "No follows found for this user"}, status=402)
             else:
