@@ -63,35 +63,34 @@ def register(request):
         return render(request, "network/register.html")
 
 def OneUser(request, id):
-    user = None
-    try:
-        user = User.objects.get(id=id)
-    except User.DoesNotExist:
-        return JsonResponse({"error": f"Invalid user id ({id})."}, status=400) 
- 
-    if request.method=="PUT":
-        smthNew = False
-        data = json.loads(request.body)
-        if data.get("username") is not None:  
-            user.username = data["username"]
-            smthNew = True
-        if data.get("moto") is not None:
-            user.moto = data["moto"]
-            smthNew = True
-        if smthNew:
-            try:
-                user.save()
-                return JsonResponse(user.serialize(), status=200)
-            except:
-                return JsonResponse({"error": "Username probably already exists"} , status=400)
-
-        else:
-            return JsonResponse({"error": "Give new username and/or moto field"} , status=400)
-        
-    elif request.method=="GET":
-        return JsonResponse(user.serialize())
+    if request.method!="GET" and request.method!="PUT":
+        return JsonResponse({"error": "Only GET and PUT methods are allowed."}, status=400)
     else:
-        return JsonResponse({"error": "Only GET and PUT methods allowed."}, status=400)
+        try:
+            user = User.objects.get(id=id)
+        except User.DoesNotExist:
+            return JsonResponse({"error": f"Invalid user id ({id})."}, status=400) 
+        if request.method=="PUT":
+            smthNew = False
+            data = json.loads(request.body)
+            if data.get("username") is not None:  
+                user.username = data["username"]
+                smthNew = True
+            if data.get("moto") is not None:
+                user.moto = data["moto"]
+                smthNew = True
+            if smthNew:
+                try:
+                    user.save()
+                    return JsonResponse(user.serialize(), status=200)
+                except:
+                    return JsonResponse({"error": "Username probably already exists"} , status=400)
+
+            else:
+                return JsonResponse({"error": "Give new username and/or moto field"} , status=400)
+            
+        elif request.method=="GET":
+            return JsonResponse(user.serialize())
 
 def AllUsers(request):
     if request.method!="GET":
@@ -103,15 +102,15 @@ def AllUsers(request):
         return JsonResponse([user.serialize() for user in users], safe=False, status=200)
 
 def OneCountry(request, id):
-    country = None
-    try:
-        country = Country.objects.get(id=id)
-    except Country.DoesNotExist:
-        return JsonResponse({"error": f"Invalid country id ({id})."}, status=400) 
-    if request.method=="GET":
-        return JsonResponse(country.serialize(), status=200)
-    else:
+    if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed."}, status=400)
+    else:
+        try:
+            country = Country.objects.get(id=id)
+        except Country.DoesNotExist:
+            return JsonResponse({"error": f"Invalid country id ({id})."}, status=400) 
+        if request.method=="GET":
+            return JsonResponse(country.serialize(), status=200)
 
 def AllCountries(request):
     if request.method=="GET":
@@ -123,28 +122,27 @@ def AllCountries(request):
         return JsonResponse({"error": "Only GET method is allowed."}, status=400)
 
 def OnePost(request, id):
-    post = None
-    try:
-        post = Post.objects.get(id=id)
-    except Post.DoesNotExist:
-        return JsonResponse({"error": f"Invalid post id ({id})."}, status=400)
-    if request.method=="GET":
-        return(JsonResponse(post.serialize(), status=200))
-    elif request.method=="PUT":
-        data = json.loads(request.body)
-        if data.get("text") is not None:
-            if post.text!=data["text"]:
-                post.text = data["text"]
-                post.date = str(datetime.now())
-                post.save()
-                return JsonResponse(post.serialize(), status=200)
-    else:
+    if request.method!="GET" and request.method!="PUT":
         return JsonResponse({"error": "Only GET and PUT methods are allowed."}, status=400)
+    else:
+        try:
+            post = Post.objects.get(id=id)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": f"Invalid post id ({id})."}, status=400)
+        if request.method=="GET":
+            return(JsonResponse(post.serialize(), status=200))
+        elif request.method=="PUT":
+            data = json.loads(request.body)
+            if data.get("text") is not None:
+                if post.text!=data["text"]:
+                    post.text = data["text"]
+                    post.date = str(datetime.now())
+                    post.save()
+                    return JsonResponse(post.serialize(), status=200)
 
 def AllPosts(request):
     if request.method=="GET": 
         if request.GET.get('start'):
-            start = None
             try:
                 start =  int(request.GET.get("start"))
                 if request.GET.get("end"):
@@ -192,3 +190,60 @@ def AllPosts(request):
     else:
         return JsonResponse({"error": "Only GET and POST methods are allowed."}, status=400)
 
+def AllFollows(request):
+    if request.method=="GET":
+        AllFollows = Follow.objects.all()
+        if len(AllFollows)==0:
+            return JsonResponse({"error": "No follows found"}, status=402)
+        else:
+            return JsonResponse([follow.serialize() for follow in AllFollows], safe=False, status=200)
+    elif request.method=="POST":
+        data = json.loads(request.body)
+        if data.get("following"):
+            if data.get("following").get("id"):
+                try:
+                    following = User.objects.get(id=data["following"]["id"])
+                    if data.get("followed"):
+                        if data.get("followed").get("id"):
+                            try:
+                                followed = User.objects.get(id=data["followed"]["id"])
+                                if followed!=following:
+                                    follow = Follow(following=following, followed=followed)
+                                    follow.save()
+                                    return JsonResponse(follow.serialize(), status=200)
+                                else:
+                                    return JsonResponse({"error": "A user cannot follow his/her self"}, status=400)
+                            except User.DoesNotExist:
+                                return JsonResponse({"error": "Invalid followed id"}, status=400)
+                        else:
+                            return JsonResponse({"error": "Invalid followed user given"}, status=400)
+                    else:
+                        return JsonResponse({"error": "Invalid followed user given"}, status=400)
+                except User.DoesNotExist:
+                    return JsonResponse({"error": "Invalid follower id"}, status=400)
+            else:
+                return JsonResponse({"error": "Invalid follower user given"}, status=400)
+        else:
+            return JsonResponse({"error": "Invalid follower user given"}, status=400)
+    else:
+        return JsonResponse({"error": f"Only GET, POST and DEL methods are allowed."}, status=400)
+
+def OneFollow(request, id):
+    if request.method!="GET" and request.method!="DELETE":
+        return JsonResponse({"error": "Only GET and DEL methods are allowed."}, status=400)
+    else:
+        try:
+            follow = Follow.objects.get(id=id)
+        except Follow.DoesNotExist:
+            return JsonResponse({"error": "Invalid follow id"}, status=400)
+        if request.method=="GET":
+            return JsonResponse(follow.serialize(), status=200)
+        elif request.method=="DELETE":
+            follow.delete()
+            return JsonResponse({"message": "Follow deleted successfully"}, status=200)
+
+def UserFollows(request, id):
+    pass
+
+def UserFollowers(request, id):
+    pass 
