@@ -176,7 +176,7 @@ def UserPosts(request, id):
 
 def AllPosts(request):
     if request.method=="GET": 
-        posts = Post.objects.all()
+        posts = Post.objects.order_by('-date')
         if request.GET.get('start'):
             try:
                 start =  int(request.GET.get("start"))
@@ -224,7 +224,7 @@ def AllPosts(request):
 
 def AllFollows(request):
     if request.method=="GET":
-        AllFollows = Follow.objects.all()
+        AllFollows = Follow.objects.order_by('-date')
         if len(AllFollows)==0:
             return JsonResponse({"error": "No follows found"}, status=402)
         else:
@@ -278,7 +278,7 @@ def UserFollows(request, id):
     if request.method=="GET":
         try:
             user = User.objects.get(id=id)
-            follows = user.follows.all()
+            follows = user.follows.order_by('-date')
             if request.GET.get("start"):
                 try:
                     start = int(request.GET.get("start"))
@@ -309,7 +309,7 @@ def UserFollowers(request, id):
     if request.method=="GET":
         try:
             user = User.objects.get(id=id)
-            follows = user.followers.all()
+            follows = user.followers.order_by('-date')
             if request.GET.get("start"):
                 try:
                     start = int(request.GET.get("start"))
