@@ -142,7 +142,26 @@ def OnePost(request, id):
         return JsonResponse({"error": "Only GET and PUT methods are allowed."}, status=400)
 
 def AllPosts(request):
-    if request.method=="GET":
+    if request.method=="GET": 
+        if request.GET.get('start'):
+            start = None
+            try:
+                start =  int(request.GET.get("start"))
+                if request.GET.get("end"):
+                    end = None
+                    try:
+                        end =  int(request.GET.get("end"))
+                        if end<start:
+                            return JsonResponse({"error": "End id must be larger or equal to start id."}, status=400)
+                        posts = Post.objects.filter(id__gte=start).filter(id__lte=end)
+                        if len(posts)==0:
+                            return JsonResponse({"error": "No posts found."}, status=402)
+                        else:
+                            return JsonResponse([post.serialize() for post in posts], safe=False, status=200)
+                    except ValueError:
+                        return JsonResponse({"error": "Bad params given."}, status=400)
+            except ValueError:
+                return JsonResponse({"error": "Bad params given."}, status=400)
         allPosts = Post.objects.all()
         if len(allPosts)==0:
             return JsonResponse({"error": "No posts found."}, status=402)
@@ -169,8 +188,7 @@ def AllPosts(request):
             else:
                 return JsonResponse({"error": "Bad owner given."}, status=400)
         else:
-            return JsonResponse({"error": "No owner given."}, status=400)
-            
+            return JsonResponse({"error": "No owner given."}, status=400)        
     else:
         return JsonResponse({"error": "Only GET and POST methods are allowed."}, status=400)
 
