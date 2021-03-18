@@ -335,3 +335,54 @@ def UserFollowers(request, id):
 
     else:
         return JsonResponse({"error": "Only GET method is allowed"}, status=400) 
+
+def AllLikes(request):
+    if request.method=="GET":
+        likes = Like.objects.order_by('-date')
+        if request.GET.get("start"):
+            try:
+                start = int(request.GET.get("start"))
+                if start<1:
+                    return JsonResponse({"error": "Invalid start parameter given"}, status=400)
+                likes = likes[start-1:]
+                if request.GET.get("end"):
+                    try:
+                        end = int(request.GET.get("end"))
+                        if end<start:
+                            return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
+                        likes = likes[:end-start+1]
+                    except ValueError:
+                        return JsonResponse({"error": "Invalid end parameter given"}, status=400)
+            except ValueError:
+                return JsonResponse({"error": "Invalid start parameter given"}, status=400)
+        if len(likes)==0:
+            return JsonResponse({"error": "No likes found"}, status=402)
+        else:
+            return JsonResponse([like.serialize() for like in likes], safe=False, status=200)
+    elif request.method=="POST":
+        data = json.loads(request.body)
+        if data.get("owner"):
+            if data.get("owner").get("id"):
+                try:
+                    ownerId = int(data["owner"]["id"])
+                except ValueError:
+                    return JsonResponse({"error": "Invalid user id."}, status=400)
+                try:
+                    owner = User.objects.get(id=ownerId)
+                    if data.get("post"):
+                        if data.get("post").get("id"):
+                            try:
+                                postId = int(data["post"]["id"])
+                                try:
+                                    post = Post.objects.get(id=postId)
+                                    like = Like(owner=owner, post=post)
+                                    like.save()
+                                    return JsonResponse(like.serialize(), status=200)
+                                except Post.DoesNotExist:
+                                    return JsonResponse({"error": "Invalid post id."}, status=400)                                
+                            except ValueError:
+                                return JsonResponse({"error": "Invalid post id."}, status=400)
+                except User.DoesNotExist:
+                    return JsonResponse({"error": "Invalid user id."}, status=400)
+    else:
+        return JsonResponse({"error": "Only GET and POST methods are allowed"}, status=400)
