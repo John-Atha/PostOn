@@ -1,6 +1,7 @@
 # ENDPOINTS
 
 * If an endpoint gets a request with an unsupported request method, a corresponding error message with status code 400 is returned. 
+* Base url: Jwitter/api
 
 #### Users
 * GET   /users                  :       returns all users (or 402)
