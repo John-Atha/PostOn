@@ -122,7 +122,7 @@ def AllCountries(request):
         return JsonResponse({"error": "Only GET method is allowed."}, status=400)
 
 def OnePost(request, id):
-    if request.method!="GET" and request.method!="PUT":
+    if request.method!="GET" and request.method!="PUT" and request.method!="DELETE":
         return JsonResponse({"error": "Only GET and PUT methods are allowed."}, status=400)
     else:
         try:
@@ -139,32 +139,63 @@ def OnePost(request, id):
                     post.date = str(datetime.now())
                     post.save()
                     return JsonResponse(post.serialize(), status=200)
+        elif request.method=="DELETE":
+            post.delete()
+            return JsonResponse({"message": "Post deleted successfully"}, status=200)
+
+def UserPosts(request, id):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        try:
+            user = User.objects.get(id=id)
+            posts = user.posts.all()
+            if request.GET.get("start"):
+                try:
+                    start = int(request.GET.get("start"))
+                    if start<1:
+                        return JsonResponse({"error": "Bad start parameter given"}, status=400)
+                    posts = posts[start-1:]
+                    if request.GET.get("end"):
+                        try:
+                            end = int(request.GET.get("end"))
+                            if end<1 or end<start:
+                                return JsonResponse({"error": "Bad end parameter given"}, status=400)
+                            posts = posts[:end-start+1]
+                        except TypeError:
+                            return JsonResponse({"error": "Bad end parameter given"}, status=400)
+                except TypeError:
+                    return JsonResponse({"error": "Bad start parameter given"}, status=400)
+            if len(posts)==0:
+                return JsonResponse({"error": "No posts found for this user"}, status=402)
+            else:
+                return JsonResponse([post.serialize() for post in posts], safe=False, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id"}, status=400)
 
 def AllPosts(request):
     if request.method=="GET": 
+        posts = Post.objects.all()
         if request.GET.get('start'):
             try:
                 start =  int(request.GET.get("start"))
+                if (start<1):
+                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
+                posts = posts[start-1:]
                 if request.GET.get("end"):
-                    end = None
                     try:
                         end =  int(request.GET.get("end"))
-                        if end<start:
-                            return JsonResponse({"error": "End id must be larger or equal to start id."}, status=400)
-                        posts = Post.objects.filter(id__gte=start).filter(id__lte=end)
-                        if len(posts)==0:
-                            return JsonResponse({"error": "No posts found."}, status=402)
-                        else:
-                            return JsonResponse([post.serialize() for post in posts], safe=False, status=200)
+                        if end<start or end<1:
+                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
+                        posts = posts[:end-start+1]
                     except ValueError:
                         return JsonResponse({"error": "Bad params given."}, status=400)
             except ValueError:
                 return JsonResponse({"error": "Bad params given."}, status=400)
-        allPosts = Post.objects.all()
-        if len(allPosts)==0:
+        if len(posts)==0:
             return JsonResponse({"error": "No posts found."}, status=402)
         else:
-            return JsonResponse([post.serialize() for post in allPosts], safe=False, status=200)
+            return JsonResponse([post.serialize() for post in posts], safe=False, status=200)
     elif request.method=="POST":
         data = json.loads(request.body)
         if data.get("owner") is not None:
