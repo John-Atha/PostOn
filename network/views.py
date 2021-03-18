@@ -386,3 +386,17 @@ def AllLikes(request):
                     return JsonResponse({"error": "Invalid user id."}, status=400)
     else:
         return JsonResponse({"error": "Only GET and POST methods are allowed"}, status=400)
+
+def OneLike(request, id):
+    if request.method!="GET" and request.method!="DELETE":
+        return JsonResponse({"error": "Only GET, PUT, DEL methods are allowed"}, status=400)
+    else:
+        try:
+            like= Like.objects.get(id=id)
+        except Like.DoesNotExist:
+            return JsonResponse({"error": "Invalid like id"}, status=400)
+        if request.method=="GET":
+            return JsonResponse(like.serialize(), status=200)
+        elif request.method=="DELETE":
+            like.delete()
+            return JsonResponse({"message": "Like deleted succesfully"}, status=200)
