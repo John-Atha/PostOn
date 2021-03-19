@@ -535,3 +535,17 @@ def AllComments(request):
             return JsonResponse({"error": "Invalid owner given."}, status=400)
     else:
         return JsonResponse({"error": "Only GET and POST methods are allowed"}, status=400)
+
+def OneComment(request, id):
+    if request.method!="GET" and request.method!="DELETE":
+        return JsonResponse({"error": "Only GET, PUT, DEL methods are allowed"}, status=400)
+    else:
+        try:
+            comment= Comment.objects.get(id=id)
+        except Comment.DoesNotExist:
+            return JsonResponse({"error": "Invalid comment id"}, status=400)
+        if request.method=="GET":
+            return JsonResponse(comment.serialize(), status=200)
+        elif request.method=="DELETE":
+            comment.delete()
+            return JsonResponse({"message": "Comment deleted succesfully"}, status=200)
