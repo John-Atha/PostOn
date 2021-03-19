@@ -34,7 +34,6 @@ class User(AbstractUser):
             "country": self.country.serialize(),
         }
 
-
 class Post(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts", null=False)
     media = models.ImageField(default="", null=True, blank=True)
@@ -103,7 +102,7 @@ class LikeComment(models.Model):
         return {
             "id": self.id,
             "owner": self.owner.serialize(),
-            "comment": self.comment,
+            "comment": self.comment.serialize(),
             "date": self.date,
             "seen": self.seen,
         } 
