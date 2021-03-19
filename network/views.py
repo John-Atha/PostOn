@@ -669,3 +669,17 @@ def AllLikeComments(request):
             return JsonResponse({"error": "Invalid owner given."}, status=400)
     else:
         return JsonResponse({"error": "Only GET and POST methods are allowed"}, status=400)
+
+def OneLikeComment(request, id):
+    if request.method!="GET" and request.method!="DELETE":
+        return JsonResponse({"error": "Only GET, PUT, DEL methods are allowed"}, status=400)
+    else:
+        try:
+            likeComment= LikeComment.objects.get(id=id)
+        except LikeComment.DoesNotExist:
+            return JsonResponse({"error": "Invalid like on comment id"}, status=400)
+        if request.method=="GET":
+            return JsonResponse(likeComment.serialize(), status=200)
+        elif request.method=="DELETE":
+            likeComment.delete()
+            return JsonResponse({"message": "Like on comment deleted succesfully"}, status=200)
