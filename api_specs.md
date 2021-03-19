@@ -26,6 +26,7 @@
 * POST  /follows                                      :       posts a new follow (or 400)
 * GET   /follows/{id}                                 :       returns follow with the given id (or 400)
 * DEL   /follows/{id}                                 :       deletes the follow with the given id (or 400)
+* PUT   /follows/{id}                                 :       updates the follow with the given id to seen / not seen (or 400)
 * GET   /users/{id}/follows?start=index1&end=index2   :       returns the follows that have this user as a follower with index1<follow_index<index2 (or 402)
 * GET   /users/{id}/followers?start=index1&end=index2 :       returns the follows that have this user as followed with index1<follow_index<index2 (or 402)
 
@@ -34,6 +35,7 @@
 * POST  /likes                                      :       posts a new like (or 400)
 * GET   /likes/{id}                                 :       returns the like with the given id (or 400)
 * DEL   /likes/{id}                                 :       deletes the like with the given id (or 400)
+* PUT   /likes/{id}                                 :       updates the like with the given id to seen / not seen (or 400)
 * GET   /users/{id}/likes?start=index1&end=index2   :       returns the likes that this user has posted with index1<like_index<index2 (or 402)
 * GET   /users/{id}/liked?start=index1&end=index2   :       returns the likes on posts of this owner with index1<like_index<index2 (or 402)
 
@@ -42,5 +44,6 @@
 * POST  /comments                                      :       posts a new like (or 400)
 * GET   /comments/{id}                                 :       returns the like with the given id (or 400)
 * DEL   /comments/{id}                                 :       deletes the like with the given id (or 400)
+* PUT   /comments/{id}                                 :       updates the comment with the given id to seen / not seen (or 400)
 * GET   /users/{id}/comments?start=index1&end=index2   :       returns the comments that this user has posted with index1<like_index<index2 (or 402)
 * GET   /users/{id}/commented?start=index1&end=index2  :       returns the comments on posts of this owner with index1<like_index<index2 (or 402)
