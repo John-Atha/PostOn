@@ -382,8 +382,16 @@ def AllLikes(request):
                                     return JsonResponse({"error": "Invalid post id."}, status=400)                                
                             except ValueError:
                                 return JsonResponse({"error": "Invalid post id."}, status=400)
+                        else:
+                            return JsonResponse({"error": "Invalid post id."}, status=400)
+                    else:
+                        return JsonResponse({"error": "Invalid post given."}, status=400)
                 except User.DoesNotExist:
                     return JsonResponse({"error": "Invalid user id."}, status=400)
+            else:
+                return JsonResponse({"error": "Invalid owner id."}, status=400)
+        else:
+            return JsonResponse({"error": "Invalid owner given."}, status=400)
     else:
         return JsonResponse({"error": "Only GET and POST methods are allowed"}, status=400)
 
