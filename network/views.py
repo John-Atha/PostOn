@@ -1153,3 +1153,24 @@ def DailyPostsStats(request):
             day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
             postsCount[day] = postsCount[day]+1
         return JsonResponse(postsCount, safe=False, status=200)
+
+def DailyFollowsStats(request):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        # for likes
+        follows = Follow.objects.all()
+        followsCount = {
+            "Monday": 0,
+            "Tuesday": 0, 
+            "Wednesday": 0, 
+            "Thursday": 0, 
+            "Friday": 0, 
+            "Saturday": 0, 
+            "Sunday": 0
+        }
+        for follow in follows:
+            s = str(follow.date).split(' ')[0].split('-')
+            day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
+            followsCount[day] = followsCount[day]+1
+        return JsonResponse(followsCount, safe=False, status=200)
