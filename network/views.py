@@ -978,7 +978,6 @@ def MonthlyPostsStats(request):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
-        # for comments
         posts = Post.objects.order_by('date')
         stats = []
         prevYearMonth = str(posts[0].date).split('-')[0]+'-'+str(posts[0].date).split('-')[1]
@@ -1017,7 +1016,6 @@ def MonthlyFollowsStats(request):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
-        # for comments
         follows = Follow.objects.order_by('date')
         stats = []
         prevYearMonth = str(follows[0].date).split('-')[0]+'-'+str(follows[0].date).split('-')[1]
@@ -1056,7 +1054,6 @@ def MonthlyLikeCommentsStats(request):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
-        # for comments
         likeComments = LikeComment.objects.order_by('date')
         stats = []
         prevYearMonth = str(likeComments[0].date).split('-')[0]+'-'+str(likeComments[0].date).split('-')[1]
@@ -1095,7 +1092,6 @@ def DailyLikesStats(request):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
-        # for likes
         likes = Like.objects.all()
         likesCount = {
             "Monday": 0,
@@ -1116,7 +1112,6 @@ def DailyCommentsStats(request):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
-        # for likes
         comments = Comment.objects.all()
         commentsCount = {
             "Monday": 0,
@@ -1137,7 +1132,6 @@ def DailyPostsStats(request):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
-        # for likes
         posts = Post.objects.all()
         postsCount = {
             "Monday": 0,
@@ -1158,7 +1152,6 @@ def DailyFollowsStats(request):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
-        # for likes
         follows = Follow.objects.all()
         followsCount = {
             "Monday": 0,
@@ -1174,3 +1167,23 @@ def DailyFollowsStats(request):
             day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
             followsCount[day] = followsCount[day]+1
         return JsonResponse(followsCount, safe=False, status=200)
+
+def DailyLikeCommentsStats(request):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        likeComments = Follow.objects.all()
+        likeCommentsCount = {
+            "Monday": 0,
+            "Tuesday": 0, 
+            "Wednesday": 0, 
+            "Thursday": 0, 
+            "Friday": 0, 
+            "Saturday": 0, 
+            "Sunday": 0
+        }
+        for likeComment in likeComments:
+            s = str(likeComment.date).split(' ')[0].split('-')
+            day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
+            likeCommentsCount[day] = likeCommentsCount[day]+1
+        return JsonResponse(likeCommentsCount, safe=False, status=200)
