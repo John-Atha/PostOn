@@ -231,12 +231,12 @@ def AllFollows(request):
             return JsonResponse([follow.serialize() for follow in AllFollows], safe=False, status=200)
     elif request.method=="POST":
         data = json.loads(request.body)
-        if data.get("following"):
-            if data.get("following").get("id"):
+        if data.get("following") is not None:
+            if data.get("following").get("id") is not None:
                 try:
                     following = User.objects.get(id=data["following"]["id"])
-                    if data.get("followed"):
-                        if data.get("followed").get("id"):
+                    if data.get("followed") is not None:
+                        if data.get("followed").get("id") is not None:
                             try:
                                 followed = User.objects.get(id=data["followed"]["id"])
                                 if followed!=following:
@@ -261,8 +261,8 @@ def AllFollows(request):
         return JsonResponse({"error": f"Only GET, POST and DEL methods are allowed."}, status=400)
 
 def OneFollow(request, id):
-    if request.method!="GET" and request.method!="DELETE":
-        return JsonResponse({"error": "Only GET and DEL methods are allowed."}, status=400)
+    if request.method!="GET" and request.method!="DELETE" and request.method!="PUT":
+        return JsonResponse({"error": "Only GET, PUT and DEL methods are allowed."}, status=400)
     else:
         try:
             follow = Follow.objects.get(id=id)
@@ -273,7 +273,19 @@ def OneFollow(request, id):
         elif request.method=="DELETE":
             follow.delete()
             return JsonResponse({"message": "Follow deleted successfully"}, status=200)
-
+        elif request.method=="PUT":
+            data = json.loads(request.body)
+            if data.get("seen") is not None:
+                if data["seen"]==True or data["seen"]==False:
+                    follow.seen=data["seen"]
+                    follow.save()
+                    return JsonResponse(follow.serialize(), status=200)
+                else:
+                    return JsonResponse({"error": "'seen' field can have only True/False value"}, status=400)
+            else:
+                print(data.get("seen"))
+                return JsonResponse({"error": "Only updatable field is the 'seen' field"}, status=400)
+ 
 def UserFollows(request, id):
     if request.method=="GET":
         try:
@@ -361,16 +373,16 @@ def AllLikes(request):
             return JsonResponse([like.serialize() for like in likes], safe=False, status=200)
     elif request.method=="POST":
         data = json.loads(request.body)
-        if data.get("owner"):
-            if data.get("owner").get("id"):
+        if data.get("owner") is not None:
+            if data.get("owner").get("id") is not None:
                 try:
                     ownerId = int(data["owner"]["id"])
                 except ValueError:
                     return JsonResponse({"error": "Invalid user id."}, status=400)
                 try:
                     owner = User.objects.get(id=ownerId)
-                    if data.get("post"):
-                        if data.get("post").get("id"):
+                    if data.get("post") is not None:
+                        if data.get("post").get("id") is not None:
                             try:
                                 postId = int(data["post"]["id"])
                                 try:
@@ -396,8 +408,8 @@ def AllLikes(request):
         return JsonResponse({"error": "Only GET and POST methods are allowed"}, status=400)
 
 def OneLike(request, id):
-    if request.method!="GET" and request.method!="DELETE":
-        return JsonResponse({"error": "Only GET, PUT, DEL methods are allowed"}, status=400)
+    if request.method!="GET" and request.method!="DELETE" and request.method!="PUT":
+        return JsonResponse({"error": "Only GET, PUT and DEL methods are allowed"}, status=400)
     else:
         try:
             like= Like.objects.get(id=id)
@@ -408,6 +420,18 @@ def OneLike(request, id):
         elif request.method=="DELETE":
             like.delete()
             return JsonResponse({"message": "Like deleted succesfully"}, status=200)
+        elif request.method=="PUT":
+            data = json.loads(request.body)
+            if data.get("seen") is not None:
+                if data["seen"]==True or data["seen"]==False:
+                    like.seen=data["seen"]
+                    like.save()
+                    return JsonResponse(like.serialize(), status=200)
+                else:
+                    return JsonResponse({"error": "'seen' field can have only True/False value"}, status=400)
+            else:
+                print(data.get("seen"))
+                return JsonResponse({"error": "Only updatable field is the 'seen' field"}, status=400)
 
 def UserLikes(request, id):
     if request.method=="GET":
@@ -495,21 +519,21 @@ def AllComments(request):
             return JsonResponse([comment.serialize() for comment in comments], safe=False, status=200)
     elif request.method=="POST":
         data = json.loads(request.body)
-        if data.get("owner"):
-            if data.get("owner").get("id"):
+        if data.get("owner") is not None:
+            if data.get("owner").get("id") is not None:
                 try:
                     ownerId = int(data["owner"]["id"])
                 except ValueError:
                     return JsonResponse({"error": "Invalid user id."}, status=400)
                 try:
                     owner = User.objects.get(id=ownerId)
-                    if data.get("post"):
-                        if data.get("post").get("id"):
+                    if data.get("post") is not None:
+                        if data.get("post").get("id") is not None:
                             try:
                                 postId = int(data["post"]["id"])
                                 try:
                                     post = Post.objects.get(id=postId)
-                                    if data.get("text"):
+                                    if data.get("text") is not None:
                                         text = data["text"]
                                         if len(text)>0:
                                             comment = Comment(owner=owner, post=post, text=text)
@@ -537,8 +561,8 @@ def AllComments(request):
         return JsonResponse({"error": "Only GET and POST methods are allowed"}, status=400)
 
 def OneComment(request, id):
-    if request.method!="GET" and request.method!="DELETE":
-        return JsonResponse({"error": "Only GET, PUT, DEL methods are allowed"}, status=400)
+    if request.method!="GET" and request.method!="DELETE" and request.method!="PUT":
+        return JsonResponse({"error": "Only GET, PUT and DEL methods are allowed"}, status=400)
     else:
         try:
             comment= Comment.objects.get(id=id)
@@ -549,6 +573,18 @@ def OneComment(request, id):
         elif request.method=="DELETE":
             comment.delete()
             return JsonResponse({"message": "Comment deleted succesfully"}, status=200)
+        elif request.method=="PUT":
+            data = json.loads(request.body)
+            if data.get("seen") is not None:
+                if data["seen"]==True or data["seen"]==False:
+                    comment.seen=data["seen"]
+                    comment.save()
+                    return JsonResponse(comment.serialize(), status=200)
+                else:
+                    return JsonResponse({"error": "'seen' field can have only True/False value"}, status=400)
+            else:
+                print(data.get("seen"))
+                return JsonResponse({"error": "Only updatable field is the 'seen' field"}, status=400)
 
 def UserComments(request, id):
     if request.method=="GET":
@@ -636,16 +672,16 @@ def AllLikeComments(request):
             return JsonResponse([likeComment.serialize() for likeComment in likeComments], safe=False, status=200)
     elif request.method=="POST":
         data = json.loads(request.body)
-        if data.get("owner"):
-            if data.get("owner").get("id"):
+        if data.get("owner") is not None:
+            if data.get("owner").get("id") is not None:
                 try:
                     ownerId = int(data["owner"]["id"])
                 except ValueError:
                     return JsonResponse({"error": "Invalid user id."}, status=400)
                 try:
                     owner = User.objects.get(id=ownerId)
-                    if data.get("comment"):
-                        if data.get("comment").get("id"):
+                    if data.get("comment") is not None:
+                        if data.get("comment").get("id") is not None:
                             try:
                                 commentId = int(data["comment"]["id"])
                                 try:
@@ -671,7 +707,7 @@ def AllLikeComments(request):
         return JsonResponse({"error": "Only GET and POST methods are allowed"}, status=400)
 
 def OneLikeComment(request, id):
-    if request.method!="GET" and request.method!="DELETE":
+    if request.method!="GET" and request.method!="DELETE" and request.method!="PUT":
         return JsonResponse({"error": "Only GET, PUT, DEL methods are allowed"}, status=400)
     else:
         try:
@@ -683,6 +719,18 @@ def OneLikeComment(request, id):
         elif request.method=="DELETE":
             likeComment.delete()
             return JsonResponse({"message": "Like on comment deleted succesfully"}, status=200)
+        elif request.method=="PUT":
+            data = json.loads(request.body)
+            if data.get("seen") is not None:
+                if data["seen"]==True or data["seen"]==False:
+                    likeComment.seen=data["seen"]
+                    likeComment.save()
+                    return JsonResponse(likeComment.serialize(), status=200)
+                else:
+                    return JsonResponse({"error": "'seen' field can have only True/False value"}, status=400)
+            else:
+                print(data.get("seen"))
+                return JsonResponse({"error": "Only updatable field is the 'seen' field"}, status=400)
 
 def UserLikesComments(request, id):
     if request.method=="GET":
@@ -707,6 +755,37 @@ def UserLikesComments(request, id):
                     return JsonResponse({"error": "Bad start parameter given."}, status=400)
             if len(likeComments)==0:
                 return JsonResponse({"error": "No likes on comments found for this user"}, status=402)
+            else:
+                return JsonResponse([likeComment.serialize() for likeComment in likeComments], safe=False, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id"}, status=400)
+    else:
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+
+def UserLikedComments(request, id):
+    if request.method=="GET":
+        try:
+            user = User.objects.get(id=id)
+            comments = Comment.objects.filter(owner=user)
+            likeComments = LikeComment.objects.filter(comment__in=comments)
+            if request.GET.get("start"):
+                try:
+                    start = int(request.GET.get("start"))
+                    if start<1:
+                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
+                    likeComments = likeComments[start-1:]
+                    if request.GET.get("end"):
+                        try:
+                            end = int(request.GET.get("end"))
+                            if (end<start):
+                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
+                            likeComments = likeComments[:end-start+1]
+                        except ValueError:
+                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
+                except ValueError:
+                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
+            if len(likeComments)==0:
+                return JsonResponse({"error": "No liked comments found for this user"}, status=402)
             else:
                 return JsonResponse([likeComment.serialize() for likeComment in likeComments], safe=False, status=200)
         except User.DoesNotExist:
