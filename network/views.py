@@ -1051,3 +1051,42 @@ def MonthlyFollowsStats(request):
         if len(stats)==0:
             return JsonResponse({"error": "No follows found"}, status=402)
         return JsonResponse(stats, safe=False, status=200)
+
+def MonthlyLikeCommentsStats(request):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        # for comments
+        likeComments = LikeComment.objects.order_by('date')
+        stats = []
+        prevYearMonth = str(likeComments[0].date).split('-')[0]+'-'+str(likeComments[0].date).split('-')[1]
+        counter = -1
+        for like in likeComments:
+            try:
+                date = str(like.date).split('-')
+                yearMonth = date[0]+'-'+date[1]
+                if yearMonth!=prevYearMonth and prevYearMonth!='':
+                    stats.append(
+                        {
+                            "year-month": prevYearMonth,
+                            "like": counter
+                        }
+                    )
+                    counter=0
+                    prevYearMonth = yearMonth
+                elif prevYearMonth=="":
+                    counter=0
+                    prevYearMonth = yearMonth
+                else:
+                    counter = counter+1
+            except Exception:
+                pass
+        stats.append(
+            {
+                "year-month": prevYearMonth,
+                "like": counter
+            }
+        )
+        if len(stats)==0:
+            return JsonResponse({"error": "No like found"}, status=402)
+        return JsonResponse(stats, safe=False, status=200)
