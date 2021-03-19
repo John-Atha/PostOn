@@ -549,3 +549,33 @@ def OneComment(request, id):
         elif request.method=="DELETE":
             comment.delete()
             return JsonResponse({"message": "Comment deleted succesfully"}, status=200)
+
+def UserComments(request, id):
+    if request.method=="GET":
+        try:
+            user = User.objects.get(id=id)
+            comments = user.comments.order_by('-date')
+            if request.GET.get("start"):
+                try:
+                    start = int(request.GET.get("start"))
+                    if start<1:
+                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
+                    comments = comments[start-1:]
+                    if request.GET.get("end"):
+                        try:
+                            end = int(request.GET.get("end"))
+                            if (end<start):
+                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
+                            comments = comments[:end-start+1]
+                        except ValueError:
+                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
+                except ValueError:
+                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
+            if len(comments)==0:
+                return JsonResponse({"error": "No comments found for this user"}, status=402)
+            else:
+                return JsonResponse([comment.serialize() for comment in comments], safe=False, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id"}, status=400)
+    else:
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
