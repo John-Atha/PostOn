@@ -51,3 +51,6 @@
 #### General
 * GET   /users/{id}/activity                            :       returns the activity (likes, comments, likes on comments, posts, follows) of user with given id (or 400, or 402)
 * GET   /users/{id}/notifications                       :       returns the (unread) notifications (likes & comments on my posts, likes on my comments, new followers) of user with given id (or 400, or 402)
+* PUT   /users/{id}/allread                             :       marks all the unread notifications of user with given id to seen
+* GET   stats/likes/monthly                             :       returns a list with likes on posts per month (of all users)
+* GET   stats/comments/monthly                          :       returns a list with comments on  posts per month (of all users)

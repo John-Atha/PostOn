@@ -867,3 +867,111 @@ def UserNotifications(request, id):
         if len(notifications)==0:
             return JsonResponse({"error": "No new notifications found for this user"}, status=402)
         return JsonResponse([action.serialize() for action in notifications], safe=False, status=200)
+
+
+def UserAllAsRead(request, id):
+    if request.method!="PUT":
+        return JsonResponse({"error": "Only PUT method allowed"}, status=400)
+    else:
+        try:
+            user = User.objects.get(id=id)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id"}, status=400)
+        follows = Follow.objects.filter(followed=user).filter(seen=False)
+        myComments = Comment.objects.filter(owner=user)
+        myPosts = Post.objects.filter(owner=user)
+        LikesComments = LikeComment.objects.filter(comment__in=myComments).filter(seen=False)
+        LikesPosts = Like.objects.filter(post__in=myPosts).filter(seen=False)
+        CommentsPosts = Comment.objects.filter(post__in=myPosts).filter(seen=False)
+        for foll in follows:
+            foll.seen=True
+            foll.save()
+        for like in LikesComments:
+            like.seen=True
+            like.save()
+        for like in LikesPosts:
+            like.seen=True
+            like.save()
+        for comm in CommentsPosts:
+            comm.seen=True
+            comm.save()
+        return JsonResponse({"message": "Everything marked as read successfully"}, status=200)
+
+def MonthlyLikesStats(request):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        # for likes
+        likes = Like.objects.order_by('date')
+        stats = []
+        prevYearMonth = str(likes[0].date).split('-')[0]+'-'+str(likes[0].date).split('-')[1]
+        counter = -1
+        for like in likes:
+            try:
+                date = str(like.date).split('-')
+                yearMonth = date[0]+'-'+date[1]
+                if yearMonth!=prevYearMonth and prevYearMonth!='':
+                    stats.append(
+                        {
+                            "year-month": prevYearMonth,
+                            "likes": counter
+                        }
+                    )
+                    counter=0
+                    prevYearMonth = yearMonth
+                elif prevYearMonth=="":
+                    counter=0
+                    prevYearMonth = yearMonth
+                else:
+                    counter = counter+1
+            except Exception:
+                pass
+        stats.append(
+            {
+                "year-month": prevYearMonth,
+                "likes": counter
+            }
+        )
+        if len(stats)==0:
+            return JsonResponse({"error": "No likes found"}, status=402)
+        return JsonResponse(stats, safe=False, status=200)
+
+def MonthlyCommentsStats(request):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        # for comments
+        comments = Comment.objects.order_by('date')
+        stats = []
+        prevYearMonth = str(comments[0].date).split('-')[0]+'-'+str(comments[0].date).split('-')[1]
+        counter = -1
+        for comment in comments:
+            try:
+                date = str(comment.date).split('-')
+                yearMonth = date[0]+'-'+date[1]
+                if yearMonth!=prevYearMonth and prevYearMonth!='':
+                    stats.append(
+                        {
+                            "year-month": prevYearMonth,
+                            "comments": counter
+                        }
+                    )
+                    counter=0
+                    prevYearMonth = yearMonth
+                elif prevYearMonth=="":
+                    counter=0
+                    prevYearMonth = yearMonth
+                else:
+                    counter = counter+1
+            except Exception:
+                pass
+        stats.append(
+            {
+                "year-month": prevYearMonth,
+                "comments": counter
+            }
+        )
+        if len(stats)==0:
+            return JsonResponse({"error": "No comments found"}, status=402)
+        return JsonResponse(stats, safe=False, status=200)
+

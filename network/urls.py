@@ -21,6 +21,7 @@ urlpatterns = [
     path("Jwitter/api/users/<int:id>/likedcomments", views.UserLikedComments, name="UserLikedComments"),
     path("Jwitter/api/users/<int:id>/activity", views.UserActivity, name="UserActivity"),
     path("Jwitter/api/users/<int:id>/notifications", views.UserNotifications, name="UserNotifications"),
+    path("Jwitter/api/users/<int:id>/allread", views.UserAllAsRead, name="UserAllAsRead"),
     path("Jwitter/api/countries", views.AllCountries, name="AllCountries"),
     path("Jwitter/api/countries/<int:id>", views.OneCountry, name="OneCountry"),
     path("Jwitter/api/posts", views.AllPosts, name="AllPosts"),
@@ -33,4 +34,6 @@ urlpatterns = [
     path("Jwitter/api/comments/<int:id>", views.OneComment, name="OneComment"),
     path("Jwitter/api/likecomments", views.AllLikeComments, name="AllLikeComments"),
     path("Jwitter/api/likecomments/<int:id>", views.OneLikeComment, name="OneLikeComment"),
+    path("Jwitter/api/stats/likes/monthly", views.MonthlyLikesStats, name="MonthlyLikesStats"),
+    path("Jwitter/api/stats/comments/monthly", views.MonthlyCommentsStats, name="MonthlyCommentsStats")
 ]
