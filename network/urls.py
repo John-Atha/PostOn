@@ -35,5 +35,6 @@ urlpatterns = [
     path("Jwitter/api/likecomments", views.AllLikeComments, name="AllLikeComments"),
     path("Jwitter/api/likecomments/<int:id>", views.OneLikeComment, name="OneLikeComment"),
     path("Jwitter/api/stats/likes/monthly", views.MonthlyLikesStats, name="MonthlyLikesStats"),
-    path("Jwitter/api/stats/comments/monthly", views.MonthlyCommentsStats, name="MonthlyCommentsStats")
+    path("Jwitter/api/stats/comments/monthly", views.MonthlyCommentsStats, name="MonthlyCommentsStats"),
+    path("Jwitter/api/stats/posts/monthly", views.MonthlyPostsStats, name="MonthlyPostsStats"),
 ]

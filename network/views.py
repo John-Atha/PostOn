@@ -868,7 +868,6 @@ def UserNotifications(request, id):
             return JsonResponse({"error": "No new notifications found for this user"}, status=402)
         return JsonResponse([action.serialize() for action in notifications], safe=False, status=200)
 
-
 def UserAllAsRead(request, id):
     if request.method!="PUT":
         return JsonResponse({"error": "Only PUT method allowed"}, status=400)
@@ -975,3 +974,41 @@ def MonthlyCommentsStats(request):
             return JsonResponse({"error": "No comments found"}, status=402)
         return JsonResponse(stats, safe=False, status=200)
 
+def MonthlyPostsStats(request):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        # for comments
+        posts = Post.objects.order_by('date')
+        stats = []
+        prevYearMonth = str(posts[0].date).split('-')[0]+'-'+str(posts[0].date).split('-')[1]
+        counter = -1
+        for post in posts:
+            try:
+                date = str(post.date).split('-')
+                yearMonth = date[0]+'-'+date[1]
+                if yearMonth!=prevYearMonth and prevYearMonth!='':
+                    stats.append(
+                        {
+                            "year-month": prevYearMonth,
+                            "posts": counter
+                        }
+                    )
+                    counter=0
+                    prevYearMonth = yearMonth
+                elif prevYearMonth=="":
+                    counter=0
+                    prevYearMonth = yearMonth
+                else:
+                    counter = counter+1
+            except Exception:
+                pass
+        stats.append(
+            {
+                "year-month": prevYearMonth,
+                "posts": counter
+            }
+        )
+        if len(stats)==0:
+            return JsonResponse({"error": "No posts found"}, status=402)
+        return JsonResponse(stats, safe=False, status=200)
