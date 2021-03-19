@@ -829,3 +829,41 @@ def UserActivity(request, id):
         if len(activity)==0:
             return JsonResponse({"error": "No activity found for this user"}, status=402)
         return JsonResponse([action.serialize() for action in activity], safe=False, status=200)
+
+def UserNotifications(request, id):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method allowed"}, status=400)
+    else:
+        try:
+            user = User.objects.get(id=id)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id"}, status=400)
+        follows = Follow.objects.filter(followed=user).filter(seen=False)
+        myComments = Comment.objects.filter(owner=user)
+        myPosts = Post.objects.filter(owner=user)
+        LikesComments = LikeComment.objects.filter(comment__in=myComments).filter(seen=False)
+        LikesPosts = Like.objects.filter(post__in=myPosts).filter(seen=False)
+        CommentsPosts = Comment.objects.filter(post__in=myPosts).filter(seen=False)
+        notifications = sorted(
+            chain(follows, LikesComments, LikesPosts, CommentsPosts),
+            key = attrgetter('date'),
+            reverse=True)
+        if request.GET.get("start"):
+            try:
+                start = int(request.GET.get("start"))
+                if start<1:
+                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
+                notifications = notifications[start-1:]
+                if request.GET.get("end"):
+                    try:
+                        end = int(request.GET.get("end"))
+                        if (end<start):
+                            return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
+                        notifications = notifications[:end-start+1]
+                    except ValueError:
+                        return JsonResponse({"error": "Bad end parameter given."}, status=400)
+            except ValueError:
+                return JsonResponse({"error": "Bad start parameter given."}, status=400)
+        if len(notifications)==0:
+            return JsonResponse({"error": "No new notifications found for this user"}, status=402)
+        return JsonResponse([action.serialize() for action in notifications], safe=False, status=200)
