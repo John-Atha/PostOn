@@ -1,5 +1,6 @@
 import json
-from typing import Type
+from itertools import chain
+from operator import attrgetter
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -792,3 +793,39 @@ def UserLikedComments(request, id):
             return JsonResponse({"error": "Invalid user id"}, status=400)
     else:
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+
+def UserActivity(request, id):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        try:
+            user = User.objects.get(id=id)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id"}, status=400)
+        comments = Comment.objects.filter(owner=user)
+        likes = Like.objects.filter(owner=user)
+        likeComments = LikeComment.objects.filter(owner=user)
+        posts = Post.objects.filter(owner=user)
+        activity = sorted(
+            chain(comments, likes, likeComments, posts),
+            key=attrgetter('date'),
+            reverse=True)
+        if request.GET.get("start"):
+            try:
+                start = int(request.GET.get("start"))
+                if start<1:
+                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
+                activity = activity[start-1:]
+                if request.GET.get("end"):
+                    try:
+                        end = int(request.GET.get("end"))
+                        if (end<start):
+                            return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
+                        activity = activity[:end-start+1]
+                    except ValueError:
+                        return JsonResponse({"error": "Bad end parameter given."}, status=400)
+            except ValueError:
+                return JsonResponse({"error": "Bad start parameter given."}, status=400)
+        if len(activity)==0:
+            return JsonResponse({"error": "No activity found for this user"}, status=402)
+        return JsonResponse([action.serialize() for action in activity], safe=False, status=200)
