@@ -1090,3 +1090,45 @@ def MonthlyLikeCommentsStats(request):
         if len(stats)==0:
             return JsonResponse({"error": "No like found"}, status=402)
         return JsonResponse(stats, safe=False, status=200)
+
+def DailyLikesStats(request):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        # for likes
+        likes = Like.objects.all()
+        likesCount = {
+            "Monday": 0,
+            "Tuesday": 0, 
+            "Wednesday": 0, 
+            "Thursday": 0, 
+            "Friday": 0, 
+            "Saturday": 0, 
+            "Sunday": 0
+        }
+        for like in likes:
+            s = str(like.date).split(' ')[0].split('-')
+            day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
+            likesCount[day] = likesCount[day]+1
+        return JsonResponse(likesCount, safe=False, status=200)
+
+def DailyCommentsStats(request):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        # for likes
+        comments = Comment.objects.all()
+        commentsCount = {
+            "Monday": 0,
+            "Tuesday": 0, 
+            "Wednesday": 0, 
+            "Thursday": 0, 
+            "Friday": 0, 
+            "Saturday": 0, 
+            "Sunday": 0
+        }
+        for comment in comments:
+            s = str(comment.date).split(' ')[0].split('-')
+            day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
+            commentsCount[day] = commentsCount[day]+1
+        return JsonResponse(commentsCount, safe=False, status=200)
