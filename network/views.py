@@ -1012,3 +1012,42 @@ def MonthlyPostsStats(request):
         if len(stats)==0:
             return JsonResponse({"error": "No posts found"}, status=402)
         return JsonResponse(stats, safe=False, status=200)
+
+def MonthlyFollowsStats(request):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        # for comments
+        follows = Follow.objects.order_by('date')
+        stats = []
+        prevYearMonth = str(follows[0].date).split('-')[0]+'-'+str(follows[0].date).split('-')[1]
+        counter = -1
+        for follow in follows:
+            try:
+                date = str(follow.date).split('-')
+                yearMonth = date[0]+'-'+date[1]
+                if yearMonth!=prevYearMonth and prevYearMonth!='':
+                    stats.append(
+                        {
+                            "year-month": prevYearMonth,
+                            "follows": counter
+                        }
+                    )
+                    counter=0
+                    prevYearMonth = yearMonth
+                elif prevYearMonth=="":
+                    counter=0
+                    prevYearMonth = yearMonth
+                else:
+                    counter = counter+1
+            except Exception:
+                pass
+        stats.append(
+            {
+                "year-month": prevYearMonth,
+                "follows": counter
+            }
+        )
+        if len(stats)==0:
+            return JsonResponse({"error": "No follows found"}, status=402)
+        return JsonResponse(stats, safe=False, status=200)
