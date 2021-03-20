@@ -1271,7 +1271,7 @@ def UsersDailyLikesStats(request, id):
     else:
         try:
             user = User.objects.get(id=id)
-            likes = Like.objects.all()
+            likes = Like.objects.filter(owner=user)
             likesCount = {
                 "Monday": 0,
                 "Tuesday": 0, 
@@ -1289,4 +1289,69 @@ def UsersDailyLikesStats(request, id):
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
 
+def UsersDailyCommentsStats(request, id):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        try:
+            user = User.objects.get(id=id)
+            comments = Comment.objects.filter(owner=user)
+            commentsCount = {
+                "Monday": 0,
+                "Tuesday": 0, 
+                "Wednesday": 0, 
+                "Thursday": 0, 
+                "Friday": 0, 
+                "Saturday": 0, 
+                "Sunday": 0
+            }
+            for comment in comments:
+                s = str(comment.date).split(' ')[0].split('-')
+                day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
+                commentsCount[day] = commentsCount[day]+1
+            return JsonResponse(commentsCount, safe=False, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id"}, status=400)
+        
 
+def UsersMonthlyCommentsStats(request, id):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        try:
+            user = User.objects.get(id=id)
+            comments = Comment.objects.filter(owner=user).order_by('date')
+            stats = []
+            prevYearMonth = str(comments[0].date).split('-')[0]+'-'+str(comments[0].date).split('-')[1]
+            counter = -1
+            for comment in comments:
+                try:
+                    date = str(comment.date).split('-')
+                    yearMonth = date[0]+'-'+date[1]
+                    if yearMonth!=prevYearMonth and prevYearMonth!='':
+                        stats.append(
+                            {
+                                "year-month": prevYearMonth,
+                                "comments": counter
+                            }
+                        )
+                        counter=0
+                        prevYearMonth = yearMonth
+                    elif prevYearMonth=="":
+                        counter=0
+                        prevYearMonth = yearMonth
+                    else:
+                        counter = counter+1
+                except Exception:
+                    pass
+            stats.append(
+                {
+                    "year-month": prevYearMonth,
+                    "comments": counter
+                }
+            )
+            if len(stats)==0:
+                return JsonResponse({"error": "No comments found"}, status=402)
+            return JsonResponse(stats, safe=False, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id"}, status=400)
