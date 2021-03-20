@@ -1289,3 +1289,54 @@ def OnePostCommentsSample(request, id):
                     "one-comment": comments[0].serialize()
                 }
                 return JsonResponse(answer, status=200)
+
+def OneCommentLikes(request, id):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        try:
+            comment = Comment.objects.get(id=id)
+        except Comment.DoesNotExist:
+            return JsonResponse({"error": "Invalid comment id."}, status=400)
+        if request.method=="GET":
+            likes = LikeComment.objects.filter(comment=comment)
+            if request.GET.get("start"):
+                try:
+                    start = int(request.GET.get("start"))
+                    if start<1:
+                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
+                    likes = likes[start-1:]
+                    if request.GET.get("end"):
+                        try:
+                            end = int(request.GET.get("end"))
+                            if (end<start):
+                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
+                            likes = likes[:end-start+1]
+                        except ValueError:
+                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
+                except ValueError:
+                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
+
+            if len(likes)==0:
+                return JsonResponse({"error": "No likes found for this comment"}, status=402)
+            else:
+                return JsonResponse([like.serialize() for like in likes], safe=False, status=200)
+
+def OneCommentLikesSample(request, id):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        try:
+            comment = Comment.objects.get(id=id)
+        except Comment.DoesNotExist:
+            return JsonResponse({"error": "Invalid comment id."}, status=400)
+        if request.method=="GET":
+            likes = LikeComment.objects.filter(comment=comment)       
+            if len(likes)==0:
+                return JsonResponse({"error": "No likes found for this comment"}, status=402)
+            else:
+                answer = {
+                    "likes": len(likes),
+                    "one-liker": likes[0].owner.serialize()
+                }
+                return JsonResponse(answer, status=200)
