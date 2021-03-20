@@ -1187,3 +1187,54 @@ def DailyLikeCommentsStats(request):
             day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
             likeCommentsCount[day] = likeCommentsCount[day]+1
         return JsonResponse(likeCommentsCount, safe=False, status=200)
+
+def OnePostLikes(request, id):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        try:
+            post = Post.objects.get(id=id)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "Invalid post id."}, status=400)
+        if request.method=="GET":
+            likes = Like.objects.filter(post=post)
+            if request.GET.get("start"):
+                try:
+                    start = int(request.GET.get("start"))
+                    if start<1:
+                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
+                    likes = likes[start-1:]
+                    if request.GET.get("end"):
+                        try:
+                            end = int(request.GET.get("end"))
+                            if (end<start):
+                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
+                            likes = likes[:end-start+1]
+                        except ValueError:
+                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
+                except ValueError:
+                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
+
+            if len(likes)==0:
+                return JsonResponse({"error": "No likes found for this post"}, status=402)
+            else:
+                return JsonResponse([like.serialize() for like in likes], safe=False, status=200)
+
+def OnePostLikesSample(request, id):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        try:
+            post = Post.objects.get(id=id)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "Invalid post id."}, status=400)
+        if request.method=="GET":
+            likes = Like.objects.filter(post=post)       
+            if len(likes)==0:
+                return JsonResponse({"error": "No likes found for this post"}, status=402)
+            else:
+                answer = {
+                    "likes": len(likes),
+                    "one-liker": likes[0].owner.serialize()
+                }
+                return JsonResponse(answer, status=200)    
