@@ -45,9 +45,9 @@
 
 #### Comments
 * GET   /comments?start=index1&end=index2              :       returns all comments with index1<like_index<index2 (or 400, or 402)
-* POST  /comments                                      :       posts a new like (or 400)
-* GET   /comments/{id}                                 :       returns the like with the given id (or 400)
-* DEL   /comments/{id}                                 :       deletes the like with the given id (or 400)
+* POST  /comments                                      :       posts a new comment (or 400)
+* GET   /comments/{id}                                 :       returns the comment with the given id (or 400)
+* DEL   /comments/{id}                                 :       deletes the comment with the given id (or 400)
 * PUT   /comments/{id}                                 :       updates the comment with the given id to seen / not seen (or 400)
 * GET   /users/{id}/comments?start=index1&end=index2   :       returns the comments that this user has posted with index1<like_index<index2 (or 402)
 * GET   /users/{id}/commented?start=index1&end=index2  :       returns the comments on posts of this owner with index1<like_index<index2 (or 402)
