@@ -1237,4 +1237,55 @@ def OnePostLikesSample(request, id):
                     "likes": len(likes),
                     "one-liker": likes[0].owner.serialize()
                 }
-                return JsonResponse(answer, status=200)    
+                return JsonResponse(answer, status=200)
+
+def OnePostComments(request, id):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        try:
+            post = Post.objects.get(id=id)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "Invalid post id."}, status=400)
+        if request.method=="GET":
+            comments = Comment.objects.filter(post=post)
+            if request.GET.get("start"):
+                try:
+                    start = int(request.GET.get("start"))
+                    if start<1:
+                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
+                    comments = comments[start-1:]
+                    if request.GET.get("end"):
+                        try:
+                            end = int(request.GET.get("end"))
+                            if (end<start):
+                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
+                            comments = comments[:end-start+1]
+                        except ValueError:
+                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
+                except ValueError:
+                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
+
+            if len(comments)==0:
+                return JsonResponse({"error": "No comments found for this post"}, status=402)
+            else:
+                return JsonResponse([comment.serialize() for comment in comments], safe=False, status=200)
+
+def OnePostCommentsSample(request, id):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        try:
+            post = Post.objects.get(id=id)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "Invalid post id."}, status=400)
+        if request.method=="GET":
+            comments = Comment.objects.filter(post=post)       
+            if len(comments)==0:
+                return JsonResponse({"error": "No comments found for this post"}, status=402)
+            else:
+                answer = {
+                    "comments": len(comments),
+                    "one-comment": comments[0].serialize()
+                }
+                return JsonResponse(answer, status=200)
