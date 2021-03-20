@@ -11,14 +11,14 @@
 * GET   /users/{id}/activity                            :       returns the activity (likes, comments, likes on comments, posts, follows) of user with given id (or 400, or 402)
 * GET   /users/{id}/notifications                       :       returns the (unread) notifications (likes & comments on my posts, likes on my comments, new followers) of user with given id (or 400, or 402)
 * PUT   /users/{id}/allread                             :       marks all the unread notifications of user with given id to seen
-* GET   /users/{id}stats/likes/monthly                             :       returns a list with #likes on posts per month (of the user with the given id)
-* GET   /users/{id}stats/likes/daily                               :       returns a list with #likes on posts per day(Monday, Tuesday,...) (of the user with the given id)
-* GET   /users/{id}stats/comments/monthly                          :       returns a list with #comments on  posts per month (of the user with the given id)
-* GET   /users/{id}stats/comments/daily                            :       returns a list with #comments on  posts per day(Monday, Tuesday,...) (of the user with the given id)
-* GET   /users/{id}stats/follows/monthly                           :       returns a list with #follows per month (of the user with the given id)
-* GET   /users/{id}stats/follows/daily                             :       returns a list with #follows per day(Monday, Tuesday,...) (of the user with the given id)
-* GET   /users/{id}stats/posts/monthly                             :       returns a list with #posts per month (of the user with the given id)
-* GET   /users/{id}stats/posts/daily                               :       returns a list with #posts per day(Monday, Tuesday,...) (of the user with the given id)
+* GET   /users/{id}/stats/likes/monthly                             :       returns a list with #likes on posts per month of the user with the given id (or 400 or 402)
+* GET   /users/{id}/stats/likes/daily                               :       returns a list with #likes on posts per day(Monday, Tuesday,...) of the user with the given id (or 400 or 402)
+* GET   /users/{id}/stats/comments/monthly                          :       returns a list with #comments on  posts per month of the user with the given id (or 400 or 402)
+* GET   /users/{id}/stats/comments/daily                            :       returns a list with #comments on  posts per day(Monday, Tuesday,...) of the user with the given id (or 400 or 402)
+* GET   /users/{id}/stats/follows/monthly                           :       returns a list with #follows per month of the user with the given id (or 400 or 402)
+* GET   /users/{id}/stats/follows/daily                             :       returns a list with #follows per day(Monday, Tuesday,...) of the user with the given id (or 400 or 402)
+* GET   /users/{id}/stats/posts/monthly                             :       returns a list with #posts per month of the user with the given id (or 400 or 402)
+* GET   /users/{id}/stats/posts/daily                               :       returns a list with #posts per day(Monday, Tuesday,...) of the user with the given id (or 400 or 402)
 
 #### Countries
 * GET   /countries?start=index1&end=index2          :       returns all countries with index1<country_index<index2 (or 400, 402)
