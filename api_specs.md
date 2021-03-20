@@ -14,12 +14,13 @@
 * GET   /countries/{id}                             :       returns country with given id (or 400)   
 
 #### Posts
-* GET   /posts?start=index1&end=index2              :       return all posts with index1<post_index<index2 (or 400, or 402)
-* POST  /posts                                      :       posts a new post (or 400)
-* GET   /posts/{id}                                 :       returns post with given id (or 400)
-* PUT   /posts/{id}                                 :       updates text of post with given id (or 400)
-* DEL   /posts/{id}                                 :       deletes post with given id (or 400)
-* GET   /users/{id}/posts?start=index1&end=index2   :       returns all posts by the user with the given id and index1<post_index<index2 (or 400 or 402)
+* GET   /posts?start=index1&end=index2                      :       return all posts with index1<post_index<index2 (or 400, or 402)
+* POST  /posts                                              :       posts a new post (or 400)
+* GET   /posts/{id}                                         :       returns post with given id (or 400)
+* PUT   /posts/{id}                                         :       updates text of post with given id (or 400)
+* DEL   /posts/{id}                                         :       deletes post with given id (or 400)
+* GET   /users/{id}/posts?start=index1&end=index2           :       returns all posts by the user with the given id and index1<post_index<index2 (or 400 or 402)
+* GET   /users/{id}/follows/posts?start=index1&end=index2   :       returns all posts by the followed users from the user with the given id and index1<post_index<index2 (or 400 or 402)
 * GET   /posts/{id}/likes?start=index1&end=index2   :       returns all likes on the post with the given id and index1<like_index<index2 (or 400 or 402)
 * GET   /posts/{id}/likes/sample                    :       returns #likes and the first like on the post with the given id (or 400 or 402)
 * GET   /posts/{id}/comments?start=index1&end=index2   :       returns all comments on the post with the given id and index1<comment_index<index2 (or 400 or 402)
@@ -31,8 +32,10 @@
 * GET   /follows/{id}                                 :       returns follow with the given id (or 400)
 * DEL   /follows/{id}                                 :       deletes the follow with the given id (or 400)
 * PUT   /follows/{id}                                 :       updates the follow with the given id to seen / not seen (or 400)
-* GET   /users/{id}/follows?start=index1&end=index2   :       returns the follows that have this user as a follower with index1<follow_index<index2 (or 402)
-* GET   /users/{id}/followers?start=index1&end=index2 :       returns the follows that have this user as followed with index1<follow_index<index2 (or 402)
+* GET   /users/{id}/follows?start=index1&end=index2   :       returns the follows that have this user as a follower with index1<follow_index<index2 (or 402 or 400)
+* GET   /users/{id}/follows/count                     :       returns the #follows that have this user as a follower (or 400)
+* GET   /users/{id}/followers?start=index1&end=index2 :       returns the follows that have this user as followed with index1<follow_index<index2 (or 402 or 400)
+* GET   /users/{id}/followers/count                     :       returns the #follows that have this user as followed (or 400)
 
 #### Likes
 * GET   /likes?start=index1&end=index2              :       returns all likes with index1<like_index<index2 (or 400, or 402)

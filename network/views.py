@@ -1178,3 +1178,46 @@ def OneCommentLikesSample(request, id):
                     "one-liker": likes[0].owner.serialize()
                 }
                 return JsonResponse(answer, status=200)
+
+def UserFollowsCount(request, id):
+    if request.method=="GET":
+        try:
+            user = User.objects.get(id=id)
+            follows = user.follows.count()
+            return JsonResponse({"follows": follows}, safe=False, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id"}, status=400)
+    else:
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+
+def UserFollowersCount(request, id):
+    if request.method=="GET":
+        try:
+            user = User.objects.get(id=id)
+            follows = user.followers.count()
+            return JsonResponse({"followers": follows}, safe=False, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id"}, status=400)
+    else:
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400) 
+
+def UserFollowsPosts(request, id):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        try:
+            user = User.objects.get(id=id)
+            follows = Follow.objects.filter(following=user)
+            userFollows = follows.values_list('followed')
+            posts = Post.objects.filter(owner__in=userFollows)
+            result = paginate(request.GET.get("start"), request.GET.get("end"), posts)
+            try:
+                posts = result
+                if len(posts)==0:
+                    return JsonResponse({"error": "No posts found."}, status=402)
+                else:
+                    return JsonResponse([post.serialize() for post in posts], safe=False, status=200)
+            except TypeError:
+                return result        
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id"}, status=400)
