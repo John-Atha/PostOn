@@ -5,12 +5,12 @@
 * All query parameters are optional, but use is recommended for higher performance
 
 #### Users
-* GET   /users                                      :       returns all users (or 402)
+* GET   /users?start=index1&end=index2              :       returns all users with index1<user_index<index2 (or 400, 402)
 * GET   /users/{id}                                 :       returns user with the given id (or 400) 
 * PUT   /users/{id}                                 :       updates username and/or moto (or 400) 
 
 #### Countries
-* GET   /countries                                  :       returns all countries (or 402)
+* GET   /countries?start=index1&end=index2          :       returns all countries with index1<country_index<index2 (or 400, 402)
 * GET   /countries/{id}                             :       returns country with given id (or 400)   
 
 #### Posts

@@ -117,9 +117,15 @@ def AllUsers(request):
         return JsonResponse({"error": "GET request required."}, status=400)
     else:
         users = User.objects.all()
-        if len(users)==0:
-            return JsonResponse({"error": "No users found."}, status=402)
-        return JsonResponse([user.serialize() for user in users], safe=False, status=200)
+        result = paginate(request.GET.get("start"), request.GET.get("end"), users)
+        try:
+            users = result
+            if len(users)==0:
+                return JsonResponse({"error": "No users found."}, status=402)
+            else:
+                return JsonResponse([user.serialize() for user in users], safe=False, status=200)
+        except TypeError:
+            return result
 
 def OneCountry(request, id):
     if request.method!="GET":
@@ -135,9 +141,15 @@ def OneCountry(request, id):
 def AllCountries(request):
     if request.method=="GET":
         countries = Country.objects.all()
-        if len(countries)==0:
-            return JsonResponse({"error": "No countries found."}, status=402)
-        return JsonResponse([country.serialize() for country in countries], safe=False, status=200)
+        result = paginate(request.GET.get("start"), request.GET.get("end"), countries)
+        try:
+            countries = result
+            if len(countries)==0:
+                return JsonResponse({"error": "No countries found."}, status=402)
+            else:
+                return JsonResponse([country.serialize() for country in countries], safe=False, status=200)
+        except TypeError:
+            return result
     else:
         return JsonResponse({"error": "Only GET method is allowed."}, status=400)
 
