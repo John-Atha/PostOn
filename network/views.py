@@ -11,6 +11,24 @@ from django.urls import reverse
 from .models import *
 from datetime import datetime
 
+def paginate(start, end, items):
+    if start is not None:
+        try:
+            start = int(start)
+            if start<1:
+                return JsonResponse({"error": "Bad start parameter given"}, status=400)
+            items = items[start-1:]
+            if end is not None:
+                try:
+                    end = int(end)
+                    if end<start:
+                        return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
+                    items = items[:end-start+1]
+                except ValueError:
+                    return JsonResponse({"error": "Bad end parameter given"}, status=400)
+        except ValueError:
+            return JsonResponse({"error": "Bad start parameter given"}, status=400)
+    return items
 
 def index(request):
     return render(request, "network/index.html")
@@ -178,26 +196,16 @@ def UserPosts(request, id):
 def AllPosts(request):
     if request.method=="GET": 
         posts = Post.objects.order_by('-date')
-        if request.GET.get('start'):
-            try:
-                start =  int(request.GET.get("start"))
-                if (start<1):
-                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
-                posts = posts[start-1:]
-                if request.GET.get("end"):
-                    try:
-                        end =  int(request.GET.get("end"))
-                        if end<start or end<1:
-                            return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
-                        posts = posts[:end-start+1]
-                    except ValueError:
-                        return JsonResponse({"error": "Bad params given."}, status=400)
-            except ValueError:
-                return JsonResponse({"error": "Bad params given."}, status=400)
-        if len(posts)==0:
-            return JsonResponse({"error": "No posts found."}, status=402)
-        else:
-            return JsonResponse([post.serialize() for post in posts], safe=False, status=200)
+        result = paginate(request.GET.get("start"), request.GET.get("end"), posts)
+        try:
+            posts = result
+            if len(posts)==0:
+                return JsonResponse({"error": "No posts found."}, status=402)
+            else:
+                return JsonResponse([post.serialize() for post in posts], safe=False, status=200)
+        except TypeError:
+            return result
+
     elif request.method=="POST":
         data = json.loads(request.body)
         if data.get("owner") is not None:
@@ -292,29 +300,17 @@ def UserFollows(request, id):
         try:
             user = User.objects.get(id=id)
             follows = user.follows.order_by('-date')
-            if request.GET.get("start"):
-                try:
-                    start = int(request.GET.get("start"))
-                    if start<1:
-                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
-                    follows = follows[start-1:]
-                    if request.GET.get("end"):
-                        try:
-                            end = int(request.GET.get("end"))
-                            if (end<start):
-                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
-                            follows = follows[:end-start+1]
-                        except ValueError:
-                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
-                except ValueError:
-                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
-            if len(follows)==0:
-                return JsonResponse({"error": "No follows found for this user"}, status=402)
-            else:
-                return JsonResponse([follow.serialize() for follow in follows], safe=False, status=200)
+            result = paginate(request.GET.get("start"), request.GET.get("end"), follows)
+            try:
+                follows = result
+                if len(follows)==0:
+                    return JsonResponse({"error": "No follows found."}, status=402)
+                else:
+                    return JsonResponse([follow.serialize() for follow in follows], safe=False, status=200)
+            except TypeError:
+                return result
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
-
     else:
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
 
@@ -323,55 +319,32 @@ def UserFollowers(request, id):
         try:
             user = User.objects.get(id=id)
             follows = user.followers.order_by('-date')
-            if request.GET.get("start"):
-                try:
-                    start = int(request.GET.get("start"))
-                    if start<1:
-                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
-                    follows = follows[start-1:]
-                    if request.GET.get("end"):
-                        try:
-                            end = int(request.GET.get("end"))
-                            if (end<start):
-                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
-                            follows = follows[:end-start+1]
-                        except ValueError:
-                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
-                except ValueError:
-                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
-            if len(follows)==0:
-                return JsonResponse({"error": "No follows found for this user"}, status=402)
-            else:
-                return JsonResponse([follow.serialize() for follow in follows], safe=False, status=200)
+            result = paginate(request.GET.get("start"), request.GET.get("end"), follows)
+            try:
+                follows = result
+                if len(follows)==0:
+                    return JsonResponse({"error": "No follows found."}, status=402)
+                else:
+                    return JsonResponse([follow.serialize() for follow in follows], safe=False, status=200)
+            except TypeError:
+                return result
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
-
     else:
         return JsonResponse({"error": "Only GET method is allowed"}, status=400) 
 
 def AllLikes(request):
     if request.method=="GET":
         likes = Like.objects.order_by('-date')
-        if request.GET.get("start"):
-            try:
-                start = int(request.GET.get("start"))
-                if start<1:
-                    return JsonResponse({"error": "Invalid start parameter given"}, status=400)
-                likes = likes[start-1:]
-                if request.GET.get("end"):
-                    try:
-                        end = int(request.GET.get("end"))
-                        if end<start:
-                            return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
-                        likes = likes[:end-start+1]
-                    except ValueError:
-                        return JsonResponse({"error": "Invalid end parameter given"}, status=400)
-            except ValueError:
-                return JsonResponse({"error": "Invalid start parameter given"}, status=400)
-        if len(likes)==0:
-            return JsonResponse({"error": "No likes found"}, status=402)
-        else:
-            return JsonResponse([like.serialize() for like in likes], safe=False, status=200)
+        result = paginate(request.GET.get("start"), request.GET.get("end"), likes)
+        try:
+            likes = result
+            if len(likes)==0:
+                return JsonResponse({"error": "No likes found."}, status=402)
+            else:
+                return JsonResponse([like.serialize() for like in likes], safe=False, status=200)
+        except TypeError:
+            return result
     elif request.method=="POST":
         data = json.loads(request.body)
         if data.get("owner") is not None:
@@ -439,26 +412,15 @@ def UserLikes(request, id):
         try:
             user = User.objects.get(id=id)
             likes = user.likes.order_by('-date')
-            if request.GET.get("start"):
-                try:
-                    start = int(request.GET.get("start"))
-                    if start<1:
-                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
-                    likes = likes[start-1:]
-                    if request.GET.get("end"):
-                        try:
-                            end = int(request.GET.get("end"))
-                            if (end<start):
-                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
-                            likes = likes[:end-start+1]
-                        except ValueError:
-                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
-                except ValueError:
-                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
-            if len(likes)==0:
-                return JsonResponse({"error": "No likes found for this user"}, status=402)
-            else:
-                return JsonResponse([likes.serialize() for likes in likes], safe=False, status=200)
+            result = paginate(request.GET.get("start"), request.GET.get("end"), likes)
+            try:
+                likes = result
+                if len(likes)==0:
+                    return JsonResponse({"error": "No likes found."}, status=402)
+                else:
+                    return JsonResponse([like.serialize() for like in likes], safe=False, status=200)
+            except TypeError:
+                return result
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
     else:
@@ -470,26 +432,15 @@ def UserLiked(request, id):
             user = User.objects.get(id=id)
             posts = Post.objects.filter(owner=user)
             likes = Like.objects.filter(post__in=posts)
-            if request.GET.get("start"):
-                try:
-                    start = int(request.GET.get("start"))
-                    if start<1:
-                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
-                    likes = likes[start-1:]
-                    if request.GET.get("end"):
-                        try:
-                            end = int(request.GET.get("end"))
-                            if (end<start):
-                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
-                            likes = likes[:end-start+1]
-                        except ValueError:
-                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
-                except ValueError:
-                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
-            if len(likes)==0:
-                return JsonResponse({"error": "No likes found for this user"}, status=402)
-            else:
-                return JsonResponse([like.serialize() for like in likes], safe=False, status=200)
+            result = paginate(request.GET.get("start"), request.GET.get("end"), likes)
+            try:
+                likes = result
+                if len(likes)==0:
+                    return JsonResponse({"error": "No likes found."}, status=402)
+                else:
+                    return JsonResponse([like.serialize() for like in likes], safe=False, status=200)
+            except TypeError:
+                return result
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
     else:
@@ -498,26 +449,15 @@ def UserLiked(request, id):
 def AllComments(request):
     if request.method=="GET":
         comments = Comment.objects.order_by('-date')
-        if request.GET.get("start"):
-            try:
-                start = int(request.GET.get("start"))
-                if start<1:
-                    return JsonResponse({"error": "Invalid start parameter given"}, status=400)
-                comments = comments[start-1:]
-                if request.GET.get("end"):
-                    try:
-                        end = int(request.GET.get("end"))
-                        if end<start:
-                            return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
-                        comments = comments[:end-start+1]
-                    except ValueError:
-                        return JsonResponse({"error": "Invalid end parameter given"}, status=400)
-            except ValueError:
-                return JsonResponse({"error": "Invalid start parameter given"}, status=400)
-        if len(comments)==0:
-            return JsonResponse({"error": "No comments found"}, status=402)
-        else:
-            return JsonResponse([comment.serialize() for comment in comments], safe=False, status=200)
+        result = paginate(request.GET.get("start"), request.GET.get("end"), comments)
+        try:
+            comments = result
+            if len(comments)==0:
+                return JsonResponse({"error": "No comments found."}, status=402)
+            else:
+                return JsonResponse([comment.serialize() for comment in comments], safe=False, status=200)
+        except TypeError:
+            return result
     elif request.method=="POST":
         data = json.loads(request.body)
         if data.get("owner") is not None:
@@ -592,26 +532,15 @@ def UserComments(request, id):
         try:
             user = User.objects.get(id=id)
             comments = user.comments.order_by('-date')
-            if request.GET.get("start"):
-                try:
-                    start = int(request.GET.get("start"))
-                    if start<1:
-                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
-                    comments = comments[start-1:]
-                    if request.GET.get("end"):
-                        try:
-                            end = int(request.GET.get("end"))
-                            if (end<start):
-                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
-                            comments = comments[:end-start+1]
-                        except ValueError:
-                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
-                except ValueError:
-                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
-            if len(comments)==0:
-                return JsonResponse({"error": "No comments found for this user"}, status=402)
-            else:
-                return JsonResponse([comment.serialize() for comment in comments], safe=False, status=200)
+            result = paginate(request.GET.get("start"), request.GET.get("end"), comments)
+            try:
+                comments = result
+                if len(comments)==0:
+                    return JsonResponse({"error": "No comments found."}, status=402)
+                else:
+                    return JsonResponse([comment.serialize() for comment in comments], safe=False, status=200)
+            except TypeError:
+                return result
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
     else:
@@ -623,26 +552,15 @@ def UserCommented(request, id):
             user = User.objects.get(id=id)
             posts = Post.objects.filter(owner=user)
             comments = Comment.objects.filter(post__in=posts)
-            if request.GET.get("start"):
-                try:
-                    start = int(request.GET.get("start"))
-                    if start<1:
-                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
-                    comments = comments[start-1:]
-                    if request.GET.get("end"):
-                        try:
-                            end = int(request.GET.get("end"))
-                            if (end<start):
-                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
-                            comments = comments[:end-start+1]
-                        except ValueError:
-                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
-                except ValueError:
-                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
-            if len(comments)==0:
-                return JsonResponse({"error": "No likes found for this user"}, status=402)
-            else:
-                return JsonResponse([comment.serialize() for comment in comments], safe=False, status=200)
+            result = paginate(request.GET.get("start"), request.GET.get("end"), comments)
+            try:
+                comments = result
+                if len(comments)==0:
+                    return JsonResponse({"error": "No comments found."}, status=402)
+                else:
+                    return JsonResponse([comment.serialize() for comment in comments], safe=False, status=200)
+            except TypeError:
+                return result
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
     else:
@@ -651,26 +569,15 @@ def UserCommented(request, id):
 def AllLikeComments(request):
     if request.method=="GET":
         likeComments = LikeComment.objects.order_by('-date')
-        if request.GET.get("start"):
-            try:
-                start = int(request.GET.get("start"))
-                if start<1:
-                    return JsonResponse({"error": "Invalid start parameter given"}, status=400)
-                likeComments = likeComments[start-1:]
-                if request.GET.get("end"):
-                    try:
-                        end = int(request.GET.get("end"))
-                        if end<start:
-                            return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
-                        likeComments = likeComments[:end-start+1]
-                    except ValueError:
-                        return JsonResponse({"error": "Invalid end parameter given"}, status=400)
-            except ValueError:
-                return JsonResponse({"error": "Invalid start parameter given"}, status=400)
-        if len(likeComments)==0:
-            return JsonResponse({"error": "No likes on comments found"}, status=402)
-        else:
-            return JsonResponse([likeComment.serialize() for likeComment in likeComments], safe=False, status=200)
+        result = paginate(request.GET.get("start"), request.GET.get("end"), likeComments)
+        try:
+            likeComments = result
+            if len(likeComments)==0:
+                return JsonResponse({"error": "No likes on comments found."}, status=402)
+            else:
+                return JsonResponse([likeComment.serialize() for likeComment in likeComments], safe=False, status=200)
+        except TypeError:
+            return result
     elif request.method=="POST":
         data = json.loads(request.body)
         if data.get("owner") is not None:
@@ -738,26 +645,15 @@ def UserLikesComments(request, id):
         try:
             user = User.objects.get(id=id)
             likeComments = user.liked_comments.order_by('-date')
-            if request.GET.get("start"):
-                try:
-                    start = int(request.GET.get("start"))
-                    if start<1:
-                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
-                    likeComments = likeComments[start-1:]
-                    if request.GET.get("end"):
-                        try:
-                            end = int(request.GET.get("end"))
-                            if (end<start):
-                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
-                            likeComments = likeComments[:end-start+1]
-                        except ValueError:
-                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
-                except ValueError:
-                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
-            if len(likeComments)==0:
-                return JsonResponse({"error": "No likes on comments found for this user"}, status=402)
-            else:
-                return JsonResponse([likeComment.serialize() for likeComment in likeComments], safe=False, status=200)
+            result = paginate(request.GET.get("start"), request.GET.get("end"), likeComments)
+            try:
+                likeComments = result
+                if len(likeComments)==0:
+                    return JsonResponse({"error": "No likeComments found."}, status=402)
+                else:
+                    return JsonResponse([likeComment.serialize() for likeComment in likeComments], safe=False, status=200)
+            except TypeError:
+                return result
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
     else:
@@ -769,26 +665,15 @@ def UserLikedComments(request, id):
             user = User.objects.get(id=id)
             comments = Comment.objects.filter(owner=user)
             likeComments = LikeComment.objects.filter(comment__in=comments)
-            if request.GET.get("start"):
-                try:
-                    start = int(request.GET.get("start"))
-                    if start<1:
-                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
-                    likeComments = likeComments[start-1:]
-                    if request.GET.get("end"):
-                        try:
-                            end = int(request.GET.get("end"))
-                            if (end<start):
-                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
-                            likeComments = likeComments[:end-start+1]
-                        except ValueError:
-                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
-                except ValueError:
-                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
-            if len(likeComments)==0:
-                return JsonResponse({"error": "No liked comments found for this user"}, status=402)
-            else:
-                return JsonResponse([likeComment.serialize() for likeComment in likeComments], safe=False, status=200)
+            result = paginate(request.GET.get("start"), request.GET.get("end"), likeComments)
+            try:
+                likeComments = result
+                if len(likeComments)==0:
+                    return JsonResponse({"error": "No likeComments found."}, status=402)
+                else:
+                    return JsonResponse([likeComment.serialize() for likeComment in likeComments], safe=False, status=200)
+            except TypeError:
+                return result
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
     else:
@@ -810,25 +695,15 @@ def UserActivity(request, id):
             chain(comments, likes, likeComments, posts),
             key=attrgetter('date'),
             reverse=True)
-        if request.GET.get("start"):
-            try:
-                start = int(request.GET.get("start"))
-                if start<1:
-                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
-                activity = activity[start-1:]
-                if request.GET.get("end"):
-                    try:
-                        end = int(request.GET.get("end"))
-                        if (end<start):
-                            return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
-                        activity = activity[:end-start+1]
-                    except ValueError:
-                        return JsonResponse({"error": "Bad end parameter given."}, status=400)
-            except ValueError:
-                return JsonResponse({"error": "Bad start parameter given."}, status=400)
-        if len(activity)==0:
-            return JsonResponse({"error": "No activity found for this user"}, status=402)
-        return JsonResponse([action.serialize() for action in activity], safe=False, status=200)
+        result = paginate(request.GET.get("start"), request.GET.get("end"), activity)
+        try:
+            activity = result
+            if len(activity)==0:
+                return JsonResponse({"error": "No activity found."}, status=402)
+            else:
+                return JsonResponse([act.serialize() for act in activity], safe=False, status=200)
+        except TypeError:
+            return result
 
 def UserNotifications(request, id):
     if request.method!="GET":
@@ -848,25 +723,15 @@ def UserNotifications(request, id):
             chain(follows, LikesComments, LikesPosts, CommentsPosts),
             key = attrgetter('date'),
             reverse=True)
-        if request.GET.get("start"):
-            try:
-                start = int(request.GET.get("start"))
-                if start<1:
-                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
-                notifications = notifications[start-1:]
-                if request.GET.get("end"):
-                    try:
-                        end = int(request.GET.get("end"))
-                        if (end<start):
-                            return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
-                        notifications = notifications[:end-start+1]
-                    except ValueError:
-                        return JsonResponse({"error": "Bad end parameter given."}, status=400)
-            except ValueError:
-                return JsonResponse({"error": "Bad start parameter given."}, status=400)
-        if len(notifications)==0:
-            return JsonResponse({"error": "No new notifications found for this user"}, status=402)
-        return JsonResponse([action.serialize() for action in notifications], safe=False, status=200)
+        result = paginate(request.GET.get("start"), request.GET.get("end"), notifications)
+        try:
+            notifications = result
+            if len(notifications)==0:
+                return JsonResponse({"error": "No notifications found."}, status=402)
+            else:
+                return JsonResponse([notification.serialize() for notification in notifications], safe=False, status=200)
+        except TypeError:
+            return result
 
 def UserAllAsRead(request, id):
     if request.method!="PUT":
@@ -1196,29 +1061,16 @@ def OnePostLikes(request, id):
             post = Post.objects.get(id=id)
         except Post.DoesNotExist:
             return JsonResponse({"error": "Invalid post id."}, status=400)
-        if request.method=="GET":
-            likes = Like.objects.filter(post=post)
-            if request.GET.get("start"):
-                try:
-                    start = int(request.GET.get("start"))
-                    if start<1:
-                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
-                    likes = likes[start-1:]
-                    if request.GET.get("end"):
-                        try:
-                            end = int(request.GET.get("end"))
-                            if (end<start):
-                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
-                            likes = likes[:end-start+1]
-                        except ValueError:
-                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
-                except ValueError:
-                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
-
+        likes = Like.objects.filter(post=post)
+        result = paginate(request.GET.get("start"), request.GET.get("end"), likes)
+        try:
+            likes = result
             if len(likes)==0:
-                return JsonResponse({"error": "No likes found for this post"}, status=402)
+                return JsonResponse({"error": "No likes found."}, status=402)
             else:
                 return JsonResponse([like.serialize() for like in likes], safe=False, status=200)
+        except TypeError:
+            return result
 
 def OnePostLikesSample(request, id):
     if request.method!="GET":
@@ -1247,29 +1099,16 @@ def OnePostComments(request, id):
             post = Post.objects.get(id=id)
         except Post.DoesNotExist:
             return JsonResponse({"error": "Invalid post id."}, status=400)
-        if request.method=="GET":
-            comments = Comment.objects.filter(post=post)
-            if request.GET.get("start"):
-                try:
-                    start = int(request.GET.get("start"))
-                    if start<1:
-                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
-                    comments = comments[start-1:]
-                    if request.GET.get("end"):
-                        try:
-                            end = int(request.GET.get("end"))
-                            if (end<start):
-                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
-                            comments = comments[:end-start+1]
-                        except ValueError:
-                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
-                except ValueError:
-                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
-
+        comments = Comment.objects.filter(post=post)
+        result = paginate(request.GET.get("start"), request.GET.get("end"), comments)
+        try:
+            comments = result
             if len(comments)==0:
-                return JsonResponse({"error": "No comments found for this post"}, status=402)
+                return JsonResponse({"error": "No comments found."}, status=402)
             else:
                 return JsonResponse([comment.serialize() for comment in comments], safe=False, status=200)
+        except TypeError:
+            return result
 
 def OnePostCommentsSample(request, id):
     if request.method!="GET":
@@ -1298,29 +1137,16 @@ def OneCommentLikes(request, id):
             comment = Comment.objects.get(id=id)
         except Comment.DoesNotExist:
             return JsonResponse({"error": "Invalid comment id."}, status=400)
-        if request.method=="GET":
-            likes = LikeComment.objects.filter(comment=comment)
-            if request.GET.get("start"):
-                try:
-                    start = int(request.GET.get("start"))
-                    if start<1:
-                        return JsonResponse({"error": "Bad start parameter given."}, status=400)
-                    likes = likes[start-1:]
-                    if request.GET.get("end"):
-                        try:
-                            end = int(request.GET.get("end"))
-                            if (end<start):
-                                return JsonResponse({"error": "End parameter must be larger or equal to start parameter."}, status=400)
-                            likes = likes[:end-start+1]
-                        except ValueError:
-                            return JsonResponse({"error": "Bad end parameter given."}, status=400)
-                except ValueError:
-                    return JsonResponse({"error": "Bad start parameter given."}, status=400)
-
+        likes = LikeComment.objects.filter(comment=comment)
+        result = paginate(request.GET.get("start"), request.GET.get("end"), likes)
+        try:
+            likes = result
             if len(likes)==0:
-                return JsonResponse({"error": "No likes found for this comment"}, status=402)
+                return JsonResponse({"error": "No likes found."}, status=402)
             else:
                 return JsonResponse([like.serialize() for like in likes], safe=False, status=200)
+        except TypeError:
+            return result
 
 def OneCommentLikesSample(request, id):
     if request.method!="GET":
