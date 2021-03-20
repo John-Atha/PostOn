@@ -1221,3 +1221,72 @@ def UserFollowsPosts(request, id):
                 return result        
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
+
+def UsersMonthlyLikesStats(request, id):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        try:
+            user = User.objects.get(id=id)
+            likes = Like.objects.filter(owner=user).order_by('date')
+            stats = []
+            prevYearMonth = str(likes[0].date).split('-')[0]+'-'+str(likes[0].date).split('-')[1]
+            counter = -1
+            for like in likes:
+                try:
+                    date = str(like.date).split('-')
+                    yearMonth = date[0]+'-'+date[1]
+                    if yearMonth!=prevYearMonth and prevYearMonth!='':
+                        stats.append(
+                            {
+                                "year-month": prevYearMonth,
+                                "likes": counter
+                            }
+                        )
+                        counter=0
+                        prevYearMonth = yearMonth
+                    elif prevYearMonth=="":
+                        counter=0
+                        prevYearMonth = yearMonth
+                    else:
+                        counter = counter+1
+                except Exception:
+                    pass
+            stats.append(
+                {
+                    "year-month": prevYearMonth,
+                    "likes": counter
+                }
+            )
+            if len(stats)==0:
+                return JsonResponse({"error": "No likes found"}, status=402)
+            return JsonResponse(stats, safe=False, status=200)
+
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id"}, status=400)
+
+def UsersDailyLikesStats(request, id):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        try:
+            user = User.objects.get(id=id)
+            likes = Like.objects.all()
+            likesCount = {
+                "Monday": 0,
+                "Tuesday": 0, 
+                "Wednesday": 0, 
+                "Thursday": 0, 
+                "Friday": 0, 
+                "Saturday": 0, 
+                "Sunday": 0
+            }
+            for like in likes:
+                s = str(like.date).split(' ')[0].split('-')
+                day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
+                likesCount[day] = likesCount[day]+1
+            return JsonResponse(likesCount, safe=False, status=200)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id"}, status=400)
+
+
