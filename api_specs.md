@@ -19,7 +19,11 @@
 * GET   /posts/{id}                                 :       returns post with given id (or 400)
 * PUT   /posts/{id}                                 :       updates text of post with given id (or 400)
 * DEL   /posts/{id}                                 :       deletes post with given id (or 400)
-* GET   /users/{id}/posts?start=index1&end=index2   :       returns all posts by the user with the given id and index1<post_index<index2 (or 400 or 402) 
+* GET   /users/{id}/posts?start=index1&end=index2   :       returns all posts by the user with the given id and index1<post_index<index2 (or 400 or 402)
+* GET   /posts/{id}/likes?start=index1&end=index2   :       returns all likes on the post with the given id and index1<like_index<index2 (or 400 or 402)
+* GET   /posts/{id}/likes/sample                    :       returns #likes and the first like on the post with the given id (or 400 or 402)
+* GET   /posts/{id}/comments?start=index1&end=index2   :       returns all comments on the post with the given id and index1<comment_index<index2 (or 400 or 402)
+* GET   /posts/{id}/comments/sample                    :       returns #comments and the first comment on the post with the given id (or 400 or 402)
 
 #### Follows
 * GET   /follows                                      :       returns all follows (or 402)
@@ -47,6 +51,8 @@
 * PUT   /comments/{id}                                 :       updates the comment with the given id to seen / not seen (or 400)
 * GET   /users/{id}/comments?start=index1&end=index2   :       returns the comments that this user has posted with index1<like_index<index2 (or 402)
 * GET   /users/{id}/commented?start=index1&end=index2  :       returns the comments on posts of this owner with index1<like_index<index2 (or 402)
+* GET   /comments/{id}/likes?start=index1&end=index2   :       returns all likes on the comment with the given id and index1<comment_index<index2 (or 400 or 402)
+* GET   /comments/{id}/likes/sample                    :       returns #likes and the first like on the comment with the given id (or 400 or 402)
 
 #### General
 * GET   /users/{id}/activity                            :       returns the activity (likes, comments, likes on comments, posts, follows) of user with given id (or 400, or 402)
