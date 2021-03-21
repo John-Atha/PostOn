@@ -2,6 +2,8 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from datetime import datetime
 
+from django.db.models.query_utils import PathInfo
+
 class Country(models.Model):
     title = models.CharField(max_length=128, null=False)
     code = models.CharField(max_length=10, null=False)
@@ -19,18 +21,22 @@ class Country(models.Model):
 class User(AbstractUser):
     photo = models.ImageField(default="", null=True, blank=True)
     country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True)
-    moto = models.TextField(null = True)
+    moto = models.TextField(null = True, blank=True)
 
     def __str__(self):
         return f"{self.username}, {self.email}, {self.moto}, {self.country}"
 
     def serialize(self):
+        if self.photo:
+            photoVal = self.photo.path
+        else:
+            photoVal = None
         return{
             "id": self.id,
             "username": self.username,
             "email": self.email,
             "moto": self.moto,
-            #"photo": self.photo,
+            "photo": photoVal,
             "country": self.country.serialize(),
         }
 
@@ -44,10 +50,15 @@ class Post(models.Model):
         return f"{self.owner}, {self.text}, {self.date}"
 
     def serialize(self):
+        if self.media:
+            photoVal = self.media.path
+        else:
+            photoVal = None
+
         return {
             "id": self.id,
             "owner": self.owner.serialize(),
-            #"media": self.media,
+            "media": photoVal,
             "text": self.text,
             "date": self.date,
         }

@@ -141,6 +141,10 @@ def OneUser(request, id):
         if request.method=="PUT":
             smthNew = False
             data = json.loads(request.body)
+            #if request.PUT["photo"] is not None:
+            #    smthNew = True
+            #    user.photo = request.PUT["photo"]
+            #else:
             if data.get("username") is not None:  
                 user.username = data["username"]
                 smthNew = True
@@ -153,10 +157,8 @@ def OneUser(request, id):
                     return JsonResponse(user.serialize(), status=200)
                 except:
                     return JsonResponse({"error": "Username probably already exists"} , status=400)
-
             else:
-                return JsonResponse({"error": "Give new username and/or moto field"} , status=400)
-            
+                return JsonResponse({"error": "Give new username and/or moto field"} , status=400)                
         elif request.method=="GET":
             return JsonResponse(user.serialize())
 
