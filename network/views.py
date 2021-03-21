@@ -62,6 +62,22 @@ def monthStatsExport(items, keyword):
         )
         return stats
 
+def dailyStatsExport(items):
+        result = {
+            "Monday": 0,
+            "Tuesday": 0, 
+            "Wednesday": 0, 
+            "Thursday": 0, 
+            "Friday": 0, 
+            "Saturday": 0, 
+            "Sunday": 0
+        }
+        for item in items:
+            s = str(item.date).split(' ')[0].split('-')
+            day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
+            result[day] = result[day]+1
+        return result
+
 def index(request):
     return render(request, "network/index.html")
 
@@ -862,19 +878,7 @@ def DailyLikesStats(request):
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         likes = Like.objects.all()
-        likesCount = {
-            "Monday": 0,
-            "Tuesday": 0, 
-            "Wednesday": 0, 
-            "Thursday": 0, 
-            "Friday": 0, 
-            "Saturday": 0, 
-            "Sunday": 0
-        }
-        for like in likes:
-            s = str(like.date).split(' ')[0].split('-')
-            day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
-            likesCount[day] = likesCount[day]+1
+        likesCount = dailyStatsExport(likes)
         return JsonResponse(likesCount, safe=False, status=200)
 
 def DailyCommentsStats(request):
@@ -882,19 +886,7 @@ def DailyCommentsStats(request):
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         comments = Comment.objects.all()
-        commentsCount = {
-            "Monday": 0,
-            "Tuesday": 0, 
-            "Wednesday": 0, 
-            "Thursday": 0, 
-            "Friday": 0, 
-            "Saturday": 0, 
-            "Sunday": 0
-        }
-        for comment in comments:
-            s = str(comment.date).split(' ')[0].split('-')
-            day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
-            commentsCount[day] = commentsCount[day]+1
+        commentsCount = dailyStatsExport(comments)
         return JsonResponse(commentsCount, safe=False, status=200)
 
 def DailyPostsStats(request):
@@ -902,19 +894,7 @@ def DailyPostsStats(request):
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         posts = Post.objects.all()
-        postsCount = {
-            "Monday": 0,
-            "Tuesday": 0, 
-            "Wednesday": 0, 
-            "Thursday": 0, 
-            "Friday": 0, 
-            "Saturday": 0, 
-            "Sunday": 0
-        }
-        for post in posts:
-            s = str(post.date).split(' ')[0].split('-')
-            day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
-            postsCount[day] = postsCount[day]+1
+        postsCount = dailyStatsExport(posts)
         return JsonResponse(postsCount, safe=False, status=200)
 
 def DailyFollowsStats(request):
@@ -922,19 +902,7 @@ def DailyFollowsStats(request):
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         follows = Follow.objects.all()
-        followsCount = {
-            "Monday": 0,
-            "Tuesday": 0, 
-            "Wednesday": 0, 
-            "Thursday": 0, 
-            "Friday": 0, 
-            "Saturday": 0, 
-            "Sunday": 0
-        }
-        for follow in follows:
-            s = str(follow.date).split(' ')[0].split('-')
-            day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
-            followsCount[day] = followsCount[day]+1
+        followsCount = dailyStatsExport(follows)
         return JsonResponse(followsCount, safe=False, status=200)
 
 def DailyLikeCommentsStats(request):
@@ -942,19 +910,7 @@ def DailyLikeCommentsStats(request):
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         likeComments = Follow.objects.all()
-        likeCommentsCount = {
-            "Monday": 0,
-            "Tuesday": 0, 
-            "Wednesday": 0, 
-            "Thursday": 0, 
-            "Friday": 0, 
-            "Saturday": 0, 
-            "Sunday": 0
-        }
-        for likeComment in likeComments:
-            s = str(likeComment.date).split(' ')[0].split('-')
-            day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
-            likeCommentsCount[day] = likeCommentsCount[day]+1
+        likeCommentsCount = dailyStatsExport(likeComments)
         return JsonResponse(likeCommentsCount, safe=False, status=200)
 
 def OnePostLikes(request, id):
@@ -1136,19 +1092,7 @@ def UsersDailyLikesStats(request, id):
         try:
             user = User.objects.get(id=id)
             likes = Like.objects.filter(owner=user)
-            likesCount = {
-                "Monday": 0,
-                "Tuesday": 0, 
-                "Wednesday": 0, 
-                "Thursday": 0, 
-                "Friday": 0, 
-                "Saturday": 0, 
-                "Sunday": 0
-            }
-            for like in likes:
-                s = str(like.date).split(' ')[0].split('-')
-                day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
-                likesCount[day] = likesCount[day]+1
+            likesCount = dailyStatsExport(likes)
             return JsonResponse(likesCount, safe=False, status=200)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
@@ -1160,19 +1104,7 @@ def UsersDailyCommentsStats(request, id):
         try:
             user = User.objects.get(id=id)
             comments = Comment.objects.filter(owner=user)
-            commentsCount = {
-                "Monday": 0,
-                "Tuesday": 0, 
-                "Wednesday": 0, 
-                "Thursday": 0, 
-                "Friday": 0, 
-                "Saturday": 0, 
-                "Sunday": 0
-            }
-            for comment in comments:
-                s = str(comment.date).split(' ')[0].split('-')
-                day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
-                commentsCount[day] = commentsCount[day]+1
+            commentsCount = dailyStatsExport(comments)
             return JsonResponse(commentsCount, safe=False, status=200)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
@@ -1198,19 +1130,7 @@ def UsersDailyPostsStats(request, id):
         try:
             user = User.objects.get(id=id)
             posts = Post.objects.filter(owner=user)
-            postsCount = {
-                "Monday": 0,
-                "Tuesday": 0, 
-                "Wednesday": 0, 
-                "Thursday": 0, 
-                "Friday": 0, 
-                "Saturday": 0, 
-                "Sunday": 0
-            }
-            for post in posts:
-                s = str(post.date).split(' ')[0].split('-')
-                day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
-                postsCount[day] = postsCount[day]+1
+            postsCount = dailyStatsExport(posts)
             return JsonResponse(postsCount, safe=False, status=200)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
@@ -1236,19 +1156,7 @@ def UsersDailyFollowsStats(request, id):
         try:
             user = User.objects.get(id=id)
             follows = Follow.objects.filter(following=user).all()
-            followsCount = {
-                "Monday": 0,
-                "Tuesday": 0, 
-                "Wednesday": 0, 
-                "Thursday": 0, 
-                "Friday": 0, 
-                "Saturday": 0, 
-                "Sunday": 0
-            }
-            for follow in follows:
-                s = str(follow.date).split(' ')[0].split('-')
-                day = datetime(int(s[0]), int(s[1]), int(s[2])).strftime("%A")
-                followsCount[day] = followsCount[day]+1
+            followsCount = dailyStatsExport(follows)
             return JsonResponse(followsCount, safe=False, status=200)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
