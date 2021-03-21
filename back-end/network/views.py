@@ -86,7 +86,7 @@ def isLogged(request):
         if request.user.is_authenticated:
             return JsonResponse({"authenticated": True, "id": request.user.id}, status=200)
         else:
-            return JsonResponse({"authenticated": False}, status=200)
+            return JsonResponse({"authenticated": False}, status=401)
 
 def login_view(request):
     if request.method == "POST":
