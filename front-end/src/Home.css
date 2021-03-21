@@ -1,0 +1,31 @@
+:root {
+    --color2: rgb(244, 208, 141);
+}
+
+.center-content {
+    justify-items: center;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+.margin-top {
+    margin-top: 10%;
+}
+.margin-top-small {
+    margin-top: 4%;
+}
+.margin-top-smaller {
+    margin-top: 2%;
+}
+
+.my-button {
+    padding: 2%;
+    border-radius: 8px;
+    border: none;
+}
+
+.my-button:hover {
+    transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+}
