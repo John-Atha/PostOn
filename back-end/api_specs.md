@@ -69,6 +69,9 @@
 * GET   /comments/{id}/likes/sample                    :       returns #likes and the first like on the comment with the given id (or 400 or 402)
 
 #### General
+* POST  /login                                           :       logges user in (or 400)
+* POST  /logout                                          :       logges user out (or 400)
+* POST  /logged                                          :       checks if user is logged in 
 * GET   /stats/likes/monthly                             :       returns a list with #likes on posts per month (of all users)
 * GET   /stats/likes/daily                               :       returns a list with #likes on posts per day(Monday, Tuesday,...) (of all users)
 * GET   /stats/comments/monthly                          :       returns a list with #comments on  posts per month (of all users)
