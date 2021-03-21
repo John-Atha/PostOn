@@ -1,0 +1,42 @@
+@media only screen and (max-width: 670px) {
+    .login-box-container{
+        width: 80%;
+        margin-left: 10%;
+    }
+
+}
+
+
+@media only screen and (min-width: 670px) {
+    .login-box-container{
+        width: 50%;
+        margin-left: 25%;
+    }
+}
+
+
+
+.login-box-container {
+    min-width: min-content;
+    height: 100%;
+    min-height: min-content;
+    background-color: var(--color2);
+    border-radius: 6px;
+    padding: 2%;
+}
+
+.login-input {
+    border: none;
+    border-radius: 7px;
+    width: 80%;
+    height: 40px;
+}
+
+.login-input:hover, .login-input:focus {
+    border: 2px solid lightblue;
+    outline: none;
+}
+
+.submit-button {
+    background-color: white;
+}

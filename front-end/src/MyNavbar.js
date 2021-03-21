@@ -45,7 +45,7 @@ class MyNavbar extends React.Component {
         return(
 
             <Navbar bg="light" expand="lg">
-                <Navbar.Brand href="#home">Jwitter</Navbar.Brand>
+                <Navbar.Brand href="/">Jwitter</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
@@ -78,11 +78,6 @@ class MyNavbar extends React.Component {
         )
     }
     
-
-
-
-
-
 
 }
 
