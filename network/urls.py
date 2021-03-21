@@ -4,10 +4,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path("", views.index, name="index"),
-    path("login", views.login_view, name="login"),
-    path("logout", views.logout_view, name="logout"),
-    path("register", views.register, name="register"),
+    path("Jwitter/api/logged", views.isLogged, name="isLogged"),
+    path("Jwitter/api/login", views.login_view, name="login"),
+    path("Jwitter/api/logout", views.logout_view, name="logout"),
+    path("Jwitter/api/register", views.register, name="register"),
     path("Jwitter/api/users", views.AllUsers, name="AllUsers"),
     path("Jwitter/api/users/<int:id>", views.OneUser, name="OneUser"),
     path("Jwitter/api/users/<int:id>/posts", views.UserPosts, name="UserPosts"),

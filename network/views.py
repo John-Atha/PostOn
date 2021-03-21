@@ -2,6 +2,7 @@ import json
 from itertools import chain
 from operator import attrgetter
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
@@ -78,31 +79,33 @@ def dailyStatsExport(items):
             result[day] = result[day]+1
         return result
 
-def index(request):
-    return render(request, "network/index.html")
+def isLogged(request):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+    else:
+        if request.user.is_authenticated:
+            return JsonResponse({"authenticated": True}, status=200)
+        else:
+            return JsonResponse({"authenticated": False}, status=200)
 
 def login_view(request):
     if request.method == "POST":
-
         # Attempt to sign user in
         username = request.POST["username"]
         password = request.POST["password"]
         user = authenticate(request, username=username, password=password)
-
         # Check if authentication successful
         if user is not None:
             login(request, user)
-            return HttpResponseRedirect(reverse("index"))
+            return JsonResponse({"message": "Logged in successfully", "id":user.id}, status=200)
         else:
-            return render(request, "network/login.html", {
-                "message": "Invalid username and/or password."
-            })
+            return JsonResponse({"error": "Invalid username/password"}, status=401)
     else:
-        return render(request, "network/login.html")
+        return JsonResponse({"error": "Only POST method is allowed."}, status=400)
 
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse("index"))
+    return JsonResponse({"message": "Logged out successfully"}, status=200)
 
 def register(request):
     if request.method == "POST":
@@ -138,29 +141,32 @@ def OneUser(request, id):
             user = User.objects.get(id=id)
         except User.DoesNotExist:
             return JsonResponse({"error": f"Invalid user id ({id})."}, status=400) 
-        if request.method=="PUT":
-            smthNew = False
-            data = json.loads(request.body)
-            #if request.PUT["photo"] is not None:
-            #    smthNew = True
-            #    user.photo = request.PUT["photo"]
-            #else:
-            if data.get("username") is not None:  
-                user.username = data["username"]
-                smthNew = True
-            if data.get("moto") is not None:
-                user.moto = data["moto"]
-                smthNew = True
-            if smthNew:
-                try:
-                    user.save()
-                    return JsonResponse(user.serialize(), status=200)
-                except:
-                    return JsonResponse({"error": "Username probably already exists"} , status=400)
-            else:
-                return JsonResponse({"error": "Give new username and/or moto field"} , status=400)                
-        elif request.method=="GET":
-            return JsonResponse(user.serialize())
+        if request.user.is_authenticated:
+            if request.method=="PUT":
+                smthNew = False
+                data = json.loads(request.body)
+                #if request.PUT["photo"] is not None:
+                #    smthNew = True
+                #    user.photo = request.PUT["photo"]
+                #else:
+                if data.get("username") is not None:  
+                    user.username = data["username"]
+                    smthNew = True
+                if data.get("moto") is not None:
+                    user.moto = data["moto"]
+                    smthNew = True
+                if smthNew:
+                    try:
+                        user.save()
+                        return JsonResponse(user.serialize(), status=200)
+                    except:
+                        return JsonResponse({"error": "Username probably already exists"} , status=400)
+                else:
+                    return JsonResponse({"error": "Give new username and/or moto field"} , status=400)                
+            elif request.method=="GET":
+                return JsonResponse(user.serialize())
+        else:
+            return JsonResponse({"error": "Authentication required"}, status=401)
 
 def AllUsers(request):
     if request.method!="GET":
