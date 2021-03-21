@@ -30,6 +30,38 @@ def paginate(start, end, items):
             return JsonResponse({"error": "Bad start parameter given"}, status=400)
     return items
 
+def monthStatsExport(items, keyword):
+        stats = []
+        prevYearMonth = str(items[0].date).split('-')[0]+'-'+str(items[0].date).split('-')[1]
+        counter = -1
+        for item in items:
+            try:
+                date = str(item.date).split('-')
+                yearMonth = date[0]+'-'+date[1]
+                if yearMonth!=prevYearMonth and prevYearMonth!='':
+                    stats.append(
+                        {
+                            "year-month": prevYearMonth,
+                            keyword: counter
+                        }
+                    )
+                    counter=0
+                    prevYearMonth = yearMonth
+                elif prevYearMonth=="":
+                    counter=0
+                    prevYearMonth = yearMonth
+                else:
+                    counter = counter+1
+            except Exception:
+                pass
+        stats.append(
+            {
+                "year-month": prevYearMonth,
+                keyword: counter
+            }
+        )
+        return stats
+
 def index(request):
     return render(request, "network/index.html")
 
@@ -779,35 +811,7 @@ def MonthlyLikesStats(request):
     else:
         # for likes
         likes = Like.objects.order_by('date')
-        stats = []
-        prevYearMonth = str(likes[0].date).split('-')[0]+'-'+str(likes[0].date).split('-')[1]
-        counter = -1
-        for like in likes:
-            try:
-                date = str(like.date).split('-')
-                yearMonth = date[0]+'-'+date[1]
-                if yearMonth!=prevYearMonth and prevYearMonth!='':
-                    stats.append(
-                        {
-                            "year-month": prevYearMonth,
-                            "likes": counter
-                        }
-                    )
-                    counter=0
-                    prevYearMonth = yearMonth
-                elif prevYearMonth=="":
-                    counter=0
-                    prevYearMonth = yearMonth
-                else:
-                    counter = counter+1
-            except Exception:
-                pass
-        stats.append(
-            {
-                "year-month": prevYearMonth,
-                "likes": counter
-            }
-        )
+        stats = monthStatsExport(likes, "likes")
         if len(stats)==0:
             return JsonResponse({"error": "No likes found"}, status=402)
         return JsonResponse(stats, safe=False, status=200)
@@ -818,35 +822,7 @@ def MonthlyCommentsStats(request):
     else:
         # for comments
         comments = Comment.objects.order_by('date')
-        stats = []
-        prevYearMonth = str(comments[0].date).split('-')[0]+'-'+str(comments[0].date).split('-')[1]
-        counter = -1
-        for comment in comments:
-            try:
-                date = str(comment.date).split('-')
-                yearMonth = date[0]+'-'+date[1]
-                if yearMonth!=prevYearMonth and prevYearMonth!='':
-                    stats.append(
-                        {
-                            "year-month": prevYearMonth,
-                            "comments": counter
-                        }
-                    )
-                    counter=0
-                    prevYearMonth = yearMonth
-                elif prevYearMonth=="":
-                    counter=0
-                    prevYearMonth = yearMonth
-                else:
-                    counter = counter+1
-            except Exception:
-                pass
-        stats.append(
-            {
-                "year-month": prevYearMonth,
-                "comments": counter
-            }
-        )
+        stats = monthStatsExport(comments, "comments")
         if len(stats)==0:
             return JsonResponse({"error": "No comments found"}, status=402)
         return JsonResponse(stats, safe=False, status=200)
@@ -856,35 +832,7 @@ def MonthlyPostsStats(request):
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         posts = Post.objects.order_by('date')
-        stats = []
-        prevYearMonth = str(posts[0].date).split('-')[0]+'-'+str(posts[0].date).split('-')[1]
-        counter = -1
-        for post in posts:
-            try:
-                date = str(post.date).split('-')
-                yearMonth = date[0]+'-'+date[1]
-                if yearMonth!=prevYearMonth and prevYearMonth!='':
-                    stats.append(
-                        {
-                            "year-month": prevYearMonth,
-                            "posts": counter
-                        }
-                    )
-                    counter=0
-                    prevYearMonth = yearMonth
-                elif prevYearMonth=="":
-                    counter=0
-                    prevYearMonth = yearMonth
-                else:
-                    counter = counter+1
-            except Exception:
-                pass
-        stats.append(
-            {
-                "year-month": prevYearMonth,
-                "posts": counter
-            }
-        )
+        stats = monthStatsExport(posts, "posts")
         if len(stats)==0:
             return JsonResponse({"error": "No posts found"}, status=402)
         return JsonResponse(stats, safe=False, status=200)
@@ -894,35 +842,7 @@ def MonthlyFollowsStats(request):
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         follows = Follow.objects.order_by('date')
-        stats = []
-        prevYearMonth = str(follows[0].date).split('-')[0]+'-'+str(follows[0].date).split('-')[1]
-        counter = -1
-        for follow in follows:
-            try:
-                date = str(follow.date).split('-')
-                yearMonth = date[0]+'-'+date[1]
-                if yearMonth!=prevYearMonth and prevYearMonth!='':
-                    stats.append(
-                        {
-                            "year-month": prevYearMonth,
-                            "follows": counter
-                        }
-                    )
-                    counter=0
-                    prevYearMonth = yearMonth
-                elif prevYearMonth=="":
-                    counter=0
-                    prevYearMonth = yearMonth
-                else:
-                    counter = counter+1
-            except Exception:
-                pass
-        stats.append(
-            {
-                "year-month": prevYearMonth,
-                "follows": counter
-            }
-        )
+        stats = monthStatsExport(follows, "follows")
         if len(stats)==0:
             return JsonResponse({"error": "No follows found"}, status=402)
         return JsonResponse(stats, safe=False, status=200)
@@ -932,35 +852,7 @@ def MonthlyLikeCommentsStats(request):
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         likeComments = LikeComment.objects.order_by('date')
-        stats = []
-        prevYearMonth = str(likeComments[0].date).split('-')[0]+'-'+str(likeComments[0].date).split('-')[1]
-        counter = -1
-        for like in likeComments:
-            try:
-                date = str(like.date).split('-')
-                yearMonth = date[0]+'-'+date[1]
-                if yearMonth!=prevYearMonth and prevYearMonth!='':
-                    stats.append(
-                        {
-                            "year-month": prevYearMonth,
-                            "like": counter
-                        }
-                    )
-                    counter=0
-                    prevYearMonth = yearMonth
-                elif prevYearMonth=="":
-                    counter=0
-                    prevYearMonth = yearMonth
-                else:
-                    counter = counter+1
-            except Exception:
-                pass
-        stats.append(
-            {
-                "year-month": prevYearMonth,
-                "like": counter
-            }
-        )
+        stats = monthStatsExport(likeComments, "likesOnComments")
         if len(stats)==0:
             return JsonResponse({"error": "No like found"}, status=402)
         return JsonResponse(stats, safe=False, status=200)
@@ -1229,35 +1121,7 @@ def UsersMonthlyLikesStats(request, id):
         try:
             user = User.objects.get(id=id)
             likes = Like.objects.filter(owner=user).order_by('date')
-            stats = []
-            prevYearMonth = str(likes[0].date).split('-')[0]+'-'+str(likes[0].date).split('-')[1]
-            counter = -1
-            for like in likes:
-                try:
-                    date = str(like.date).split('-')
-                    yearMonth = date[0]+'-'+date[1]
-                    if yearMonth!=prevYearMonth and prevYearMonth!='':
-                        stats.append(
-                            {
-                                "year-month": prevYearMonth,
-                                "likes": counter
-                            }
-                        )
-                        counter=0
-                        prevYearMonth = yearMonth
-                    elif prevYearMonth=="":
-                        counter=0
-                        prevYearMonth = yearMonth
-                    else:
-                        counter = counter+1
-                except Exception:
-                    pass
-            stats.append(
-                {
-                    "year-month": prevYearMonth,
-                    "likes": counter
-                }
-            )
+            stats = monthStatsExport(likes, "likes")
             if len(stats)==0:
                 return JsonResponse({"error": "No likes found"}, status=402)
             return JsonResponse(stats, safe=False, status=200)
@@ -1320,35 +1184,7 @@ def UsersMonthlyCommentsStats(request, id):
         try:
             user = User.objects.get(id=id)
             comments = Comment.objects.filter(owner=user).order_by('date')
-            stats = []
-            prevYearMonth = str(comments[0].date).split('-')[0]+'-'+str(comments[0].date).split('-')[1]
-            counter = -1
-            for comment in comments:
-                try:
-                    date = str(comment.date).split('-')
-                    yearMonth = date[0]+'-'+date[1]
-                    if yearMonth!=prevYearMonth and prevYearMonth!='':
-                        stats.append(
-                            {
-                                "year-month": prevYearMonth,
-                                "comments": counter
-                            }
-                        )
-                        counter=0
-                        prevYearMonth = yearMonth
-                    elif prevYearMonth=="":
-                        counter=0
-                        prevYearMonth = yearMonth
-                    else:
-                        counter = counter+1
-                except Exception:
-                    pass
-            stats.append(
-                {
-                    "year-month": prevYearMonth,
-                    "comments": counter
-                }
-            )
+            stats = monthStatsExport(comments, "comments")
             if len(stats)==0:
                 return JsonResponse({"error": "No comments found"}, status=402)
             return JsonResponse(stats, safe=False, status=200)
@@ -1386,35 +1222,7 @@ def UsersMonthlyPostsStats(request, id):
         try:
             user = User.objects.get(id=id)
             posts = Post.objects.filter(owner=user).order_by('date')
-            stats = []
-            prevYearMonth = str(posts[0].date).split('-')[0]+'-'+str(posts[0].date).split('-')[1]
-            counter = -1
-            for post in posts:
-                try:
-                    date = str(post.date).split('-')
-                    yearMonth = date[0]+'-'+date[1]
-                    if yearMonth!=prevYearMonth and prevYearMonth!='':
-                        stats.append(
-                            {
-                                "year-month": prevYearMonth,
-                                "posts": counter
-                            }
-                        )
-                        counter=0
-                        prevYearMonth = yearMonth
-                    elif prevYearMonth=="":
-                        counter=0
-                        prevYearMonth = yearMonth
-                    else:
-                        counter = counter+1
-                except Exception:
-                    pass
-            stats.append(
-                {
-                    "year-month": prevYearMonth,
-                    "posts": counter
-                }
-            )
+            stats = monthStatsExport(posts, "posts")
             if len(stats)==0:
                 return JsonResponse({"error": "No posts found"}, status=402)
             return JsonResponse(stats, safe=False, status=200)
@@ -1452,35 +1260,7 @@ def UsersMonthlyFollowsStats(request, id):
         try:
             user = User.objects.get(id=id)
             follows = Follow.objects.filter(following=user).order_by('date')
-            stats = []
-            prevYearMonth = str(follows[0].date).split('-')[0]+'-'+str(follows[0].date).split('-')[1]
-            counter = -1
-            for follow in follows:
-                try:
-                    date = str(follow.date).split('-')
-                    yearMonth = date[0]+'-'+date[1]
-                    if yearMonth!=prevYearMonth and prevYearMonth!='':
-                        stats.append(
-                            {
-                                "year-month": prevYearMonth,
-                                "follows": counter
-                            }
-                        )
-                        counter=0
-                        prevYearMonth = yearMonth
-                    elif prevYearMonth=="":
-                        counter=0
-                        prevYearMonth = yearMonth
-                    else:
-                        counter = counter+1
-                except Exception:
-                    pass
-            stats.append(
-                {
-                    "year-month": prevYearMonth,
-                    "follows": counter
-                }
-            )
+            stats = monthStatsExport(follows, "follows")
             if len(stats)==0:
                 return JsonResponse({"error": "No follows found"}, status=402)
             return JsonResponse(stats, safe=False, status=200)
