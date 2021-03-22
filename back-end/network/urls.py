@@ -3,13 +3,22 @@ from django.urls import path
 
 from . import views
 
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+    TokenVerifyView,
+)
 urlpatterns = [
+    path('Jwitter/api/token', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('Jwitter/api/token/refresh', TokenRefreshView.as_view(), name='token_refresh'),
+    path('Jwitter/api/token/verify', TokenVerifyView.as_view(), name='token_verify'),
     path("Jwitter/api/logged", views.isLogged, name="isLogged"),
     path("Jwitter/api/login", views.login_view, name="login"),
     path("Jwitter/api/logout", views.logout_view, name="logout"),
     path("Jwitter/api/register", views.register, name="register"),
     path("Jwitter/api/users", views.AllUsers, name="AllUsers"),
     path("Jwitter/api/users/<int:id>", views.OneUser, name="OneUser"),
+    path("Jwitter/api/usersmod/<int:id>", views.OneUserMod, name="OneUserMod"),
     path("Jwitter/api/users/<int:id>/posts", views.UserPosts, name="UserPosts"),
     path("Jwitter/api/users/<int:id>/follows", views.UserFollows, name="UserFollows"),
     path("Jwitter/api/users/<int:id>/follows/count", views.UserFollowsCount, name="UserFollowsCount"),
@@ -37,6 +46,7 @@ urlpatterns = [
     path("Jwitter/api/countries/<int:id>", views.OneCountry, name="OneCountry"),
     path("Jwitter/api/posts", views.AllPosts, name="AllPosts"),
     path("Jwitter/api/posts/<int:id>", views.OnePost, name="OnePost"),
+    path("Jwitter/api/postsmod/<int:id>", views.OnePostMod, name="OnePostMod"),
     path("Jwitter/api/posts/<int:id>/likes", views.OnePostLikes, name="OnePostLikes"),
     path("Jwitter/api/posts/<int:id>/likes/sample", views.OnePostLikesSample, name="OnePostLikesSample"),
     path("Jwitter/api/posts/<int:id>/comments", views.OnePostComments, name="OnePostComments"),

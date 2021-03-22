@@ -7,7 +7,7 @@
 #### Users
 * GET   /users?start=index1&end=index2              :       returns all users with index1<user_index<index2 (or 400, 402)
 * GET   /users/{id}                                 :       returns user with the given id (or 400) 
-* PUT   /users/{id}                                 :       updates username and/or moto (or 400) 
+* PUT   /usersmod/{id}                                 :       updates username and/or moto (or 400) 
 * GET   /users/{id}/activity                            :       returns the activity (likes, comments, likes on comments, posts, follows) of user with given id (or 400, or 402)
 * GET   /users/{id}/notifications                       :       returns the (unread) notifications (likes & comments on my posts, likes on my comments, new followers) of user with given id (or 400, or 402)
 * PUT   /users/{id}/allread                             :       marks all the unread notifications of user with given id to seen
@@ -28,7 +28,7 @@
 * GET   /posts?start=index1&end=index2                      :       return all posts with index1<post_index<index2 (or 400, or 402)
 * POST  /posts                                              :       posts a new post (or 400)
 * GET   /posts/{id}                                         :       returns post with given id (or 400)
-* PUT   /posts/{id}                                         :       updates text of post with given id (or 400)
+* PUT   /postsmod/{id}                                         :       updates text of post with given id (or 400)
 * DEL   /posts/{id}                                         :       deletes post with given id (or 400)
 * GET   /users/{id}/posts?start=index1&end=index2           :       returns all posts by the user with the given id and index1<post_index<index2 (or 400 or 402)
 * GET   /users/{id}/follows/posts?start=index1&end=index2   :       returns all posts by the followed users from the user with the given id and index1<post_index<index2 (or 400 or 402)

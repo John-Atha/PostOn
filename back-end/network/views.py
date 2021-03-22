@@ -2,13 +2,9 @@ import json
 from itertools import chain
 from operator import attrgetter
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
 from django.http import JsonResponse
-from django.shortcuts import render
-from django.urls import reverse
-
+from rest_framework.decorators import api_view
 from .models import *
 from datetime import datetime
 
@@ -79,6 +75,7 @@ def dailyStatsExport(items):
             result[day] = result[day]+1
         return result
 
+@api_view(['Get'])
 def isLogged(request):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
@@ -116,64 +113,69 @@ def register(request):
         password = request.POST["password"]
         confirmation = request.POST["confirmation"]
         if password != confirmation:
-            return render(request, "network/register.html", {
-                "message": "Passwords must match."
-            })
+            return JsonResponse({"error": "Passwords are different"}, status=400)
 
         # Attempt to create new user
         try:
             user = User.objects.create_user(username, email, password)
             user.save()
         except IntegrityError:
-            return render(request, "network/register.html", {
-                "message": "Username already taken."
-            })
+            return JsonResponse({"error": "Username already taken"}, status=400)
         login(request, user)
-        return HttpResponseRedirect(reverse("index"))
+        return JsonResponse({"message": "Registered successfully", "id": user.id}, status=200)
     else:
-        return render(request, "network/register.html")
+        return JsonResponse({"error": "Only POST method is allowed"}, status=400)
 
 def OneUser(request, id):
-    if request.method!="GET" and request.method!="PUT":
-        return JsonResponse({"error": "Only GET and PUT methods are allowed."}, status=400)
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed."}, status=400)
+    else:
+        try:
+            user = User.objects.get(id=id)
+        except User.DoesNotExist:
+            return JsonResponse({"error": f"Invalid user id ({id})."}, status=400)   
+        return JsonResponse(user.serialize())
+
+@api_view(['Get', 'Put'])
+def OneUserMod(request, id):
+    if request.method!="PUT":
+        return JsonResponse({"error": "Only PUT method is allowed."}, status=400)
     else:
         try:
             user = User.objects.get(id=id)
         except User.DoesNotExist:
             return JsonResponse({"error": f"Invalid user id ({id})."}, status=400) 
-        if request.user.is_authenticated:
-            if request.method=="PUT":
-                if request.user.is_authenticated:
-                    smthNew = False
-                    data = json.loads(request.body)
-                    #if request.PUT["photo"] is not None:
-                    #    smthNew = True
-                    #    user.photo = request.PUT["photo"]
-                    #else:
-                    if data.get("username") is not None:  
-                        user.username = data["username"]
-                        smthNew = True
-                    if data.get("moto") is not None:
-                        user.moto = data["moto"]
-                        smthNew = True
-                    if smthNew:
-                        try:
-                            user.save()
-                            return JsonResponse(user.serialize(), status=200)
-                        except:
-                            return JsonResponse({"error": "Username probably already exists"} , status=400)
-                    else:
-                        return JsonResponse({"error": "Give new username and/or moto field"} , status=400)                
-                else:
-                    return JsonResponse({"error": "Authentication required"}, status=401)
-            elif request.method=="GET":
-                return JsonResponse(user.serialize())
+        #if JWTAuthentication.authenticate(self, request) is not None:
+        if request.user==user:
+            #if request.user.is_authenticated:
+            smthNew = False
+            data = json.loads(request.body)
+            #if request.PUT["photo"] is not None:
+            #    smthNew = True
+            #    user.photo = request.PUT["photo"]
+            #else:
+            if data.get("username") is not None:  
+                user.username = data["username"]
+                smthNew = True
+            if data.get("moto") is not None:
+                user.moto = data["moto"]
+                smthNew = True
+            if smthNew:
+                try:
+                    user.save()
+                    return JsonResponse(user.serialize(), status=200)
+                except:
+                    return JsonResponse({"error": "Username probably already exists"} , status=400)
+            else:
+                return JsonResponse({"error": "Give new username and/or moto field"} , status=400)                
+            #else:
+            #    return JsonResponse({"error": "Authentication required"}, status=401)
         else:
-            return JsonResponse({"error": "Authentication required"}, status=401)
+            return JsonResponse({"error": "Only the owner of the profile can update it"}, status=401)
 
 def AllUsers(request):
     if request.method!="GET":
-        return JsonResponse({"error": "GET request required."}, status=400)
+        return JsonResponse({"error": "Only GET method is allowed."}, status=400)
     else:
         users = User.objects.all()
         result = paginate(request.GET.get("start"), request.GET.get("end"), users)
@@ -213,16 +215,25 @@ def AllCountries(request):
         return JsonResponse({"error": "Only GET method is allowed."}, status=400)
 
 def OnePost(request, id):
-    if request.method!="GET" and request.method!="PUT" and request.method!="DELETE":
-        return JsonResponse({"error": "Only GET and PUT methods are allowed."}, status=400)
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed."}, status=400)
     else:
         try:
             post = Post.objects.get(id=id)
         except Post.DoesNotExist:
             return JsonResponse({"error": f"Invalid post id ({id})."}, status=400)
-        if request.method=="GET":
-            return(JsonResponse(post.serialize(), status=200))
-        elif request.method=="PUT":
+        return(JsonResponse(post.serialize(), status=200))
+
+@api_view(['Put', 'Delete'])
+def OnePostMod(request, id):
+    if request.method!="PUT" and request.method!="DELETE":
+        return JsonResponse({"error": "Only PUT and DEL methods are allowed."}, status=400)
+    else:
+        try:
+            post = Post.objects.get(id=id)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": f"Invalid post id ({id})."}, status=400)
+        if request.method=="PUT":
             if request.user.is_authenticated:
                 if request.user==post.owner:
                     data = json.loads(request.body)
@@ -237,8 +248,15 @@ def OnePost(request, id):
             else:
                 return JsonResponse({"error": "Authentication required"}, status=401) 
         elif request.method=="DELETE":
-            post.delete()
-            return JsonResponse({"message": "Post deleted successfully"}, status=200)
+            if request.user.is_authenticated:
+                if request.user==post.owner:
+                    post.delete()
+                    return JsonResponse({"message": "Post deleted successfully"}, status=200)
+                else:
+                    return JsonResponse({"error": "Only the post's owner can delete it"}, status=400)
+            else:
+                return JsonResponse({"error": "Authentication required"}, status=401) 
+
 
 def UserPosts(request, id):
     if request.method!="GET":
