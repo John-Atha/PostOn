@@ -750,8 +750,8 @@ def AllLikeComments(request):
         return JsonResponse({"error": "Only GET and POST methods are allowed"}, status=400)
 
 def OneLikeComment(request, id):
-    if request.method!="GET" and request.method!="DELETE" and request.method!="PUT":
-        return JsonResponse({"error": "Only GET, PUT, DEL methods are allowed"}, status=400)
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         try:
             likeComment= LikeComment.objects.get(id=id)
@@ -759,28 +759,41 @@ def OneLikeComment(request, id):
             return JsonResponse({"error": "Invalid like on comment id"}, status=400)
         if request.method=="GET":
             return JsonResponse(likeComment.serialize(), status=200)
-        elif request.method=="DELETE":
-            if request.user==likeComment.owner:
-                likeComment.delete()
-                return JsonResponse({"message": "Like on comment deleted succesfully"}, status=200)
-            else:
-                return JsonResponse({"error": "You cannot un-like a comment on behalf of another user"}, status=400)
-        elif request.method=="PUT":
-            if request.user==likeComment.comment.owner:
 
-                data = json.loads(request.body)
-                if data.get("seen") is not None:
-                    if data["seen"]==True or data["seen"]==False:
-                        likeComment.seen=data["seen"]
-                        likeComment.save()
-                        return JsonResponse(likeComment.serialize(), status=200)
-                    else:
-                        return JsonResponse({"error": "'seen' field can have only True/False value"}, status=400)
+@api_view(['Put', 'Delete'])
+def OneLikeCommentMod(request, id):
+    if request.method!="DELETE" and request.method!="PUT":
+        return JsonResponse({"error": "Only PUT and DEL methods are allowed"}, status=400)
+    else:
+        try:
+            likeComment= LikeComment.objects.get(id=id)
+        except LikeComment.DoesNotExist:
+            return JsonResponse({"error": "Invalid like on comment id"}, status=400)
+        if request.user.is_authenticated:
+            if request.method=="DELETE":
+                if request.user==likeComment.owner:
+                    likeComment.delete()
+                    return JsonResponse({"message": "Like on comment deleted succesfully"}, status=200)
                 else:
-                    print(data.get("seen"))
-                    return JsonResponse({"error": "Only updatable field is the 'seen' field"}, status=400)
-            else:
-                return JsonResponse({"error": "You cannot mark a comment as seen / not seen on behalf of its writer"}, status=400)
+                    return JsonResponse({"error": "You cannot un-like a comment on behalf of another user"}, status=400)
+            elif request.method=="PUT":
+                if request.user==likeComment.comment.owner:
+
+                    data = json.loads(request.body)
+                    if data.get("seen") is not None:
+                        if data["seen"]==True or data["seen"]==False:
+                            likeComment.seen=data["seen"]
+                            likeComment.save()
+                            return JsonResponse(likeComment.serialize(), status=200)
+                        else:
+                            return JsonResponse({"error": "'seen' field can have only True/False value"}, status=400)
+                    else:
+                        print(data.get("seen"))
+                        return JsonResponse({"error": "Only updatable field is the 'seen' field"}, status=400)
+                else:
+                    return JsonResponse({"error": "You cannot mark a comment as seen / not seen on behalf of its writer"}, status=400)
+        else:
+            return JsonResponse({"error": "Authentication required"}, status=401)
 
 def UserLikesComments(request, id):
     if request.method=="GET":

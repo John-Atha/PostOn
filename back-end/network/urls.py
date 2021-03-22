@@ -62,6 +62,7 @@ urlpatterns = [
     path("Jwitter/api/comments/<int:id>/likes/sample", views.OneCommentLikesSample, name="OneCommentLikesSample"),
     path("Jwitter/api/likecomments", views.AllLikeComments, name="AllLikeComments"),
     path("Jwitter/api/likecomments/<int:id>", views.OneLikeComment, name="OneLikeComment"),
+    path("Jwitter/api/likecommentsmod/<int:id>", views.OneLikeCommentMod, name="OneLikeCommentMod"),
     path("Jwitter/api/stats/likes/monthly", views.MonthlyLikesStats, name="MonthlyLikesStats"),
     path("Jwitter/api/stats/likes/daily", views.DailyLikesStats, name="DailyLikesStats"),
     path("Jwitter/api/stats/comments/monthly", views.MonthlyCommentsStats, name="MonthlyCommentsStats"),
