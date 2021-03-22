@@ -849,7 +849,7 @@ def UserActivity(request, id):
 
 def UserNotifications(request, id):
     if request.method!="GET":
-        return JsonResponse({"error": "Only GET method allowed"}, status=400)
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         try:
             user = User.objects.get(id=id)
@@ -875,6 +875,7 @@ def UserNotifications(request, id):
         except TypeError:
             return result
 
+@api_view(['Put'])
 def UserAllAsRead(request, id):
     if request.method!="PUT":
         return JsonResponse({"error": "Only PUT method allowed"}, status=400)
@@ -883,25 +884,31 @@ def UserAllAsRead(request, id):
             user = User.objects.get(id=id)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
-        follows = Follow.objects.filter(followed=user).filter(seen=False)
-        myComments = Comment.objects.filter(owner=user)
-        myPosts = Post.objects.filter(owner=user)
-        LikesComments = LikeComment.objects.filter(comment__in=myComments).filter(seen=False)
-        LikesPosts = Like.objects.filter(post__in=myPosts).filter(seen=False)
-        CommentsPosts = Comment.objects.filter(post__in=myPosts).filter(seen=False)
-        for foll in follows:
-            foll.seen=True
-            foll.save()
-        for like in LikesComments:
-            like.seen=True
-            like.save()
-        for like in LikesPosts:
-            like.seen=True
-            like.save()
-        for comm in CommentsPosts:
-            comm.seen=True
-            comm.save()
-        return JsonResponse({"message": "Everything marked as read successfully"}, status=200)
+        if request.user.is_authenticated:
+            if request.user==user:
+                follows = Follow.objects.filter(followed=user).filter(seen=False)
+                myComments = Comment.objects.filter(owner=user)
+                myPosts = Post.objects.filter(owner=user)
+                LikesComments = LikeComment.objects.filter(comment__in=myComments).filter(seen=False)
+                LikesPosts = Like.objects.filter(post__in=myPosts).filter(seen=False)
+                CommentsPosts = Comment.objects.filter(post__in=myPosts).filter(seen=False)
+                for foll in follows:
+                    foll.seen=True
+                    foll.save()
+                for like in LikesComments:
+                    like.seen=True
+                    like.save()
+                for like in LikesPosts:
+                    like.seen=True
+                    like.save()
+                for comm in CommentsPosts:
+                    comm.seen=True
+                    comm.save()
+                return JsonResponse({"message": "Everything marked as read successfully"}, status=200)
+            else:
+                return JsonResponse({"error": "You cannot mark as a read another user's notifications"}, status=400)
+        else:
+            return JsonResponse({"error": "Authentication required"}, status=401)
 
 def MonthlyLikesStats(request):
     if request.method!="GET":
