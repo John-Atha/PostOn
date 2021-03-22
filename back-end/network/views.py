@@ -1181,150 +1181,193 @@ def OneCommentLikesSample(request, id):
                 }
                 return JsonResponse(answer, status=200)
 
+@api_view(['Get'])
 def UserFollowsCount(request, id):
     if request.method=="GET":
         try:
             user = User.objects.get(id=id)
-            follows = user.follows.count()
-            return JsonResponse({"follows": follows}, safe=False, status=200)
+            if request.user==user:
+                follows = user.follows.count()
+                return JsonResponse({"follows": follows}, safe=False, status=200)
+            else:
+                return JsonResponse({"error": "You cannot see the stats of another user"}, status=400)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
     else:
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
 
+@api_view(['Get'])
 def UserFollowersCount(request, id):
     if request.method=="GET":
         try:
             user = User.objects.get(id=id)
-            follows = user.followers.count()
-            return JsonResponse({"followers": follows}, safe=False, status=200)
+            if request.user==user:
+                follows = user.followers.count()
+                return JsonResponse({"followers": follows}, safe=False, status=200)
+            else:
+                return JsonResponse({"error": "You cannot see the stats of another user"}, status=400)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
     else:
         return JsonResponse({"error": "Only GET method is allowed"}, status=400) 
 
+@api_view(['Get'])
 def UserFollowsPosts(request, id):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         try:
             user = User.objects.get(id=id)
-            follows = Follow.objects.filter(following=user)
-            userFollows = follows.values_list('followed')
-            posts = Post.objects.filter(owner__in=userFollows)
-            result = paginate(request.GET.get("start"), request.GET.get("end"), posts)
-            try:
-                posts = result
-                if len(posts)==0:
-                    return JsonResponse({"error": "No posts found."}, status=402)
-                else:
-                    return JsonResponse([post.serialize() for post in posts], safe=False, status=200)
-            except TypeError:
-                return result        
+            if request.user==user:
+                follows = Follow.objects.filter(following=user)
+                userFollows = follows.values_list('followed')
+                posts = Post.objects.filter(owner__in=userFollows)
+                result = paginate(request.GET.get("start"), request.GET.get("end"), posts)
+                try:
+                    posts = result
+                    if len(posts)==0:
+                        return JsonResponse({"error": "No posts found."}, status=402)
+                    else:
+                        return JsonResponse([post.serialize() for post in posts], safe=False, status=200)
+                except TypeError:
+                    return result   
+            else:
+                return JsonResponse({"error": "You cannot see the stats of another user"}, status=400)   
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
 
+@api_view(['Get'])
 def UsersMonthlyLikesStats(request, id):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         try:
             user = User.objects.get(id=id)
-            likes = Like.objects.filter(owner=user).order_by('date')
-            stats = monthStatsExport(likes, "likes")
-            if len(stats)==0:
-                return JsonResponse({"error": "No likes found"}, status=402)
-            return JsonResponse(stats, safe=False, status=200)
-
+            if request.user==user:
+                likes = Like.objects.filter(owner=user).order_by('date')
+                stats = monthStatsExport(likes, "likes")
+                if len(stats)==0:
+                    return JsonResponse({"error": "No likes found"}, status=402)
+                return JsonResponse(stats, safe=False, status=200)
+            else:
+                return JsonResponse({"error": "You cannot see the stats of another user"}, status=400)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
 
+@api_view(['Get'])
 def UsersDailyLikesStats(request, id):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         try:
             user = User.objects.get(id=id)
-            likes = Like.objects.filter(owner=user)
-            likesCount = dailyStatsExport(likes)
-            return JsonResponse(likesCount, safe=False, status=200)
+            if request.user==user:
+                likes = Like.objects.filter(owner=user)
+                likesCount = dailyStatsExport(likes)
+                return JsonResponse(likesCount, safe=False, status=200)
+            else:
+                return JsonResponse({"error": "You cannot see the stats of another user"}, status=400)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
 
+@api_view(['Get'])
 def UsersDailyCommentsStats(request, id):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         try:
             user = User.objects.get(id=id)
-            comments = Comment.objects.filter(owner=user)
-            commentsCount = dailyStatsExport(comments)
-            return JsonResponse(commentsCount, safe=False, status=200)
+            if request.user==user:
+                comments = Comment.objects.filter(owner=user)
+                commentsCount = dailyStatsExport(comments)
+                return JsonResponse(commentsCount, safe=False, status=200)
+            else:
+                return JsonResponse({"error": "You cannot see the stats of another user"}, status=400)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
         
+@api_view(['Get'])
 def UsersMonthlyCommentsStats(request, id):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         try:
             user = User.objects.get(id=id)
-            comments = Comment.objects.filter(owner=user).order_by('date')
-            stats = monthStatsExport(comments, "comments")
-            if len(stats)==0:
-                return JsonResponse({"error": "No comments found"}, status=402)
-            return JsonResponse(stats, safe=False, status=200)
+            if request.user==user:
+                comments = Comment.objects.filter(owner=user).order_by('date')
+                stats = monthStatsExport(comments, "comments")
+                if len(stats)==0:
+                    return JsonResponse({"error": "No comments found"}, status=402)
+                return JsonResponse(stats, safe=False, status=200)
+            else:
+                return JsonResponse({"error": "You cannot see the stats of another user"}, status=400)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
 
+@api_view(['Get'])
 def UsersDailyPostsStats(request, id):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         try:
             user = User.objects.get(id=id)
-            posts = Post.objects.filter(owner=user)
-            postsCount = dailyStatsExport(posts)
-            return JsonResponse(postsCount, safe=False, status=200)
+            if request.user==user:
+                posts = Post.objects.filter(owner=user)
+                postsCount = dailyStatsExport(posts)
+                return JsonResponse(postsCount, safe=False, status=200)
+            else:
+                return JsonResponse({"error": "You cannot see the stats of another user"}, status=400)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
 
+@api_view(['Get'])
 def UsersMonthlyPostsStats(request, id):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         try:
             user = User.objects.get(id=id)
-            posts = Post.objects.filter(owner=user).order_by('date')
-            stats = monthStatsExport(posts, "posts")
-            if len(stats)==0:
-                return JsonResponse({"error": "No posts found"}, status=402)
-            return JsonResponse(stats, safe=False, status=200)
+            if request.user==user:
+                posts = Post.objects.filter(owner=user).order_by('date')
+                stats = monthStatsExport(posts, "posts")
+                if len(stats)==0:
+                    return JsonResponse({"error": "No posts found"}, status=402)
+                return JsonResponse(stats, safe=False, status=200)
+            else:
+                return JsonResponse({"error": "You cannot see the stats of another user"}, status=400)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
 
+@api_view(['Get'])
 def UsersDailyFollowsStats(request, id):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         try:
             user = User.objects.get(id=id)
-            follows = Follow.objects.filter(following=user).all()
-            followsCount = dailyStatsExport(follows)
-            return JsonResponse(followsCount, safe=False, status=200)
+            if request.user==user:
+                follows = Follow.objects.filter(following=user).all()
+                followsCount = dailyStatsExport(follows)
+                return JsonResponse(followsCount, safe=False, status=200)
+            else:
+                return JsonResponse({"error": "You cannot see the stats of another user"}, status=400)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
 
+@api_view(['Get'])
 def UsersMonthlyFollowsStats(request, id):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         try:
             user = User.objects.get(id=id)
-            follows = Follow.objects.filter(following=user).order_by('date')
-            stats = monthStatsExport(follows, "follows")
-            if len(stats)==0:
-                return JsonResponse({"error": "No follows found"}, status=402)
-            return JsonResponse(stats, safe=False, status=200)
+            if request.user==user:
+                follows = Follow.objects.filter(following=user).order_by('date')
+                stats = monthStatsExport(follows, "follows")
+                if len(stats)==0:
+                    return JsonResponse({"error": "No follows found"}, status=402)
+                return JsonResponse(stats, safe=False, status=200)
+            else:
+                return JsonResponse({"error": "You cannot see the stats of another user"}, status=400)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
