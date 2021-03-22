@@ -31,13 +31,17 @@ class User(AbstractUser):
             photoVal = self.photo.path
         else:
             photoVal = None
+        if self.country:
+            country1 = self.country.serialize()
+        else:
+            country1 = None
         return{
             "id": self.id,
             "username": self.username,
             "email": self.email,
             "moto": self.moto,
             "photo": photoVal,
-            "country": self.country.serialize(),
+            "country": country1,
         }
 
 class Post(models.Model):
