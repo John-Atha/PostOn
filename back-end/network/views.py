@@ -590,7 +590,12 @@ def AllComments(request):
                 return JsonResponse([comment.serialize() for comment in comments], safe=False, status=200)
         except TypeError:
             return result
-    elif request.method=="POST":
+    else:
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+
+@api_view(['Post'])
+def AllCommentsMod(request):
+    if request.method=="POST":
         data = json.loads(request.body)
         if data.get("owner") is not None:
             if data.get("owner").get("id") is not None:
@@ -634,19 +639,28 @@ def AllComments(request):
         else:
             return JsonResponse({"error": "Invalid owner given."}, status=400)
     else:
-        return JsonResponse({"error": "Only GET and POST methods are allowed"}, status=400)
+        return JsonResponse({"error": "Only POST method is allowed"}, status=400)
 
 def OneComment(request, id):
-    if request.method!="GET" and request.method!="DELETE" and request.method!="PUT":
-        return JsonResponse({"error": "Only GET, PUT and DEL methods are allowed"}, status=400)
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         try:
             comment= Comment.objects.get(id=id)
         except Comment.DoesNotExist:
             return JsonResponse({"error": "Invalid comment id"}, status=400)
-        if request.method=="GET":
-            return JsonResponse(comment.serialize(), status=200)
-        elif request.method=="DELETE":
+        return JsonResponse(comment.serialize(), status=200)
+
+@api_view(['Delete', 'Put'])
+def OneCommentMod(request, id):
+    if request.method!="DELETE" and request.method!="PUT":
+        return JsonResponse({"error": "Only PUT and DEL methods are allowed"}, status=400)
+    else:
+        try:
+            comment= Comment.objects.get(id=id)
+        except Comment.DoesNotExist:
+            return JsonResponse({"error": "Invalid comment id"}, status=400)
+        if request.method=="DELETE":
             if request.user==comment.owner:
                 comment.delete()
                 return JsonResponse({"message": "Comment deleted succesfully"}, status=200)
