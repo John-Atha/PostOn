@@ -335,15 +335,24 @@ def AllPostsMod(request):
     else:
         return JsonResponse({"error": "Only POST method is allowed."}, status=400)
 
-
 def AllFollows(request):
     if request.method=="GET":
         AllFollows = Follow.objects.order_by('-date')
-        if len(AllFollows)==0:
-            return JsonResponse({"error": "No follows found"}, status=402)
-        else:
-            return JsonResponse([follow.serialize() for follow in AllFollows], safe=False, status=200)
-    elif request.method=="POST":
+        result = paginate(request.GET.get("start"), request.GET.get("end"), AllFollows)
+        try:
+            AllFollows = result
+            if len(AllFollows)==0:
+                return JsonResponse({"error": "No follows found"}, status=402)
+            else:
+                return JsonResponse([follow.serialize() for follow in AllFollows], safe=False, status=200)
+        except TypeError:
+            return result
+    else:
+        return JsonResponse({"error": "Only GET method is allowed."}, status=400)
+
+@api_view(['Post'])
+def AllFollowsMod(request):
+    if request.method=="POST":
         data = json.loads(request.body)
         if data.get("following") is not None:
             if data.get("following").get("id") is not None:
@@ -375,11 +384,11 @@ def AllFollows(request):
         else:
             return JsonResponse({"error": "Invalid follower user given"}, status=400)
     else:
-        return JsonResponse({"error": f"Only GET, POST and DEL methods are allowed."}, status=400)
+        return JsonResponse({"error": "Only POST method is allowed."}, status=400)
 
 def OneFollow(request, id):
-    if request.method!="GET" and request.method!="DELETE" and request.method!="PUT":
-        return JsonResponse({"error": "Only GET, PUT and DEL methods are allowed."}, status=400)
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed."}, status=400)
     else:
         try:
             follow = Follow.objects.get(id=id)
@@ -387,14 +396,24 @@ def OneFollow(request, id):
             return JsonResponse({"error": "Invalid follow id"}, status=400)
         if request.method=="GET":
             return JsonResponse(follow.serialize(), status=200)
-        elif request.method=="DELETE":
+
+@api_view(['Delete', 'Put']) 
+def OneFollowMod(request, id):
+    if request.method!="DELETE" and request.method!="PUT":
+        return JsonResponse({"error": "Only PUT and DEL methods are allowed."}, status=400)
+    else:
+        try:
+            follow = Follow.objects.get(id=id)
+        except Follow.DoesNotExist:
+            return JsonResponse({"error": "Invalid follow id"}, status=400)
+        if request.method=="DELETE":
             if request.user==follow.following:
                 follow.delete()
                 return JsonResponse({"message": "Follow deleted successfully"}, status=200)
             else:
                 return JsonResponse({"error": "Only the follower can delete the follow"}, status=400)
         elif request.method=="PUT":
-            if request.user==follow.following:
+            if request.user==follow.followed:
                 data = json.loads(request.body)
                 if data.get("seen") is not None:
                     if data["seen"]==True or data["seen"]==False:
@@ -407,7 +426,7 @@ def OneFollow(request, id):
                     print(data.get("seen"))
                     return JsonResponse({"error": "Only updatable field is the 'seen' field"}, status=400)
             else:
-                return JsonResponse({"error": "Only the follower can mark the follow as 'seen'"}, status=400)       
+                return JsonResponse({"error": "Only the followed can mark the follow as 'seen'"}, status=400)       
  
 def UserFollows(request, id):
     if request.method=="GET":

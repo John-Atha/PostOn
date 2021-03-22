@@ -39,10 +39,10 @@
 
 #### Follows
 * GET   /follows                                      :       returns all follows (or 402)
-* POST  /follows                                      :       posts a new follow (or 400)
+* POST  /followsmod                                   :       posts a new follow (or 400)
 * GET   /follows/{id}                                 :       returns follow with the given id (or 400)
-* DEL   /follows/{id}                                 :       deletes the follow with the given id (or 400)
-* PUT   /follows/{id}                                 :       updates the follow with the given id to seen / not seen (or 400)
+* DEL   /followsmod/{id}                                 :       deletes the follow with the given id (or 400)
+* PUT   /followsmod/{id}                                 :       updates the follow with the given id to seen / not seen (or 400)
 * GET   /users/{id}/follows?start=index1&end=index2   :       returns the follows that have this user as a follower with index1<follow_index<index2 (or 402 or 400)
 * GET   /users/{id}/follows/count                     :       returns the #follows that have this user as a follower (or 400)
 * GET   /users/{id}/followers?start=index1&end=index2 :       returns the follows that have this user as followed with index1<follow_index<index2 (or 402 or 400)
