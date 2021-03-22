@@ -2,7 +2,7 @@ import React from "react";
 import "./Login.css"; 
 import MyNavbar from './MyNavbar';
 
-import {login} from './api';
+import {login, isLogged} from './api';
 
 class Login extends React.Component {
 
@@ -19,6 +19,24 @@ class Login extends React.Component {
         this.handleInput = this.handleInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
+
+    componentDidMount() {
+        isLogged()
+        .then(response => {
+            console.log(response);
+            this.setState({
+                userId: response.data.id,
+                logged: true,
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            this.setState({
+                logged: false,
+            })
+        })
+    }
+
 
     handleInput = (event) => {
         const name = event.target.name;
@@ -69,29 +87,34 @@ class Login extends React.Component {
     }
 
     render() {
-        return(
-            <div className="login-page">
-                <MyNavbar />
-                <div className="login-box-container center-content margin-top-small">
-                    <h3>Welcome</h3>
-                    <h4 className="margin-top-small">Login</h4>
-                    <div className="error-message">{this.state.error}</div>
-                    {!this.state.error && this.state.success && (
-                        <div className="success-message">{this.state.success}</div>
-                    )}
-                    <form className="login-form center-content margin-top-smaller">
-                        <input className="login-input margin-top-smaller" type="text" name="username" value={this.state.username} placeholder="Username..."     onChange={this.handleInput} onKeyUp={this.submitActivate}/>
-                        <input className="login-input margin-top-smaller" type="password" name="password" value={this.state.password} placeholder="Password..." onChange={this.handleInput} onKeyUp={this.submitActivate}/>
-                    </form>
-                    <button className="my-button submit-button margin-top-smaller" onClick={this.handleSubmit}>Submit</button>
-                    <div className="register-choice-container margin-top-small">
-                        <div>First time here?</div>
-                        <a href="/register">Create an account</a>
+        if (this.state.logged) {
+            window.location.href = "/";
+        }
+        else {
+            return(
+                <div className="login-page">
+                    <MyNavbar />
+                    <div className="login-box-container center-content margin-top-small">
+                        <h3>Welcome</h3>
+                        <h4 className="margin-top-small">Login</h4>
+                        <div className="error-message">{this.state.error}</div>
+                        {!this.state.error && this.state.success && (
+                            <div className="success-message">{this.state.success}</div>
+                        )}
+                        <form className="login-form center-content margin-top-smaller">
+                            <input className="login-input margin-top-smaller" type="text" name="username" value={this.state.username} placeholder="Username..."     onChange={this.handleInput}/>
+                            <input className="login-input margin-top-smaller" type="password" name="password" value={this.state.password} placeholder="Password..." onChange={this.handleInput}/>
+                        </form>
+                        <button className="my-button submit-button margin-top-smaller" onClick={this.handleSubmit}>Submit</button>
+                        <div className="register-choice-container margin-top-small">
+                            <div>First time here?</div>
+                            <a href="/register">Create an account</a>
+                        </div>
+                    
                     </div>
-                
                 </div>
-            </div>
-        )
+            )
+        }
     }
 
 }
