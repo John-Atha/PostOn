@@ -1,5 +1,10 @@
 :root {
-    --color2: rgb(244, 208, 141);
+    --color2: #FED486;
+    --colorback: white;
+}
+
+body {
+    background-color: var(--colorback);
 }
 
 .center-content {
@@ -7,6 +12,13 @@
     justify-content: center;
     align-items: center;
     text-align: center;
+}
+
+.blur {
+    background: inherit;
+    box-shadow: 0 8px 32px 0 var(--colorback);
+    backdrop-filter: blur( 4px );
+    -webkit-backdrop-filter: blur( 4px );
 }
 
 .margin-top {
@@ -24,8 +36,35 @@
     border-radius: 8px;
     border: none;
 }
-
 .my-button:hover {
     transform: scale(1.1);
     -webkit-transform: scale(1.1);
+}
+
+.error-message {
+    color: red;
+}
+.success-message {
+    color: green;
+}
+
+.flex-item {
+    flex-grow: 1;
+    height: min-content;
+    width: 300px !important;
+}
+
+.flex-item-expand {
+    flex-basis: 100%;
+    height: min-content;
+}
+
+.flex-item-expand2 {
+    flex-basis: 70%;
+    height: min-content;
+}
+
+.flex-layout {
+    display: flex;
+    flex-flow: row wrap;
 }
