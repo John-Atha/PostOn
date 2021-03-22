@@ -1,7 +1,7 @@
 import React from "react";
 import "./Register.css";
 import MyNavbar from './MyNavbar';
-
+import logo from './images/logo.png'
 import {register, login, isLogged} from './api';
 
 class Register extends React.Component {
@@ -119,23 +119,28 @@ class Register extends React.Component {
             return(
                 <div className="login-page">
                     <MyNavbar />
-                    <div className="login-box-container center-content margin-top-small">
-                        <h3>Welcome</h3>
-                        <h4 className="margin-top-small">Register</h4>
-                        <div className="error-message">{this.state.error}</div>
-                        {!this.state.error && this.state.success && (
-                            <div className="success-message">{this.state.success}</div>
-                        )}
-                        <form className="login-form center-content margin-top-smaller">
-                            <input className="login-input margin-top-smaller" type="text" name="username" value={this.state.username} placeholder="Username..."     onChange={this.handleInput}/>
-                            <input className="login-input margin-top-smaller" type="email" name="email" value={this.state.email} placeholder="Email..."     onChange={this.handleInput}/>
-                            <input className="login-input margin-top-smaller" type="password" name="password" value={this.state.password} placeholder="Password..." onChange={this.handleInput}/>
-                            <input className="login-input margin-top-smaller" type="password" name="passwordConfirm" value={this.state.passwordConfirm} placeholder="Confirm Password..." onChange={this.handleInput}/>
-                        </form>
-                        <button className="my-button submit-button margin-top-smaller" onClick={this.handleSubmit}>Submit</button>
-                        <div className="register-choice-container margin-top-small">
-                            <div>Already have an account?</div>
-                            <a href="/login">Log in</a>
+                    <div className="login-main-page flex-layout center-content">
+                        <div classname="logo-container flex-item">
+                                <img src={logo} />
+                        </div>
+                        <div className="login-box-container flex-item blur center-content margin-top-small">
+                            <h3>Welcome</h3>
+                            <h4 className="margin-top-small">Register</h4>
+                            <div className="error-message">{this.state.error}</div>
+                            {!this.state.error && this.state.success && (
+                                <div className="success-message">{this.state.success}</div>
+                            )}
+                            <form className="login-form center-content margin-top-smaller">
+                                <input className="login-input margin-top-smaller" type="text" name="username" value={this.state.username} placeholder="Username..."     onChange={this.handleInput}/>
+                                <input className="login-input margin-top-smaller" type="email" name="email" value={this.state.email} placeholder="Email..."     onChange={this.handleInput}/>
+                                <input className="login-input margin-top-smaller" type="password" name="password" value={this.state.password} placeholder="Password..." onChange={this.handleInput}/>
+                                <input className="login-input margin-top-smaller" type="password" name="passwordConfirm" value={this.state.passwordConfirm} placeholder="Confirm Password..." onChange={this.handleInput}/>
+                            </form>
+                            <button className="my-button submit-button margin-top-smaller" onClick={this.handleSubmit}>Submit</button>
+                            <div className="register-choice-container margin-top-small">
+                                <div>Already have an account?</div>
+                                <a href="/login">Log in</a>
+                            </div>
                         </div>
                     </div>
                 </div>

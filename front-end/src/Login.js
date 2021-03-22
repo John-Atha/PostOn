@@ -1,7 +1,7 @@
 import React from "react";
 import "./Login.css"; 
 import MyNavbar from './MyNavbar';
-
+import logo from './images/logo.png' 
 import {login, isLogged} from './api';
 
 class Login extends React.Component {
@@ -94,23 +94,28 @@ class Login extends React.Component {
             return(
                 <div className="login-page">
                     <MyNavbar />
-                    <div className="login-box-container center-content margin-top-small">
-                        <h3>Welcome</h3>
-                        <h4 className="margin-top-small">Login</h4>
-                        <div className="error-message">{this.state.error}</div>
-                        {!this.state.error && this.state.success && (
-                            <div className="success-message">{this.state.success}</div>
-                        )}
-                        <form className="login-form center-content margin-top-smaller">
-                            <input className="login-input margin-top-smaller" type="text" name="username" value={this.state.username} placeholder="Username..."     onChange={this.handleInput}/>
-                            <input className="login-input margin-top-smaller" type="password" name="password" value={this.state.password} placeholder="Password..." onChange={this.handleInput}/>
-                        </form>
-                        <button className="my-button submit-button margin-top-smaller" onClick={this.handleSubmit}>Submit</button>
-                        <div className="register-choice-container margin-top-small">
-                            <div>First time here?</div>
-                            <a href="/register">Create an account</a>
+                    <div className="login-main-page flex-layout center-content">
+                        <div classname="logo-container flex-item">
+                            <img src={logo} />
                         </div>
-                    
+                        <div className="login-box-container flex-item blur center-content margin-top-small">
+                            <h3>Welcome</h3>
+                            <h4 className="margin-top-small">Login</h4>
+                            <div className="error-message">{this.state.error}</div>
+                            {!this.state.error && this.state.success && (
+                                <div className="success-message">{this.state.success}</div>
+                            )}
+                            <form className="login-form center-content margin-top-smaller">
+                                <input className="login-input margin-top-smaller" type="text" name="username" value={this.state.username} placeholder="Username..."     onChange={this.handleInput}/>
+                                <input className="login-input margin-top-smaller" type="password" name="password" value={this.state.password} placeholder="Password..." onChange={this.handleInput}/>
+                            </form>
+                            <button className="my-button submit-button margin-top-smaller" onClick={this.handleSubmit}>Submit</button>
+                            <div className="register-choice-container margin-top-small">
+                                <div>First time here?</div>
+                                <a href="/register">Create an account</a>
+                            </div>
+                        
+                        </div>
                     </div>
                 </div>
             )

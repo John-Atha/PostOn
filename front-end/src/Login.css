@@ -1,23 +1,29 @@
-@media only screen and (max-width: 670px) {
+@media only screen and (max-width: 830px) {
     .login-box-container{
         width: 80%;
-        margin-left: 10%;
+        flex-basis: 100%;
     }
-
-}
-
-
-@media only screen and (min-width: 670px) {
-    .login-box-container{
-        width: 50%;
-        margin-left: 25%;
+    .login-main-page {
+        width: 100%;
+        margin-left: 0%;
+    }
+    .logo-container {
+        margin-right: 0%;
     }
 }
 
-@media only screen and (min-width: 670px) {
+
+@media only screen and (min-width: 830px) {
     .login-box-container{
-        width: 40%;
-        margin-left: 30%;
+        width: 300px; 
+        max-width: 500px;
+    }
+    .login-main-page {
+        width: 70%;
+        margin-left: 15%;
+    }
+    .logo-container {
+        margin-right: 10%;
     }
 }
 
