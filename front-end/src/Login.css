@@ -14,7 +14,12 @@
     }
 }
 
-
+@media only screen and (min-width: 670px) {
+    .login-box-container{
+        width: 40%;
+        margin-left: 30%;
+    }
+}
 
 .login-box-container {
     min-width: min-content;
@@ -29,7 +34,7 @@
     border: none;
     border-radius: 7px;
     width: 80%;
-    height: 40px;
+    height: 30px;
 }
 
 .login-input:hover, .login-input:focus {
