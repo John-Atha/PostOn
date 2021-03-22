@@ -15,6 +15,13 @@ class MyNavbar extends React.Component {
             logged: false,
             error: null,
         }
+        this.logout = this.logout.bind(this);
+    }
+
+    logout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refresh');
+        window.location.reload();
     }
 
     componentDidMount() {
@@ -52,19 +59,27 @@ class MyNavbar extends React.Component {
                     {this.state.logged &&
                         <Nav.Link href="#">{this.state.username}</Nav.Link>
                     }
-                    <Nav.Link href="#">Posts</Nav.Link>
+                    {!this.state.logged &&
+                        <Nav.Link href="#">Posts</Nav.Link>
+                    }
                     {this.state.logged &&
-                        <Nav.Link href="#">Following Posts</Nav.Link>
+                        <NavDropdown title="Posts" id="basic-nav-dropdown">
+                            <NavDropdown.Item href="#">All Posts</NavDropdown.Item>
+                            <NavDropdown.Item href="#">Following Posts</NavDropdown.Item>
+                        </NavDropdown>        
                     }   
-                    {this.state.logged &&
-                        <NavDropdown title="More" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="#">Notifications</NavDropdown.Item>
-                            <NavDropdown.Item href="#">Activity</NavDropdown.Item>
+                    {this.state.logged && 
+                        <NavDropdown title="Statistics" id="basic-nav-dropdown">
                             <NavDropdown.Item href="#">My statistics</NavDropdown.Item>
                             <NavDropdown.Item href="#">General statistics</NavDropdown.Item>
-                            <NavDropdown.Divider />
-                            <NavDropdown.Item href="#action/3.4">Logout</NavDropdown.Item>
+                            <NavDropdown.Item href="#">Activity</NavDropdown.Item>
                         </NavDropdown>
+                    }
+                    {this.state.logged && 
+                        <Nav.Link href="#">Notifications</Nav.Link>
+                    }
+                    {this.state.logged && 
+                        <Nav.Link href="#" onClick={this.logout}>Logout</Nav.Link>
                     }
                     {!this.state.logged &&
                         <Nav.Link href="/login">Login</Nav.Link>
@@ -78,7 +93,6 @@ class MyNavbar extends React.Component {
         )
     }
     
-
 }
 
 export default MyNavbar;
