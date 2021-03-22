@@ -257,7 +257,6 @@ def OnePostMod(request, id):
             else:
                 return JsonResponse({"error": "Authentication required"}, status=401) 
 
-
 def UserPosts(request, id):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
@@ -300,8 +299,12 @@ def AllPosts(request):
                 return JsonResponse([post.serialize() for post in posts], safe=False, status=200)
         except TypeError:
             return result
+    else:
+        return JsonResponse({"error": "Only GET method is allowed."}, status=400)
 
-    elif request.method=="POST":
+@api_view(['Post'])
+def AllPostsMod(request):
+    if request.method=="POST":
         if request.user.is_authenticated:
             data = json.loads(request.body)
             if data.get("owner") is not None:
@@ -330,7 +333,8 @@ def AllPosts(request):
         else:
             return JsonResponse({"error": "Authentication required"}, status=401) 
     else:
-        return JsonResponse({"error": "Only GET and POST methods are allowed."}, status=400)
+        return JsonResponse({"error": "Only POST method is allowed."}, status=400)
+
 
 def AllFollows(request):
     if request.method=="GET":

@@ -45,6 +45,7 @@ urlpatterns = [
     path("Jwitter/api/countries", views.AllCountries, name="AllCountries"),
     path("Jwitter/api/countries/<int:id>", views.OneCountry, name="OneCountry"),
     path("Jwitter/api/posts", views.AllPosts, name="AllPosts"),
+    path("Jwitter/api/postsmod", views.AllPostsMod, name="AllPostsMod"),
     path("Jwitter/api/posts/<int:id>", views.OnePost, name="OnePost"),
     path("Jwitter/api/postsmod/<int:id>", views.OnePostMod, name="OnePostMod"),
     path("Jwitter/api/posts/<int:id>/likes", views.OnePostLikes, name="OnePostLikes"),

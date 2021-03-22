@@ -26,7 +26,7 @@
 
 #### Posts
 * GET   /posts?start=index1&end=index2                      :       return all posts with index1<post_index<index2 (or 400, or 402)
-* POST  /posts                                              :       posts a new post (or 400)
+* POST  /postsmod                                              :       posts a new post (or 400)
 * GET   /posts/{id}                                         :       returns post with given id (or 400)
 * PUT   /postsmod/{id}                                         :       updates text of post with given id (or 400)
 * DEL   /posts/{id}                                         :       deletes post with given id (or 400)
