@@ -5,8 +5,9 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.css';
 
-import Home from './Home'
-import Login from './Login'
+import Home from './Home';
+import Login from './Login';
+import Register from './Register';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -17,6 +18,9 @@ ReactDOM.render(
         </Route>
         <Route path="/login" exact>
           <Login />
+        </Route>
+        <Route path="/register" exact>
+          <Register />
         </Route>
       </Switch>   
     </BrowserRouter>

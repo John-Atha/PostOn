@@ -32,3 +32,12 @@ export const login = (params) => {
         }
     })
 }
+
+export const register = (params) => {
+    const requestUrl = "/register";
+    return axios.post(requestUrl, params, {
+        headers: {
+            "Content-Type": "multipart/form-data",
+        }
+    })
+}
