@@ -7,7 +7,7 @@
 #### Users
 * GET   /users?start=index1&end=index2              :       returns all users with index1<user_index<index2 (or 400, 402)
 * GET   /users/{id}                                 :       returns user with the given id (or 400) 
-* PUT   /usersmod/{id}                                 :       updates username and/or moto (or 400) 
+* PUT   /users{id}/mod                                 :       updates username and/or moto (or 400 or 401) 
 * GET   /users/{id}/activity                            :       returns the activity (likes, comments, likes on comments, posts, follows) of user with given id (or 400, or 402)
 * GET   /users/{id}/notifications                       :       returns the (unread) notifications (likes & comments on my posts, likes on my comments, new followers) of user with given id (or 400, or 402)
 * PUT   /users/{id}/allread                             :       marks all the unread notifications of user with given id to seen
@@ -26,10 +26,10 @@
 
 #### Posts
 * GET   /posts?start=index1&end=index2                      :       return all posts with index1<post_index<index2 (or 400, or 402)
-* POST  /postsmod                                              :       posts a new post (or 400)
+* POST  /posts/mod                                              :       posts a new post (or 400 or 401)
 * GET   /posts/{id}                                         :       returns post with given id (or 400)
-* PUT   /postsmod/{id}                                         :       updates text of post with given id (or 400)
-* DEL   /postsmod/{id}                                         :       deletes post with given id (or 400)
+* PUT   /posts{id}/mod                                         :       updates text of post with given id (or 400 or 401)
+* DEL   /posts{id}/mod                                         :       deletes post with given id (or 400 or 401)
 * GET   /users/{id}/posts?start=index1&end=index2           :       returns all posts by the user with the given id and index1<post_index<index2 (or 400 or 402)
 * GET   /users/{id}/follows/posts?start=index1&end=index2   :       returns all posts by the followed users from the user with the given id and index1<post_index<index2 (or 400 or 402)
 * GET   /posts/{id}/likes?start=index1&end=index2   :       returns all likes on the post with the given id and index1<like_index<index2 (or 400 or 402)
@@ -39,10 +39,10 @@
 
 #### Follows
 * GET   /follows                                      :       returns all follows (or 402)
-* POST  /followsmod                                   :       posts a new follow (or 400)
+* POST  /follows/mod                                   :       posts a new follow (or 400 or 401)
 * GET   /follows/{id}                                 :       returns follow with the given id (or 400)
-* DEL   /followsmod/{id}                                 :       deletes the follow with the given id (or 400)
-* PUT   /followsmod/{id}                                 :       updates the follow with the given id to seen / not seen (or 400)
+* DEL   /follows{id}/mod                                 :       deletes the follow with the given id (or 400 or 401)
+* PUT   /follows{id}/mod                                 :       updates the follow with the given id to seen / not seen (or 400 or 401)
 * GET   /users/{id}/follows?start=index1&end=index2   :       returns the follows that have this user as a follower with index1<follow_index<index2 (or 402 or 400)
 * GET   /users/{id}/follows/count                     :       returns the #follows that have this user as a follower (or 400)
 * GET   /users/{id}/followers?start=index1&end=index2 :       returns the follows that have this user as followed with index1<follow_index<index2 (or 402 or 400)
@@ -50,23 +50,32 @@
 
 #### Likes
 * GET   /likes?start=index1&end=index2              :       returns all likes with index1<like_index<index2 (or 400, or 402)
-* POST  /likesmod                                   :       posts a new like (or 400)
+* POST  /likes/mod                                   :       posts a new like (or 400 or 401)
 * GET   /likes/{id}                                 :       returns the like with the given id (or 400)
-* DEL   /likesmod/{id}                                 :       deletes the like with the given id (or 400)
-* PUT   /likesmod/{id}                                 :       updates the like with the given id to seen / not seen (or 400)
+* DEL   /likes{id}/mod                                 :       deletes the like with the given id (or 400 or 401)
+* PUT   /likes{id}/mod                                 :       updates the like with the given id to seen / not seen (or 400 or 401)
 * GET   /users/{id}/likes?start=index1&end=index2   :       returns the likes that this user has posted with index1<like_index<index2 (or 402)
 * GET   /users/{id}/liked?start=index1&end=index2   :       returns the likes on posts of this owner with index1<like_index<index2 (or 402)
 
 #### Comments
 * GET   /comments?start=index1&end=index2              :       returns all comments with index1<like_index<index2 (or 400, or 402)
-* POST  /commentsmod                                   :       posts a new comment (or 400)
-* GET   /comments/{id}                                 :       returns the comment with the given id (or 400)
-* DEL   /commentsmod/{id}                                 :       deletes the comment with the given id (or 400)
-* PUT   /commentsmod/{id}                                 :       updates the comment with the given id to seen / not seen (or 400)
+* POST  /comments/mod                                   :       posts a new comment (or 400 or 401)
+* GET   /comments/{id}                                 :       returns the comment with the given id (or 400 or 401)
+* DEL   /comments/{id}/mod                                 :       deletes the comment with the given id (or 400 or 401)
+* PUT   /comments/{id}/mod                                 :       updates the comment with the given id to seen / not seen (or 400 or 401)
 * GET   /users/{id}/comments?start=index1&end=index2   :       returns the comments that this user has posted with index1<like_index<index2 (or 402)
 * GET   /users/{id}/commented?start=index1&end=index2  :       returns the comments on posts of this owner with index1<like_index<index2 (or 402)
 * GET   /comments/{id}/likes?start=index1&end=index2   :       returns all likes on the comment with the given id and index1<comment_index<index2 (or 400 or 402)
 * GET   /comments/{id}/likes/sample                    :       returns #likes and the first like on the comment with the given id (or 400 or 402)
+
+#### Likes on comments
+* GET   /likecomments?start=index1&end=index2              :       returns all comments with index1<like_index<index2 (or 400, or 402)
+* POST  /likecomments/mod                                   :       posts a new comment (or 400 or 401)
+* GET   /likecomments/{id}                                 :       returns the comment with the given id (or 400 or 401)
+* DEL   /likecomments/{id}/mod                                 :       deletes the comment with the given id (or 400 or 401)
+* PUT   /likecomments/{id}/mod                                 :       updates the comment with the given id to seen / not seen (or 400 or 401)
+* GET   /users/{id}/likescomments?start=index1&end=index2   :       returns the comments that this user has posted with index1<like_index<index2 (or 402)
+* GET   /users/{id}/likedcomments?start=index1&end=index2  :       returns the comments on posts of this owner with index1<like_index<index2 (or 402)
 
 #### General
 * POST  /login                                           :       logges user in (or 400)
