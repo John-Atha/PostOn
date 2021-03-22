@@ -886,6 +886,7 @@ def UserLikedComments(request, id):
     else:
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
 
+@api_view(['Get'])
 def UserActivity(request, id):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
@@ -894,24 +895,28 @@ def UserActivity(request, id):
             user = User.objects.get(id=id)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
-        comments = Comment.objects.filter(owner=user)
-        likes = Like.objects.filter(owner=user)
-        likeComments = LikeComment.objects.filter(owner=user)
-        posts = Post.objects.filter(owner=user)
-        activity = sorted(
-            chain(comments, likes, likeComments, posts),
-            key=attrgetter('date'),
-            reverse=True)
-        result = paginate(request.GET.get("start"), request.GET.get("end"), activity)
-        try:
-            activity = result
-            if len(activity)==0:
-                return JsonResponse({"error": "No activity found."}, status=402)
-            else:
-                return JsonResponse([act.serialize() for act in activity], safe=False, status=200)
-        except TypeError:
-            return result
+        if request.user==user:
+            comments = Comment.objects.filter(owner=user)
+            likes = Like.objects.filter(owner=user)
+            likeComments = LikeComment.objects.filter(owner=user)
+            posts = Post.objects.filter(owner=user)
+            activity = sorted(
+                chain(comments, likes, likeComments, posts),
+                key=attrgetter('date'),
+                reverse=True)
+            result = paginate(request.GET.get("start"), request.GET.get("end"), activity)
+            try:
+                activity = result
+                if len(activity)==0:
+                    return JsonResponse({"error": "No activity found."}, status=402)
+                else:
+                    return JsonResponse([act.serialize() for act in activity], safe=False, status=200)
+            except TypeError:
+                return result
+        else:
+            return JsonResponse({"error": "You cannot see the activity of another user"}, status=400)
 
+@api_view(['Get'])
 def UserNotifications(request, id):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
@@ -920,25 +925,28 @@ def UserNotifications(request, id):
             user = User.objects.get(id=id)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
-        follows = Follow.objects.filter(followed=user).filter(seen=False)
-        myComments = Comment.objects.filter(owner=user)
-        myPosts = Post.objects.filter(owner=user)
-        LikesComments = LikeComment.objects.filter(comment__in=myComments).filter(seen=False)
-        LikesPosts = Like.objects.filter(post__in=myPosts).filter(seen=False)
-        CommentsPosts = Comment.objects.filter(post__in=myPosts).filter(seen=False)
-        notifications = sorted(
-            chain(follows, LikesComments, LikesPosts, CommentsPosts),
-            key = attrgetter('date'),
-            reverse=True)
-        result = paginate(request.GET.get("start"), request.GET.get("end"), notifications)
-        try:
-            notifications = result
-            if len(notifications)==0:
-                return JsonResponse({"error": "No notifications found."}, status=402)
-            else:
-                return JsonResponse([notification.serialize() for notification in notifications], safe=False, status=200)
-        except TypeError:
-            return result
+        if request.user==user:
+            follows = Follow.objects.filter(followed=user).filter(seen=False)
+            myComments = Comment.objects.filter(owner=user)
+            myPosts = Post.objects.filter(owner=user)
+            LikesComments = LikeComment.objects.filter(comment__in=myComments).filter(seen=False)
+            LikesPosts = Like.objects.filter(post__in=myPosts).filter(seen=False)
+            CommentsPosts = Comment.objects.filter(post__in=myPosts).filter(seen=False)
+            notifications = sorted(
+                chain(follows, LikesComments, LikesPosts, CommentsPosts),
+                key = attrgetter('date'),
+                reverse=True)
+            result = paginate(request.GET.get("start"), request.GET.get("end"), notifications)
+            try:
+                notifications = result
+                if len(notifications)==0:
+                    return JsonResponse({"error": "No notifications found."}, status=402)
+                else:
+                    return JsonResponse([notification.serialize() for notification in notifications], safe=False, status=200)
+            except TypeError:
+                return result
+        else:
+            return JsonResponse({"error": "You cannot see the notifications of another user"}, status=400)
 
 @api_view(['Put'])
 def UserAllAsRead(request, id):
