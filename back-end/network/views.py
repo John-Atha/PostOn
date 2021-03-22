@@ -459,7 +459,12 @@ def AllLikes(request):
                 return JsonResponse([like.serialize() for like in likes], safe=False, status=200)
         except TypeError:
             return result
-    elif request.method=="POST":
+    else:
+        return JsonResponse({"error": "Only GET method is allowed"}, status=400)
+
+@api_view(['Post'])
+def AllLikesMod(request):
+    if request.method=="POST":
         data = json.loads(request.body)
         if data.get("owner") is not None:
             if data.get("owner").get("id") is not None:
@@ -496,7 +501,7 @@ def AllLikes(request):
         else:
             return JsonResponse({"error": "Invalid owner given."}, status=400)
     else:
-        return JsonResponse({"error": "Only GET and POST methods are allowed"}, status=400)
+        return JsonResponse({"error": "Only POST method is allowed"}, status=400)
 
 def OneLike(request, id):
     if request.method!="GET":

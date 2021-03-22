@@ -50,7 +50,6 @@
 
 #### Likes
 * GET   /likes?start=index1&end=index2              :       returns all likes with index1<like_index<index2 (or 400, or 402)
-* POST  /likes                                      :       posts a new like (or 400)
 * POST  /likesmod                                   :       posts a new like (or 400)
 * GET   /likes/{id}                                 :       returns the like with the given id (or 400)
 * DEL   /likesmod/{id}                                 :       deletes the like with the given id (or 400)
