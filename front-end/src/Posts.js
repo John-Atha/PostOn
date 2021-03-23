@@ -109,7 +109,6 @@ class Posts extends React.Component {
                 logged: response.data.authenticated,
                 userId: response.data.id,
             });
-            setTimeout(()=>this.askPosts(), 200);
         })
         .catch(err => {
             console.log(err);
@@ -117,12 +116,13 @@ class Posts extends React.Component {
                 error: err,
             })
         })
+        setTimeout(()=>this.askPosts(), 200);
     }
 
     render() {
         return(
-            <div className="posts-container">
-                Posts {this.state.start} to {this.state.end}:
+            <div className="posts-container padding-bottom">
+                <h3 className="center-text">Posts {this.state.start} to {this.state.end}:</h3>
                 {this.state.postsList.map((value, index) => {
                     return(
                         <OnePost key={index} id={value.id} owner={value.owner} text={value.text} media={value.media} date={value.date}/>

@@ -31,7 +31,15 @@ body {
 .margin-top-smaller {
     margin-top: 2%;
 }
-
+.margin-left {
+    margin-left: 2% !important;
+}
+.padding-bottom {
+    padding-bottom: 4%;
+}
+.center-text {
+    text-align: center;
+}
 .my-button {
     padding: 2%;
     border-radius: 8px;

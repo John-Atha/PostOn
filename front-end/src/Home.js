@@ -36,8 +36,8 @@ class Home extends React.Component {
         return (
             <div className="all-page">
                 <MyNavbar />
-                <div className="error-message">{this.state.error}</div>
-                <div className="success-message">{this.state.userId}</div>
+                <div className="error-message center-text">{this.state.error}</div>
+                <div className="success-message center-text">{this.state.userId}</div>
                 <Posts />
             </div>
         )
