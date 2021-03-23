@@ -1,6 +1,7 @@
 :root {
     --color2: #FED486;
-    --colorback: white;
+    --colorback: rgb(220, 220, 220);
+    --boxback: white;
 }
 
 body {

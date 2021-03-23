@@ -2,6 +2,7 @@ import React from "react";
 import "./Posts.css";
 
 import {isLogged, getPosts} from './api';
+import user_icon from './images/user-icon.png' 
 
 class OnePost extends React.Component {
     constructor(props) {
@@ -29,11 +30,24 @@ class OnePost extends React.Component {
     }
 
     render() {
+        let datetime = this.state.date.replace('T', ' ').replace('Z', '').split(' ')
+        let date = datetime[0]
+        let time = datetime[1]
+
         return(
             <div className="post-container">
-                <div className="post-owner">Owner: {this.state.owner.id}, {this.state.owner.username}</div>
-                <div className="post-text">Text: {this.state.text}</div>
-                <div className="post-date">Date: {this.state.date.replace('T', ' ').replace('Z', ' ')}</div>
+                    <div className="flex-layout">
+                        <div className="user-photo-container">
+                            <img className="user-photo" src={user_icon} alt="user profile picture" />
+                        </div>
+                        <div>
+                            <div className="owner-name">{this.state.owner.username}</div>
+                            <div className="post-date">{time}<br></br>{date}
+                        </div>
+                    </div>
+                </div>
+                <hr></hr>
+                <div className="post-text">{this.state.text}</div>
             </div>
         )
     }
@@ -49,7 +63,7 @@ class Posts extends React.Component {
             followingPosts: false,
             postsList: [],
             start: 1,
-            end: 2,
+            end: 10,
         }
         this.previousPage = this.previousPage.bind(this);
         this.nextPage = this.nextPage.bind(this);

@@ -1,12 +1,37 @@
 .post-container {
-    border: 1px solid grey;
-    border-radius: 5px;
+    border-radius: 7px;
     margin: 2% 1%;
     padding: 1%;
+    padding-bottom: 2%;
+    background-color: var(--boxback);
 }
 
 .pagi-button {
     margin-right: 2%;
     margin-left: 2%;
     background-color: var(--color2);
+}
+
+.owner-name {
+    font-weight: bold;
+}
+
+.post-date{
+    font-size: small;
+    margin-bottom: 2%;
+    line-height: 90%;
+}
+
+.user-photo-container {
+    height:50px;
+    width:50px;
+    border-radius: 50%;
+    padding: 0%;
+    margin-right: 0.5%;
+}
+
+.user-photo {
+    height: 100%;
+    width: 100%;
+    border-radius: 40%;
 }
