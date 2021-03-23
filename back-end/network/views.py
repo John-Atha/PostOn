@@ -1229,7 +1229,7 @@ def UserFollowsPosts(request, id):
             if request.user==user:
                 follows = Follow.objects.filter(following=user)
                 userFollows = follows.values_list('followed')
-                posts = Post.objects.filter(owner__in=userFollows)
+                posts = Post.objects.filter(owner__in=userFollows).order_by('-date')
                 result = paginate(request.GET.get("start"), request.GET.get("end"), posts)
                 try:
                     posts = result
