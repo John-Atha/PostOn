@@ -64,6 +64,7 @@ class Posts extends React.Component {
             postsList: [],
             start: 1,
             end: 10,
+            case: this.props.case,
         }
         this.previousPage = this.previousPage.bind(this);
         this.nextPage = this.nextPage.bind(this);
@@ -82,12 +83,18 @@ class Posts extends React.Component {
             start: this.state.start+10,
             end: this.state.end+10,
         }), 0)
-        setTimeout(() => this.askPosts(), 200);
+        window.scrollTo({
+            top:0,
+            left:0,
+            behavior:'smooth'
+        });
+        setTimeout(() => this.askPosts(), 1000);
     }
 
     askPosts = () => {
+        setTimeout(()=> {}, 2000)
         console.log(`I am asking posts from ${this.state.start} to ${this.state.end}`)
-        getPosts(this.state.start, this.state.end)
+        getPosts(this.state.start, this.state.end, this.state.case)
         .then(response => {
             console.log(response);
             this.setState({
@@ -122,16 +129,26 @@ class Posts extends React.Component {
     render() {
         return(
             <div className="posts-container padding-bottom">
-                <h3 className="center-text">Posts {this.state.start} to {this.state.end}:</h3>
-                {this.state.postsList.map((value, index) => {
+                {this.state.case==="all" &&
+                    <h3 className="center-text">All Posts</h3>
+                }
+                {this.state.case==="following" &&
+                    <h3 className="center-text">Following Posts</h3>
+                }
+                {this.state.postsList.length && this.state.postsList.map((value, index) => {
                     return(
                         <OnePost key={index} id={value.id} owner={value.owner} text={value.text} media={value.media} date={value.date}/>
                     )
                 })}
-                <div className="pagi-buttons-container flex-layout center-content">
-                    <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
-                    <button className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
-                </div>
+                {this.state.postsList.length &&
+                    <div className="pagi-buttons-container flex-layout center-content">
+                        <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
+                        <button className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
+                    </div>
+                }
+                {!this.state.postsList.length &&
+                    <div className="error-message margin-top center-text">Oops, no posts found..</div>
+                }
             </div>
         )
     }

@@ -38,7 +38,7 @@ class Home extends React.Component {
                 <MyNavbar />
                 <div className="error-message center-text">{this.state.error}</div>
                 <div className="success-message center-text">{this.state.userId}</div>
-                <Posts />
+                <Posts case="all"/>
             </div>
         )
     }

@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.css';
 
 import Home from './Home';
+import HomeFollowing from './HomeFollowing';
 import Login from './Login';
 import Register from './Register';
 
@@ -15,6 +16,9 @@ ReactDOM.render(
       <Switch>
         <Route path="/" exact>
           <Home />
+        </Route>
+        <Route path="/following" exact>
+          <HomeFollowing />
         </Route>
         <Route path="/login" exact>
           <Login />

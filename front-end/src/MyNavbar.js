@@ -60,12 +60,12 @@ class MyNavbar extends React.Component {
                         <Nav.Link href="#">{this.state.username}</Nav.Link>
                     }
                     {!this.state.logged &&
-                        <Nav.Link href="#">Posts</Nav.Link>
+                        <Nav.Link href="/">Posts</Nav.Link>
                     }
                     {this.state.logged &&
                         <NavDropdown title="Posts" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="#">All Posts</NavDropdown.Item>
-                            <NavDropdown.Item href="#">Following Posts</NavDropdown.Item>
+                            <NavDropdown.Item href="/">All Posts</NavDropdown.Item>
+                            <NavDropdown.Item href="/following">Following Posts</NavDropdown.Item>
                         </NavDropdown>        
                     }   
                     {this.state.logged && 

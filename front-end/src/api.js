@@ -42,15 +42,32 @@ export const register = (params) => {
     })
 }
 
-export const getPosts = (start, end) => {
-    const requestUrl = '/posts';
+export const getPosts = (start, end, how) => {
+    let headers = ""
+    if (token) {
+        var decoded = jwt_decode(token);
+        console.log(decoded);
+        var userId = decoded.user_id;
+        headers = {
+            "Authorization": "Bearer "+token,
+        }
+    }
+    else{
+        userId = 0
+    }
+    console.log(userId);
+    const requestUrl = how==="all" ? '/posts': `users/${userId}/follows/posts`;
+    console.log(requestUrl);
+    console.log(start);
+    console.log(end);
     const params = {
         "start": start, 
         "end": end,
     }
     return axios.get(requestUrl,
         {
-            params: params
+            headers: headers,
+            params: params,
         }
     )
 }
