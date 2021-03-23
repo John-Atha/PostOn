@@ -41,3 +41,16 @@ export const register = (params) => {
         }
     })
 }
+
+export const getPosts = (start, end) => {
+    const requestUrl = '/posts';
+    const params = {
+        "start": start, 
+        "end": end,
+    }
+    return axios.get(requestUrl,
+        {
+            params: params
+        }
+    )
+}

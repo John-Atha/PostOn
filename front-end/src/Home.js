@@ -3,13 +3,14 @@ import './Home.css';
 import MyNavbar from './MyNavbar'
 
 import {isLogged} from './api';
+import Posts from "./Posts";
 
 class Home extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             userId: null,
-            logged: null,
+            logged: false,
             error: null,
         }
     }
@@ -19,6 +20,7 @@ class Home extends React.Component {
         .then(response => {
             console.log(response)
             this.setState({
+                logged: response.data.authenticated,
                 userId: response.data.id,
             })
         })
@@ -36,6 +38,7 @@ class Home extends React.Component {
                 <MyNavbar />
                 <div className="error-message">{this.state.error}</div>
                 <div className="success-message">{this.state.userId}</div>
+                <Posts />
             </div>
         )
     }
