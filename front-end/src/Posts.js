@@ -68,27 +68,32 @@ class Posts extends React.Component {
         }
         this.previousPage = this.previousPage.bind(this);
         this.nextPage = this.nextPage.bind(this);
+        this.moveOn = this.moveOn.bind(this);
         this.askPosts = this.askPosts.bind(this);
     }
 
-    previousPage = () => {
-        setTimeout(this.setState({
-            start: this.state.start-10,
-            end: this.state.end-10,
-        }), 0)
-        setTimeout(() => this.askPosts(), 200);
-    }
-    nextPage = () => {
-        setTimeout(this.setState({
-            start: this.state.start+10,
-            end: this.state.end+10,
-        }), 0)
+    moveOn = () => {
         window.scrollTo({
             top:0,
             left:0,
             behavior:'smooth'
         });
         setTimeout(() => this.askPosts(), 1000);
+    }
+    
+    previousPage = () => {
+        setTimeout(this.setState({
+            start: this.state.start-10,
+            end: this.state.end-10,
+        }), 0)
+        this.moveOn();
+    }
+    nextPage = () => {
+        setTimeout(this.setState({
+            start: this.state.start+10,
+            end: this.state.end+10,
+        }), 0)
+        this.moveOn();
     }
 
     askPosts = () => {
@@ -143,7 +148,7 @@ class Posts extends React.Component {
                 {this.state.postsList.length &&
                     <div className="pagi-buttons-container flex-layout center-content">
                         <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
-                        <button className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
+                        <button disabled={!this.state.postsList.length} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
                     </div>
                 }
                 {!this.state.postsList.length &&
