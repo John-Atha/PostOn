@@ -23,8 +23,10 @@ class OnePost extends React.Component {
             likerSample: {
                 username: "Loading..."
             },
-            commenterSample: {
-                username: "Loading..."
+            commentSample: {
+                owner: {
+                    username: "Loading..."
+                },
             },
             likes_error: null,
             comments_error: null,
@@ -55,7 +57,7 @@ class OnePost extends React.Component {
             console.log(response);
             this.setState({
                 commentsNum: response.data.comments,
-                commenterSample: response.data["one-comment"].owner,
+                commentSample: response.data["one-comment"],
             })
         })
         .catch(err => {
@@ -113,7 +115,14 @@ class OnePost extends React.Component {
         let datetime = this.state.date.replace('T', ' ').replace('Z', '').split(' ')
         let date = datetime[0]
         let time = datetime[1]
-
+        let commentDatetime = null;
+        let commentDate = null;
+        let commentTime = null;
+        if (this.state.commentSample.owner.username!=="Loading...") {
+        commentDatetime = this.state.commentSample.date.replace('T', ' ').replace('Z', '').split(' ')
+        let commentDate = commentDatetime[0]
+        let commentTime = commentDatetime[1]
+        }
         return(
             <div className="post-container">
                     <div className="flex-layout">
@@ -144,19 +153,26 @@ class OnePost extends React.Component {
                     <div className="comments-sample flex-layout">
                         <img className="like-icon" src={comment_icon} alt="comment-icon"/>
                         {this.state.commentsNum>1 &&
-                            <div className="likes-sample-num">{this.state.commenterSample.username} and {this.state.commentsNum-1} more</div>
+                            <div className="likes-sample-num">{this.state.commentSample.owner.username} and {this.state.commentsNum-1} more</div>
                         }
                         {this.state.commentsNum===1 &&
-                            <div className="likes-sample-num">{this.state.commenterSample.username}</div>
+                            <div className="likes-sample-num">{this.state.commentSample.owner.username}</div>
                         }
                         {!this.state.commentsNum &&
                             <div className="likes-sample-num">0</div>
                         }
-                    </div>  
-                    <hr></hr>
+                    </div>
                 </div>
                 {this.state.likesShow &&
                     <Likes postId={this.state.id} userId={this.state.userId} logged={this.state.logged} />
+                }
+                <hr></hr>
+                {this.state.commentsNum &&
+                    <div className="sample-comment-box flex-item-expand">
+                        <div className="owner-name">{this.state.commentSample.owner.username}</div>
+                        <div className="text-comment">{this.state.commentSample.text}</div>
+                        <div className="post-date comment-date">{commentDatetime}</div>
+                    </div>
                 }
             </div>
         )

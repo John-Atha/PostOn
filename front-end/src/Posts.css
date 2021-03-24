@@ -88,3 +88,21 @@
     margin-right: 20px;
 }
 
+.text-comment {
+    margin: 2% 0%;
+}
+
+.sample-comment-box {
+    background-color: var(--colorback);
+    border-radius: 7px;
+    padding: 2%;
+    padding-bottom: 4%;
+    position: relative;
+}
+
+.comment-date {
+    position: absolute;
+    bottom: 1%;
+    margin-top: 5%;
+    margin-bottom: 0% !important;
+}
