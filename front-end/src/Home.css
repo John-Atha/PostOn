@@ -1,6 +1,6 @@
 :root {
     --color2: #FED486;
-    --colorback: rgb(220, 220, 220);
+    --colorback: rgb(235, 234, 234);
     --boxback: white;
 }
 
@@ -42,7 +42,7 @@ body {
     text-align: center;
 }
 .my-button {
-    padding: 2%;
+    padding: 1%;
     border-radius: 8px;
     border: none;
 }

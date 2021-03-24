@@ -8,6 +8,7 @@
 .un-follow-button {
     padding: 1%;
     width: 100%;
+    background-color: rgb(250, 249, 249);
 }
 
 .likes-pop-up {
