@@ -1,5 +1,16 @@
+@keyframes pop-up-appearing {
+    from {
+        opacity: 0%;
+    }
+    to {
+        opacity: 100%;
+    }
+}
+
 .one-like {
     margin: 1% 0%;
+    animation:
+        pop-up-appearing 1s;
 }
 
 .un-follow-button-container {
@@ -19,6 +30,8 @@
     min-height: min-content;
     border-radius: 7px;
     padding: 2% 1%;
+    animation:
+        pop-up-appearing 1s;
 }
 
 .close-button {
