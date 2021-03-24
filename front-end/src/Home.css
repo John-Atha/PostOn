@@ -64,6 +64,12 @@ body {
     width: 300px !important;
 }
 
+.flex-item-small {
+    flex-grow: 1;
+    height: min-content;
+    width: 100px !important;
+}
+
 .flex-item-expand {
     flex-basis: 100%;
     height: min-content;
@@ -77,4 +83,12 @@ body {
 .flex-layout {
     display: flex;
     flex-flow: row wrap;
+}
+
+.button-as-link {
+    background-color: inherit;
+    padding: 0%;
+    border: none;
+    text-decoration: underline;
+    color: blue;
 }

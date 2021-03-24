@@ -5,11 +5,14 @@ import {isLogged, getPosts, getPostsLikesSample, getPostsCommentsSample} from '.
 import user_icon from './images/user-icon.png'; 
 import like_icon from './images/like.png';
 import comment_icon from './images/comment.png';
+import Likes from './Likes';
 
 class OnePost extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            userId: this.props.userId,
+            logged: this.props.logged,
             id: this.props.id,
             owner: this.props.owner,
             media: this.props.media,
@@ -25,12 +28,26 @@ class OnePost extends React.Component {
             },
             likes_error: null,
             comments_error: null,
+            likesShow: false,
         }
         this.likesSample = this.likesSample.bind(this);
         this.commentsSample = this.commentsSample.bind(this);
         this.statsSample = this.statsSample.bind(this);
+        this.showLikes = this.showLikes.bind(this);
     }
 
+    showLikes = (event) => {
+        this.setState({
+            likesShow: true,
+        })
+        let box = event.target.parentElement.parentElement.parentElement;
+        console.log(box);
+        let children = box.children;
+        console.log(children);
+        if (children[5]) {
+            children[5].style.display = "block";
+        }
+    }
     commentsSample = () => {
         setTimeout(()=> {}, 2000);
         getPostsCommentsSample(this.state.id)
@@ -101,22 +118,21 @@ class OnePost extends React.Component {
             <div className="post-container">
                     <div className="flex-layout">
                         <div className="user-photo-container">
-                            <img className="user-photo" src={user_icon} alt="user profile picture" />
+                            <img className="user-photo" src={user_icon} alt="user profile" />
                         </div>
                         <div>
                             <div className="owner-name">{this.state.owner.username}</div>
-                            <div className="post-date">{time}<br></br>{date}
+                            <div className="post-date">{time}<br></br>{date}</div>
                         </div>
                     </div>
-                </div>
-                <hr></hr>
-                <div className="post-text">{this.state.text}</div>
-                <hr></hr>
-                <div className="stats-sample flex-layout">
+                    <hr></hr>
+                    <div className="post-text">{this.state.text}</div>
+                    <hr></hr>
+                    <div className="stats-sample flex-layout">
                     <div className="likes-sample flex-layout">
                         <img className="like-icon" src={like_icon} alt="like-icon"/>
                         {this.state.likesNum>1 &&
-                            <div className="liker-sample">{this.state.likerSample.username} and {this.state.likesNum-1} more</div>
+                            <button className="liker-sample button-as-link " onClick={this.showLikes}>{this.state.likerSample.username} and {this.state.likesNum-1} more</button>
                         }
                         {this.state.likesNum===1 &&
                             <div className="liker-sample">{this.state.likerSample.username}</div>
@@ -137,7 +153,11 @@ class OnePost extends React.Component {
                             <div className="likes-sample-num">0</div>
                         }
                     </div>  
+                    <hr></hr>
                 </div>
+                {this.state.likesShow &&
+                    <Likes postId={this.state.id} userId={this.state.userId} logged={this.state.logged} />
+                }
             </div>
         )
     }
@@ -232,7 +252,7 @@ class Posts extends React.Component {
                 }
                 {this.state.postsList.length && this.state.postsList.map((value, index) => {
                     return(
-                        <OnePost key={index} id={value.id} owner={value.owner} text={value.text} media={value.media} date={value.date}/>
+                        <OnePost key={index} id={value.id} owner={value.owner} text={value.text} media={value.media} date={value.date} userId={this.state.userId} logged={this.state.logged}/>
                     )
                 })}
                 {this.state.postsList.length &&
