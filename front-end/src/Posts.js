@@ -169,9 +169,22 @@ class OnePost extends React.Component {
                 <hr></hr>
                 {this.state.commentsNum &&
                     <div className="sample-comment-box flex-item-expand">
-                        <div className="owner-name">{this.state.commentSample.owner.username}</div>
+                        <div className="flex-layout">
+                            <div className="owner-name">{this.state.commentSample.owner.username}</div>
+                            <div className="post-date comment-date">at {commentDatetime}</div>
+                        </div>
                         <div className="text-comment">{this.state.commentSample.text}</div>
-                        <div className="post-date comment-date">{commentDatetime}</div>
+                        <img className="like-icon" src={like_icon} alt="like-icon"/>
+                        {this.state.likesNum>1 &&
+                            <button className="liker-sample button-as-link " onClick={this.showLikes}>{this.state.likerSample.username} and {this.state.likesNum-1} more</button>
+                        }
+                        {this.state.likesNum===1 &&
+                            <div className="liker-sample">{this.state.likerSample.username}</div>
+                        }
+                        {!this.state.likesNum &&
+                            <div className="liker-sample">0</div>
+                        }
+
                     </div>
                 }
             </div>
