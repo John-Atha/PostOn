@@ -1,8 +1,10 @@
 import React from "react";
 import "./Posts.css";
 
-import {isLogged, getPosts} from './api';
-import user_icon from './images/user-icon.png' 
+import {isLogged, getPosts, getPostsLikesSample, getPostsCommentsSample} from './api';
+import user_icon from './images/user-icon.png'; 
+import like_icon from './images/like.png';
+import comment_icon from './images/comment.png';
 
 class OnePost extends React.Component {
     constructor(props) {
@@ -13,7 +15,67 @@ class OnePost extends React.Component {
             media: this.props.media,
             text: this.props.text,
             date: this.props.date,
+            likesNum: 0,
+            commentsNum: 0,
+            likerSample: {
+                username: "Loading..."
+            },
+            commenterSample: {
+                username: "Loading..."
+            },
+            likes_error: null,
+            comments_error: null,
         }
+        this.likesSample = this.likesSample.bind(this);
+        this.commentsSample = this.commentsSample.bind(this);
+        this.statsSample = this.statsSample.bind(this);
+    }
+
+    commentsSample = () => {
+        setTimeout(()=> {}, 2000);
+        getPostsCommentsSample(this.state.id)
+        .then(response => {
+            console.log(response);
+            this.setState({
+                commentsNum: response.data.comments,
+                commenterSample: response.data["one-comment"].owner,
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            this.setState({
+                comments_error: "No comments found",
+            })
+        })
+
+    }
+
+    likesSample = () => {
+        setTimeout(()=> {}, 2000);
+        getPostsLikesSample(this.state.id)
+        .then(response => {
+            console.log(response);
+            this.setState({
+                likesNum: response.data.likes,
+                likerSample: response.data["one-liker"],
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            this.setState({
+                likes_error: "No likes found",
+            })
+        })
+
+    }
+
+    statsSample = () => {
+        this.likesSample();
+        this.commentsSample();
+    }
+
+    componentDidMount() {
+        this.statsSample();
     }
 
     componentDidUpdate(prevProps) {
@@ -26,6 +88,7 @@ class OnePost extends React.Component {
                 text: this.props.text,
                 date: this.props.date,    
             })
+            this.statsSample();
         }
     }
 
@@ -48,6 +111,33 @@ class OnePost extends React.Component {
                 </div>
                 <hr></hr>
                 <div className="post-text">{this.state.text}</div>
+                <hr></hr>
+                <div className="stats-sample flex-layout">
+                    <div className="likes-sample flex-layout">
+                        <img className="like-icon" src={like_icon} alt="like-icon"/>
+                        {this.state.likesNum>1 &&
+                            <div className="liker-sample">{this.state.likerSample.username} and {this.state.likesNum-1} more</div>
+                        }
+                        {this.state.likesNum===1 &&
+                            <div className="liker-sample">{this.state.likerSample.username}</div>
+                        }
+                        {!this.state.likesNum &&
+                            <div className="liker-sample">0</div>
+                        }
+                    </div>
+                    <div className="comments-sample flex-layout">
+                        <img className="like-icon" src={comment_icon} alt="comment-icon"/>
+                        {this.state.commentsNum>1 &&
+                            <div className="likes-sample-num">{this.state.commenterSample.username} and {this.state.commentsNum-1} more</div>
+                        }
+                        {this.state.commentsNum===1 &&
+                            <div className="likes-sample-num">{this.state.commenterSample.username}</div>
+                        }
+                        {!this.state.commentsNum &&
+                            <div className="likes-sample-num">0</div>
+                        }
+                    </div>  
+                </div>
             </div>
         )
     }

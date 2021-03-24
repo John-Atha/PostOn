@@ -71,3 +71,24 @@ export const getPosts = (start, end, how) => {
         }
     )
 }
+
+export const getPostLikes = (start, end, postId) => {
+    const params = {
+        "start": start,
+        "end": end,
+    }
+    const requestUrl = `/posts/${postId}/likes`;
+    return axios.get(requestUrl, {
+        params: params,
+    })
+}
+
+export const getPostsLikesSample = (postId) => {
+    const requestUrl = `posts/${postId}/likes/sample`;
+    return axios.get(requestUrl);
+}
+
+export const getPostsCommentsSample = (postId) => {
+    const requestUrl = `posts/${postId}/comments/sample`;
+    return axios.get(requestUrl);
+}

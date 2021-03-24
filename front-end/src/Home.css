@@ -6,6 +6,7 @@
 
 body {
     background-color: var(--colorback);
+    min-width: 300px;
 }
 
 .center-content {
