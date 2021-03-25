@@ -1,6 +1,8 @@
 import React from 'react';
 import './Explore.css'
 
+import user_icon from './images/user-icon.png'; 
+
 import {getUsers} from './api';
 
 
@@ -27,10 +29,13 @@ class OneUser extends React.Component {
         return (
             <div className="one-user-line flex-layout">
                 
-                <div className="username flex-item-small">
-                    {this.state.user.username}
+                <div className="flex-layout flex-item-small">
+                    <div className="user-photo-container-small">
+                            <img className="user-photo" src={user_icon} alt="user profile" />
+                    </div>
+                    <div className="owner-name">{this.state.user.username}</div>
                 </div>
-                <div className="un-follow-button-container flex-item-small">
+                <div className="flex-item-smaller">
                     <button className="my-button un-follow-button">Follow</button>
                 </div>
 

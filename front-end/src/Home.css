@@ -69,6 +69,11 @@ body {
     height: min-content;
     width: 100px !important;
 }
+.flex-item-smaller {
+    flex-grow: 1;
+    height: min-content;
+    width: 50px !important;
+}
 
 .flex-item-expand {
     flex-basis: 100%;

@@ -1,7 +1,7 @@
 import React from "react";
 import "./Posts.css";
 
-import {isLogged, getPosts, getLikesSample, getPostsCommentsSample, myLikes} from './api';
+import {isLogged, getPosts, getLikesSample, getPostsCommentsSample, myLikes, LikePost} from './api';
 import user_icon from './images/user-icon.png'; 
 import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
@@ -41,6 +41,20 @@ class OnePost extends React.Component {
         this.statsSample = this.statsSample.bind(this);
         this.showLikes = this.showLikes.bind(this);
         this.showHideComments = this.showHideComments.bind(this);
+        this.postLike = this.postLike.bind(this);
+    }
+
+    postLike = () => {
+        LikePost(this.state.userId, this.state.id)
+        .then(response => {
+            console.log(response);
+            this.setState({
+                liked: true,
+            })
+        })
+        .catch(err => {
+            console.log(err);
+        })
     }
 
     showLikes = (event) => {
@@ -171,7 +185,7 @@ class OnePost extends React.Component {
                 <div className="post-actions center-content flex-layout">
                     <div className="flex-item-small center-content">
                         {!this.state.liked &&
-                            <button className="likes-action flex-layout button-as-link">
+                            <button className="likes-action flex-layout button-as-link" onClick={this.postLike}>
                                 <img className="like-icon" src={like_icon} alt="like-icon"/>
                                 <div>Like</div>
                             </button>

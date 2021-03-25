@@ -173,3 +173,23 @@ export const getFollowersCount = (id) => {
         headers: headers,
     });
 }
+
+export const LikePost = (userId, postId) => {
+    const token = localStorage.getItem('token');
+    const requestUrl = `/likes/mod`;
+    const body = {
+        "owner": {
+            "id": userId,
+        },
+        "post": {
+            "id": postId,
+        },
+    }
+    const headers = {
+        "Content-Type": "multipart/form-data",
+        "Authorization": "Bearer "+token,
+    }
+    return axios.post(requestUrl, body, {
+        headers: headers
+    })
+}
