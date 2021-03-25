@@ -21,7 +21,7 @@ class MyNavbar extends React.Component {
     logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('refresh');
-        window.location.reload();
+        window.location.href="/";
     }
 
     componentDidMount() {
