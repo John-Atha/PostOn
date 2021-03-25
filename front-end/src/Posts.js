@@ -6,6 +6,7 @@ import user_icon from './images/user-icon.png';
 import like_icon from './images/like.png';
 import comment_icon from './images/comment.png';
 import Likes from './Likes';
+import Comments from './Comments';
 
 class OnePost extends React.Component {
     constructor(props) {
@@ -66,7 +67,6 @@ class OnePost extends React.Component {
                 comments_error: "No comments found",
             })
         })
-
     }
 
     likesSample = () => {
@@ -115,14 +115,6 @@ class OnePost extends React.Component {
         let datetime = this.state.date.replace('T', ' ').replace('Z', '').split(' ')
         let date = datetime[0]
         let time = datetime[1]
-        let commentDatetime = null;
-        let commentDate = null;
-        let commentTime = null;
-        if (this.state.commentSample.owner.username!=="Loading...") {
-        commentDatetime = this.state.commentSample.date.replace('T', ' ').replace('Z', '').split(' ')
-        let commentDate = commentDatetime[0]
-        let commentTime = commentDatetime[1]
-        }
         return(
             <div className="post-container">
                     <div className="flex-layout">
@@ -164,28 +156,19 @@ class OnePost extends React.Component {
                     </div>
                 </div>
                 {this.state.likesShow &&
-                    <Likes postId={this.state.id} userId={this.state.userId} logged={this.state.logged} />
+                    <Likes postId={this.state.id}
+                           userId={this.state.userId}
+                           logged={this.state.logged} 
+                    />
                 }
                 <hr></hr>
                 {this.state.commentsNum &&
-                    <div className="sample-comment-box flex-item-expand">
-                        <div className="flex-layout">
-                            <div className="owner-name">{this.state.commentSample.owner.username}</div>
-                            <div className="post-date comment-date">at {commentDatetime}</div>
-                        </div>
-                        <div className="text-comment">{this.state.commentSample.text}</div>
-                        <img className="like-icon" src={like_icon} alt="like-icon"/>
-                        {this.state.likesNum>1 &&
-                            <button className="liker-sample button-as-link " onClick={this.showLikes}>{this.state.likerSample.username} and {this.state.likesNum-1} more</button>
-                        }
-                        {this.state.likesNum===1 &&
-                            <div className="liker-sample">{this.state.likerSample.username}</div>
-                        }
-                        {!this.state.likesNum &&
-                            <div className="liker-sample">0</div>
-                        }
-
-                    </div>
+                    <Comments userId={this.state.userId}
+                              postId={this.state.id}
+                              logged={this.state.logged}
+                              how={"sample"}
+                              sample={this.state.commentSample}
+                    />
                 }
             </div>
         )

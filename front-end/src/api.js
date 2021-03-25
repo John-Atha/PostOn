@@ -92,3 +92,30 @@ export const getPostsCommentsSample = (postId) => {
     const requestUrl = `posts/${postId}/comments/sample`;
     return axios.get(requestUrl);
 }
+
+export const getPostsComments = (start, end, postId) => {
+    const params = {
+        "start": start,
+        "end": end,
+    }
+    const requestUrl = `/posts/${postId}/comments`;
+    return axios.get(requestUrl, {
+        params: params,
+    })
+}
+
+export const getCommentLikes = (start, end, commentId) => {
+    const params = {
+        "start": start,
+        "end": end,
+    }
+    const requestUrl = `/comments/${commentId}/likes`;
+    return axios.get(requestUrl, {
+        params: params,
+    })
+}
+
+export const getCommentLikesSample = (commentId) => {
+    const requestUrl = `comments/${commentId}/likes/sample`;
+    return axios.get(requestUrl);
+}

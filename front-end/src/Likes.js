@@ -3,7 +3,6 @@ import "./Likes.css";
 
 import {getPostLikes} from './api';
 
-
 class OneLike extends React.Component {
     constructor(props) {
         super(props);
