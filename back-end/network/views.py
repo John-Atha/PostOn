@@ -567,7 +567,7 @@ def UserLikes(request, id):
     if request.method=="GET":
         try:
             user = User.objects.get(id=id)
-            likes = user.likes.order_by('-date')
+            likes = user.likes.all().order_by('-post__date')
             result = paginate(request.GET.get("start"), request.GET.get("end"), likes)
             try:
                 likes = result
