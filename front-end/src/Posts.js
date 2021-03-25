@@ -223,10 +223,10 @@ class Posts extends React.Component {
             start: 1,
             end: 10,
             case: this.props.case,
-            likesStart: 1,
-            likesEnd: 20,
+            likesEnd: 1,
             likesList: [],
         }
+        this.likesIncr = 10;
         this.previousPage = this.previousPage.bind(this);
         this.nextPage = this.nextPage.bind(this);
         this.moveOn = this.moveOn.bind(this);
@@ -256,21 +256,32 @@ class Posts extends React.Component {
             end: this.state.end+10,
         }), 0)
         this.moveOn();
+        setTimeout(()=>this.askLikes(), 1500);
     }
 
     askLikes = () => {
-        myLikes(this.state.likesStart, this.state.likesEnd, this.state.userId)
+        this.state.postsList.map((value) => {
+            if (this.state.likesList.includes(value.id)) {
+                this.likesIncr++;
+            }
+        })
+        console.log(`I ask likes from ${this.state.likesEnd} to ${this.state.likesEnd+this.likesIncr+1}`);
+        myLikes(this.state.likesEnd, this.state.likesEnd+this.likesIncr, this.state.userId)
         .then(response => {
             console.log(response);
-            let tempLikesList = [];
+            let tempLikesList = this.state.likesList;
             response.data.forEach(el => {
-                tempLikesList.push(el.post.id);
+                if (!tempLikesList.includes(el.post.id)) {
+                    tempLikesList.push(el.post.id);
+                }
             })
             this.setState({
                 likesList: tempLikesList,
+                likesEnd: this.state.likesEnd+this.likesIncr,
             })
             console.log("likesList: ");
             console.log(tempLikesList);
+            this.likesIncr = 0;
         })
         .catch(err => {
             console.log(err);
