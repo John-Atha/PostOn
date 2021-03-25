@@ -73,11 +73,13 @@ class ProfileBox extends React.Component {
 
     render() {
         return (
-            <div className="profile-summary flex-item">
-                <div className="user-photo-container-small">
-                    <img className="user-photo" src={user_icon} alt="user profile" />
+            <div className="profile-box">
+                <div className="flex-layout">
+                    <div className="user-photo-container-small">
+                            <img className="user-photo" src={user_icon} alt="user profile" />
+                    </div>
+                    <div className="owner-name">{this.state.username}</div>
                 </div>
-                <div className="one-user-line">Username: {this.state.username}</div>
                 <div className="one-user-line">Email: {this.state.email}</div>
                 <div className="one-user-line">Followers: {this.state.followers}</div>
                 <div className="one-user-line">Follows: {this.state.follows}</div>
