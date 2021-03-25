@@ -4,6 +4,7 @@ import MyNavbar from './MyNavbar'
 
 import {isLogged} from './api';
 import Posts from "./Posts";
+import Explore from './Explore';
 
 class Home extends React.Component {
     constructor(props) {
@@ -36,9 +37,10 @@ class Home extends React.Component {
         return (
             <div className="all-page">
                 <MyNavbar />
-                <div className="error-message center-text">{this.state.error}</div>
-                <div className="success-message center-text">{this.state.userId}</div>
-                <Posts case="all"/>
+                <div className="main-home-container flex-layout">
+                    <Explore userId={this.state.userId} logged={this.state.logged} />
+                    <Posts case="all"/>
+                </div>
             </div>
         )
     }

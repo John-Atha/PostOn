@@ -142,10 +142,10 @@ class OnePost extends React.Component {
                     <div className="likes-sample">
                         <img className="like-icon" src={like_icon} alt="like-icon"/>
                         {this.state.likesNum>1 &&
-                            <button className="liker-sample button-as-link " onClick={this.showLikes}>{this.state.likerSample.username} and {this.state.likesNum-1} more</button>
+                            <button className="liker-sample button-as-link" onClick={this.showLikes}>{this.state.likerSample.username} and {this.state.likesNum-1} more</button>
                         }
                         {this.state.likesNum===1 &&
-                            <div className="liker-sample">{this.state.likerSample.username}</div>
+                            <button className="liker-sample button-as-link">{this.state.likerSample.username}</button>
                         }
                         {!this.state.likesNum &&
                             <div className="liker-sample">0</div>
@@ -280,9 +280,9 @@ class Posts extends React.Component {
 
     render() {
         return(
-            <div className="posts-container padding-bottom">
+            <div className="posts-container padding-bottom flex-item">
                 {this.state.case==="all" &&
-                    <h3 className="center-text">All Posts</h3>
+                    <h4 className="center-text">All Posts</h4>
                 }
                 {this.state.case==="following" &&
                     <h3 className="center-text">Following Posts</h3>

@@ -1,7 +1,6 @@
 @media only screen and (max-width: 630px) {
-    .post-container {
-        width: 98%;
-        margin: 2% 1%;
+    .explore-container {
+        display: none;
     }
     .likes-pop-up {
         width: 70%;
@@ -11,9 +10,8 @@
 
 
 @media only screen and (min-width: 630px) {
-    .post-container {
-        width: 70%;
-        margin: 2% 15%;
+    .explore-container {
+        display: block;
     }
     .likes-pop-up {
         width: 60%;
@@ -21,13 +19,17 @@
     }
 }
 
-
+.posts-container {
+    margin-top: 1%;
+}
 .post-container {
     border-radius: 7px;
     padding: 1% 3%;
     background-color: var(--boxback);
     min-height: min-content;
     position: relative;
+    width: 98%;
+    margin: 2% 1%;
 }
 
 .pagi-button {
@@ -81,10 +83,10 @@
 }
 .likes-sample {
     margin-right: 20px;
-    min-width: 180px;
+    width: 200px;
 }
 .comments-sample {
-    min-width: 180px;
+    width: 200px;
 }
 
 .post-actions {
@@ -104,3 +106,7 @@
     -webkit-transform: scale(1.1);
     text-decoration: none;
 }
+
+.liker-sample, .likes-sample-num {
+    font-size: small !important;
+} 

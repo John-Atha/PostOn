@@ -115,3 +115,14 @@ export const getPostsComments = (start, end, postId) => {
         params: params,
     })
 }
+
+export const getUsers = (start, end) => {
+    const requestUrl = "/users";
+    const params = {
+        "start": start,
+        "end": end,
+    };
+    return axios.get(requestUrl, {
+        params: params,
+    });
+}

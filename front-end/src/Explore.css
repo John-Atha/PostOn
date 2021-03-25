@@ -1,0 +1,17 @@
+.explore-container {
+    width: 230px;
+    background-color: var(--color2);
+    border-radius: 7px;
+    margin-left: 1%;
+    margin-top: 1%;
+    height: min-content;
+    padding-bottom: 1%;
+}
+
+.one-user-line {
+    margin:4% 0%;
+}
+
+.explore-container .pagi-buttons-container .pagi-button {
+    background-color: var(--colorback);
+}
