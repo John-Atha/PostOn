@@ -3,17 +3,21 @@ import './Comments.css';
 
 import user_icon from './images/user-icon.png'; 
 import like_icon from './images/like.png';
+import liked_icon from './images/liked.png';
 
 import Likes from './Likes'
-import {getPostsComments, getLikesSample} from './api';
+import {getPostsComments, getLikesSample, getLikes} from './api';
 
 
 class OneComment extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            userId: this.props.userId,
+            logged: this.props.logged,
             comment: this.props.comment,
             likesNum: 0,
+            liked: false,
             likerSample: {
                 username: "Loading..."
             },
@@ -23,6 +27,7 @@ class OneComment extends React.Component {
 
         this.likesSample = this.likesSample.bind(this);
         this.showLikes = this.showLikes.bind(this);
+        this.checkLiked = this.checkLiked.bind(this);
     }
 
     showLikes = (event) => {
@@ -55,15 +60,38 @@ class OneComment extends React.Component {
 
     }
 
-    componentDidMount() {
-        this.likesSample();
-    }
-
-    componentDidUpdate(prevProps) {
-        if (prevProps.comment.id!==this.props.comment.id) {
-            this.likesSample();
+    checkLiked = () => {
+        if (this.state.logged) {
+            setTimeout(()=> {}, 2000);
+            console.log(`I am asking likes from ${this.state.start} to ${this.state.end}.`);
+            getLikes(this.state.start, this.state.end, this.state.comment.id, "comment")
+            .then(response => {
+                console.log(response);
+                let tempLikersList = [];
+                response.data.forEach(like => {
+                    tempLikersList.push(like.owner.id);
+                })
+                this.setState({
+                    liked: tempLikersList.includes(this.state.userId),
+                    error: null,
+                })
+                console.log("liked"+ this.state.liked)
+            })
+            .catch(err => {
+                console.log(err);
+                this.setState({
+                    error: "No likes found."
+                })
+            })
         }
     }
+
+    componentDidMount() {
+        this.likesSample();
+        this.checkLiked();
+    }
+
+
 
 
     render() {
@@ -100,11 +128,18 @@ class OneComment extends React.Component {
                     />
                     }
                     <hr className="no-margin"></hr>
-                    <button className="likes-action flex-layout button-as-link">
-                                <img className="like-icon" src={like_icon} alt="like-icon"/>
-                                <div>Like</div>
-                    </button>
-
+                    {!this.state.liked &&
+                        <button className="likes-action flex-layout button-as-link">
+                                    <img className="like-icon" src={like_icon} alt="like-icon"/>
+                                    <div>Like</div>
+                        </button>
+                    }
+                    {this.state.liked &&
+                        <button className="likes-action flex-layout button-as-link">
+                                    <img className="like-icon" src={liked_icon} alt="like-icon"/>
+                                    <div>Liked</div>
+                        </button>
+                    }
 
                 </div>
             </div>
@@ -182,7 +217,7 @@ class Comments extends React.Component {
         if (this.state.how==="sample") {
             return (
                 <div className="all-comments-container center-content">
-                    <OneComment comment={this.state.commentSample}/>
+                    <OneComment userId={this.state.userId} logged={this.state.logged} comment={this.state.commentSample}/>
                     <button className="button-as-link center-text" onClick={this.seeMore}>Show more comments</button>
                 </div>
             )
@@ -194,7 +229,7 @@ class Comments extends React.Component {
                         this.state.commentsList.map((value, index) => {
                             //console.log(value);
                             return (
-                                <OneComment key={index} comment={value}/>
+                                <OneComment userId={this.state.userId} logged={this.state.logged} key={index} comment={value}/>
                             )
                         })
                     }
