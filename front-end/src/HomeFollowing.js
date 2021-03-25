@@ -4,6 +4,7 @@ import MyNavbar from './MyNavbar'
 
 import {isLogged} from './api';
 import Posts from "./Posts";
+import Explore from './Explore';
 
 class HomeFollowing extends React.Component {
     constructor(props) {
@@ -37,9 +38,10 @@ class HomeFollowing extends React.Component {
             return (
                 <div className="all-page">
                     <MyNavbar />
-                    <div className="error-message center-text">{this.state.error}</div>
-                    <div className="success-message center-text">{this.state.userId}</div>
-                    <Posts case="following"/>
+                    <div className="main-home-container flex-layout">
+                        <Explore userId={this.state.userId} logged={this.state.logged} />
+                        <Posts case="following"/>
+                    </div>
                 </div>
             )
         }

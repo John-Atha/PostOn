@@ -148,7 +148,7 @@ class OnePost extends React.Component {
                             <button className="liker-sample button-as-link">{this.state.likerSample.username}</button>
                         }
                         {!this.state.likesNum &&
-                            <div className="liker-sample">0</div>
+                            <button disabled={true} className="liker-sample button-as-link">0</button>
                         }
                     </div>
                     <div className="comments-sample">
@@ -160,7 +160,7 @@ class OnePost extends React.Component {
                             <button className="likes-sample-num button-as-link" onClick={this.showHideComments}>{this.state.commentSample.owner.username}</button>
                         }
                         {!this.state.commentsNum &&
-                            <div className="likes-sample-num">0</div>
+                            <button disabled={true} className="likes-sample-num button-as-link">0</button>
                         }
                     </div>
                 </div>
@@ -285,7 +285,7 @@ class Posts extends React.Component {
                     <h4 className="center-text">All Posts</h4>
                 }
                 {this.state.case==="following" &&
-                    <h3 className="center-text">Following Posts</h3>
+                    <h4 className="center-text">Following Posts</h4>
                 }
                 {this.state.postsList.length && this.state.postsList.map((value, index) => {
                     return(
