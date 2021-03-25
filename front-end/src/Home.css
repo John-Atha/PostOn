@@ -89,6 +89,12 @@ body {
     background-color: inherit;
     padding: 0%;
     border: none;
+    color: rgb(13, 13, 235);
+}
+
+.button-as-link:hover {
     text-decoration: underline;
-    color: blue;
+}
+.no-margin {
+    margin: 1%;
 }

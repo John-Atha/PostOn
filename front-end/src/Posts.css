@@ -3,9 +3,6 @@
         width: 98%;
         margin: 2% 1%;
     }
-    .comments-sample{
-        position: relative;
-    }
     .likes-pop-up {
         width: 70%;
         left: 15%;
@@ -17,9 +14,6 @@
     .post-container {
         width: 70%;
         margin: 2% 15%;
-    }
-    .comments-sample{
-        position: relative
     }
     .likes-pop-up {
         width: 60%;
@@ -79,6 +73,7 @@
 }
 .likes-sample-num  {
     margin-top:0.5%;
+    margin-left: 2%;
 }
 .like-icon {
     width: 30px;
@@ -86,4 +81,26 @@
 }
 .likes-sample {
     margin-right: 20px;
+    min-width: 180px;
+}
+.comments-sample {
+    min-width: 180px;
+}
+
+.post-actions {
+    width: 50%;
+    margin-left: 25%;
+}
+
+.likes-action, .comments-action {
+    color: grey;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.likes-action:hover, .comments-action:hover {
+    color: blue;
+    transform: scale(1.1);
+    -webkit-transform: scale(1.1);
+    text-decoration: none;
 }

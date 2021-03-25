@@ -100,7 +100,13 @@ class OneComment extends React.Component {
                            logged={this.state.logged}
                            on={"comment"} 
                     />
-                }
+                    }
+                    <hr className="no-margin"></hr>
+                    <button className="likes-action flex-layout button-as-link">
+                                <img className="like-icon" src={like_icon} alt="like-icon"/>
+                                <div>Like</div>
+                    </button>
+
 
                 </div>
             </div>

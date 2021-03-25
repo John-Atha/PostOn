@@ -126,20 +126,20 @@ class OnePost extends React.Component {
         let time = datetime[1]
         return(
             <div className="post-container">
-                    <div className="flex-layout">
-                        <div className="user-photo-container">
-                            <img className="user-photo" src={user_icon} alt="user profile" />
-                        </div>
-                        <div>
-                            <div className="owner-name">{this.state.owner.username}</div>
-                            <div className="post-date">{time}<br></br>{date}</div>
-                        </div>
+                <div className="flex-layout">
+                    <div className="user-photo-container">
+                        <img className="user-photo" src={user_icon} alt="user profile" />
                     </div>
-                    <hr></hr>
-                    <div className="post-text">{this.state.text}</div>
-                    <hr></hr>
-                    <div className="stats-sample flex-layout">
-                    <div className="likes-sample flex-layout">
+                    <div>
+                        <div className="owner-name">{this.state.owner.username}</div>
+                        <div className="post-date">{time}<br></br>{date}</div>
+                    </div>
+                </div>
+                <hr className="no-margin"></hr>
+                <div className="post-text">{this.state.text}</div>
+                <hr className="no-margin"></hr>
+                <div className="stats-sample flex-layout">
+                    <div className="likes-sample">
                         <img className="like-icon" src={like_icon} alt="like-icon"/>
                         {this.state.likesNum>1 &&
                             <button className="liker-sample button-as-link " onClick={this.showLikes}>{this.state.likerSample.username} and {this.state.likesNum-1} more</button>
@@ -151,7 +151,7 @@ class OnePost extends React.Component {
                             <div className="liker-sample">0</div>
                         }
                     </div>
-                    <div className="comments-sample flex-layout">
+                    <div className="comments-sample">
                         <img className="like-icon" src={comment_icon} alt="comment-icon"/>
                         {this.state.commentsNum>1 &&
                             <button className="likes-sample-num button-as-link" onClick={this.showHideComments}>{this.state.commentSample.owner.username} and {this.state.commentsNum-1} more</button>
@@ -164,20 +164,35 @@ class OnePost extends React.Component {
                         }
                     </div>
                 </div>
+                <hr className="no-margin"></hr>
+                <div className="post-actions center-content flex-layout">
+                    <div className="flex-item-small center-content">
+                        <button className="likes-action flex-layout button-as-link">
+                                <img className="like-icon" src={like_icon} alt="like-icon"/>
+                                <div>Like</div>
+                        </button>
+                    </div>
+                    <div className="flex-item-small center-content">
+                        <button className="comments-action flex-layout button-as-link">
+                                <img className="like-icon" src={comment_icon} alt="comment-icon"/>
+                                <div>Comment</div>
+                        </button>
+                    </div>
+                </div>
                 {this.state.likesShow &&
                     <Likes id={this.state.id}
-                           userId={this.state.userId}
-                           logged={this.state.logged}
-                           on={"post"} 
+                        userId={this.state.userId}
+                        logged={this.state.logged}
+                        on={"post"} 
                     />
                 }
-                <hr></hr>
+                <hr className="no-margin"></hr>
                 {this.state.commentsNum && this.state.commentsShow &&
                     <Comments userId={this.state.userId}
-                              postId={this.state.id}
-                              logged={this.state.logged}
-                              how={"sample"}
-                              sample={this.state.commentSample}
+                            postId={this.state.id}
+                            logged={this.state.logged}
+                            how={"sample"}
+                            sample={this.state.commentSample}
                     />
                 }
             </div>
