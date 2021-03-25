@@ -68,8 +68,11 @@ class OneComment extends React.Component {
             commentDatetime = this.state.comment.date.replace('T', ' ').replace('Z', '').split(' ')
         }
         return (
-            <div className="sample-comment-box flex-item-expand">
+            <div className="comment-box flex-item-expand">
                 <div className="flex-layout">
+                    <div className="user-photo-container-small">
+                            <img className="user-photo" src={user_icon} alt="user profile" />
+                        </div>
                     <div className="owner-name">{this.state.comment.owner.username}</div>
                     <div className="post-date comment-date">at {commentDatetime}</div>
                 </div>

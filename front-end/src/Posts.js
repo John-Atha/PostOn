@@ -32,11 +32,13 @@ class OnePost extends React.Component {
             likes_error: null,
             comments_error: null,
             likesShow: false,
+            commentsShow: false,
         }
         this.likesSample = this.likesSample.bind(this);
         this.commentsSample = this.commentsSample.bind(this);
         this.statsSample = this.statsSample.bind(this);
         this.showLikes = this.showLikes.bind(this);
+        this.showHideComments = this.showHideComments.bind(this);
     }
 
     showLikes = (event) => {
@@ -51,6 +53,13 @@ class OnePost extends React.Component {
             children[5].style.display = "block";
         }
     }
+
+    showHideComments = () => {
+        this.setState({
+            commentsShow: !this.state.commentsShow,
+        })
+    }
+
     commentsSample = () => {
         setTimeout(()=> {}, 2000);
         getPostsCommentsSample(this.state.id)
@@ -145,10 +154,10 @@ class OnePost extends React.Component {
                     <div className="comments-sample flex-layout">
                         <img className="like-icon" src={comment_icon} alt="comment-icon"/>
                         {this.state.commentsNum>1 &&
-                            <div className="likes-sample-num">{this.state.commentSample.owner.username} and {this.state.commentsNum-1} more</div>
+                            <button className="likes-sample-num button-as-link" onClick={this.showHideComments}>{this.state.commentSample.owner.username} and {this.state.commentsNum-1} more</button>
                         }
                         {this.state.commentsNum===1 &&
-                            <div className="likes-sample-num">{this.state.commentSample.owner.username}</div>
+                            <button className="likes-sample-num button-as-link" onClick={this.showHideComments}>{this.state.commentSample.owner.username}</button>
                         }
                         {!this.state.commentsNum &&
                             <div className="likes-sample-num">0</div>
@@ -162,7 +171,7 @@ class OnePost extends React.Component {
                     />
                 }
                 <hr></hr>
-                {this.state.commentsNum &&
+                {this.state.commentsNum && this.state.commentsShow &&
                     <Comments userId={this.state.userId}
                               postId={this.state.id}
                               logged={this.state.logged}

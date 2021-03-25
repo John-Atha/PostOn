@@ -87,20 +87,3 @@
 .likes-sample {
     margin-right: 20px;
 }
-
-.text-comment {
-    margin: 2% 0%;
-}
-
-.sample-comment-box {
-    background-color: var(--colorback);
-    border-radius: 7px;
-    padding: 2%;
-    padding-bottom: 1%;
-    position: relative;
-}
-
-.comment-date {
-    margin-top: 6px;
-    margin-left: 6px;
-}
