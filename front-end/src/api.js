@@ -71,7 +71,24 @@ export const getPosts = (start, end, how) => {
     )
 }
 
-export const getLikes = (start, end, id, on) => {
+export const getAllLikes = (start, id, on) => {
+    const params = {
+        "start": start,
+    }
+    let requestUrl = "";
+    if (on==="post") {
+        requestUrl = `/posts/${id}/likes`;
+    }
+    else {
+        requestUrl = `/comments/${id}/likes`;
+    }
+    return axios.get(requestUrl, {
+        params: params,
+    })
+}
+
+
+export const getLikes = (start, end="", id, on) => {
     const params = {
         "start": start,
         "end": end,
@@ -190,6 +207,19 @@ export const LikePost = (userId, postId) => {
         "Authorization": "Bearer "+token,
     }
     return axios.post(requestUrl, body, {
+        headers: headers
+    })
+}
+
+export const UnLikePost = (id) => {
+    const token = localStorage.getItem('token');
+    const requestUrl = `/likes/${id}/mod`;
+
+    const headers = {
+        "Content-Type": "multipart/form-data",
+        "Authorization": "Bearer "+token,
+    }
+    return axios.delete(requestUrl, {
         headers: headers
     })
 }

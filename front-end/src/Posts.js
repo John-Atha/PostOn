@@ -1,7 +1,7 @@
 import React from "react";
 import "./Posts.css";
 
-import {isLogged, getPosts, getLikesSample, getPostsCommentsSample, myLikes, LikePost} from './api';
+import {isLogged, getPosts, getLikesSample, getPostsCommentsSample, myLikes, LikePost, UnLikePost, getAllLikes} from './api';
 import user_icon from './images/user-icon.png'; 
 import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
@@ -42,6 +42,29 @@ class OnePost extends React.Component {
         this.showLikes = this.showLikes.bind(this);
         this.showHideComments = this.showHideComments.bind(this);
         this.postLike = this.postLike.bind(this);
+        this.postUnLike = this.postUnLike.bind(this);
+    }
+
+    postUnLike = () => {
+        getAllLikes(1, this.state.id, "post")
+        .then(response => {
+            console.log(response);
+            response.data.forEach(like => {
+                if(like.owner.id===this.state.userId) {
+                    UnLikePost(like.id)
+                    .then(response => {
+                        console.log(response);
+                        this.setState({
+                            liked: false,
+                        })    
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+            
+                }
+            })
+        })
     }
 
     postLike = () => {
@@ -191,7 +214,7 @@ class OnePost extends React.Component {
                             </button>
                         }
                         {this.state.liked &&
-                            <button className="likes-action flex-layout button-as-link">
+                            <button className="likes-action flex-layout button-as-link" onClick={this.postUnLike}>
                                 <img className="like-icon" src={liked_icon} alt="liked-icon"/>
                                 <div className="blue-color">Liked</div>
                             </button>
