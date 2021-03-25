@@ -57,7 +57,6 @@ export const getPosts = (start, end, how) => {
     }
     console.log(userId);
     const requestUrl = how==="all" ? '/posts': `users/${userId}/follows/posts`;
-    console.log(requestUrl);
     console.log(start);
     console.log(end);
     const params = {
@@ -125,4 +124,15 @@ export const getUsers = (start, end) => {
     return axios.get(requestUrl, {
         params: params,
     });
+}
+
+export const myLikes = (start, end, userId) => {
+    const requestUrl = `users/${userId}/likes`;
+    const params = {
+        "start": start,
+        "end": end,
+    }
+    return axios.get(requestUrl, {
+        params: params,
+    })
 }

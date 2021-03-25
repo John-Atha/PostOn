@@ -1,9 +1,10 @@
 import React from "react";
 import "./Posts.css";
 
-import {isLogged, getPosts, getLikesSample, getPostsCommentsSample} from './api';
+import {isLogged, getPosts, getLikesSample, getPostsCommentsSample, myLikes} from './api';
 import user_icon from './images/user-icon.png'; 
 import like_icon from './images/like.png';
+import liked_icon from './images/liked.png';
 import comment_icon from './images/comment.png';
 import Likes from './Likes';
 import Comments from './Comments';
@@ -19,6 +20,7 @@ class OnePost extends React.Component {
             media: this.props.media,
             text: this.props.text,
             date: this.props.date,
+            liked: this.props.liked,
             likesNum: 0,
             commentsNum: 0,
             likerSample: {
@@ -107,14 +109,15 @@ class OnePost extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.id!==this.props.id) {
+        if (prevProps.id!==this.props.id || prevProps.liked!==this.props.liked) {
             console.log("NEW POST!!")
             this.setState({
                 id: this.props.id,
                 owner: this.props.owner,
                 media: this.props.media,
                 text: this.props.text,
-                date: this.props.date,    
+                date: this.props.date,
+                liked: this.props.liked    
             })
             this.statsSample();
         }
@@ -167,10 +170,18 @@ class OnePost extends React.Component {
                 <hr className="no-margin"></hr>
                 <div className="post-actions center-content flex-layout">
                     <div className="flex-item-small center-content">
-                        <button className="likes-action flex-layout button-as-link">
+                        {!this.state.liked &&
+                            <button className="likes-action flex-layout button-as-link">
                                 <img className="like-icon" src={like_icon} alt="like-icon"/>
                                 <div>Like</div>
-                        </button>
+                            </button>
+                        }
+                        {this.state.liked &&
+                            <button className="likes-action flex-layout button-as-link">
+                                <img className="like-icon" src={liked_icon} alt="liked-icon"/>
+                                <div className="blue-color">Liked</div>
+                            </button>
+                        }                        
                     </div>
                     <div className="flex-item-small center-content">
                         <button className="comments-action flex-layout button-as-link">
@@ -212,11 +223,15 @@ class Posts extends React.Component {
             start: 1,
             end: 10,
             case: this.props.case,
+            likesStart: 1,
+            likesEnd: 20,
+            likesList: [],
         }
         this.previousPage = this.previousPage.bind(this);
         this.nextPage = this.nextPage.bind(this);
         this.moveOn = this.moveOn.bind(this);
         this.askPosts = this.askPosts.bind(this);
+        this.askLikes = this.askLikes.bind(this);
     }
 
     moveOn = () => {
@@ -241,6 +256,26 @@ class Posts extends React.Component {
             end: this.state.end+10,
         }), 0)
         this.moveOn();
+    }
+
+    askLikes = () => {
+        myLikes(this.state.likesStart, this.state.likesEnd, this.state.userId)
+        .then(response => {
+            console.log(response);
+            let tempLikesList = [];
+            response.data.forEach(el => {
+                tempLikesList.push(el.post.id);
+            })
+            this.setState({
+                likesList: tempLikesList,
+            })
+            console.log("likesList: ");
+            console.log(tempLikesList);
+        })
+        .catch(err => {
+            console.log(err);
+            console.log("No more likes found for this user.")
+        })
     }
 
     askPosts = () => {
@@ -268,6 +303,7 @@ class Posts extends React.Component {
                 logged: response.data.authenticated,
                 userId: response.data.id,
             });
+            this.askLikes();
         })
         .catch(err => {
             console.log(err);
@@ -288,9 +324,27 @@ class Posts extends React.Component {
                     <h4 className="center-text">Following Posts</h4>
                 }
                 {this.state.postsList.length && this.state.postsList.map((value, index) => {
+                    let liked=null;
+                    console.log(value.id);
+                    if (this.state.likesList.includes(value.id)) {
+                        console.log("liked")
+                        liked=true;
+                    }
+                    else {
+                        liked=false;
+                    }
                     return(
-                        <OnePost key={index} id={value.id} owner={value.owner} text={value.text} media={value.media} date={value.date} userId={this.state.userId} logged={this.state.logged}/>
+                        <OnePost key={index}
+                                    id={value.id}
+                                    owner={value.owner}
+                                    text={value.text}
+                                    media={value.media}
+                                    date={value.date}
+                                    userId={this.state.userId}
+                                    logged={this.state.logged}
+                                    liked={liked}/>
                     )
+                    
                 })}
                 {this.state.postsList.length &&
                     <div className="pagi-buttons-container flex-layout center-content">
