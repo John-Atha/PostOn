@@ -57,6 +57,7 @@ class OnePost extends React.Component {
                         this.setState({
                             liked: false,
                         })    
+                        this.likesSample();
                     })
                     .catch(err => {
                         console.log(err);
@@ -65,6 +66,10 @@ class OnePost extends React.Component {
                 }
             })
         })
+        .catch(err => {
+            console.log(err);
+        })
+        
     }
 
     postLike = () => {
@@ -74,6 +79,7 @@ class OnePost extends React.Component {
             this.setState({
                 liked: true,
             })
+            this.likesSample();
         })
         .catch(err => {
             console.log(err);
@@ -100,7 +106,7 @@ class OnePost extends React.Component {
     }
 
     commentsSample = () => {
-        setTimeout(()=> {}, 2000);
+        setTimeout(()=> {}, 1000);
         getPostsCommentsSample(this.state.id)
         .then(response => {
             console.log(response);
@@ -118,7 +124,7 @@ class OnePost extends React.Component {
     }
 
     likesSample = () => {
-        setTimeout(()=> {}, 2000);
+        setTimeout(()=> {}, 1000);
         getLikesSample(this.state.id, "post")
         .then(response => {
             console.log(response);
@@ -231,7 +237,8 @@ class OnePost extends React.Component {
                     <Likes id={this.state.id}
                         userId={this.state.userId}
                         logged={this.state.logged}
-                        on={"post"} 
+                           on={"post"}
+                           liked={this.state.liked} 
                     />
                 }
                 <hr className="no-margin"></hr>
@@ -277,7 +284,7 @@ class Posts extends React.Component {
             left:0,
             behavior:'smooth'
         });
-        setTimeout(() => this.askPosts(), 1000);
+        setTimeout(() => this.askPosts(), 500);
     }
     
     previousPage = () => {
@@ -293,7 +300,7 @@ class Posts extends React.Component {
             end: this.state.end+10,
         }), 0)
         this.moveOn();
-        setTimeout(()=>this.askLikes(), 1500);
+        setTimeout(()=>this.askLikes(), 750);
     }
 
     askLikes = () => {
@@ -327,7 +334,7 @@ class Posts extends React.Component {
     }
 
     askPosts = () => {
-        setTimeout(()=> {}, 2000)
+        setTimeout(()=> {}, 1000)
         console.log(`I am asking posts from ${this.state.start} to ${this.state.end}`)
         getPosts(this.state.start, this.state.end, this.state.case)
         .then(response => {

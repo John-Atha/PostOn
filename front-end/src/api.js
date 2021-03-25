@@ -223,3 +223,37 @@ export const UnLikePost = (id) => {
         headers: headers
     })
 }
+
+export const LikeComment = (userId, commentId) => {
+    const token = localStorage.getItem('token');
+    const requestUrl = `/likecomments/mod`;
+    const body = {
+        "owner": {
+            "id": userId,
+        },
+        "comment": {
+            "id": commentId,
+        },
+    }
+    const headers = {
+        "Content-Type": "multipart/form-data",
+        "Authorization": "Bearer "+token,
+    }
+    return axios.post(requestUrl, body, {
+        headers: headers
+    })
+
+}
+
+export const UnLikeComment = (id) => {
+    const token = localStorage.getItem('token');
+    const requestUrl = `/likecomments/${id}/mod`;
+
+    const headers = {
+        "Content-Type": "multipart/form-data",
+        "Authorization": "Bearer "+token,
+    }
+    return axios.delete(requestUrl, {
+        headers: headers
+    })
+}

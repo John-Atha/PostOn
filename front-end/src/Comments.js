@@ -6,7 +6,7 @@ import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
 
 import Likes from './Likes'
-import {getPostsComments, getLikesSample, getLikes} from './api';
+import {getPostsComments, getLikesSample, getLikes, getAllLikes, LikeComment, UnLikeComment} from './api';
 
 
 class OneComment extends React.Component {
@@ -28,6 +28,47 @@ class OneComment extends React.Component {
         this.likesSample = this.likesSample.bind(this);
         this.showLikes = this.showLikes.bind(this);
         this.checkLiked = this.checkLiked.bind(this);
+        this.commentLike = this.commentLike.bind(this);
+        this.commentUnLike = this.commentUnLike.bind(this);
+    }
+
+    commentLike = () => {
+        LikeComment(this.state.userId, this.state.comment.id)
+        .then(response => {
+            console.log(response);
+            this.setState({
+                liked: true,
+            })
+            this.likesSample();
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+
+    commentUnLike = () => {
+        getAllLikes(1, this.state.comment.id, "comment")
+        .then(response => {
+            console.log(response);
+            response.data.forEach(like => {
+                if (like.owner.id===this.state.userId) {
+                    UnLikeComment(like.id)
+                    .then(response => {
+                        console.log(response);
+                        this.setState({
+                            liked: false,
+                        })
+                        this.likesSample();            
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })
+                }
+            })
+        })
+        .catch(err => {
+            console.log(err);
+        })
     }
 
     showLikes = (event) => {
@@ -55,6 +96,7 @@ class OneComment extends React.Component {
             console.log(err);
             this.setState({
                 likes_error: "No likes found",
+                likesNum: 0,
             })
         })
 
@@ -75,7 +117,7 @@ class OneComment extends React.Component {
                     liked: tempLikersList.includes(this.state.userId),
                     error: null,
                 })
-                console.log("liked"+ this.state.liked)
+                console.log("liked "+ this.state.liked)
             })
             .catch(err => {
                 console.log(err);
@@ -90,9 +132,6 @@ class OneComment extends React.Component {
         this.likesSample();
         this.checkLiked();
     }
-
-
-
 
     render() {
         let commentDatetime = null;
@@ -124,20 +163,21 @@ class OneComment extends React.Component {
                     <Likes id={this.state.comment.id}
                            userId={this.state.userId}
                            logged={this.state.logged}
+                           liked={this.state.liked}
                            on={"comment"} 
                     />
                     }
                     <hr className="no-margin"></hr>
                     {!this.state.liked &&
-                        <button className="likes-action flex-layout button-as-link">
+                        <button className="likes-action flex-layout button-as-link" onClick={this.commentLike}>
                                     <img className="like-icon" src={like_icon} alt="like-icon"/>
                                     <div>Like</div>
                         </button>
                     }
                     {this.state.liked &&
-                        <button className="likes-action flex-layout button-as-link">
+                        <button className="likes-action flex-layout button-as-link" onClick={this.commentUnLike}>
                                     <img className="like-icon" src={liked_icon} alt="like-icon"/>
-                                    <div>Liked</div>
+                                    <div className="blue-color">Liked</div>
                         </button>
                     }
 

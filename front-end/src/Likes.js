@@ -93,6 +93,12 @@ class Likes extends React.Component {
         this.askLikes();
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.liked!==this.props.liked) {
+            this.askLikes();
+        }
+    }
+
     render() {
         return (
             <div className="likes-pop-up center-content">
