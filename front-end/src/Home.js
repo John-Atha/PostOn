@@ -5,6 +5,7 @@ import MyNavbar from './MyNavbar'
 import {isLogged} from './api';
 import Posts from "./Posts";
 import Explore from './Explore';
+import ProfileBox from './ProfileBox';
 
 class Home extends React.Component {
     constructor(props) {
@@ -19,7 +20,7 @@ class Home extends React.Component {
     componentDidMount() {
         isLogged()
         .then(response => {
-            console.log(response)
+            console.log(response);
             this.setState({
                 logged: response.data.authenticated,
                 userId: response.data.id,
@@ -40,6 +41,9 @@ class Home extends React.Component {
                 <div className="main-home-container flex-layout">
                     <Explore userId={this.state.userId} logged={this.state.logged} />
                     <Posts case="all"/>
+                    {this.state.logged &&
+                        <ProfileBox userId={this.state.userId} logged={this.state.logged} />
+                    }
                 </div>
             </div>
         )

@@ -145,25 +145,25 @@ class OnePost extends React.Component {
                     <div className="likes-sample">
                         <img className="like-icon" src={like_icon} alt="like-icon"/>
                         {this.state.likesNum>1 &&
-                            <button className="liker-sample button-as-link" onClick={this.showLikes}>{this.state.likerSample.username} and {this.state.likesNum-1} more</button>
+                            <button className="liker-sample button-as-link-grey" onClick={this.showLikes}>{this.state.likerSample.username} and {this.state.likesNum-1} more</button>
                         }
                         {this.state.likesNum===1 &&
-                            <button className="liker-sample button-as-link">{this.state.likerSample.username}</button>
+                            <button className="liker-sample button-as-link-grey">{this.state.likerSample.username}</button>
                         }
                         {!this.state.likesNum &&
-                            <button disabled={true} className="liker-sample button-as-link">0</button>
+                            <button disabled={true} className="liker-sample button-as-link-grey">0</button>
                         }
                     </div>
                     <div className="comments-sample">
                         <img className="like-icon" src={comment_icon} alt="comment-icon"/>
                         {this.state.commentsNum>1 &&
-                            <button className="likes-sample-num button-as-link" onClick={this.showHideComments}>{this.state.commentSample.owner.username} and {this.state.commentsNum-1} more</button>
+                            <button className="likes-sample-num button-as-link-grey" onClick={this.showHideComments}>{this.state.commentSample.owner.username} and {this.state.commentsNum-1} more</button>
                         }
                         {this.state.commentsNum===1 &&
-                            <button className="likes-sample-num button-as-link" onClick={this.showHideComments}>{this.state.commentSample.owner.username}</button>
+                            <button className="likes-sample-num button-as-link-grey" onClick={this.showHideComments}>{this.state.commentSample.owner.username}</button>
                         }
                         {!this.state.commentsNum &&
-                            <button disabled={true} className="likes-sample-num button-as-link">0</button>
+                            <button disabled={true} className="likes-sample-num button-as-link-grey">0</button>
                         }
                     </div>
                 </div>

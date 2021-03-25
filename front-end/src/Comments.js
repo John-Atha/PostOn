@@ -104,7 +104,7 @@ class OneComment extends React.Component {
                 <div className="flex-layout">
                     <div className="user-photo-container-small">
                             <img className="user-photo" src={user_icon} alt="user profile" />
-                        </div>
+                    </div>
                     <div className="owner-name">{this.state.comment.owner.username}</div>
                     <div className="post-date comment-date">at {commentDatetime}</div>
                 </div>

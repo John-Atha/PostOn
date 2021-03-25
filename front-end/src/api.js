@@ -136,3 +136,40 @@ export const myLikes = (start, end, userId) => {
         params: params,
     })
 }
+
+export const getUser = (id) => {
+    const requestUrl = `/users/${id}`;
+    return axios.get(requestUrl);
+}
+
+export const getFollowsCount = (id) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        var decoded = jwt_decode(token);
+        console.log(decoded);
+    }
+    const headers = {
+        "Authorization": "Bearer "+token,
+    }
+
+    const requestUrl = `/users/${id}/follows/count`;
+    return axios.get(requestUrl, {
+        headers: headers
+    });
+}
+
+export const getFollowersCount = (id) => {
+    const token = localStorage.getItem('token');
+    if (token) {
+        var decoded = jwt_decode(token);
+        console.log(decoded);
+    }
+    const headers = {
+        "Authorization": "Bearer "+token,
+    }
+
+    const requestUrl = `/users/${id}/followers/count`;
+    return axios.get(requestUrl, {
+        headers: headers,
+    });
+}
