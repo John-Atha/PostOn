@@ -94,8 +94,8 @@ class OnePost extends React.Component {
         console.log(box);
         let children = box.children;
         console.log(children);
-        if (children[5]) {
-            children[5].style.display = "block";
+        if (children[7]) {
+            children[7].style.display = "block";
         }
     }
 
