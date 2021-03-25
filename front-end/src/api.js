@@ -72,19 +72,31 @@ export const getPosts = (start, end, how) => {
     )
 }
 
-export const getPostLikes = (start, end, postId) => {
+export const getLikes = (start, end, id, on) => {
     const params = {
         "start": start,
         "end": end,
     }
-    const requestUrl = `/posts/${postId}/likes`;
+    let requestUrl = "";
+    if (on==="post") {
+        requestUrl = `/posts/${id}/likes`;
+    }
+    else {
+        requestUrl = `/comments/${id}/likes`;
+    }
     return axios.get(requestUrl, {
         params: params,
     })
 }
 
-export const getPostsLikesSample = (postId) => {
-    const requestUrl = `posts/${postId}/likes/sample`;
+export const getLikesSample = (id, on) => {
+    let requestUrl = "";
+    if (on=="post") {
+        requestUrl = `/posts/${id}/likes/sample`;
+    }
+    else {
+        requestUrl = `/comments/${id}/likes/sample`;
+    }    
     return axios.get(requestUrl);
 }
 
@@ -102,20 +114,4 @@ export const getPostsComments = (start, end, postId) => {
     return axios.get(requestUrl, {
         params: params,
     })
-}
-
-export const getCommentLikes = (start, end, commentId) => {
-    const params = {
-        "start": start,
-        "end": end,
-    }
-    const requestUrl = `/comments/${commentId}/likes`;
-    return axios.get(requestUrl, {
-        params: params,
-    })
-}
-
-export const getCommentLikesSample = (commentId) => {
-    const requestUrl = `comments/${commentId}/likes/sample`;
-    return axios.get(requestUrl);
 }

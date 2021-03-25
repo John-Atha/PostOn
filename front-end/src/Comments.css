@@ -9,6 +9,11 @@
     padding-bottom: 1%;
     position: relative;
     margin: 2% 0%;
+    width: 70%;
+    margin-left: 15%;
+    text-align: left;
+    animation:
+        pop-up-appearing 1s; 
 }
 
 .comment-date {

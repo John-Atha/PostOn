@@ -4,7 +4,8 @@ import './Comments.css';
 import user_icon from './images/user-icon.png'; 
 import like_icon from './images/like.png';
 
-import {getPostsComments, getCommentLikes, getCommentLikesSample} from './api';
+import Likes from './Likes'
+import {getPostsComments, getLikesSample} from './api';
 
 
 class OneComment extends React.Component {
@@ -28,11 +29,16 @@ class OneComment extends React.Component {
         this.setState({
             likesShow: true,
         })
+        let box = event.target.parentElement;
+        let children = box.children;
+        if (children[2]) {
+            children[2].style.display = "block";
+        }
     }
 
     likesSample = () => {
         setTimeout(()=> {}, 2000);
-        getCommentLikesSample(this.state.comment.id)
+        getLikesSample(this.state.comment.id, "comment")
         .then(response => {
             console.log(response);
             this.setState({
@@ -80,14 +86,22 @@ class OneComment extends React.Component {
                 <div className="comment-like-container flex-layout">
                     <img className="like-icon" src={like_icon} alt="like-icon"/>
                     {this.state.likesNum>1 &&
-                        <button className="liker-sample button-as-link " onClick={this.showLikes}>antony and 52 more</button>
+                        <button className="liker-sample button-as-link " onClick={this.showLikes}>{this.state.likerSample.username} and {this.state.likesNum-1} more</button>
                     }
                     {this.state.likesNum===1 &&
-                        <div className="liker-sample">antony</div>
+                        <div className="liker-sample">{this.state.likerSample.username}</div>
                     }
                     {!this.state.likesNum &&
                         <div className="liker-sample">0</div>
                     }
+                    {this.state.likesShow &&
+                    <Likes id={this.state.comment.id}
+                           userId={this.state.userId}
+                           logged={this.state.logged}
+                           on={"comment"} 
+                    />
+                }
+
                 </div>
             </div>
         )
@@ -163,7 +177,7 @@ class Comments extends React.Component {
 
         if (this.state.how==="sample") {
             return (
-                <div className="all-comments-container">
+                <div className="all-comments-container center-content">
                     <OneComment comment={this.state.commentSample}/>
                     <button className="button-as-link center-text" onClick={this.seeMore}>Show more comments</button>
                 </div>
@@ -171,7 +185,7 @@ class Comments extends React.Component {
         }
         else {
             return(
-                <div className="all-comments-container">
+                <div className="all-comments-container center-content">
                     {
                         this.state.commentsList.map((value, index) => {
                             //console.log(value);

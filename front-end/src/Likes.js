@@ -1,7 +1,7 @@
 import React from "react";
 import "./Likes.css";
 
-import {getPostLikes} from './api';
+import {getLikes} from './api';
 
 class OneLike extends React.Component {
     constructor(props) {
@@ -31,11 +31,12 @@ class Likes extends React.Component {
         this.state = {
             userId: this.props.userId,
             logged: this.props.logged,
-            postId: this.props.postId,
+            id: this.props.id,
             error: null,
             start: 1,
             end: 5,
             likesList: [],
+            on: this.props.on,
         }
         this.previousPage = this.previousPage.bind(this);
         this.nextPage = this.nextPage.bind(this);
@@ -72,7 +73,7 @@ class Likes extends React.Component {
     askLikes = () => {
         setTimeout(()=> {}, 2000);
         console.log(`I am asking likes from ${this.state.start} to ${this.state.end}.`);
-        getPostLikes(this.state.start, this.state.end, this.state.postId)
+        getLikes(this.state.start, this.state.end, this.state.id, this.state.on)
         .then(response => {
             console.log(response);
             this.setState({

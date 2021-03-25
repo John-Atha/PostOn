@@ -1,7 +1,7 @@
 import React from "react";
 import "./Posts.css";
 
-import {isLogged, getPosts, getPostsLikesSample, getPostsCommentsSample} from './api';
+import {isLogged, getPosts, getLikesSample, getPostsCommentsSample} from './api';
 import user_icon from './images/user-icon.png'; 
 import like_icon from './images/like.png';
 import comment_icon from './images/comment.png';
@@ -80,7 +80,7 @@ class OnePost extends React.Component {
 
     likesSample = () => {
         setTimeout(()=> {}, 2000);
-        getPostsLikesSample(this.state.id)
+        getLikesSample(this.state.id, "post")
         .then(response => {
             console.log(response);
             this.setState({
@@ -165,9 +165,10 @@ class OnePost extends React.Component {
                     </div>
                 </div>
                 {this.state.likesShow &&
-                    <Likes postId={this.state.id}
+                    <Likes id={this.state.id}
                            userId={this.state.userId}
-                           logged={this.state.logged} 
+                           logged={this.state.logged}
+                           on={"post"} 
                     />
                 }
                 <hr></hr>
