@@ -68,10 +68,8 @@ class OneComment extends React.Component {
 
     render() {
         let commentDatetime = null;
-        let commentDate = null;
-        let commentTime = null;
         if (this.state.comment.owner.username!=="Loading...") {
-            commentDatetime = this.state.comment.date.replace('T', ' ').replace('Z', '').split(' ')
+            commentDatetime = this.state.comment.date.replace('T', ' ').replace('Z', '')
         }
         return (
             <div className="comment-box flex-item-expand">
