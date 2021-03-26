@@ -215,7 +215,7 @@ class Comments extends React.Component {
             end: this.state.how==="sample" ? 5 :this.state.end+5,
             how: "all",
         }), 0)
-        setTimeout(() => this.askComments(), 1000);    
+        setTimeout(() => this.askComments(), 0);    
     }
 
     askComments = () => {
@@ -249,7 +249,6 @@ class Comments extends React.Component {
         else {
             this.askComments();
         }
-
     }
 
     render() {
