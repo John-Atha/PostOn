@@ -242,7 +242,8 @@ class OnePost extends React.Component {
                         userId={this.state.userId}
                         logged={this.state.logged}
                         on={"post"}
-                        liked={this.state.liked} 
+                        liked={this.state.liked}
+                        updateHome={this.props.updateHome}
                     />
                 }
                 <hr className="no-margin"></hr>
@@ -397,7 +398,9 @@ class Posts extends React.Component {
                                     date={value.date}
                                     userId={this.state.userId}
                                     logged={this.state.logged}
-                                    liked={liked}/>
+                                    liked={liked}
+                                    updateHome={this.props.updateHome}
+                        />
                     )
                     
                 })}

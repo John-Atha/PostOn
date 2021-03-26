@@ -7,6 +7,7 @@ import Posts from "./Posts";
 import Explore from './Explore';
 import ProfileBox from './ProfileBox';
 
+
 class Home extends React.Component {
     constructor(props) {
         super(props);
@@ -16,8 +17,10 @@ class Home extends React.Component {
             error: null,
             followsList: [],
             followersList: [],
+            update1: 1,
         }
         this.askFollows = this.askFollows.bind(this);
+        this.updateHome = this.updateHome.bind(this);
     }
 
     componentDidMount() {
@@ -38,7 +41,15 @@ class Home extends React.Component {
         })
     }
 
+    updateHome = () => {
+        this.setState({
+            update1: this.state.update1+1,
+        })
+    }
+
+
     askFollows = () => {
+/*
         setTimeout(()=>{
             getFollows(this.state.userId)
             .then(response => {
@@ -79,7 +90,7 @@ class Home extends React.Component {
                 console.log("No more follows found for this user (as a follower).");
             });
         }, 100)
-
+*/
     }
 
     render() {
@@ -87,8 +98,8 @@ class Home extends React.Component {
             <div className="all-page">
                 <MyNavbar />
                 <div className="main-home-container flex-layout">
-                    <Explore userId={this.state.userId} logged={this.state.logged} />
-                    <Posts case="all"/>
+                    <Explore userId={this.state.userId} logged={this.state.logged} update1={this.state.update1} />
+                    <Posts case="all" updateHome={this.updateHome} />
                     {this.state.logged &&
                         <ProfileBox userId={this.state.userId} logged={this.state.logged} />
                     }

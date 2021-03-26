@@ -5,7 +5,6 @@ import user_icon from './images/user-icon.png';
 
 import {getUsers, getFollows, getFollowers, followUser, unfollowUser} from './api';
 
-
 class OneUser extends React.Component {
     constructor(props) {
         super(props);
@@ -217,6 +216,10 @@ class Explore extends React.Component {
             console.log(`Updated to user ${this.props.userId}`);
             this.askUsers();
         }
+        if (prevProps.update1!==this.props.update1) {
+            console.log("UPDATED");
+            this.updateFollows();
+        }
     }
 
     render() {
@@ -230,12 +233,12 @@ class Explore extends React.Component {
                             if (this.state.followsList.includes(value.id)) {
                                 return (
                                     <OneUser key={index}
-                                            user={value}
-                                            me={this.props.userId}
-                                            logged={this.props.logged}
-                                            followId={this.state.followsObjIdList[this.state.followsList.indexOf(value.id)]}
-                                            followed={true}
-                                            updatePar={this.updateFollows} />
+                                             user={value}
+                                             me={this.props.userId}
+                                             logged={this.props.logged}
+                                             followId={this.state.followsObjIdList[this.state.followsList.indexOf(value.id)]}
+                                             followed={true}
+                                             updatePar={this.updateFollows} />
                                 )
                             }
                             else if(!this.state.followsList.includes(value.id) && this.state.followersList.includes(value.id)) {
