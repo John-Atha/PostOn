@@ -1,13 +1,15 @@
 import React from "react";
 import "./Posts.css";
 
-import {isLogged, getPosts, getLikesSample, getPostsCommentsSample, myLikes, LikePost, UnLikePost, getAllLikes} from './api';
+import {isLogged, getPosts, getPostsCommentsSample, getAllLikes, getLikesSample, myLikes, LikePost, UnLikePost } from './api';
 import user_icon from './images/user-icon.png'; 
 import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
 import comment_icon from './images/comment.png';
 import Likes from './Likes';
+
 import Comments from './Comments';
+
 
 class OnePost extends React.Component {
     constructor(props) {
@@ -106,7 +108,9 @@ class OnePost extends React.Component {
     }
 
     commentsSample = () => {
-        setTimeout(()=> {}, 1000);
+        console.log("I am one-post class, I was called by my child")
+        setTimeout(()=> {}, 5000);
+        console.log("I am taking comments sample.");
         getPostsCommentsSample(this.state.id)
         .then(response => {
             console.log(response);
@@ -237,8 +241,8 @@ class OnePost extends React.Component {
                     <Likes id={this.state.id}
                         userId={this.state.userId}
                         logged={this.state.logged}
-                           on={"post"}
-                           liked={this.state.liked} 
+                        on={"post"}
+                        liked={this.state.liked} 
                     />
                 }
                 <hr className="no-margin"></hr>
@@ -248,6 +252,7 @@ class OnePost extends React.Component {
                             logged={this.state.logged}
                             how={"sample"}
                             sample={this.state.commentSample}
+                            updateParent={this.commentsSample}
                     />
                 }
             </div>

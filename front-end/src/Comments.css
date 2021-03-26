@@ -28,3 +28,20 @@
     padding: 0%;
     margin-right: 0.5%;
 }
+
+.comments-pop-up {
+    z-index: 1;
+    top: -200%;
+    position: absolute;
+    background-color: var(--color2);
+    min-height: min-content;
+    border-radius: 7px;
+    padding: 2% 2%;
+    animation:
+        pop-up-appearing 1s;
+}
+
+.modal-buttons-container {
+    width: 80%;
+    margin-left: 10%;
+}

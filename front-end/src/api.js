@@ -257,3 +257,17 @@ export const UnLikeComment = (id) => {
         headers: headers
     })
 }
+
+export const DeleteComment = (id) => {
+    const token = localStorage.getItem('token');
+    const requestUrl = `/comments/${id}/mod`;
+
+    const headers = {
+        "Content-Type": "multipart/form-data",
+        "Authorization": "Bearer "+token,
+    }
+    return axios.delete(requestUrl, {
+        headers: headers
+    })
+
+}
