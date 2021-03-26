@@ -32,7 +32,7 @@ class OneUser extends React.Component {
     }
 
     unfollow = () => {
-        unfollowUser(3)
+        unfollowUser(this.props.followId)
         .then(response => {
             console.log(response);
         })
@@ -74,7 +74,7 @@ class OneUser extends React.Component {
                 }
                 {this.state.logged && this.props.followed && 
                     <div className="flex-item-smaller">
-                        <button className="my-button un-follow-button">UnFollow</button>
+                        <button className="my-button un-follow-button" onClick={this.unfollow}>UnFollow</button>
                     </div>
                 }
 
@@ -95,6 +95,7 @@ class Explore extends React.Component {
             end:15,
             usersList: [],
             followsList: [],
+            followsObjIdList: [],
             followersList: [],
         }
         this.first = true;
@@ -134,13 +135,16 @@ class Explore extends React.Component {
             .then(response => {
                 console.log(response);
                 let tempFollowsList = this.state.followsList;
+                let tempFollowsObjIdList = this.state.followsObjIdList;
                 response.data.forEach(el=> {
                     if (!this.state.followsList.includes(el.followed.id)) {
                         tempFollowsList.push(el.followed.id);
+                        tempFollowsObjIdList.push(el.id);
                     }
                 })
                 this.setState({
                     followsList: tempFollowsList,
+                    followsObjIdList: tempFollowsObjIdList,
                 })
                 console.log("followsList: ");
                 console.log(tempFollowsList);
@@ -212,7 +216,12 @@ class Explore extends React.Component {
                         //console.log(value);
                         if (this.state.followsList.includes(value.id)) {
                                 return (
-                                    <OneUser key={index} user={value} me={this.props.userId} logged={this.props.logged} followed={true} />
+                                    <OneUser key={index}
+                                             user={value}
+                                             me={this.props.userId}
+                                             logged={this.props.logged}
+                                             followId={this.state.followsObjIdList[this.state.followsList.indexOf(value.id)]}
+                                             followed={true} />
                                 )    
                         }
                         else if(!this.state.followsList.includes(value.id) && this.state.followersList.includes(value.id)) {
