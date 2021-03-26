@@ -107,6 +107,11 @@ body {
 .button-as-link:hover {
     text-decoration: underline;
 }
+
+.button-as-link-grey:hover {
+    color: black;
+}
+
 .no-margin {
     margin: 1%;
 }

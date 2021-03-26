@@ -87,7 +87,6 @@ export const getAllLikes = (start, id, on) => {
     })
 }
 
-
 export const getLikes = (start, end="", id, on) => {
     const params = {
         "start": start,
@@ -270,4 +269,46 @@ export const DeleteComment = (id) => {
         headers: headers
     })
 
+}
+
+export const getFollows = (id) => {
+    const requestUrl = `users/${id}/follows`;
+    return axios.get(requestUrl);
+}
+
+export const getFollowers = (id) => {
+    const requestUrl = `users/${id}/followers`;
+    return axios.get(requestUrl);
+}
+
+export const followUser = (id1, id2) => {
+    const token = localStorage.getItem('token');
+    const requestUrl = `/follows/mod`;
+    const body = {
+        "following": {
+            "id": id1,
+        },
+        "followed": {
+            "id": id2,
+        },
+    }
+    const headers = {
+        "Content-Type": "multipart/form-data",
+        "Authorization": "Bearer "+token,
+    }
+    return axios.post(requestUrl, body, {
+        headers: headers
+    })
+}
+
+export const unfollowUser = (id) => {
+    const token = localStorage.getItem('token');
+    const requestUrl = `/follows/${id}/mod`;
+    const headers = {
+        "Content-Type": "multipart/form-data",
+        "Authorization": "Bearer "+token,
+    }
+    return axios.delete(requestUrl, {
+        headers: headers
+    })
 }

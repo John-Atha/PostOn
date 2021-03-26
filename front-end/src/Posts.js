@@ -181,7 +181,7 @@ class OnePost extends React.Component {
                         <img className="user-photo" src={user_icon} alt="user profile" />
                     </div>
                     <div>
-                        <div className="owner-name">{this.state.owner.username}-------{this.state.id}</div>
+                        <div className="owner-name">{this.state.owner.username}</div>
                         <div className="post-date">{time}<br></br>{date}</div>
                     </div>
                 </div>
@@ -377,12 +377,7 @@ class Posts extends React.Component {
     render() {
         return(
             <div className="posts-container padding-bottom flex-item">
-                {this.state.case==="all" &&
-                    <h4 className="center-text">All Posts</h4>
-                }
-                {this.state.case==="following" &&
-                    <h4 className="center-text">Following Posts</h4>
-                }
+
                 {this.state.postsList.length && this.state.postsList.map((value, index) => {
                     let liked=null;
                     console.log(value.id);
