@@ -7,6 +7,18 @@
     }
 }
 
+@keyframes pop-up-appearing-slow {
+    0% {
+        opacity: 0%;
+    }
+    80% {
+        opacity: 0%;
+    }
+    100% {
+        opacity: 100%;
+    }
+}
+
 .one-like {
     margin: 1% 0%;
     animation:
@@ -20,6 +32,8 @@
     padding: 1%;
     width: 100%;
     background-color: rgb(250, 249, 249);
+    animation:
+        pop-up-appearing-slow 1s;
 }
 
 .likes-pop-up {

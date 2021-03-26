@@ -25,9 +25,11 @@ class OneUser extends React.Component {
         followUser(this.props.me, this.state.user.id)
         .then(response => {
             console.log(response);
+            this.props.updatePar();
         })
         .catch(err => {
             console.log(err);
+            this.props.updatePar();
         })
     }
 
@@ -35,13 +37,13 @@ class OneUser extends React.Component {
         unfollowUser(this.props.followId)
         .then(response => {
             console.log(response);
+            this.props.updatePar();
         })
         .catch(err => {
             console.log(err);
+            this.props.updatePar();
         })
     }
-
-
 
     componentDidUpdate(prevProps) {
         if (prevProps.user!==this.props.user || prevProps.followed!==this.props.followed || prevProps.following!==this.props.following) {
@@ -62,17 +64,17 @@ class OneUser extends React.Component {
                     </div>
                     <div className="owner-name">{this.state.user.username}</div>
                 </div>
-                {this.state.logged && !this.props.followed && !this.props.following &&
+                {this.state.logged && !this.props.followed && !this.props.following && this.props.me!==this.props.user.id &&
                     <div className="flex-item-smaller">
-                        <button className="my-button un-follow-button" onClick={this.follow}>Follow</button>
+                        <button className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow</button>
                     </div>
                 }
-                {this.state.logged && !this.props.followed && this.props.following &&
+                {this.state.logged && !this.props.followed && this.props.following && this.props.me!==this.props.user.id &&
                     <div className="flex-item-smaller">
-                        <button className="my-button un-follow-button" onClick={this.follow}>Follow Back</button>
+                        <button className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow Back</button>
                     </div>
                 }
-                {this.state.logged && this.props.followed && 
+                {this.state.logged && this.props.followed && this.props.me!==this.props.user.id &&
                     <div className="flex-item-smaller">
                         <button className="my-button un-follow-button" onClick={this.unfollow}>UnFollow</button>
                     </div>
@@ -104,6 +106,7 @@ class Explore extends React.Component {
         this.moveOn = this.moveOn.bind(this);
         this.askUsers = this.askUsers.bind(this);
         this.askFollows = this.askFollows.bind(this);
+        this.updateFollows = this.updateFollows.bind(this);
     }
 
     moveOn = () => {
@@ -196,6 +199,15 @@ class Explore extends React.Component {
         })        
     }
 
+    updateFollows = () => {
+        this.setState({
+            followsList: [],
+            followsObjIdList: [],
+            followersList: [],
+        })
+        setTimeout(()=>{this.askFollows()}, 0);
+    }
+
     componentDidMount() {
         this.askUsers();
     }
@@ -214,25 +226,40 @@ class Explore extends React.Component {
                 {
                     this.state.usersList.length && this.state.usersList.map((value, index) => {
                         //console.log(value);
-                        if (this.state.followsList.includes(value.id)) {
+                        if (value.id!==this.props.userId) {
+                            if (this.state.followsList.includes(value.id)) {
                                 return (
                                     <OneUser key={index}
-                                             user={value}
-                                             me={this.props.userId}
-                                             logged={this.props.logged}
-                                             followId={this.state.followsObjIdList[this.state.followsList.indexOf(value.id)]}
-                                             followed={true} />
+                                            user={value}
+                                            me={this.props.userId}
+                                            logged={this.props.logged}
+                                            followId={this.state.followsObjIdList[this.state.followsList.indexOf(value.id)]}
+                                            followed={true}
+                                            updatePar={this.updateFollows} />
+                                )
+                            }
+                            else if(!this.state.followsList.includes(value.id) && this.state.followersList.includes(value.id)) {
+                                return (
+                                    <OneUser key={index}
+                                            user={value}
+                                            me={this.props.userId} 
+                                            logged={this.props.logged} 
+                                            followed={false} 
+                                            following={true}
+                                            updatePar={this.updateFollows} />
                                 )    
-                        }
-                        else if(!this.state.followsList.includes(value.id) && this.state.followersList.includes(value.id)) {
-                            return (
-                                <OneUser key={index} user={value} me={this.props.userId} logged={this.props.logged} followed={false} following={true} />
-                            )    
-                        }
-                        else {
-                            return (
-                                <OneUser key={index} user={value} me={this.props.userId} logged={this.props.logged} followed={false} following={false}/>
-                            )    
+                            }
+                            else {
+                                return (
+                                    <OneUser key={index} 
+                                            user={value} 
+                                            me={this.props.userId} 
+                                            logged={this.props.logged} 
+                                            followed={false} 
+                                            following={false}
+                                            updatePar={this.updateFollows} />
+                                )    
+                            }
                         }
                         })
                 }
