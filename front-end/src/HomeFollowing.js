@@ -14,7 +14,9 @@ class HomeFollowing extends React.Component {
             userId: null,
             logged: null,
             error: null,
+            update1: 1,
         }
+        this.updateHome = this.updateHome.bind(this);
     }
 
     componentDidMount() {
@@ -34,14 +36,20 @@ class HomeFollowing extends React.Component {
         })
     }
 
+    updateHome = () => {
+        this.setState({
+            update1: this.state.update1+1,
+        })
+    }
+
     render() {
         if (this.state.logged===true) {
             return (
                 <div className="all-page">
                     <MyNavbar />
                     <div className="main-home-container flex-layout">
-                        <Explore userId={this.state.userId} logged={this.state.logged} />
-                        <Posts case="following"/>
+                        <Explore userId={this.state.userId} logged={this.state.logged} update1={this.state.update1} />
+                        <Posts case="following" updateHome={this.updateHome}/>
                         <ProfileBox userId={this.state.userId} logged={this.state.logged} />
                     </div>
                 </div>
