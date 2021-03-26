@@ -111,7 +111,7 @@ class OnePost extends React.Component {
         console.log("I am one-post class, I was called by my child")
         setTimeout(()=> {}, 5000);
         console.log("I am taking comments sample.");
-        getPostsCommentsSample(this.state.id)
+        getPostsCommentsSample(this.props.id)
         .then(response => {
             console.log(response);
             this.setState({
@@ -129,7 +129,7 @@ class OnePost extends React.Component {
 
     likesSample = () => {
         setTimeout(()=> {}, 1000);
-        getLikesSample(this.state.id, "post")
+        getLikesSample(this.props.id, "post")
         .then(response => {
             console.log(response);
             this.setState({
@@ -181,7 +181,7 @@ class OnePost extends React.Component {
                         <img className="user-photo" src={user_icon} alt="user profile" />
                     </div>
                     <div>
-                        <div className="owner-name">{this.state.owner.username}</div>
+                        <div className="owner-name">{this.state.owner.username}-------{this.state.id}</div>
                         <div className="post-date">{time}<br></br>{date}</div>
                     </div>
                 </div>
