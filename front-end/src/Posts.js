@@ -25,6 +25,7 @@ class OnePost extends React.Component {
             liked: this.props.liked,
             likesNum: 0,
             commentsNum: 0,
+            followsUpd: 0,
             likerSample: {
                 username: "Loading..."
             },
@@ -91,13 +92,22 @@ class OnePost extends React.Component {
     showLikes = (event) => {
         this.setState({
             likesShow: true,
+            followsUpd: this.state.followsUpd+1,
         })
         let box = event.target.parentElement.parentElement.parentElement;
         console.log(box);
         let children = box.children;
         console.log(children);
         if (children[7]) {
-            children[7].style.display = "block";
+            let container = children[7];
+            console.log(`container:`)
+            console.log(`${container}`)
+            if (container.children[0]) {
+                container.children[0].style.display = "block";
+            }
+            else {
+                container.style.display="block";
+            }
         }
     }
 
@@ -244,6 +254,7 @@ class OnePost extends React.Component {
                         on={"post"}
                         liked={this.state.liked}
                         updateHome={this.props.updateHome}
+                        followsUpd={this.state.followsUpd}
                     />
                 }
                 <hr className="no-margin"></hr>
@@ -255,6 +266,7 @@ class OnePost extends React.Component {
                             sample={this.state.commentSample}
                             updateParent={this.commentsSample}
                             updateHome={this.props.updateHome}
+                            followsUpd={this.state.followsUpd}
                     />
                 }
             </div>

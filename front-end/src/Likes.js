@@ -3,6 +3,7 @@ import "./Likes.css";
 
 import {getLikes, getFollowers, getFollows, followUser, unfollowUser} from './api';
 
+import OutsideClickHandler from 'react-outside-click-handler';
 
 class OneLike extends React.Component {
     constructor(props) {
@@ -87,7 +88,9 @@ class Likes extends React.Component {
             followsList: [],
             followsObjIdList: [],
             followersList: [],
+            showMe: this.props.showMe,
         }
+        this.hide = this.hide.bind(this);
         this.previousPage = this.previousPage.bind(this);
         this.nextPage = this.nextPage.bind(this);
         this.moveOn = this.moveOn.bind(this);
@@ -119,7 +122,6 @@ class Likes extends React.Component {
         }), 0)
         this.moveOn();
     }
-
     askLikes = () => {
         setTimeout(()=> {}, 2000);
         console.log(`I am asking likes from ${this.state.start} to ${this.state.end}.`);
@@ -139,6 +141,13 @@ class Likes extends React.Component {
             })
         })
     }
+    hide = (event) => {
+        console.log(event);
+        document.querySelectorAll('.likes-pop-up').forEach(el => {
+            el.style.display="none";
+        });
+        event.preventDefault();
+    }
 
     componentDidMount() {
         this.askLikes();
@@ -146,7 +155,8 @@ class Likes extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.userId!==this.props.userId) {
+        if (prevProps.userId!==this.props.userId || prevProps.followsUpd!==this.props.followsUpd) {
+            console.log("I updated the follows list")
             this.askLikes();
         }
     }
@@ -210,8 +220,10 @@ class Likes extends React.Component {
     }
 
     render() {
+
         return (
-            <div className="likes-pop-up center-content">
+            <OutsideClickHandler onOutsideClick={this.hide}>
+                <div className="likes-pop-up center-content" >
                 <button className="close-button" onClick={this.disappear}>X</button>
                 <h5>Likes</h5>
                 {(this.state.error) && 
@@ -227,35 +239,35 @@ class Likes extends React.Component {
                         if (this.state.followsList.includes(value.owner.id)) {
                             return (
                                 <OneLike key={index}
-                                         owner={value.owner} 
-                                         me={this.props.userId}
-                                         logged={this.props.logged}
-                                         followId={this.state.followsObjIdList[this.state.followsList.indexOf(value.owner.id)]}
-                                         followed={true}
-                                         updatePar={this.updateFollows} />
+                                        owner={value.owner} 
+                                        me={this.props.userId}
+                                        logged={this.props.logged}
+                                        followId={this.state.followsObjIdList[this.state.followsList.indexOf(value.owner.id)]}
+                                        followed={true}
+                                        updatePar={this.updateFollows} />
                             )
                         }
                         else if (!this.state.followsList.includes(value.owner.id) && this.state.followersList.includes(value.owner.id)) {
                             return (
                                 <OneLike key={index}
-                                         owner={value.owner}
-                                         me={this.props.userId} 
-                                         logged={this.props.logged} 
-                                         followed={false} 
-                                         following={true}
-                                         updatePar={this.updateFollows} />
+                                        owner={value.owner}
+                                        me={this.props.userId} 
+                                        logged={this.props.logged} 
+                                        followed={false} 
+                                        following={true}
+                                        updatePar={this.updateFollows} />
                             )
                         }
 
                         else {
                             return (
                                 <OneLike key={index}
-                                         owner={value.owner}
-                                         me={this.props.userId} 
-                                         logged={this.props.logged} 
-                                         followed={false} 
-                                         following={false}
-                                         updatePar={this.updateFollows} />
+                                        owner={value.owner}
+                                        me={this.props.userId} 
+                                        logged={this.props.logged} 
+                                        followed={false} 
+                                        following={false}
+                                        updatePar={this.updateFollows} />
                             )
                         }
                     })
@@ -268,7 +280,9 @@ class Likes extends React.Component {
                 }
 
             </div>
+            </OutsideClickHandler>
         )
+
     }
 
 

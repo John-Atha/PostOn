@@ -20,6 +20,7 @@ class OneComment extends React.Component {
             mine: this.props.comment.owner.id===this.props.userId,
             likesNum: 0,
             liked: false,
+            followsUpd: 0,
             likerSample: {
                 username: "Loading..."
             },
@@ -108,11 +109,18 @@ class OneComment extends React.Component {
     showLikes = (event) => {
         this.setState({
             likesShow: true,
+            followsUpd: this.state.followsUpd+1,
         })
         let box = event.target.parentElement;
         let children = box.children;
         if (children[2]) {
-            children[2].style.display = "block";
+            const container = children[2];
+            if (container.children[0]) {
+                container.children[0].style.display="block";
+            }
+            else {
+                container.style.display="block";
+            }
         }
     }
 
@@ -205,7 +213,9 @@ class OneComment extends React.Component {
                             logged={this.state.logged}
                             liked={this.state.liked}
                             on={"comment"}
-                            updateHome={this.props.updateHome} 
+                            updateHome={this.props.updateHome}
+                            showMe={true} 
+                            followsUpd={this.state.followsUpd}
                         />
                         }
                         <hr className="no-margin"></hr>
@@ -357,6 +367,7 @@ class Comments extends React.Component {
                                 comment={this.state.commentSample}
                                 updateParent={this.removeComment}
                                 updateHome={this.props.updateHome}
+                                followsUpd={this.state.followsUpd}
                                 />
                     <button className="button-as-link center-text" onClick={this.seeMore}>Show more comments</button>
                 </div>
@@ -375,6 +386,7 @@ class Comments extends React.Component {
                                             comment={value}
                                             updateParent={this.removeComment}
                                             updateHome={this.props.updateHome}
+                                            followsUpd={this.state.followsUpd}
                                             />
                             )
                         })
