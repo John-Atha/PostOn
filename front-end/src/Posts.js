@@ -254,6 +254,7 @@ class OnePost extends React.Component {
                             how={"sample"}
                             sample={this.state.commentSample}
                             updateParent={this.commentsSample}
+                            updateHome={this.props.updateHome}
                     />
                 }
             </div>

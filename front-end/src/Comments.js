@@ -204,7 +204,8 @@ class OneComment extends React.Component {
                             userId={this.state.userId}
                             logged={this.state.logged}
                             liked={this.state.liked}
-                            on={"comment"} 
+                            on={"comment"}
+                            updateHome={this.props.updateHome} 
                         />
                         }
                         <hr className="no-margin"></hr>
@@ -351,7 +352,12 @@ class Comments extends React.Component {
         if (this.state.how==="sample") {
             return (
                 <div className="all-comments-container center-content">
-                    <OneComment userId={this.state.userId} logged={this.state.logged} comment={this.state.commentSample} updateParent={this.removeComment}/>
+                    <OneComment userId={this.state.userId}
+                                logged={this.state.logged}
+                                comment={this.state.commentSample}
+                                updateParent={this.removeComment}
+                                updateHome={this.props.updateHome}
+                                />
                     <button className="button-as-link center-text" onClick={this.seeMore}>Show more comments</button>
                 </div>
             )
@@ -367,7 +373,9 @@ class Comments extends React.Component {
                                             logged={this.state.logged}
                                             key={index}
                                             comment={value}
-                                            updateParent={this.removeComment} />
+                                            updateParent={this.removeComment}
+                                            updateHome={this.props.updateHome}
+                                            />
                             )
                         })
                     }
