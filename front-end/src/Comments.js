@@ -111,7 +111,7 @@ class OneComment extends React.Component {
             likesShow: true,
             followsUpd: this.state.followsUpd+1,
         })
-        let box = event.target.parentElement;
+        /*let box = event.target.parentElement;
         let children = box.children;
         if (children[2]) {
             const container = children[2];
@@ -121,7 +121,7 @@ class OneComment extends React.Component {
             else {
                 container.style.display="block";
             }
-        }
+        }*/
     }
 
     likesSample = () => {

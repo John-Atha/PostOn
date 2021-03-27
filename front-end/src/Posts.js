@@ -94,7 +94,7 @@ class OnePost extends React.Component {
             likesShow: true,
             followsUpd: this.state.followsUpd+1,
         })
-        let box = event.target.parentElement.parentElement.parentElement;
+        /*let box = event.target.parentElement.parentElement.parentElement;
         console.log(box);
         let children = box.children;
         console.log(children);
@@ -108,7 +108,7 @@ class OnePost extends React.Component {
             else {
                 container.style.display="block";
             }
-        }
+        }*/
     }
 
     showHideComments = () => {
@@ -255,6 +255,7 @@ class OnePost extends React.Component {
                         liked={this.state.liked}
                         updateHome={this.props.updateHome}
                         followsUpd={this.state.followsUpd}
+                        showMe={true}
                     />
                 }
                 <hr className="no-margin"></hr>
