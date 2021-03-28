@@ -368,3 +368,19 @@ export const getDailyStatsGen = (choice, userId="") => {
         headers: headers,
     });
 }
+
+export const getActivity = (id, start, end) => {
+    const token = localStorage.getItem('token');
+    const headers = {
+        "Authorization" :"Bearer "+ token,
+    }
+    const requestUrl= `users/${id}/activity`;
+    const params = {
+        "start": start,
+        "end": end,
+    }
+    return axios.get(requestUrl, {
+        params: params,
+        headers: headers,
+    })
+}

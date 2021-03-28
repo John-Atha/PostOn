@@ -1,0 +1,18 @@
+@media only screen and (max-width: 830px) {
+    .one-activity-container {
+        width: 100%;
+    }
+}
+@media only screen and (min-width: 830px) {
+    .one-activity-container {
+        width: 80%;
+    }
+}
+
+.one-activity-container {
+    height: 60px;
+    background-color: var(--boxback);
+    margin: 0.5%;
+    border-radius: 7px;
+    padding: 1%;
+}

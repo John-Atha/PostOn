@@ -10,6 +10,7 @@ import HomeFollowing from './HomeFollowing';
 import Login from './Login';
 import Register from './Register';
 import Statistics from './Statistics';
+import Activity from './Activity';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -32,6 +33,9 @@ ReactDOM.render(
         </Route>
         <Route path="/stats/personal" exact>
           <Statistics case="personal" />
+        </Route>
+        <Route path="/activity" exact>
+          <Activity />
         </Route>
       </Switch>   
     </BrowserRouter>
