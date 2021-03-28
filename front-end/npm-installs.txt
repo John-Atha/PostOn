@@ -5,3 +5,5 @@ npm i js-cookie
 npm i jwt-decode
 npm i react-outside-click-handler
 npm i react-chartist
+npm i chartist
+npm i canvasjs-react-charts
