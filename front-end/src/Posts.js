@@ -85,6 +85,7 @@ class OnePost extends React.Component {
                 edit: false,
                 editPostError: null,
                 editPostSuccess: "Post edited succesfully.",
+                text_init: this.state.text,
             })
             this.hideMessages();
         })
