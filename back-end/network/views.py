@@ -900,8 +900,9 @@ def UserActivity(request, id):
             likes = Like.objects.filter(owner=user)
             likeComments = LikeComment.objects.filter(owner=user)
             posts = Post.objects.filter(owner=user)
+            follows = Follow.objects.filter(following=user)
             activity = sorted(
-                chain(comments, likes, likeComments, posts),
+                chain(comments, likes, likeComments, posts, follows),
                 key=attrgetter('date'),
                 reverse=True)
             result = paginate(request.GET.get("start"), request.GET.get("end"), activity)
