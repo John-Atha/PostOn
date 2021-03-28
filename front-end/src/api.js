@@ -202,7 +202,6 @@ export const LikePost = (userId, postId) => {
         },
     }
     const headers = {
-        "Content-Type": "multipart/form-data",
         "Authorization": "Bearer "+token,
     }
     return axios.post(requestUrl, body, {
@@ -215,7 +214,6 @@ export const UnLikePost = (id) => {
     const requestUrl = `/likes/${id}/mod`;
 
     const headers = {
-        "Content-Type": "multipart/form-data",
         "Authorization": "Bearer "+token,
     }
     return axios.delete(requestUrl, {
@@ -235,7 +233,6 @@ export const LikeComment = (userId, commentId) => {
         },
     }
     const headers = {
-        "Content-Type": "multipart/form-data",
         "Authorization": "Bearer "+token,
     }
     return axios.post(requestUrl, body, {
@@ -249,7 +246,6 @@ export const UnLikeComment = (id) => {
     const requestUrl = `/likecomments/${id}/mod`;
 
     const headers = {
-        "Content-Type": "multipart/form-data",
         "Authorization": "Bearer "+token,
     }
     return axios.delete(requestUrl, {
@@ -262,7 +258,6 @@ export const DeleteComment = (id) => {
     const requestUrl = `/comments/${id}/mod`;
 
     const headers = {
-        "Content-Type": "multipart/form-data",
         "Authorization": "Bearer "+token,
     }
     return axios.delete(requestUrl, {
@@ -293,7 +288,6 @@ export const followUser = (id1, id2) => {
         },
     }
     const headers = {
-        "Content-Type": "multipart/form-data",
         "Authorization": "Bearer "+token,
     }
     return axios.post(requestUrl, body, {
@@ -305,10 +299,23 @@ export const unfollowUser = (id) => {
     const token = localStorage.getItem('token');
     const requestUrl = `/follows/${id}/mod`;
     const headers = {
-        "Content-Type": "multipart/form-data",
         "Authorization": "Bearer "+token,
     }
     return axios.delete(requestUrl, {
         headers: headers
+    })
+}
+
+export const editPost = (id, newText) => {
+    const requestUrl = `posts/${id}/mod`;
+    const token = localStorage.getItem('token');
+    const headers = {
+        "Authorization" :"Bearer "+ token,
+    }
+    const body = {
+        "text": newText,
+    }
+    return axios.put(requestUrl, body, {
+        headers: headers,
     })
 }

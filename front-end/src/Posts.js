@@ -1,7 +1,7 @@
 import React from "react";
 import "./Posts.css";
 
-import {isLogged, getPosts, getPostsCommentsSample, getAllLikes, getLikesSample, myLikes, LikePost, UnLikePost } from './api';
+import {isLogged, getPosts, getPostsCommentsSample, getAllLikes, getLikesSample, myLikes, LikePost, UnLikePost, editPost} from './api';
 import user_icon from './images/user-icon.png'; 
 import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
@@ -42,6 +42,8 @@ class OnePost extends React.Component {
             likesShow: false,
             commentsShow: false,
             edit: false,
+            editPostError: null,
+            editPostSuccess: null,
         }
         this.likesSample = this.likesSample.bind(this);
         this.commentsSample = this.commentsSample.bind(this);
@@ -65,7 +67,34 @@ class OnePost extends React.Component {
     }
 
     saveText = () => {
-        ;
+        editPost(this.state.id, this.state.text)
+        .then(response => {
+            console.log(response);
+            this.setState({
+                edit: false,
+                editPostError: null,
+                editPostSuccess: "Post edited succesfully.",
+            })
+            setTimeout(()=> {
+                this.setState({
+                    editPostError: null,
+                    editPostSuccess: null,
+                })
+            }, 2000)
+        })
+        .catch(err => {
+            console.log(err);
+            this.setState({
+                editPostSuccess: null,
+                editPostError: "Sorry, could not update post."
+            })
+            setTimeout(()=> {
+                this.setState({
+                    editPostError: null,
+                    editPostSuccess: null,
+                })
+            }, 2000)
+        })
     }
 
     editText = () => {
@@ -80,6 +109,7 @@ class OnePost extends React.Component {
         this.setState({
             [name]: value,
         })
+        console.log(`${name}: ${value}`)
     }
 
 
@@ -225,7 +255,11 @@ class OnePost extends React.Component {
                 </div>
                 <hr className="no-margin"></hr>
                 {!this.state.edit &&
-                    <div className="post-text">{this.state.text}</div>       
+                    <div className="post-text">
+                        <div className="error-message">{this.state.editPostError}</div>
+                        <div className="success-message">{this.state.editPostSuccess}</div>
+                        <div className="post-text">{this.state.text}</div>
+                    </div>       
                 }
                 {this.state.edit &&
                     <div className="post-text">
