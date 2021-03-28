@@ -221,6 +221,7 @@ class Statistics extends React.Component {
                 logged: response.data.authenticated,
                 userId: response.data.id,
             })
+            this.updateColors(document.getElementById('stats-posts-button'));
         })
         .catch(err => {
             console.log(err)
@@ -228,7 +229,7 @@ class Statistics extends React.Component {
                 error: "Not logged in"
             })
         })
-        if (this.state.logged) {
+        if(this.props.case==="general") {
             this.updateColors(document.getElementById('stats-posts-button'));
         }
     }
@@ -251,7 +252,7 @@ class Statistics extends React.Component {
                 <div className="all-page">
                     <MyNavbar />
                     <div className="main-page center-content">
-                        <h4>Pick a statistics category</h4>
+                        <h4 className="margin-top-smaller">Pick a statistics category</h4>
                         <div className="flex-layout center-content margin-top-smaller">
                             <button className="flex-item my-button pagi-button stats-choice-button" onClick={this.pick}>Likes</button>
                             <button className="flex-item my-button pagi-button stats-choice-button" onClick={this.pick}>Comments</button>
