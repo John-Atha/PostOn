@@ -1,0 +1,19 @@
+@media only screen and (max-width: 1120px) {
+    .diagrams-cont {
+        width: 100%;
+        margin-left: 0%;
+        height: 900px;
+    }
+}
+
+@media only screen and (min-width: 1120px) {
+    .diagrams-cont {
+        width: 80%;
+        margin-left: 10%;
+        height: 250px;
+    }
+}
+
+.diagram-container {
+    height: 250px;
+}

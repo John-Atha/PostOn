@@ -1,10 +1,10 @@
 import React from 'react';
 
-import './StatisticsGen.css';
+import './Statistics.css';
 import MyNavbar from './MyNavbar';
 import CanvasJSReact from './canvasjs.react.js';
 
-import {getMonthlyStatsGen, getDailyStatsGen} from './api';
+import {getMonthlyStatsGen, getDailyStatsGen, isLogged} from './api';
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -68,7 +68,7 @@ class Diagram extends React.Component {
                         text: "Monthly",
                     },
                     data:[{
-                        type: "column",
+                        type: "area",
                         dataPoints: tempData,
                     }]
                 }
@@ -114,6 +114,7 @@ class OneStats extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
+            userId: this.props.userId,
             choice: this.props.choice,
             monthlyStats: [],
             dailyStats: [],
@@ -126,7 +127,7 @@ class OneStats extends React.Component {
     }
 
     askMonthly = () => {
-        getMonthlyStatsGen(this.state.choice.charAt(0).toLowerCase()+this.state.choice.slice(1))
+        getMonthlyStatsGen(this.state.choice.charAt(0).toLowerCase()+this.state.choice.slice(1), this.state.userId)
         .then(response => {
             console.log(response);
             this.setState({
@@ -142,7 +143,7 @@ class OneStats extends React.Component {
     }
 
     askDaily = () => {
-        getDailyStatsGen(this.state.choice.charAt(0).toLowerCase()+this.state.choice.slice(1))
+        getDailyStatsGen(this.state.choice.charAt(0).toLowerCase()+this.state.choice.slice(1), this.state.userId)
         .then(response => {
             console.log(response);
             this.setState({
@@ -162,6 +163,14 @@ class OneStats extends React.Component {
         this.askDaily();
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.userId!==this.props.userId) {
+            this.setState({
+                userId: this.props.userId,
+            })
+        }
+    }
+
     render() {
         return (
             <div className="margin-top-smaller flex-layout diagrams-cont">
@@ -173,12 +182,15 @@ class OneStats extends React.Component {
 }
 
 
-class StatisticsGen extends React.Component {
+class Statistics extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = {
             choice:"Posts",
+            case: this.props.case,
+            logged: null,
+            userId: null,
         }
         this.pick = this.pick.bind(this);
         this.updateColors = this.updateColors.bind(this);
@@ -202,38 +214,68 @@ class StatisticsGen extends React.Component {
     }
 
     componentDidMount() {
-        this.updateColors(document.getElementById('stats-posts-button'));
+        isLogged()
+        .then(response => {
+            console.log(response);
+            this.setState({
+                logged: response.data.authenticated,
+                userId: response.data.id,
+            })
+        })
+        .catch(err => {
+            console.log(err)
+            this.setState({
+                error: "Not logged in"
+            })
+        })
+        if (this.state.logged) {
+            this.updateColors(document.getElementById('stats-posts-button'));
+        }
     }
 
     render() {
-        return(
-            <div className="all-page">
-                <MyNavbar />
-                <div className="main-page center-content">
-                    <h4>Pick a statistics category</h4>
-                    <div className="flex-layout center-content margin-top-smaller">
-                        <button className="flex-item my-button pagi-button stats-choice-button" onClick={this.pick}>Likes</button>
-                        <button className="flex-item my-button pagi-button stats-choice-button" onClick={this.pick}>Comments</button>
-                        <button className="flex-item my-button pagi-button stats-choice-button" id="stats-posts-button" onClick={this.pick}>Posts</button>
-                        <button className="flex-item my-button pagi-button stats-choice-button" onClick={this.pick}>Follows</button>
+        if(this.state.case==="personal" && !this.state.logged) {
+            return(
+                <div className="all-page">
+                    <MyNavbar />
+                    <div className="main-page center-content">
+                        <div className="error-message">
+                            You have to create an account to have your persinal statistics page
+                        </div>
                     </div>
-                    {this.state.choice==="Likes" &&
-                        <OneStats choice={this.state.choice} />
-                    }
-                    {this.state.choice==="Comments" &&
-                        <OneStats choice={this.state.choice} />
-                    }
-                    {this.state.choice==="Posts" &&
-                        <OneStats choice={this.state.choice} />
-                    }
-                    {this.state.choice==="Follows" &&
-                        <OneStats choice={this.state.choice} />
-                    }
                 </div>
-            </div>
-        )
+            )
+        }
+        else {
+            return(
+                <div className="all-page">
+                    <MyNavbar />
+                    <div className="main-page center-content">
+                        <h4>Pick a statistics category</h4>
+                        <div className="flex-layout center-content margin-top-smaller">
+                            <button className="flex-item my-button pagi-button stats-choice-button" onClick={this.pick}>Likes</button>
+                            <button className="flex-item my-button pagi-button stats-choice-button" onClick={this.pick}>Comments</button>
+                            <button className="flex-item my-button pagi-button stats-choice-button" id="stats-posts-button" onClick={this.pick}>Posts</button>
+                            <button className="flex-item my-button pagi-button stats-choice-button" onClick={this.pick}>Follows</button>
+                        </div>
+                        {this.state.choice==="Likes" &&
+                            <OneStats choice={this.state.choice} case={this.state.case} userId={this.state.userId}/>
+                        }
+                        {this.state.choice==="Comments" &&
+                            <OneStats choice={this.state.choice} case={this.state.case} userId={this.state.userId}/>
+                        }
+                        {this.state.choice==="Posts" &&
+                            <OneStats choice={this.state.choice} case={this.state.case} userId={this.state.userId}/>
+                        }
+                        {this.state.choice==="Follows" &&
+                            <OneStats choice={this.state.choice} case={this.state.case} userId={this.state.userId}/>
+                        }
+                    </div>
+                </div>
+            )
+        }
     }
 
 }
 
-export default StatisticsGen;
+export default Statistics;

@@ -340,12 +340,31 @@ export const AddComment = (userId, postId, text) => {
     })
 }
 
-export const getMonthlyStatsGen = (choice) => {
-    const requestUrl = `stats/${choice}/monthly`;
-    return axios.get(requestUrl);
-}
+export const getMonthlyStatsGen = (choice, userId="") => {
+    const token = localStorage.getItem('token');
+    const headers = {
+        "Authorization" :"Bearer "+ token,
+    }
 
-export const getDailyStatsGen = (choice) => {
-    const requestUrl = `stats/${choice}/daily`;
-    return axios.get(requestUrl);
+    let requestUrl = `stats/${choice}/monthly`;
+    if (userId!==null && userId!=="") {
+        requestUrl = `/users/${userId}/`+requestUrl;
+    }
+    return axios.get(requestUrl, {
+        headers: headers,
+    });}
+
+export const getDailyStatsGen = (choice, userId="") => {
+    const token = localStorage.getItem('token');
+    const headers = {
+        "Authorization" :"Bearer "+ token,
+    }
+
+    let requestUrl = `stats/${choice}/daily`;
+    if (userId!==null && userId!=="") {
+        requestUrl = `/users/${userId}/`+requestUrl;
+    }
+    return axios.get(requestUrl, {
+        headers: headers,
+    });
 }

@@ -9,7 +9,7 @@ import Home from './Home';
 import HomeFollowing from './HomeFollowing';
 import Login from './Login';
 import Register from './Register';
-import StatisticsGen from './StatisticsGen';
+import Statistics from './Statistics';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -28,7 +28,10 @@ ReactDOM.render(
           <Register />
         </Route>
         <Route path="/stats/general" exact>
-          <StatisticsGen />
+          <Statistics case="general"/>
+        </Route>
+        <Route path="/stats/personal" exact>
+          <Statistics case="personal" />
         </Route>
       </Switch>   
     </BrowserRouter>

@@ -70,8 +70,8 @@ class MyNavbar extends React.Component {
                     }   
                     {this.state.logged && 
                         <NavDropdown title="Statistics" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="#">My statistics</NavDropdown.Item>
-                            <NavDropdown.Item href="#">General statistics</NavDropdown.Item>
+                            <NavDropdown.Item href="/stats/personal">My statistics</NavDropdown.Item>
+                            <NavDropdown.Item href="/stats/general">General statistics</NavDropdown.Item>
                             <NavDropdown.Item href="#">Activity</NavDropdown.Item>
                         </NavDropdown>
                     }
