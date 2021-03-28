@@ -118,8 +118,6 @@ class NewComment extends React.Component {
     }
 }
 
-
-
 class OneComment extends React.Component {
     constructor(props) {
         super(props);
@@ -369,7 +367,6 @@ class OneComment extends React.Component {
     }
 }
 
-
 class Comments extends React.Component {
     constructor(props) {
         super(props);
@@ -393,7 +390,12 @@ class Comments extends React.Component {
     }
 
     updateMe = () => {
-        setTimeout(()=>{this.askComments();}, 1000);
+        setTimeout(()=>{
+            this.setState({
+                commentsList: [],
+            })
+            this.askComments();
+        }, 1000);
     }
     
     seeMore = () => {
@@ -430,7 +432,7 @@ class Comments extends React.Component {
     }
 
     removeComment = (id) => {
-        console.log(`I will delete comment ${id}`)
+        /*console.log(`I will delete comment ${id}`)
         let commIndex = null;
         if (this.state.how==="sample") {
             console.log(`I am looking for it at he comments list:`)
@@ -456,11 +458,9 @@ class Comments extends React.Component {
             this.setState({
                 commentsList: tempCommentsList,
             })
-        }
+        }*/
         let x = this.props.updateParent();
     }
-
-
 
     componentDidMount() {
         if (this.state.how==="sample") {
@@ -494,6 +494,11 @@ class Comments extends React.Component {
         else {
             return(
                 <div className="all-comments-container center-content">
+                    <NewComment userId={this.state.userId}
+                                logged={this.state.logged}
+                                postId={this.state.postId}
+                                updateComments={this.updateMe}/>
+
                     {
                         this.state.commentsList.map((value, index) => {
                             //console.log(value);
