@@ -114,7 +114,6 @@ class OnePost extends React.Component {
         console.log(`${name}: ${value}`)
     }
 
-
     postUnLike = () => {
         getAllLikes(1, this.state.id, "post")
         .then(response => {
@@ -225,6 +224,7 @@ class OnePost extends React.Component {
                 owner: this.props.owner,
                 media: this.props.media,
                 text: this.props.text,
+                text_init: this.props.text,
                 date: this.props.date,
                 liked: this.props.liked    
             })

@@ -281,7 +281,7 @@ class Activity extends React.Component {
                 </div>
             }
             {!this.state.actList.length &&
-                <div className="error-message margin-top center-text">Oops, no posts found..</div>
+                <div className="error-message margin-top center-text">Oops, no activity found..</div>
             }
 
         </div>
