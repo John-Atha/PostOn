@@ -339,3 +339,13 @@ export const AddComment = (userId, postId, text) => {
         headers: headers,
     })
 }
+
+export const getMonthlyStatsGen = (choice) => {
+    const requestUrl = `stats/${choice}/monthly`;
+    return axios.get(requestUrl);
+}
+
+export const getDailyStatsGen = (choice) => {
+    const requestUrl = `stats/${choice}/daily`;
+    return axios.get(requestUrl);
+}
