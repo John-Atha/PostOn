@@ -102,13 +102,13 @@
     margin-left: 25%;
 }
 
-.likes-action, .comments-action {
+.likes-action, .comments-action, .edit-action {
     color: grey;
     font-weight: bold;
     text-decoration: none;
 }
 
-.likes-action:hover, .comments-action:hover {
+.likes-action:hover, .comments-action:hover, .edit-action:hover {
     color: blue;
     transform: scale(1.1);
     -webkit-transform: scale(1.1);
@@ -118,3 +118,14 @@
 .liker-sample, .likes-sample-num {
     font-size: small !important;
 } 
+
+.edit-action {
+    position: absolute;
+    right: 0;
+    margin-right: 7px;
+}
+
+.post-textarea-edit {
+    width: 100%;
+    height: 150px !important;
+}

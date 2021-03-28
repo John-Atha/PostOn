@@ -6,6 +6,8 @@ import user_icon from './images/user-icon.png';
 import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
 import comment_icon from './images/comment.png';
+import edit_icon from './images/edit.png';
+
 import Likes from './Likes';
 
 import Comments from './Comments';
@@ -21,6 +23,7 @@ class OnePost extends React.Component {
             owner: this.props.owner,
             media: this.props.media,
             text: this.props.text,
+            text_init :this.props.text,
             date: this.props.date,
             liked: this.props.liked,
             likesNum: 0,
@@ -38,6 +41,7 @@ class OnePost extends React.Component {
             comments_error: null,
             likesShow: false,
             commentsShow: false,
+            edit: false,
         }
         this.likesSample = this.likesSample.bind(this);
         this.commentsSample = this.commentsSample.bind(this);
@@ -46,7 +50,38 @@ class OnePost extends React.Component {
         this.showHideComments = this.showHideComments.bind(this);
         this.postLike = this.postLike.bind(this);
         this.postUnLike = this.postUnLike.bind(this);
+        this.saveText = this.saveText.bind(this);
+        this.discardText = this.discardText.bind(this);
+        this.editText = this.editText.bind(this);
+        this.handleInput = this.handleInput.bind(this);
     }
+
+
+    discardText = () => {
+        this.setState({
+            edit: false,
+            text: this.state.text_init,
+        })
+    }
+
+    saveText = () => {
+        ;
+    }
+
+    editText = () => {
+        this.setState({
+            edit: true,
+        })
+    }
+
+    handleInput  = (event) => {
+        const name = event.target.name;
+        const value = event.target.value;
+        this.setState({
+            [name]: value,
+        })
+    }
+
 
     postUnLike = () => {
         getAllLikes(1, this.state.id, "post")
@@ -94,21 +129,6 @@ class OnePost extends React.Component {
             likesShow: true,
             followsUpd: this.state.followsUpd+1,
         })
-        /*let box = event.target.parentElement.parentElement.parentElement;
-        console.log(box);
-        let children = box.children;
-        console.log(children);
-        if (children[7]) {
-            let container = children[7];
-            console.log(`container:`)
-            console.log(`${container}`)
-            if (container.children[0]) {
-                container.children[0].style.display = "block";
-            }
-            else {
-                container.style.display="block";
-            }
-        }*/
     }
 
     showHideComments = () => {
@@ -194,9 +214,28 @@ class OnePost extends React.Component {
                         <div className="owner-name">{this.state.owner.username}</div>
                         <div className="post-date">{time}<br></br>{date}</div>
                     </div>
+                    {this.state.userId===this.state.owner.id &&
+                        <div className="center-content flex-item-small edit-action">
+                            <button className="edit-action flex-layout button-as-link" onClick={this.editText}>
+                                    <img className="like-icon" src={edit_icon} alt="edit-icon"/>
+                                    <div>Edit</div>
+                            </button>
+                        </div>
+                    }
                 </div>
                 <hr className="no-margin"></hr>
-                <div className="post-text">{this.state.text}</div>
+                {!this.state.edit &&
+                    <div className="post-text">{this.state.text}</div>       
+                }
+                {this.state.edit &&
+                    <div className="post-text">
+                        <textarea className="post-textarea-edit" name="text" value={this.state.text} onChange={this.handleInput}>{this.state.text}</textarea>
+                        <div className="flex-layout center-conetnt">
+                            <button className="my-button pagi-button flex-item-small" onClick={this.saveText}>Save change</button>
+                            <button className="my-button pagi-button flex-item-small" onClick={this.discardText}>Discard change</button>
+                        </div>                       
+                    </div>
+                }
                 <hr className="no-margin"></hr>
                 <div className="stats-sample flex-layout">
                     <div className="likes-sample">
