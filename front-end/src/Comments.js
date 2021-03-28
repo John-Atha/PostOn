@@ -7,7 +7,117 @@ import liked_icon from './images/liked.png';
 import delete_icon from './images/delete-icon.png';
 
 import Likes from './Likes';
-import {getPostsComments, getLikesSample, getLikes, getAllLikes, LikeComment, UnLikeComment, DeleteComment} from './api';
+import {getPostsComments, getLikesSample, getLikes, getAllLikes, LikeComment, UnLikeComment, DeleteComment, AddComment, getUser} from './api';
+
+
+class NewComment extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            userId: this.props.userId,
+            username: null,
+            logged: this.props.logged,
+            text: "",
+            postId: this.props.postId,
+            owner: this.props.owner,
+            error: null,
+            commentAddError: null,
+            commentAddSucces: null,
+        }
+        this.handleInput = this.handleInput.bind(this);
+        this.submit = this.submit.bind(this);
+        this.hideMessages = this.hideMessages.bind(this);
+    }
+
+    handleInput = (event) => {
+        const name = event.target.name;
+        const value = event.target.value;
+        this.setState({
+            [name]: value,
+        })
+    }
+
+    hideMessages = () => {
+        setTimeout(()=> {
+            console.log("I am hiding the messages.");
+            this.setState({
+                commentAddError: "",
+                commentAddSuccess: "",    
+            })
+        }, 2000);
+    }
+
+    submit = (event) => {
+        if (this.state.text.length) {
+            AddComment(this.state.userId, this.state.postId, this.state.text)
+            .then(response => {
+                console.log(response);
+                this.props.updateComments();
+                this.setState({
+                    commentAddError: null,
+                    commentAddSuccess: "Comment posted successfully",
+                    text: "",
+                })
+                this.hideMessages();
+            })
+            .catch(err => {
+                console.log(err);
+                this.setState({
+                    commentAddError: "Sorry, we could not post your comment",
+                    commentAddSuccess: null,
+                })
+                this.hideMessages();
+            })
+        }
+        else {
+            this.setState({
+                commentAddError: "You cannot post an empty comment",
+                commentAddSuccess: null,
+            })
+            this.hideMessages();
+        }
+    
+        event.preventDefault();
+    }
+
+    componentDidMount() {
+        getUser(this.state.userId)
+        .then(response => {
+            console.log(response);
+            this.setState({
+                username: response.data.username,
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            this.setState({
+                error: "Not logged in."
+            })
+        })
+    }
+
+    render() {
+        return(
+            <div className="comment-box flex-item-expand">
+            <div className="flex-layout">
+                <div className="user-photo-container-small">
+                        <img className="user-photo" src={user_icon} alt="user profile" />
+                </div>
+                <div className="owner-name">{this.state.username}</div>
+            </div>
+            <form className="text-comment flex-layout" onSubmit={this.submit}>
+                <div className="error-message">{this.state.commentAddError}</div>
+                <div className="success-message">{this.state.commentAddSuccess}</div>
+                <textarea className="comment-textarea" name="text" placeholder="Add your comment here..." value={this.state.text} onChange={this.handleInput}>{this.state.text}</textarea>
+                <button className="my-button pagi-button" type="submit">Add</button>
+            </form>
+        </div>
+
+
+        )
+    }
+}
+
 
 
 class OneComment extends React.Component {
@@ -279,8 +389,12 @@ class Comments extends React.Component {
         this.seeMore = this.seeMore.bind(this);
         this.askComments = this.askComments.bind(this);
         this.removeComment = this.removeComment.bind(this);
+        this.updateMe = this.updateMe.bind(this);
     }
 
+    updateMe = () => {
+        setTimeout(()=>{this.askComments();}, 1000);
+    }
     
     seeMore = () => {
         setTimeout(this.setState({
@@ -362,6 +476,11 @@ class Comments extends React.Component {
         if (this.state.how==="sample") {
             return (
                 <div className="all-comments-container center-content">
+                    <NewComment userId={this.state.userId}
+                                logged={this.state.logged}
+                                postId={this.state.postId}
+                                updateComments={this.updateMe}/>
+
                     <OneComment userId={this.state.userId}
                                 logged={this.state.logged}
                                 comment={this.state.commentSample}

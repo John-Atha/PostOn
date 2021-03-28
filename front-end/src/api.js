@@ -319,3 +319,23 @@ export const editPost = (id, newText) => {
         headers: headers,
     })
 }
+
+export const AddComment = (userId, postId, text) => {
+    const requestUrl = `comments/mod`;
+    const token = localStorage.getItem('token');
+    const headers = {
+        "Authorization" :"Bearer "+ token,
+    }
+    const body = {
+        "owner": {
+            "id": userId,
+        },
+        "post": {
+            "id": postId,
+        },
+        "text": text,
+    }
+    return axios.post(requestUrl, body, {
+        headers: headers,
+    })
+}

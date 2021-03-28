@@ -263,7 +263,7 @@ class OnePost extends React.Component {
                 }
                 {this.state.edit &&
                     <div className="post-text">
-                        <textarea className="post-textarea-edit" name="text" value={this.state.text} onChange={this.handleInput}>{this.state.text}</textarea>
+                        <textarea className="post-textarea-edit" name="text" value={this.state.text} onChange={this.handleInput}></textarea>
                         <div className="flex-layout center-conetnt">
                             <button className="my-button pagi-button flex-item-small" onClick={this.saveText}>Save change</button>
                             <button className="my-button pagi-button flex-item-small" onClick={this.discardText}>Discard change</button>

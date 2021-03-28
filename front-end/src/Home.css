@@ -119,3 +119,12 @@ body {
 .blue-color {
     color: blue;
 }
+
+.hidden {
+    display: none;
+}
+
+textarea {
+    border: 1px solid grey;
+    border-radius: 6px;
+}
