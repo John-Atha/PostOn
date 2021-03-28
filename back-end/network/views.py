@@ -1083,7 +1083,7 @@ def OnePostLikes(request, id):
             post = Post.objects.get(id=id)
         except Post.DoesNotExist:
             return JsonResponse({"error": "Invalid post id."}, status=400)
-        likes = Like.objects.filter(post=post)
+        likes = Like.objects.filter(post=post).order_by('-date')
         result = paginate(request.GET.get("start"), request.GET.get("end"), likes)
         try:
             likes = result
@@ -1103,7 +1103,7 @@ def OnePostLikesSample(request, id):
         except Post.DoesNotExist:
             return JsonResponse({"error": "Invalid post id."}, status=400)
         if request.method=="GET":
-            likes = Like.objects.filter(post=post)       
+            likes = Like.objects.filter(post=post).order_by('-date')       
             if len(likes)==0:
                 return JsonResponse({"error": "No likes found for this post"}, status=402)
             else:
@@ -1121,7 +1121,7 @@ def OnePostComments(request, id):
             post = Post.objects.get(id=id)
         except Post.DoesNotExist:
             return JsonResponse({"error": "Invalid post id."}, status=400)
-        comments = Comment.objects.filter(post=post)
+        comments = Comment.objects.filter(post=post).order_by('-date')
         result = paginate(request.GET.get("start"), request.GET.get("end"), comments)
         try:
             comments = result
@@ -1141,7 +1141,7 @@ def OnePostCommentsSample(request, id):
         except Post.DoesNotExist:
             return JsonResponse({"error": "Invalid post id."}, status=400)
         if request.method=="GET":
-            comments = Comment.objects.filter(post=post)       
+            comments = Comment.objects.filter(post=post).order_by('-date')       
             if len(comments)==0:
                 return JsonResponse({"error": "No comments found for this post"}, status=402)
             else:
