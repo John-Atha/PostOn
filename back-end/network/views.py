@@ -1190,31 +1190,23 @@ def OneCommentLikesSample(request, id):
                 }
                 return JsonResponse(answer, status=200)
 
-@api_view(['Get'])
 def UserFollowsCount(request, id):
     if request.method=="GET":
         try:
             user = User.objects.get(id=id)
-            if request.user==user:
-                follows = user.follows.count()
-                return JsonResponse({"follows": follows}, safe=False, status=200)
-            else:
-                return JsonResponse({"error": "You cannot see the stats of another user"}, status=400)
+            follows = user.follows.count()
+            return JsonResponse({"follows": follows}, safe=False, status=200)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
     else:
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
 
-@api_view(['Get'])
 def UserFollowersCount(request, id):
     if request.method=="GET":
         try:
             user = User.objects.get(id=id)
-            if request.user==user:
-                follows = user.followers.count()
-                return JsonResponse({"followers": follows}, safe=False, status=200)
-            else:
-                return JsonResponse({"error": "You cannot see the stats of another user"}, status=400)
+            follows = user.followers.count()
+            return JsonResponse({"followers": follows}, safe=False, status=200)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
     else:

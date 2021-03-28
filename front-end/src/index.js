@@ -11,6 +11,13 @@ import Login from './Login';
 import Register from './Register';
 import Statistics from './Statistics';
 import Activity from './Activity';
+import Profile from './Profile';
+
+function FindProfile() {
+  let {id} = useParams();
+  return <Profile userId={id} />
+}
+
 
 ReactDOM.render(
   <React.StrictMode>
@@ -36,6 +43,9 @@ ReactDOM.render(
         </Route>
         <Route path="/activity" exact>
           <Activity />
+        </Route>
+        <Route path="/users/:id" exact>
+          <FindProfile />
         </Route>
       </Switch>   
     </BrowserRouter>

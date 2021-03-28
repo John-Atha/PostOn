@@ -1,7 +1,7 @@
 import React from "react";
 import "./Posts.css";
 
-import {isLogged, getPosts, getPostsCommentsSample, getAllLikes, getLikesSample, myLikes, LikePost, UnLikePost, editPost} from './api';
+import {isLogged, getPosts, getPostsCommentsSample, getAllLikes, getLikesSample, myLikes, LikePost, UnLikePost, editPost, getUsersPosts} from './api';
 import user_icon from './images/user-icon.png'; 
 import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
@@ -364,6 +364,7 @@ class Posts extends React.Component {
             case: this.props.case,
             likesEnd: 1,
             likesList: [],
+            whose: this.props.whose,
         }
         this.likesIncr = 10;
         this.previousPage = this.previousPage.bind(this);
@@ -431,17 +432,34 @@ class Posts extends React.Component {
     askPosts = () => {
         setTimeout(()=> {}, 1000)
         console.log(`I am asking posts from ${this.state.start} to ${this.state.end}`)
-        getPosts(this.state.start, this.state.end, this.state.case)
-        .then(response => {
-            console.log(response);
-            this.setState({
-                postsList: response.data,
+        if (this.state.whose) {
+            getUsersPosts(this.state.whose, this.state.start, this.state.end)
+            .then(response => {
+                console.log(response);
+                this.setState({
+                    postsList: response.data,
+                })
+                console.log(this.state.postsList)
             })
-            console.log(this.state.postsList)
-        })
-        .catch(err => {
-            console.log(err);
-        })
+            .catch(err => {
+                console.log(err);
+            })
+        }
+        else {
+            getPosts(this.state.start, this.state.end, this.state.case)
+            .then(response => {
+                console.log(response);
+                this.setState({
+                    postsList: response.data,
+                })
+                console.log(this.state.postsList)
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
+    
+
 
     }
 

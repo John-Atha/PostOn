@@ -384,3 +384,14 @@ export const getActivity = (id, start, end) => {
         headers: headers,
     })
 }
+
+export const getUsersPosts = (id, start, end) => {
+    const requestUrl = `users/${id}/posts`;
+    const params = {
+        "start": start,
+        "end": end,
+    }
+    return axios.get(requestUrl, {
+        params: params,
+    })
+}
