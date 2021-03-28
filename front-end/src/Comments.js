@@ -41,8 +41,8 @@ class NewComment extends React.Component {
         setTimeout(()=> {
             console.log("I am hiding the messages.");
             this.setState({
-                commentAddError: "",
-                commentAddSuccess: "",    
+                commentAddError: null,
+                commentAddSuccess: null,    
             })
         }, 2000);
     }
@@ -480,7 +480,6 @@ class Comments extends React.Component {
                                 logged={this.state.logged}
                                 postId={this.state.postId}
                                 updateComments={this.updateMe}/>
-
                     <OneComment userId={this.state.userId}
                                 logged={this.state.logged}
                                 comment={this.state.commentSample}

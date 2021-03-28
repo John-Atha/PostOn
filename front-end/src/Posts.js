@@ -56,6 +56,7 @@ class OnePost extends React.Component {
         this.discardText = this.discardText.bind(this);
         this.editText = this.editText.bind(this);
         this.handleInput = this.handleInput.bind(this);
+        this.hideMessages = this.hideMessages.bind(this);
     }
 
 
@@ -64,6 +65,16 @@ class OnePost extends React.Component {
             edit: false,
             text: this.state.text_init,
         })
+    }
+
+    hideMessages = () => {
+        setTimeout(()=> {
+            console.log("I am hiding the messages.");
+            this.setState({
+                editPostError: null,
+                editPostSuccess: null,    
+            })
+        }, 2000);
     }
 
     saveText = () => {
@@ -75,12 +86,7 @@ class OnePost extends React.Component {
                 editPostError: null,
                 editPostSuccess: "Post edited succesfully.",
             })
-            setTimeout(()=> {
-                this.setState({
-                    editPostError: null,
-                    editPostSuccess: null,
-                })
-            }, 2000)
+            this.hideMessages();
         })
         .catch(err => {
             console.log(err);
@@ -88,12 +94,7 @@ class OnePost extends React.Component {
                 editPostSuccess: null,
                 editPostError: "Sorry, could not update post."
             })
-            setTimeout(()=> {
-                this.setState({
-                    editPostError: null,
-                    editPostSuccess: null,
-                })
-            }, 2000)
+            this.hideMessages();
         })
     }
 
@@ -314,7 +315,7 @@ class OnePost extends React.Component {
                         }                        
                     </div>
                     <div className="flex-item-small center-content">
-                        <button className="comments-action flex-layout button-as-link">
+                        <button className="comments-action flex-layout button-as-link" onClick={this.showHideComments}>
                                 <img className="like-icon" src={comment_icon} alt="comment-icon"/>
                                 <div>Comment</div>
                         </button>
