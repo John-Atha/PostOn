@@ -4,19 +4,46 @@ import {isLogged, getActivity} from './api';
 import './Activity.css';
 import MyNavbar from './MyNavbar';
 
+const dateShow = (date) => {
+    let datetime = date.replace('T', ' ').replace('Z', '').split(' ')
+    let day = datetime[0]
+    let time = datetime[1].substring(0, 8)
+    return `${day} ${time}`
+
+}
 
 class CommentAction extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            owner: this.props.action.owner,
+            post: this.props.action.post,
+            text: this.props.action.text,
+            date: this.props.action.date,
         }
     }
+
 
     render() {
         return(
             <div className="one-activity-container">
-                I am a comment.
+                <div className="description flex-layout">
+                    <div className="with-whitespace">
+                        On {dateShow(this.state.date)}, you commented on a
+                    </div>
+                    <a href="#" className="with-whitespace">
+                        {" post "}
+                    </a>
+                    <div>
+                        of user 
+                    </div>
+                    <a href="#" className="with-whitespace">
+                        {" "+this.state.post.owner.username}
+                    </a>.
+                </div>
+                <div className="margin-top-smaller">
+                    {this.state.text}
+                </div>
             </div>
         )
     }
@@ -26,14 +53,29 @@ class PostLikeAction extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            owner: this.props.action.owner,
+            post: this.props.action.post,
+            date: this.props.action.date,
         }
     }
 
     render() {
         return(
             <div className="one-activity-container">
-                I am a like on a post.
+                <div className="description flex-layout">
+                    <div className="with-whitespace">
+                        On {dateShow(this.state.date)}, you liked a
+                    </div>
+                    <a href="#" className="with-whitespace">
+                        {" post "}
+                    </a>
+                    <div>
+                        of user 
+                    </div>
+                    <a href="#" className="with-whitespace">
+                        {" "+this.state.post.owner.username}
+                    </a>.
+                </div>
             </div>
         )
     }
@@ -43,14 +85,29 @@ class CommentLikeAction extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            owner: this.props.action.owner,
+            comment: this.props.action.comment,
+            date: this.props.action.date,
         }
     }
 
     render() {
         return(
             <div className="one-activity-container">
-                I am a like on a comment.
+                <div className="description flex-layout">
+                    <div className="with-whitespace">
+                        On {dateShow(this.state.date)}, you liked a
+                    </div>
+                    <a href="#" className="with-whitespace">
+                        {" comment "}
+                    </a>
+                    <div>
+                        of user 
+                    </div>
+                    <a href="#" className="with-whitespace">
+                        {" "+this.state.comment.owner.username}
+                    </a>.
+                </div>
             </div>
         )
     }
@@ -60,14 +117,49 @@ class PostAction extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-
+            owner: this.props.action.owner,
+            post: this.props.action.post,
+            date: this.props.action.date,
         }
     }
 
     render() {
         return(
             <div className="one-activity-container">
-                I am a post.
+                <div className="description flex-layout">
+                    <div className="with-whitespace">
+                        On {dateShow(this.state.date)}, you uploaded a
+                    </div>
+                    <a href="#" className="with-whitespace">
+                        {" post "}
+                    </a>.
+                </div>
+            </div>
+        )
+    }
+}
+
+class FollowAction extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            owner: this.props.action.owner,
+            followed: this.props.action.followed,
+            date: this.props.action.date,
+        }
+    }
+
+    render() {
+        return(
+            <div className="one-activity-container">
+                <div className="description flex-layout">
+                    <div className="with-whitespace">
+                        On {dateShow(this.state.date)}, you followed the user
+                    </div>
+                    <a href="#" className="with-whitespace">
+                        {" "+this.state.followed.username}
+                    </a>.
+                </div>
             </div>
         )
     }
@@ -114,6 +206,7 @@ class Activity extends React.Component {
     }
 
     askActivity = () => {
+        console.log(`I am asking activity from ${this.state.start} to ${this.state.end}`)
         getActivity(this.state.userId, this.state.start, this.state.end)
         .then(response=> {
             console.log(response);
@@ -149,7 +242,7 @@ class Activity extends React.Component {
 
     render() {
         return (
-        <div className="all-page">
+        <div className="all-page padding-bottom">
             <MyNavbar />
             <div className="main-activity-container flex-layout">
                 {this.state.actList.map((value, index) => {
@@ -158,13 +251,21 @@ class Activity extends React.Component {
                             <CommentAction key={index} action={value} />
                         )
                     }
-
                     else if (value.comment) {
                         return(
                             <CommentLikeAction key={index} action={value} />
                         )
                     }
-
+                    else if (value.text) {
+                        return(
+                            <PostAction key={index} action={value} />
+                        ) 
+                    }
+                    else if (value.following) {
+                        return(
+                            <FollowAction key={index} action={value} />
+                        ) 
+                    }
                     else {
                         return(
                             <PostLikeAction key={index} action={value} />

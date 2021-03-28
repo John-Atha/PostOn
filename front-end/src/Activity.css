@@ -10,7 +10,7 @@
 }
 
 .one-activity-container {
-    height: 60px;
+    height: min-content;
     background-color: var(--boxback);
     margin: 0.5%;
     border-radius: 7px;
