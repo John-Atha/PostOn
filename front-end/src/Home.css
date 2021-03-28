@@ -64,6 +64,12 @@ body {
     width: 300px !important;
 }
 
+.flex-item-big {
+    flex-grow: 1;
+    height: min-content;
+    width: 400px !important;
+}
+
 .flex-item-small {
     flex-grow: 1;
     height: min-content;

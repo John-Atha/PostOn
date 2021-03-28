@@ -8,54 +8,83 @@ import {getMonthlyStatsGen, getDailyStatsGen} from './api';
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-class PieDiagram extends React.Component {
+class Diagram extends React.Component {
+
     constructor(props) {
         super(props);
         this.state = {
             statsInit: this.props.stats,
             data: {},
-            diagramOptions1: null,
+            options: null,
+            type: this.props.type,
+            choice: this.props.choice,
         }
         this.compute = this.compute.bind(this);
     }
 
     compute = () => {
-        console.log("I am pie and i am computing")
-        let tempData = [];
-        for (const [key, value] of Object.entries(this.props.stats)) {
-            tempData.push({
-                "y": value,
-                "label": key,
+        if (this.state.type==="pie") {
+            console.log("I am pie and i am computing")
+            let tempData = [];
+            for (const [key, value] of Object.entries(this.props.stats)) {
+                tempData.push({
+                    "y": value,
+                    "label": key,
+                })  
+            }
+            this.setState({
+                options: {
+                    animationEnabled: true,
+                    exportEnabled: true,
+                    backgroundColor: "#EBEAEA",
+                    title: {
+                        text: "Daily",
+                    },
+                    data:[{
+                        type: "doughnut",
+                        indexLabel: "{label}: {y}%",
+                        startAngle: -90,
+                        dataPoints: tempData
+                    }]
+                }
             })  
         }
-        setTimeout(()=>{console.log(this.state.data)}, 1000);
+        else if (this.state.type==="line") {
+            let tempData = [];
+            this.props.stats.forEach(el=> {
+                let date = el["year-month"].split('-');
+                tempData.push({
+                    x: new Date(date[0], date[1], 1),
+                    y: el[`${this.state.choice.charAt(0).toLowerCase()+this.state.choice.slice(1)}`],
+                })
+            })
+            this.setState({
+                options: {
+                    exportEnabled: true,
+                    animationEnabled: true,
+                    animationDuration: 2000,
+                    backgroundColor: "#EBEAEA",
+                    title: {
+                        text: "Monthly",
+                    },
+                    data:[{
+                        type: "column",
+                        dataPoints: tempData,
+                    }]
+                }
+            })
+            setTimeout(()=>{console.log(tempData)}, 2000);
 
-        this.setState({
-            diagramOptions1: {
-                animationEnabled: true,
-                exportEnabled: true,
-                title: {
-                    text: "Daily",
-                },
-                data:[{
-                    type: "pie",
-                    indexLabel: "{label}: {y}%",
-                    startAngle: -90,
-                    dataPoints: tempData
-                }]
-            }
-        })
+        }
     }
 
     componentDidMount() {
-        console.log(`I will call a Pie and a received data:`)
         console.log(this.props.stats)
         this.compute()
     }
 
     componentDidUpdate(prevProps) {
         if (prevProps.stats!==this.props.stats) {
-            console.log("I am pie and my stats were just updated")
             this.setState({
                 statsInit: this.props.stats,
             })
@@ -66,7 +95,9 @@ class PieDiagram extends React.Component {
     render() {
         if (this.state.data!=={}) {
             return(
-                <CanvasJSChart options={this.state.diagramOptions1} />
+                <div className="diagram-container flex-item-big margin-top-small">
+                    <CanvasJSChart options={this.state.options} />
+                </div>
             )  
         }
         else {
@@ -133,9 +164,9 @@ class OneStats extends React.Component {
 
     render() {
         return (
-            <div className="margin-top-smaller flex-layout">
-                <PieDiagram stats={this.state.dailyStats} />
-                <LineDiagram stats={this.state.monthlyStats} />
+            <div className="margin-top-smaller flex-layout diagrams-cont">
+                <Diagram type="pie" stats={this.state.dailyStats}    choice={this.state.choice} />
+                <Diagram type="line" stats={this.state.monthlyStats} choice={this.state.choice} />
             </div>
         )
     }
