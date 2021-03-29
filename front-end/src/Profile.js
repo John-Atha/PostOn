@@ -1,5 +1,6 @@
 import React from 'react';
 import './Profile.css';
+import user_icon from './images/user-icon.png'; 
 
 import MyNavbar from './MyNavbar';
 import Posts from './Posts';
@@ -75,27 +76,53 @@ class Profile extends React.Component {
         return(
             <div className="all-page">
                 <MyNavbar />
-                <div className="main-page">
-                    <div className="profile-info">
-                        <div>
+                <div className="profile-main center-content">
+                        <div className="profile-username margin-top-smaller">
                             {this.state.username}
                         </div>
-                        <div>
-                            moto: {this.state.moto}
+                </div>
+                <div className="profile-main center-content">
+                    <div className="user-photo-container2">
+                        <img className="user-photo" src={user_icon} alt="user profile" />
+                    </div>
+                    <div className="margin-left profile-info">
+                        <div className="center-content">
+                            {this.state.moto}
                         </div>
-                        <div>
+                        <div className="center-content">
                             country: {this.state.country}
                         </div>
-                        <div>
-                            Followers: {this.state.followersNum}
-                        </div>
-                        <div>
-                            Follows: {this.state.followsNum}
+                        <div className="center-content flex-layout">
+                            <div className="margin-right">
+                                Followers: {this.state.followersNum}
+                            </div>
+                            <div className="margin-left">
+                                Follows: {this.state.followsNum}
+                            </div>
                         </div>
                     </div>
-                    <Posts whose={this.state.userId} />
                 </div>
-            </div>
+                <div className="flex-layout">
+                    <div className="follows-box flex-item-small">
+                        asgfaga
+                        ga
+                        dge
+                        gaegaeughaeugaeg
+                        ae
+                        gaegaeiuvf
+                    </div>
+                    <Posts whose={this.state.userId} />
+                    <div className="follows-box flex-item-small">
+                        asgfaga
+                        ga
+                        dge
+                        gaegaeughaeugaeg
+                        ae
+                        gaegaeiuvf
+                    </div>
+                </div>
+                </div>
+            
         )
     }
 }

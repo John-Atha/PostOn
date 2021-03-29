@@ -35,6 +35,10 @@ body {
 .margin-left {
     margin-left: 2% !important;
 }
+.margin-right {
+    margin-right: 40px !important;
+}
+
 .padding-bottom {
     padding-bottom: 4%;
 }
