@@ -44,6 +44,8 @@ class OnePost extends React.Component {
             edit: false,
             editPostError: null,
             editPostSuccess: null,
+            showCard: false,
+            showCard2: false,
         }
         this.likesSample = this.likesSample.bind(this);
         this.commentsSample = this.commentsSample.bind(this);

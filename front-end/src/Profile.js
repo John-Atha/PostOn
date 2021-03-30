@@ -2,6 +2,7 @@ import React from 'react';
 import './Profile.css';
 import user_icon from './images/user-icon.png'; 
 import OutsideClickHandler from 'react-outside-click-handler';
+import ProfileCard from  './ProfileCard';
 
 import MyNavbar from './MyNavbar';
 import UserPosts from './UserPosts';
@@ -14,9 +15,25 @@ class OneUser extends React.Component {
         this.state = {
             user: this.props.user,
             logged: this.props.logged,
+            showCard: false,
         }
         this.follow = this.follow.bind(this);
         this.unfollow = this.unfollow.bind(this);
+        this.cardShow = this.cardShow.bind(this);
+        this.cardHide = this.cardHide.bind(this);
+    }
+
+    cardShow = () => {
+        this.setState({
+            mouseOutLink: false,
+            mouseOutCard: false,
+            showCard: true,
+        })
+    }
+    cardHide = () => {
+        this.setState({
+            showCard: false,
+        })
     }
 
     follow = () => {
@@ -57,8 +74,17 @@ class OneUser extends React.Component {
     render() {
         return(
             <div className="one-like flex-layout">
-                <div className="like-owner flex-item-small">
+                <div className="like-owner flex-item-small"                        
+                        onMouseEnter={this.cardShow}
+                        onMouseLeave={this.cardHide}>
                     {this.state.user.username}
+                    {this.state.showCard &&
+                        <ProfileCard id={this.state.user.id}
+                                username={this.state.user.username}
+                                moto={this.state.user.moto}
+                                photo={this.state.user.photo}
+                                position={"bottom"} />
+                    }
                 </div>
                 <div className="un-follow-button-container flex-item-small">
                 {this.state.logged && !this.props.followed && !this.props.following && this.props.me!==this.props.user.id &&
@@ -322,7 +348,6 @@ class FollowBox extends React.Component {
     }
 }
 
-
 class Profile extends React.Component {
     constructor(props) {
         super(props);
@@ -432,7 +457,7 @@ class Profile extends React.Component {
             myFollowsObjIdList: [],
             myFollowersList: [],
         })
-        setTimeout(()=>{this.askMyFollows()}, 0);
+        setTimeout(()=>{this.askMyFollows(); this.countFollows(); this.countFollowers();}, 0);
     }
     getUserInfo = () => {
         getUser(this.state.userId)
