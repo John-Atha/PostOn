@@ -11,7 +11,8 @@ import edit_icon from './images/edit.png';
 import Likes from './Likes';
 
 import Comments from './Comments';
-
+import ProfileCard from './ProfileCard';
+import Profile from "./Profile";
 
 class OnePost extends React.Component {
     constructor(props) {
@@ -44,6 +45,7 @@ class OnePost extends React.Component {
             edit: false,
             editPostError: null,
             editPostSuccess: null,
+            showCard: false,
         }
         this.likesSample = this.likesSample.bind(this);
         this.commentsSample = this.commentsSample.bind(this);
@@ -57,8 +59,22 @@ class OnePost extends React.Component {
         this.editText = this.editText.bind(this);
         this.handleInput = this.handleInput.bind(this);
         this.hideMessages = this.hideMessages.bind(this);
+        this.cardShow = this.cardShow.bind(this);
+        this.cardHide = this.cardHide.bind(this);
     }
 
+    cardShow = () => {
+        this.setState({
+            mouseOutLink: false,
+            mouseOutCard: false,
+            showCard: true,
+        })
+    }
+    cardHide = () => {
+        this.setState({
+            showCard: false,
+        })
+    }
 
     discardText = () => {
         this.setState({
@@ -66,7 +82,6 @@ class OnePost extends React.Component {
             text: this.state.text_init,
         })
     }
-
     hideMessages = () => {
         setTimeout(()=> {
             console.log("I am hiding the messages.");
@@ -76,7 +91,6 @@ class OnePost extends React.Component {
             })
         }, 2000);
     }
-
     saveText = () => {
         editPost(this.state.id, this.state.text)
         .then(response => {
@@ -98,13 +112,11 @@ class OnePost extends React.Component {
             this.hideMessages();
         })
     }
-
     editText = () => {
         this.setState({
             edit: true,
         })
     }
-
     handleInput  = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -113,7 +125,6 @@ class OnePost extends React.Component {
         })
         console.log(`${name}: ${value}`)
     }
-
     postUnLike = () => {
         getAllLikes(1, this.state.id, "post")
         .then(response => {
@@ -140,7 +151,6 @@ class OnePost extends React.Component {
         })
         
     }
-
     postLike = () => {
         LikePost(this.state.userId, this.state.id)
         .then(response => {
@@ -154,20 +164,17 @@ class OnePost extends React.Component {
             console.log(err);
         })
     }
-
     showLikes = (event) => {
         this.setState({
             likesShow: true,
             followsUpd: this.state.followsUpd+1,
         })
     }
-
     showHideComments = () => {
         this.setState({
             commentsShow: !this.state.commentsShow,
         })
     }
-
     commentsSample = () => {
         console.log("I am one-post class, I was called by my child")
         setTimeout(()=> {}, 5000);
@@ -187,7 +194,6 @@ class OnePost extends React.Component {
             })
         })
     }
-
     likesSample = () => {
         setTimeout(()=> {}, 1000);
         getLikesSample(this.props.id, "post")
@@ -206,16 +212,13 @@ class OnePost extends React.Component {
         })
 
     }
-
     statsSample = () => {
         this.likesSample();
         this.commentsSample();
     }
-
     componentDidMount() {
         this.statsSample();
     }
-
     componentDidUpdate(prevProps) {
         if (prevProps.id!==this.props.id || prevProps.liked!==this.props.liked) {
             console.log("NEW POST!!")
@@ -239,11 +242,23 @@ class OnePost extends React.Component {
         return(
             <div className="post-container">
                 <div className="flex-layout">
-                    <div className="user-photo-container">
+                    <div className="user-photo-container"
+                                    onMouseEnter={this.cardShow}
+                                    onMouseLeave={this.cardHide} >
                         <img className="user-photo" src={user_icon} alt="user profile" />
                     </div>
-                    <div>
-                        <div className="owner-name">{this.state.owner.username}</div>
+                    <div onMouseEnter={this.cardShow}
+                             onMouseLeave={this.cardHide}>
+                        <div className="owner-name" >
+                            {this.state.owner.username}
+                            {this.state.showCard &&
+                                <ProfileCard id={this.state.owner.id}
+                                     username={this.state.owner.username}
+                                     moto={this.state.owner.moto}
+                                     photo={this.state.owner.photo} />
+                            }
+
+                        </div>
                         <div className="post-date">{time}<br></br>{date}</div>
                     </div>
                     {this.state.userId===this.state.owner.id &&
