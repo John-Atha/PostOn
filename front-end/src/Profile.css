@@ -35,15 +35,14 @@
 
 .profile-username {
     font-weight: bold;
-    font-size: larger;
 }
 
 .user-photo-container2 {
-    height:200px;
+    height:170px;
     width: 200px;
+    margin-left: auto;
+    margin-right: auto;
     border-radius: 50%;
-    padding: 0%;
-    margin: 0%;
 }
 
 .follows-pop-up {

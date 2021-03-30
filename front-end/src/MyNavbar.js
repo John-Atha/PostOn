@@ -57,7 +57,7 @@ class MyNavbar extends React.Component {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
                     {this.state.logged &&
-                        <Nav.Link href="#">{this.state.username}</Nav.Link>
+                        <Nav.Link href={`/users/${this.state.userId}`}>{this.state.username}</Nav.Link>
                     }
                     {!this.state.logged &&
                         <Nav.Link href="/">Posts</Nav.Link>

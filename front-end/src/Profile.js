@@ -505,9 +505,9 @@ class Profile extends React.Component {
             <div className="all-page">
                 <MyNavbar />
                 <div className="profile-main center-content">
-                        <div className="profile-username margin-top-smaller">
+                        <h3 className="profile-username margin-top-smaller">
                             {this.state.username}
-                        </div>
+                        </h3>
                 </div>
                 <div className="profile-main center-content">
                     <div className="user-photo-container2">
@@ -530,9 +530,10 @@ class Profile extends React.Component {
                             </div>
                     </div>
                 </div>
-                <div className="flex-layout adjusted-width">
+                <div className="adjusted-width">
+                    <h4 className="center-text">{this.state.username}'s posts</h4>
                     <UserPosts whose={this.state.userId}
-                           updateHome={()=> {}} />
+                           updateHome={this.updateMyFollows} />
                 </div>
                 {this.state.followsShow &&
                     <FollowBox  userId={this.state.userId}
