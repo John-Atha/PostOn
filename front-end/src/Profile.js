@@ -7,7 +7,7 @@ import MyNavbar from './MyNavbar';
 import Posts from './Posts';
 import {getUser, getFollowersCount, getFollowsCount, getFollows, getFollowers, getFollowsPagi, getFollowersPagi, followUser, unfollowUser, isLogged} from './api';
 
-/*
+
 class OneUser extends React.Component {
     constructor(props) {
         super(props);
@@ -61,13 +61,13 @@ class OneUser extends React.Component {
                     {this.state.user.username}
                 </div>
                 <div className="un-follow-button-container flex-item-small">
-                {this.state.logged && !this.props.followed && !this.props.following && this.props.me!==this.props.owner.id &&
+                {this.state.logged && !this.props.followed && !this.props.following && this.props.me!==this.props.user.id &&
                     <button className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow</button>
                 }
-                {this.state.logged && !this.props.followed && this.props.following && this.props.me!==this.props.owner.id &&
+                {this.state.logged && !this.props.followed && this.props.following && this.props.me!==this.props.user.id &&
                     <button className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow Back</button>
                 }
-                {this.state.logged && this.props.followed && this.props.me!==this.props.owner.id &&
+                {this.state.logged && this.props.followed && this.props.me!==this.props.user.id &&
                     <button className="my-button un-follow-button" onClick={this.unfollow}>Unfollow</button>
                 }
                 </div>
@@ -75,7 +75,7 @@ class OneUser extends React.Component {
         )
     }
 
-}*/
+}
 
 class FollowBox extends React.Component {
     constructor(props) {
@@ -174,32 +174,51 @@ class FollowBox extends React.Component {
                 console.log("results:")
                 console.log(this.state.hisFollowsList);
                 return(
-                    <OutsideClickHandler onOutsideClick={this.hide}>
-                        <div className="follows-box ">
+                    <OutsideClickHandler onOutsideClick={this.hide} >
+                        <div className="follows-pop-up">
                             {this.state.hisFollowsList.map((value, index) => {
                                 if(this.props.myFollowsList.includes(value.followed.id)) {
                                     return (
-                                        <div key={index}>
-                                            {value.followed.username}, i am following him
-                                        </div>
+                                        <OneUser key={index}
+                                                 user={value.followed}
+                                                 me={this.state.me}
+                                                 logged={this.state.logged}
+                                                 followId={this.props.myFollowsObjIdList[this.props.myFollowsList.indexOf(value.followed.id)]}
+                                                 followed={true}
+                                                 updatePar={this.props.updateMyFollows} />
                                     )
                                 }
                                 else if(!this.state.hisFollowsList.includes(value.followed.id) &&
                                          this.props.myFollowersList.includes(value.followed.id)) {
                                             return(
-                                                <div key={index}>
-                                                    {value.followed.username}, not following him, he follows me
-                                                </div>
-                                            )
+                                                <OneUser key={index}
+                                                         user={value.followed}
+                                                         me={this.state.me}
+                                                         logged={this.state.logged}
+                                                         followed={true}
+                                                         following={true}
+                                                         updatePar={this.props.updateMyFollows} />
+                                           )
                                 }
                                 else {
                                     return(
-                                        <div key={index}>
-                                            {value.followed.username}, not following him, he doesn't follow me
-                                        </div>
+                                        <OneUser key={index}
+                                                 user={value.followed}
+                                                 me={this.state.me}
+                                                 logged={this.state.logged}
+                                                 followed={false}
+                                                 following={false}
+                                                 updatePar={this.props.updateMyFollows} />
                                     )
                                 }
                             })}
+                            {this.state.hisFollowsList.length>0 &&
+                                <div className="pagi-buttons-container flex-layout center-content">
+                                    <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
+                                    <button disabled={this.state.hisFollowsList.length<5} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
+                                </div>
+                            }            
+
                         </div>
                     </OutsideClickHandler>
                 )
@@ -209,33 +228,52 @@ class FollowBox extends React.Component {
                 console.log(this.state.hisFollowersList);
                 return(
                     <OutsideClickHandler onOutsideClick={this.hide}>
-                        <div className="follows-box2">
+                        <div className="follows-pop-up">
                             {this.state.hisFollowersList.map((value, index) => {
                                 console.log(value);
                                 if(this.props.myFollowsList.includes(value.following.id)) {
                                     return (
-                                        <div key={index}> 
-                                            {value.following.username}, i am following him
-                                        </div>
+                                        <OneUser key={index}
+                                                 user={value.following}
+                                                 me={this.state.me}
+                                                 logged={this.state.logged}
+                                                 followId={this.props.myFollowsObjIdList[this.props.myFollowsList.indexOf(value.followed.id)]}
+                                                 followed={true}
+                                                 updatePar={this.props.updateMyFollows} />
                                     )
     
                                 }
                                 else if(!this.props.myFollowsList.includes(value.following.id) &&
                                          this.props.myFollowersList.includes(value.following.id)) {
                                             return(
-                                                <div key={index}>
-                                                    {value.following.username}, not following him, he follows me
-                                                </div>
+                                                <OneUser key={index}
+                                                         user={value.following}
+                                                         me={this.state.me}
+                                                         logged={this.state.logged}
+                                                         followed={true}
+                                                         following={true}
+                                                         updatePar={this.props.updateMyFollows} />
                                             )
                                 }
                                 else {
                                     return (
-                                        <div key={index}>
-                                            {value.following.username}, not following him, he doesn't follow me
-                                        </div>
+                                        <OneUser key={index}
+                                                 user={value.following}
+                                                 me={this.state.me}
+                                                 logged={this.state.logged}
+                                                 followed={false}
+                                                 following={false}
+                                                 updatePar={this.props.updateMyFollows} />
                                     )
                                 }
                             })}
+                            {this.state.hisFollowersList.length>0 &&
+                                <div className="pagi-buttons-container flex-layout center-content">
+                                    <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
+                                    <button disabled={this.state.hisFollowersList.length<5} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
+                                </div>
+                            }            
+
                         </div>
                     </OutsideClickHandler>
                 )
@@ -469,7 +507,8 @@ class Profile extends React.Component {
                                 myFollowersList={this.state.myFollowersList}
                                 myFollowsObjIdList={this.state.myFollowsObjIdList}
                                 hideFollows={this.hideFollows}
-                                hideFollowers={this.hideFollowers} />
+                                hideFollowers={this.hideFollowers}
+                                updateMyFollows={this.updateMyFollows} />
                 }
                 {this.state.followersShow &&
                     <FollowBox  userId={this.state.userId}
@@ -480,8 +519,8 @@ class Profile extends React.Component {
                                 myFollowersList={this.state.myFollowersList}
                                 myFollowsObjIdList={this.state.myFollowsObjIdList}
                                 hideFollows={this.hideFollows}
-                                hideFollowers={this.hideFollowers} />
-
+                                hideFollowers={this.hideFollowers}
+                                updateMyFollows={this.updateMyFollows} />
                 }
             </div>
             

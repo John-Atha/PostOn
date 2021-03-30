@@ -3,11 +3,19 @@
         width: 100%;
         margin-left: 0%;
     }
+    .follows-pop-up {
+        width: 80%;
+        margin-left: 10%;
+    }
 }
 @media only screen and (min-width: 830px) {
     .adjusted-width {
         width: 80%;
         margin-left: 10%;
+    }
+    .follows-pop-up {
+        width: 50%;
+        margin-left: 25%;
     }
 }
 
@@ -38,26 +46,16 @@
     margin: 0%;
 }
 
-.follows-box {
+.follows-pop-up {
+    z-index: 1;
+    top: 20%;
     position: absolute;
-    top: 10%;
-    left: 20%;
-    width: 200px;
-    background-color: white;
+    background-color: rgb(230, 230, 230);
+    min-height: min-content;
     border-radius: 7px;
-    margin: 1%;
-    padding: 1%;
-}
-
-.follows-box2 {
-    position: absolute;
-    top: 10%;
-    left: 0%;
-    width: 200px;
-    background-color: white;
-    border-radius: 7px;
-    margin: 1%;
-    padding: 1%;
+    padding: 2% 1%;
+    animation:
+        pop-up-appearing 1s;
 }
 
 .foll-button {
