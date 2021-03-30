@@ -75,7 +75,6 @@ class OnePost extends React.Component {
             showCard: false,
         })
     }
-
     discardText = () => {
         this.setState({
             edit: false,

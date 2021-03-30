@@ -1,5 +1,6 @@
 import React from "react";
 import "./Likes.css";
+import ProfileCard from  './ProfileCard';
 
 import {getLikes, getFollowers, getFollows, followUser, unfollowUser} from './api';
 
@@ -11,9 +12,25 @@ class OneLike extends React.Component {
         this.state = {
             owner: this.props.owner,
             logged: this.props.logged,
+            showCard: false,
         }
         this.follow = this.follow.bind(this);
         this.unfollow = this.unfollow.bind(this);
+        this.cardShow = this.cardShow.bind(this);
+        this.cardHide = this.cardHide.bind(this);
+    }
+
+    cardShow = () => {
+        this.setState({
+            mouseOutLink: false,
+            mouseOutCard: false,
+            showCard: true,
+        })
+    }
+    cardHide = () => {
+        this.setState({
+            showCard: false,
+        })
     }
 
     follow = () => {
@@ -54,8 +71,17 @@ class OneLike extends React.Component {
     render() {
         return(
             <div className="one-like flex-layout">
-                <div className="like-owner flex-item-small">
+                <div className="like-owner flex-item-small"
+                        onMouseEnter={this.cardShow}
+                        onMouseLeave={this.cardHide}>
                     {this.state.owner.username}
+                    {this.state.showCard &&
+                        <ProfileCard id={this.state.owner.id}
+                                username={this.state.owner.username}
+                                moto={this.state.owner.moto}
+                                photo={this.state.owner.photo}/>
+                    }
+
                 </div>
                 <div className="un-follow-button-container flex-item-small">
                 {this.state.logged && !this.props.followed && !this.props.following && this.props.me!==this.props.owner.id &&
