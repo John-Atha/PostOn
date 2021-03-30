@@ -44,7 +44,7 @@ class CommentAction extends React.Component {
                     <div className="with-whitespace">
                         On {dateShow(this.state.date)}, you commented on a
                     </div>
-                    <a href="#" className="with-whitespace">
+                    <a href={`/posts/${this.state.post.id}`} className="with-whitespace">
                         {" post "}
                     </a>
                     <div>
@@ -101,7 +101,7 @@ class PostLikeAction extends React.Component {
                     <div className="with-whitespace">
                         On {dateShow(this.state.date)}, you liked a
                     </div>
-                    <a href="#" className="with-whitespace">
+                    <a href={`/posts/${this.state.post.id}`} className="with-whitespace">
                         {" post "}
                     </a>
                     <div>
@@ -156,7 +156,7 @@ class CommentLikeAction extends React.Component {
                     <div className="with-whitespace">
                         On {dateShow(this.state.date)}, you liked a
                     </div>
-                    <a href="#" className="with-whitespace">
+                    <a href={`/posts/${this.state.comment.post.id}`} className="with-whitespace">
                         {" comment "}
                     </a>
                     <div>
@@ -175,6 +175,10 @@ class CommentLikeAction extends React.Component {
                         }
                     </a>.
                 </div>
+                <div className="margin-top-smaller">
+                    {this.state.comment.text}
+                </div>
+
             </div>
         )
     }
@@ -185,7 +189,7 @@ class PostAction extends React.Component {
         super(props);
         this.state = {
             owner: this.props.action.owner,
-            post: this.props.action.post,
+            post: this.props.action,
             date: this.props.action.date,
         }
     }
@@ -196,9 +200,11 @@ class PostAction extends React.Component {
                     <div className="with-whitespace">
                         On {dateShow(this.state.date)}, you uploaded a
                     </div>
-                    <a href="#" className="with-whitespace">
-                        {" post "}
-                    </a>.
+                    {this.state.post!==null &&
+                        <a href={`/posts/${this.state.post.id}`} className="with-whitespace">
+                            {" post "}.
+                        </a>
+                    }
                 </div>
             </div>
         )
