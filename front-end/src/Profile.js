@@ -4,7 +4,7 @@ import user_icon from './images/user-icon.png';
 import OutsideClickHandler from 'react-outside-click-handler';
 
 import MyNavbar from './MyNavbar';
-import Posts from './Posts';
+import UserPosts from './UserPosts';
 import {getUser, getFollowersCount, getFollowsCount, getFollows, getFollowers, getFollowsPagi, getFollowersPagi, followUser, unfollowUser, isLogged} from './api';
 
 
@@ -90,6 +90,8 @@ class FollowBox extends React.Component {
             hisFollowsList: [],
             hisFollowersList: [],
             case: this.props.case,
+            followsError: null,
+            followersError: null,
         }
         this.previousPage = this.previousPage.bind(this);
         this.nextPage = this.nextPage.bind(this);
@@ -135,6 +137,7 @@ class FollowBox extends React.Component {
                     console.log(response);
                     this.setState({
                         hisFollowsList: response.data,
+                        followsError: null,
                     })
                     console.log("followsList: ");
                     console.log(response.data);
@@ -142,6 +145,9 @@ class FollowBox extends React.Component {
                 .catch(err => {
                     console.log(err);
                     console.log("No more follows found for this user (as a follower).");
+                    this.setState({
+                        followsError: "No more follows found from this user.",
+                    })
                 });
             }, 100)
         }
@@ -160,6 +166,10 @@ class FollowBox extends React.Component {
                 .catch(err => {
                     console.log(err);
                     console.log("No more follows found for this user (as followed).");
+                    this.setState({
+                        followersError: "No more followers found for this user.",
+                    })
+
                 });
             }, 100)
         }
@@ -175,9 +185,21 @@ class FollowBox extends React.Component {
                 console.log(this.state.hisFollowsList);
                 return(
                     <OutsideClickHandler onOutsideClick={this.hide} >
-                        <div className="follows-pop-up">
-                            {this.state.hisFollowsList.map((value, index) => {
+                        <div className="follows-pop-up center-content">
+                        {(this.state.followsError) && 
+                            <div className="error-message">
+                                {this.state.followsError}
+                            </div>
+                        }
+                        {!this.state.followsError &&
+
+                            this.state.hisFollowsList.map((value, index) => {
                                 if(this.props.myFollowsList.includes(value.followed.id)) {
+                                    console.log("my follows list:")
+                                    console.log(this.props.myFollowsList)
+                                    console.log(this.props.myFollowsObjIdList);
+                                    console.log(value.followed.username);
+                                    console.log(this.props.myFollowsObjIdList[this.props.myFollowsList.indexOf(value.followed.id)])
                                     return (
                                         <OneUser key={index}
                                                  user={value.followed}
@@ -195,7 +217,7 @@ class FollowBox extends React.Component {
                                                          user={value.followed}
                                                          me={this.state.me}
                                                          logged={this.state.logged}
-                                                         followed={true}
+                                                         followed={false}
                                                          following={true}
                                                          updatePar={this.props.updateMyFollows} />
                                            )
@@ -212,10 +234,11 @@ class FollowBox extends React.Component {
                                     )
                                 }
                             })}
+
                             {this.state.hisFollowsList.length>0 &&
                                 <div className="pagi-buttons-container flex-layout center-content">
                                     <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
-                                    <button disabled={this.state.hisFollowsList.length<5} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
+                                    <button disabled={this.state.followsError} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
                                 </div>
                             }            
 
@@ -229,15 +252,28 @@ class FollowBox extends React.Component {
                 return(
                     <OutsideClickHandler onOutsideClick={this.hide}>
                         <div className="follows-pop-up">
-                            {this.state.hisFollowersList.map((value, index) => {
+                            {(this.state.followsError) && 
+                                <div className="error-message">
+                                    {this.state.followsError}
+                                </div>
+                            }
+                            {!this.state.followsError &&
+
+                            this.state.hisFollowersList.map((value, index) => {
                                 console.log(value);
                                 if(this.props.myFollowsList.includes(value.following.id)) {
+                                    console.log("my follows list:")
+                                    console.log(this.props.myFollowsList)
+                                    console.log(this.props.myFollowsObjIdList);
+                                    console.log(value.following.username);
+                                    console.log(this.props.myFollowsObjIdList[this.props.myFollowsList.indexOf(value.following.id)])
+
                                     return (
                                         <OneUser key={index}
                                                  user={value.following}
                                                  me={this.state.me}
                                                  logged={this.state.logged}
-                                                 followId={this.props.myFollowsObjIdList[this.props.myFollowsList.indexOf(value.followed.id)]}
+                                                 followId={this.props.myFollowsObjIdList[this.props.myFollowsList.indexOf(value.following.id)]}
                                                  followed={true}
                                                  updatePar={this.props.updateMyFollows} />
                                     )
@@ -250,7 +286,7 @@ class FollowBox extends React.Component {
                                                          user={value.following}
                                                          me={this.state.me}
                                                          logged={this.state.logged}
-                                                         followed={true}
+                                                         followed={false}
                                                          following={true}
                                                          updatePar={this.props.updateMyFollows} />
                                             )
@@ -270,7 +306,7 @@ class FollowBox extends React.Component {
                             {this.state.hisFollowersList.length>0 &&
                                 <div className="pagi-buttons-container flex-layout center-content">
                                     <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
-                                    <button disabled={this.state.hisFollowersList.length<5} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
+                                    <button disabled={this.state.followersError} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
                                 </div>
                             }            
 
@@ -495,7 +531,7 @@ class Profile extends React.Component {
                     </div>
                 </div>
                 <div className="flex-layout adjusted-width">
-                    <Posts whose={this.state.userId}
+                    <UserPosts whose={this.state.userId}
                            updateHome={()=> {}} />
                 </div>
                 {this.state.followsShow &&
