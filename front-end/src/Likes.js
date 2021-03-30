@@ -154,7 +154,6 @@ class Likes extends React.Component {
 
     componentDidMount() {
         this.askLikes();
-        localStorage.setItem('exploreReload1',false);
     }
 
     componentDidUpdate(prevProps) {

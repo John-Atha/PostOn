@@ -488,7 +488,6 @@ class Posts extends React.Component {
 
                 {this.state.postsList.length && this.state.postsList.map((value, index) => {
                     let liked=null;
-                    console.log(value.id);
                     if (this.state.likesList.includes(value.id)) {
                         console.log("liked")
                         liked=true;
