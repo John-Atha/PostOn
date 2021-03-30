@@ -1,5 +1,5 @@
 import React from 'react';
-
+import ProfileCard from './ProfileCard';
 import {isLogged, getActivity} from './api';
 import './Activity.css';
 import MyNavbar from './MyNavbar';
@@ -20,10 +20,23 @@ class CommentAction extends React.Component {
             post: this.props.action.post,
             text: this.props.action.text,
             date: this.props.action.date,
+            showCard: false,
         }
+        this.cardShow = this.cardShow.bind(this);
+        this.cardHide = this.cardHide.bind(this);
     }
-
-
+    cardShow = () => {
+        this.setState({
+            mouseOutLink: false,
+            mouseOutCard: false,
+            showCard: true,
+        })
+    }
+    cardHide = () => {
+        this.setState({
+            showCard: false,
+        })
+    }
     render() {
         return(
             <div className="one-activity-container">
@@ -37,8 +50,17 @@ class CommentAction extends React.Component {
                     <div>
                         of user 
                     </div>
-                    <a href="#" className="with-whitespace">
+                    <a href="#" className="with-whitespace"
+                        onMouseEnter={this.cardShow}
+                        onMouseLeave={this.cardHide}>
                         {" "+this.state.post.owner.username}
+                        {this.state.showCard &&
+                                <ProfileCard id={this.state.post.owner.id}
+                                     username={this.state.post.owner.username}
+                                     moto={this.state.post.owner.moto}
+                                     photo={this.state.post.owner.photo}
+                                     position={"right"} />
+                        }
                     </a>.
                 </div>
                 <div className="margin-top-smaller">
@@ -57,8 +79,21 @@ class PostLikeAction extends React.Component {
             post: this.props.action.post,
             date: this.props.action.date,
         }
+        this.cardShow = this.cardShow.bind(this);
+        this.cardHide = this.cardHide.bind(this);
     }
-
+    cardShow = () => {
+        this.setState({
+            mouseOutLink: false,
+            mouseOutCard: false,
+            showCard: true,
+        })
+    }
+    cardHide = () => {
+        this.setState({
+            showCard: false,
+        })
+    }
     render() {
         return(
             <div className="one-activity-container">
@@ -72,9 +107,18 @@ class PostLikeAction extends React.Component {
                     <div>
                         of user 
                     </div>
-                    <a href="#" className="with-whitespace">
+                    <a href="#" className="with-whitespace"
+                        onMouseEnter={this.cardShow}
+                        onMouseLeave={this.cardHide}>
                         {" "+this.state.post.owner.username}
-                    </a>.
+                        {this.state.showCard &&
+                                <ProfileCard id={this.state.post.owner.id}
+                                     username={this.state.post.owner.username}
+                                     moto={this.state.post.owner.moto}
+                                     photo={this.state.post.owner.photo}
+                                     position={"right"} />
+                        }
+                    </a>
                 </div>
             </div>
         )
@@ -88,9 +132,23 @@ class CommentLikeAction extends React.Component {
             owner: this.props.action.owner,
             comment: this.props.action.comment,
             date: this.props.action.date,
+            showCard: false,
         }
+        this.cardShow = this.cardShow.bind(this);
+        this.cardHide = this.cardHide.bind(this);
     }
-
+    cardShow = () => {
+        this.setState({
+            mouseOutLink: false,
+            mouseOutCard: false,
+            showCard: true,
+        })
+    }
+    cardHide = () => {
+        this.setState({
+            showCard: false,
+        })
+    }
     render() {
         return(
             <div className="one-activity-container">
@@ -104,8 +162,17 @@ class CommentLikeAction extends React.Component {
                     <div>
                         of user 
                     </div>
-                    <a href="#" className="with-whitespace">
+                    <a href="#" className="with-whitespace"
+                        onMouseEnter={this.cardShow}
+                        onMouseLeave={this.cardHide}>
                         {" "+this.state.comment.owner.username}
+                        {this.state.showCard &&
+                                <ProfileCard id={this.state.comment.owner.id}
+                                     username={this.state.comment.owner.username}
+                                     moto={this.state.comment.owner.moto}
+                                     photo={this.state.comment.owner.photo}
+                                     position={"right"} />
+                        }
                     </a>.
                 </div>
             </div>
@@ -122,7 +189,6 @@ class PostAction extends React.Component {
             date: this.props.action.date,
         }
     }
-
     render() {
         return(
             <div className="one-activity-container">
@@ -146,9 +212,23 @@ class FollowAction extends React.Component {
             owner: this.props.action.owner,
             followed: this.props.action.followed,
             date: this.props.action.date,
+            showCard: false,
         }
+        this.cardShow = this.cardShow.bind(this);
+        this.cardHide = this.cardHide.bind(this);
     }
-
+    cardShow = () => {
+        this.setState({
+            mouseOutLink: false,
+            mouseOutCard: false,
+            showCard: true,
+        })
+    }
+    cardHide = () => {
+        this.setState({
+            showCard: false,
+        })
+    }
     render() {
         return(
             <div className="one-activity-container">
@@ -156,8 +236,17 @@ class FollowAction extends React.Component {
                     <div className="with-whitespace">
                         On {dateShow(this.state.date)}, you followed the user
                     </div>
-                    <a href="#" className="with-whitespace">
+                    <a href="#" className="with-whitespace"
+                                onMouseEnter={this.cardShow}
+                                onMouseLeave={this.cardHide}>
                         {" "+this.state.followed.username}
+                        {this.state.showCard &&
+                                <ProfileCard id={this.state.followed.id}
+                                     username={this.state.followed.username}
+                                     moto={this.state.followed.moto}
+                                     photo={this.state.followed.photo}
+                                     position={"right"} />
+                        }
                     </a>.
                 </div>
             </div>

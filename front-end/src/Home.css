@@ -142,5 +142,6 @@ textarea {
 }
 
 .with-whitespace {
-    white-space: pre; 
+    white-space: pre;
+    position: relative; 
 }
