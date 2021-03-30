@@ -418,3 +418,8 @@ export const getUsersPosts = (id, start, end) => {
         params: params,
     })
 }
+
+export const getOnePost = (id) => {
+    const requestUrl = `posts/${id}`;
+    return axios.get(requestUrl);
+}

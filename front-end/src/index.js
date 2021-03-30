@@ -12,12 +12,17 @@ import Register from './Register';
 import Statistics from './Statistics';
 import Activity from './Activity';
 import Profile from './Profile';
+import OnePostPage from './OnePostPage';
 
 function FindProfile() {
   let {id} = useParams();
   return <Profile userId={id} />
 }
 
+function FindPost() {
+  let {id} = useParams();
+  return <OnePostPage id={id} />
+}
 
 ReactDOM.render(
   <React.StrictMode>
@@ -46,6 +51,9 @@ ReactDOM.render(
         </Route>
         <Route path="/users/:id" exact>
           <FindProfile />
+        </Route>
+        <Route path="/posts/:id" exact>
+          <FindPost />
         </Route>
       </Switch>   
     </BrowserRouter>
