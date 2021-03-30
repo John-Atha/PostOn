@@ -204,6 +204,7 @@ class Explore extends React.Component {
             followsObjIdList: [],
             followersList: [],
         })
+        this.props.updateMyPar();
         setTimeout(()=>{this.askFollows()}, 0);
     }
 

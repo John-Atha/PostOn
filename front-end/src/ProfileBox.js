@@ -16,9 +16,43 @@ class ProfileBox extends React.Component {
             follows: null,
         }
         this.load = this.load.bind(this);
+        this.countFollows = this.countFollows.bind(this);
+        this.countFollowers = this.countFollowers.bind(this);
+        this.getUserInfo = this.getUserInfo.bind(this);
     }
 
-    load = () => {
+    countFollows = () => {
+        getFollowsCount(this.state.userId)
+        .then(response => {
+            console.log(response);
+            this.setState({
+                follows: response.data.follows,
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            this.setState({
+                follows: "-",
+            })
+        })
+
+    }
+    countFollowers = () => {
+        getFollowersCount(this.state.userId)
+        .then(response => {
+            console.log(response);
+            this.setState({
+                followers: response.data.followers,
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            this.setState({
+                followers: "-",
+            })
+        })
+    }
+    getUserInfo = () => {
         getUser(this.state.userId)
         .then(response => {
             console.log(response);
@@ -33,32 +67,12 @@ class ProfileBox extends React.Component {
                 error: "Sorry, we could not find info for your account.",
             })
         })
-        getFollowersCount(this.state.userId)
-        .then(response => {
-            console.log(response);
-            this.setState({
-                followers: response.data.followers,
-            })
-        })
-        .catch(err => {
-            console.log(err);
-            this.setState({
-                followers: "-",
-            })
-        })
-        getFollowsCount(this.state.userId)
-        .then(response => {
-            console.log(response);
-            this.setState({
-                follows: response.data.follows,
-            })
-        })
-        .catch(err => {
-            console.log(err);
-            this.setState({
-                follows: "-",
-            })
-        })
+    }
+
+    load = () => {
+        this.getUserInfo();
+        this.countFollowers();
+        this.countFollows();
     }
 
     componentDidMount() {
@@ -68,6 +82,10 @@ class ProfileBox extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.userId!==this.props.userId) {
             this.load();
+        }
+        if (prevProps.update1!==this.props.update1 || prevProps.update2!==this.props.update2) {
+            this.countFollowers();
+            this.countFollows();
         }
     }
 

@@ -16,8 +16,10 @@ class Home extends React.Component {
             logged: false,
             error: null,
             update1: 1,
+            update2: 1,
         }
         this.updateHome = this.updateHome.bind(this);
+        this.updateProfBox = this.updateProfBox.bind(this);
     }
 
     componentDidMount() {
@@ -37,6 +39,12 @@ class Home extends React.Component {
         })
     }
 
+    updateProfBox = () => {
+        this.setState({
+            update2: this.state.update2+1,
+        })
+    }
+
     updateHome = () => {
         this.setState({
             update1: this.state.update1+1,
@@ -48,10 +56,10 @@ class Home extends React.Component {
             <div className="all-page">
                 <MyNavbar />
                 <div className="main-home-container flex-layout">
-                    <Explore userId={this.state.userId} logged={this.state.logged} update1={this.state.update1} />
+                    <Explore userId={this.state.userId} logged={this.state.logged} update1={this.state.update1} updateMyPar={this.updateProfBox} />
                     <Posts case="all" updateHome={this.updateHome} />
                     {this.state.logged &&
-                        <ProfileBox userId={this.state.userId} logged={this.state.logged} />
+                        <ProfileBox userId={this.state.userId} logged={this.state.logged} update1={this.state.update1} update2={this.state.update2} />
                     }
                 </div>
             </div>
