@@ -1,6 +1,6 @@
 import React from 'react';
 import './Explore.css'
-
+import ProfileCard from './ProfileCard';
 import user_icon from './images/user-icon.png'; 
 
 import {getUsers, getFollows, getFollowers, followUser, unfollowUser} from './api';
@@ -13,11 +13,24 @@ class OneUser extends React.Component {
             logged: this.props.logged,
             me: this.props.me,
             error: null,
+            showCard: false,
         }
         this.follow = this.follow.bind(this);
         this.unfollow = this.unfollow.bind(this);
+        this.cardShow = this.cardShow.bind(this);
+        this.cardHide = this.cardHide.bind(this);
     }
 
+    cardShow = () => {
+        this.setState({
+            showCard: true,
+        })
+    }
+    cardHide = () => {
+        this.setState({
+            showCard: false,
+        })
+    }
     follow = () => {
         console.log(`follower id: ${this.props.me}`)
         console.log(`followed id: ${this.state.user.id}`)
@@ -31,7 +44,6 @@ class OneUser extends React.Component {
             this.props.updatePar();
         })
     }
-
     unfollow = () => {
         unfollowUser(this.props.followId)
         .then(response => {
@@ -43,7 +55,6 @@ class OneUser extends React.Component {
             this.props.updatePar();
         })
     }
-
     componentDidUpdate(prevProps) {
         if (prevProps.user!==this.props.user || prevProps.followed!==this.props.followed || prevProps.following!==this.props.following) {
             this.setState({
@@ -61,7 +72,18 @@ class OneUser extends React.Component {
                     <div className="user-photo-container-small">
                             <img className="user-photo" src={user_icon} alt="user profile" />
                     </div>
-                    <div className="owner-name">{this.state.user.username}</div>
+                    <div className="owner-name"
+                        onMouseEnter={this.cardShow}
+                        onMouseLeave={this.cardHide}>
+                        {this.state.user.username}
+                        {this.state.showCard &&
+                            <ProfileCard id={this.state.user.id}
+                                    username={this.state.user.username}
+                                    moto={this.state.user.moto}
+                                    photo={this.state.user.photo}
+                                    position={"right-more"} />
+                        }
+                    </div>
                 </div>
                 {this.state.logged && !this.props.followed && !this.props.following && this.props.me!==this.props.user.id &&
                     <div className="flex-item-smaller">

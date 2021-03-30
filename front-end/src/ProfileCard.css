@@ -4,6 +4,8 @@
     border-radius: 10px;
     color: white !important;
     z-index: 10;
+    animation:
+        pop-up-appearing 1s;
 }
 
 .pos-top {
@@ -12,12 +14,19 @@
 .pos-bottom {
     bottom: -160px;
 }
+.pos-bottom-more {
+    bottom: -200px;
+}
 .pos-left {
     left: -10%;
 }
 .pos-right {
     right: -220%;
     top: -50%;
+}
+.pos-right-more {
+    right: -160px;
+    top: -50px;
 }
 .pos-top-close {
     top: -170px;

@@ -97,6 +97,42 @@ class ProfileCard extends React.Component {
                 </Card>
             )
         }
+        else if (this.state.position==="bottom-more") {
+            return(
+                <Card style={{ width: '170px', height:'min-content', padding: '1%'}} className="profile-card pos-bottom-more center-content">
+                    <Card.Img variant="top" src={user_icon} className="user-photo-container"/>
+                    <Card.Body style={{padding:'0%'}}>
+                        <Card.Title style={{marginBottom: '3%', paddingBottom: '0%'}}>{this.state.username}</Card.Title>
+                        <Card.Text>
+                            {this.setState.moto &&
+                                <br></br>
+                            }
+                            25 followers<br></br>
+                            32 following<br></br>
+                        </Card.Text>
+                        <Button variant="primary" style={{padding:'1%'}} onClick={this.seeProfile}>See profile</Button>
+                    </Card.Body>
+                </Card>
+            )
+        }
+        else if (this.state.position==="right-more") {
+            return(
+                <Card style={{ width: '170px', height:'min-content', padding: '1%'}} className="profile-card pos-right-more center-content">
+                    <Card.Img variant="top" src={user_icon} className="user-photo-container"/>
+                    <Card.Body style={{padding:'0%'}}>
+                        <Card.Title style={{marginBottom: '3%', paddingBottom: '0%'}}>{this.state.username}</Card.Title>
+                        <Card.Text>
+                            {this.setState.moto &&
+                                <br></br>
+                            }
+                            25 followers<br></br>
+                            32 following<br></br>
+                        </Card.Text>
+                        <Button variant="primary" style={{padding:'1%'}} onClick={this.seeProfile}>See profile</Button>
+                    </Card.Body>
+                </Card>
+            )
+        }
         else {
             return(
                 <Card style={{ width: '170px', height:'min-content', padding: '1%'}} className="profile-card pos-right center-content">
