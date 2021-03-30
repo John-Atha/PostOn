@@ -55,3 +55,7 @@
     border: none;
     background-color: inherit;
 }
+
+.like-owner {
+    position: relative;
+}

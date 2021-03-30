@@ -7,7 +7,7 @@ import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
 import comment_icon from './images/comment.png';
 import edit_icon from './images/edit.png';
-
+import ProfileCard from './ProfileCard';
 import Likes from './Likes';
 
 import Comments from './Comments';
@@ -58,6 +58,32 @@ class OnePost extends React.Component {
         this.handleInput = this.handleInput.bind(this);
         this.hideMessages = this.hideMessages.bind(this);
         this.checkLiked = this.checkLiked.bind(this);
+        this.cardShow = this.cardShow.bind(this);
+        this.cardHide = this.cardHide.bind(this);
+        this.cardShow2 = this.cardShow2.bind(this);
+        this.cardHide2 = this.cardHide2.bind(this);
+    }
+    cardShow2 = () => {
+        this.setState({
+            showCard2: true,
+        })
+    }
+    cardHide2 = () => {
+            this.setState({
+                showCard2: false,
+            })
+    }
+    cardShow = () => {
+        this.setState({
+            mouseOutLink: false,
+            mouseOutCard: false,
+            showCard: true,
+        })
+    }
+    cardHide = () => {
+        this.setState({
+            showCard: false,
+        })
     }
 
     checkLiked = () => {
@@ -260,7 +286,20 @@ class OnePost extends React.Component {
                         <img className="user-photo" src={user_icon} alt="user profile" />
                     </div>
                     <div>
-                        <div className="owner-name">{this.state.owner.username}</div>
+                    <div onMouseEnter={this.cardShow}
+                             onMouseLeave={this.cardHide}>
+                        <div className="owner-name">
+                            {this.state.owner.username}
+                            {this.state.showCard &&
+                                <ProfileCard id={this.state.owner.id}
+                                     username={this.state.owner.username}
+                                     moto={this.state.owner.moto}
+                                     photo={this.state.owner.photo}
+                                     position={"right"} />
+                            }
+
+                        </div>
+                    </div>
                         <div className="post-date">{time}<br></br>{date}</div>
                     </div>
                     {this.state.userId===this.state.owner.id &&
@@ -291,14 +330,26 @@ class OnePost extends React.Component {
                 }
                 <hr className="no-margin"></hr>
                 <div className="stats-sample flex-layout">
-                    <div className="likes-sample">
+                    <div className="likes-sample flex-layout">
                         <img className="like-icon" src={like_icon} alt="like-icon"/>
                         {this.state.likesNum>1 &&
                             <button className="liker-sample button-as-link-grey" onClick={this.showLikes}>{this.state.likerSample.username} and {this.state.likesNum-1} more</button>
                         }
                         {this.state.likesNum===1 &&
-                            <button className="liker-sample button-as-link-grey">{this.state.likerSample.username}</button>
-                        }
+                            <div className="liker-sample button-as-link-grey"
+                                onMouseEnter={this.cardShow2}
+                                onMouseLeave={this.cardHide2}>
+
+                                {this.state.likerSample.username}
+                                {this.state.showCard2 &&
+                                    <ProfileCard id={this.state.likerSample.id}
+                                            username={this.state.likerSample.username}
+                                            moto={this.state.likerSample.moto}
+                                            photo={this.state.likerSample.photo}
+                                            position={"bottom"}/>
+                                }
+                        </div>
+                    }
                         {!this.state.likesNum &&
                             <button disabled={true} className="liker-sample button-as-link-grey">0</button>
                         }

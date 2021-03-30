@@ -3,4 +3,22 @@
     background-color: rgb(70, 68, 68);
     border-radius: 10px;
     color: white !important;
+    z-index: 10;
+}
+
+.pos-top {
+    top: -200px;
+}
+.pos-bottom {
+    bottom: -160px;
+}
+.pos-left {
+    left: -10%;
+}
+.pos-right {
+    right: -220%;
+    top: -50%;
+}
+.pos-top-close {
+    top: -170px;
 }

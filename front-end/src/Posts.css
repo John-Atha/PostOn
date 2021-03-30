@@ -49,6 +49,7 @@
 
 .owner-name {
     font-weight: bold;
+    position: relative;
 }
 
 .post-date{
@@ -92,6 +93,7 @@
 .likes-sample {
     margin-right: 20px;
     width: 200px;
+    position: relative;
 }
 .comments-sample {
     width: 200px;

@@ -8,6 +8,7 @@ import delete_icon from './images/delete-icon.png';
 
 import Likes from './Likes';
 import {getPostsComments, getLikesSample, getLikes, getAllLikes, LikeComment, UnLikeComment, DeleteComment, AddComment, getUser} from './api';
+import ProfileCard from  './ProfileCard';
 
 
 class NewComment extends React.Component {
@@ -136,6 +137,8 @@ class OneComment extends React.Component {
             likesShow: false,
             delete: false,
             showModal: false,
+            showCard: false,
+            showCard2: false,
         }
         this.likesSample = this.likesSample.bind(this);
         this.showLikes = this.showLikes.bind(this);
@@ -145,7 +148,33 @@ class OneComment extends React.Component {
         this.commentDelete = this.commentDelete.bind(this);
         this.preDelete = this.preDelete.bind(this);
         this.hideModal = this.hideModal.bind(this);
+        this.cardShow = this.cardShow.bind(this);
+        this.cardHide = this.cardHide.bind(this);
+        this.cardShow2 = this.cardShow2.bind(this);
+        this.cardHide2 = this.cardHide2.bind(this);
     }
+
+    cardShow = () => {
+            this.setState({
+                showCard: true,
+            })
+    }
+    cardHide = () => {
+            this.setState({
+                showCard: false,
+            })
+    }
+    cardShow2 = () => {
+        this.setState({
+            showCard2: true,
+        })
+    }
+    cardHide2 = () => {
+            this.setState({
+                showCard2: false,
+            })
+    }
+
 
     preDelete = () => {
         this.setState({
@@ -219,17 +248,6 @@ class OneComment extends React.Component {
             likesShow: true,
             followsUpd: this.state.followsUpd+1,
         })
-        /*let box = event.target.parentElement;
-        let children = box.children;
-        if (children[2]) {
-            const container = children[2];
-            if (container.children[0]) {
-                container.children[0].style.display="block";
-            }
-            else {
-                container.style.display="block";
-            }
-        }*/
     }
 
     likesSample = () => {
@@ -300,7 +318,18 @@ class OneComment extends React.Component {
                         <div className="user-photo-container-small">
                                 <img className="user-photo" src={user_icon} alt="user profile" />
                         </div>
-                        <div className="owner-name">{this.state.comment.owner.username}</div>
+                        <div className="owner-name"
+                            onMouseEnter={this.cardShow}
+                            onMouseLeave={this.cardHide}>
+                            {this.state.comment.owner.username}
+                            {this.state.showCard &&
+                                <ProfileCard id={this.state.comment.owner.id}
+                                        username={this.state.comment.owner.username}
+                                        moto={this.state.comment.owner.moto}
+                                        photo={this.state.comment.owner.photo}
+                                        position={"top-close"}/>
+                            }
+                        </div>
                         <div className="post-date comment-date">at {commentDatetime}</div>
                     </div>
                     <div className="text-comment">{this.state.comment.text}</div>
@@ -310,7 +339,19 @@ class OneComment extends React.Component {
                             <button className="liker-sample button-as-link " onClick={this.showLikes}>{this.state.likerSample.username} and {this.state.likesNum-1} more</button>
                         }
                         {this.state.likesNum===1 &&
-                            <div className="liker-sample">{this.state.likerSample.username}</div>
+                            <div className="liker-sample"
+                                onMouseEnter={this.cardShow2}
+                                onMouseLeave={this.cardHide2}>
+
+                                {this.state.likerSample.username}
+                                {this.state.showCard2 &&
+                                <ProfileCard id={this.state.likerSample.id}
+                                        username={this.state.likerSample.username}
+                                        moto={this.state.likerSample.moto}
+                                        photo={this.state.likerSample.photo}
+                                        position={"bottom"}/>
+                            }
+                            </div>
                         }
                         {!this.state.likesNum &&
                             <div className="liker-sample">0</div>

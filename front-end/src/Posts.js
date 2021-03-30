@@ -61,8 +61,19 @@ class OnePost extends React.Component {
         this.hideMessages = this.hideMessages.bind(this);
         this.cardShow = this.cardShow.bind(this);
         this.cardHide = this.cardHide.bind(this);
+        this.cardShow2 = this.cardShow2.bind(this);
+        this.cardHide2 = this.cardHide2.bind(this);
     }
-
+    cardShow2 = () => {
+        this.setState({
+            showCard2: true,
+        })
+    }
+    cardHide2 = () => {
+            this.setState({
+                showCard2: false,
+            })
+    }
     cardShow = () => {
         this.setState({
             mouseOutLink: false,
@@ -248,13 +259,14 @@ class OnePost extends React.Component {
                     </div>
                     <div onMouseEnter={this.cardShow}
                              onMouseLeave={this.cardHide}>
-                        <div className="owner-name" >
+                        <div className="owner-name">
                             {this.state.owner.username}
                             {this.state.showCard &&
                                 <ProfileCard id={this.state.owner.id}
                                      username={this.state.owner.username}
                                      moto={this.state.owner.moto}
-                                     photo={this.state.owner.photo} />
+                                     photo={this.state.owner.photo}
+                                     position={"right"} />
                             }
 
                         </div>
@@ -288,13 +300,25 @@ class OnePost extends React.Component {
                 }
                 <hr className="no-margin"></hr>
                 <div className="stats-sample flex-layout">
-                    <div className="likes-sample">
+                    <div className="likes-sample flex-layout">
                         <img className="like-icon" src={like_icon} alt="like-icon"/>
                         {this.state.likesNum>1 &&
                             <button className="liker-sample button-as-link-grey" onClick={this.showLikes}>{this.state.likerSample.username} and {this.state.likesNum-1} more</button>
                         }
                         {this.state.likesNum===1 &&
-                            <button className="liker-sample button-as-link-grey">{this.state.likerSample.username}</button>
+                            <div className="liker-sample button-as-link-grey"
+                                onMouseEnter={this.cardShow2}
+                                onMouseLeave={this.cardHide2}>
+
+                                {this.state.likerSample.username}
+                                {this.state.showCard2 &&
+                                    <ProfileCard id={this.state.likerSample.id}
+                                            username={this.state.likerSample.username}
+                                            moto={this.state.likerSample.moto}
+                                            photo={this.state.likerSample.photo}
+                                            position={"bottom"}/>
+                                }
+                            </div>
                         }
                         {!this.state.likesNum &&
                             <button disabled={true} className="liker-sample button-as-link-grey">0</button>

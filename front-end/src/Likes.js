@@ -79,7 +79,8 @@ class OneLike extends React.Component {
                         <ProfileCard id={this.state.owner.id}
                                 username={this.state.owner.username}
                                 moto={this.state.owner.moto}
-                                photo={this.state.owner.photo}/>
+                                photo={this.state.owner.photo}
+                                position={"bottom"} />
                     }
 
                 </div>
