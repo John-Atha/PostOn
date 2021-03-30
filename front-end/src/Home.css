@@ -22,6 +22,9 @@ body {
     backdrop-filter: blur( 4px );
     -webkit-backdrop-filter: blur( 4px );
 }
+.margin {
+    margin: 2%;
+}
 
 .margin-top {
     margin-top: 10%;

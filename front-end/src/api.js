@@ -271,6 +271,29 @@ export const getFollows = (id) => {
     return axios.get(requestUrl);
 }
 
+export const getFollowsPagi = (id, start, end) => {
+    const requestUrl = `users/${id}/follows`;
+    const params = {
+        "start": start,
+        "end": end,
+    }
+    return axios.get(requestUrl, {
+        params: params,
+    });
+}
+
+export const getFollowersPagi = (id, start, end) => {
+    const requestUrl = `users/${id}/followers`;
+    const params = {
+        "start": start,
+        "end": end,
+    }
+    return axios.get(requestUrl, {
+        params: params,
+    });
+}
+
+
 export const getFollowers = (id) => {
     const requestUrl = `users/${id}/followers`;
     return axios.get(requestUrl);
