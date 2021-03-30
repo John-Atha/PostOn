@@ -103,6 +103,9 @@ class OnePost extends React.Component {
                 }
             })
         })
+        .catch(err => {
+            console.log(err);
+        })
     }
 
     discardText = () => {
