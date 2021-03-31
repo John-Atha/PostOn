@@ -352,7 +352,7 @@ class Profile extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            userId: this.props.userId,
+            userId: parseInt(this.props.userId),
             me: null,
             logged: false,
             username: null,
@@ -367,6 +367,8 @@ class Profile extends React.Component {
             myFollowsList: [],
             myFollowsObjIdList: [],
             myFollowersList: [],
+            isFollowing: false,
+            isFollowed: false,
         }
         this.countFollows = this.countFollows.bind(this);
         this.countFollowers = this.countFollowers.bind(this);
@@ -378,7 +380,40 @@ class Profile extends React.Component {
         this.checkLogged = this.checkLogged.bind(this);
         this.hideFollows = this.hideFollows.bind(this);
         this.hideFollowers = this.hideFollowers.bind(this);
+        this.follow = this.follow.bind(this);
+        this.unfollow = this.unfollow.bind(this);
     }
+
+    follow = () => {
+        console.log(`follower id: ${this.state.me}`)
+        console.log(`followed id: ${this.state.userId}`)
+        followUser(this.state.me, this.state.userId)
+        .then(response => {
+            console.log(response);
+            this.updateMyFollows();
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+    unfollow = () => {
+        let index = null;
+        this.state.myFollowsList.forEach(el => {
+            if (el===this.state.userId) {
+                index = this.state.myFollowsList.indexOf(el);
+            }
+        })
+        let followId = this.state.myFollowsObjIdList[index];
+        unfollowUser(followId)
+        .then(response => {
+            console.log(response);
+            this.updateMyFollows();
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+
     countFollowers = () => {
         getFollowersCount(this.state.userId)
         .then(response => {
@@ -421,15 +456,14 @@ class Profile extends React.Component {
                 this.setState({
                     myFollowsList: tempFollowsList,
                     myFollowsObjIdList: tempFollowsObjIdList,
+                    isFollowed: tempFollowsList.includes(this.state.userId),
                 })
-                console.log("followsList: ");
-                console.log(tempFollowsList);
             })
             .catch(err => {
                 console.log(err);
                 console.log("No more follows found for this user (as a follower).");
             });
-            getFollowers(this.props.userId)
+            getFollowers(this.state.me)
             .then(response => {
                 console.log(response);
                 let tempFollowersList = this.state.myFollowersList;
@@ -440,9 +474,11 @@ class Profile extends React.Component {
                 })
                 this.setState({
                     myFollowersList: tempFollowersList,
+                    isFollowing: tempFollowersList.includes(this.state.userId),
                 })
-                console.log("followersList: ");
-                console.log(tempFollowersList);
+                console.log("FollowersList:");
+                console.log(this.state.myFollowersList);
+                console.log(this.state.isFollowing);
             })
             .catch(err => {
                 console.log(err);
@@ -538,6 +574,18 @@ class Profile extends React.Component {
                     <div className="user-photo-container2">
                         <img className="user-photo" src={user_icon} alt="user profile" />
                     </div>
+                    <div className="un-follow-button-container center-content">
+                        {this.state.logged && !this.state.isFollowed && !this.state.isFollowing && this.state.me!==this.state.userId &&
+                            <button className="my-button un-follow-button pale-blue flex-item" onClick={this.follow}>Follow</button>
+                        }
+                        {this.state.logged && !this.state.isFollowed && this.state.isFollowing && this.state.me!==this.state.userId &&
+                            <button className="my-button un-follow-button pale-blue flex-item" onClick={this.follow}>Follow Back</button>
+                        }
+                        {this.state.logged && this.state.isFollowed && this.state.me!==this.state.userId &&
+                            <button className="my-button un-follow-button flex-item" onClick={this.unfollow}>Unfollow</button>
+                        }
+                    </div>
+
                     <div className="margin-left profile-info">
                         <div className="center-content">
                             {this.state.moto}
