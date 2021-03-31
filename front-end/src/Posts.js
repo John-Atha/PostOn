@@ -12,7 +12,11 @@ import Likes from './Likes';
 
 import Comments from './Comments';
 import ProfileCard from './ProfileCard';
-import Profile from "./Profile";
+
+import ReactNotifications from 'react-notifications-component'
+import 'react-notifications-component/dist/theme.css'
+import { store } from 'react-notifications-component';
+//import "animate.cs";
 
 class OnePost extends React.Component {
     constructor(props) {
@@ -43,8 +47,6 @@ class OnePost extends React.Component {
             likesShow: false,
             commentsShow: false,
             edit: false,
-            editPostError: null,
-            editPostSuccess: null,
             showCard: false,
             showCard2: false,
         }
@@ -59,12 +61,29 @@ class OnePost extends React.Component {
         this.discardText = this.discardText.bind(this);
         this.editText = this.editText.bind(this);
         this.handleInput = this.handleInput.bind(this);
-        this.hideMessages = this.hideMessages.bind(this);
         this.cardShow = this.cardShow.bind(this);
         this.cardHide = this.cardHide.bind(this);
         this.cardShow2 = this.cardShow2.bind(this);
         this.cardHide2 = this.cardHide2.bind(this);
     }
+    createNotification = (type, title="aaa", message="aaa") => {
+        console.log("creating notification");
+        console.log(type);
+        store.addNotification({
+            title: title,
+            message: message,
+            type: type,
+            insert: "top",
+            container: "bottom-right",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 3000,
+              onScreen: true
+            }
+          });
+    };
+
     cardShow2 = () => {
         this.setState({
             showCard2: true,
@@ -92,15 +111,8 @@ class OnePost extends React.Component {
             edit: false,
             text: this.state.text_init,
         })
-    }
-    hideMessages = () => {
-        setTimeout(()=> {
-            console.log("I am hiding the messages.");
-            this.setState({
-                editPostError: null,
-                editPostSuccess: null,    
-            })
-        }, 2000);
+        this.createNotification('warning', 'Hello,', 'Changes discarded');
+
     }
     saveText = () => {
         editPost(this.state.id, this.state.text)
@@ -108,19 +120,13 @@ class OnePost extends React.Component {
             console.log(response);
             this.setState({
                 edit: false,
-                editPostError: null,
-                editPostSuccess: "Post edited succesfully.",
                 text_init: this.state.text,
             })
-            this.hideMessages();
+            this.createNotification('success', 'Hello,', 'Post changed succesffully');
         })
         .catch(err => {
             console.log(err);
-            this.setState({
-                editPostSuccess: null,
-                editPostError: "Sorry, could not update post."
-            })
-            this.hideMessages();
+            this.createNotification('error', 'Sorry,', 'Post could not be updated');
         })
     }
     editText = () => {
@@ -285,7 +291,6 @@ class OnePost extends React.Component {
                 <hr className="no-margin"></hr>
                 {!this.state.edit &&
                     <div className="post-text">
-                        <div className="error-message">{this.state.editPostError}</div>
                         <div className="success-message">{this.state.editPostSuccess}</div>
                         <div className="post-text">{this.state.text}</div>
                     </div>       
