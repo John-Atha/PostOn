@@ -26,9 +26,14 @@ class Diagram extends React.Component {
         if (this.state.type==="pie") {
             console.log("I am pie and i am computing")
             let tempData = [];
+            let sum = 0;
+            for (const[key, value] of Object.entries(this.props.stats)) {
+                sum+=value;
+            }
+            console.log(`sum= ${sum}`);
             for (const [key, value] of Object.entries(this.props.stats)) {
                 tempData.push({
-                    "y": value,
+                    "y": Math.round((value/sum)*100*100)/100,
                     "label": key,
                 })  
             }
@@ -109,7 +114,6 @@ class Diagram extends React.Component {
 
 }
 
-
 class OneStats extends React.Component {
     constructor(props) {
         super(props);
@@ -180,7 +184,6 @@ class OneStats extends React.Component {
         )
     }
 }
-
 
 class Statistics extends React.Component {
 
