@@ -375,7 +375,8 @@ export const getMonthlyStatsGen = (choice, userId="") => {
     }
     return axios.get(requestUrl, {
         headers: headers,
-    });}
+    });
+}
 
 export const getDailyStatsGen = (choice, userId="") => {
     const token = localStorage.getItem('token');
@@ -422,4 +423,20 @@ export const getUsersPosts = (id, start, end) => {
 export const getOnePost = (id) => {
     const requestUrl = `posts/${id}`;
     return axios.get(requestUrl);
+}
+
+export const getNotifications = (id, start, end) => {
+    const token = localStorage.getItem('token');
+    const headers = {
+        "Authorization" :"Bearer "+ token,
+    }
+    const params = {
+        "start": start,
+        "end": end,
+    }
+    const requestUrl = `users/${id}/notifications`;
+    return axios.get(requestUrl, {
+        headers: headers, 
+        params: params,
+    })
 }
