@@ -14,6 +14,9 @@ import Activity from './Activity';
 import Profile from './Profile';
 import OnePostPage from './OnePostPage';
 
+import ReactNotifications from "react-notifications-component";
+
+
 function FindProfile() {
   let {id} = useParams();
   return <Profile userId={id} />
@@ -26,6 +29,7 @@ function FindPost() {
 
 ReactDOM.render(
   <React.StrictMode>
+    <ReactNotifications />
     <BrowserRouter>
       <Switch>
         <Route path="/" exact>
