@@ -10,6 +10,9 @@ import Likes from './Likes';
 import {getPostsComments, getLikesSample, getLikes, getAllLikes, LikeComment, UnLikeComment, DeleteComment, AddComment, getUser} from './api';
 import ProfileCard from  './ProfileCard';
 
+import 'react-notifications-component/dist/theme.css'
+import { store } from 'react-notifications-component';
+
 
 class NewComment extends React.Component {
     constructor(props) {
@@ -22,14 +25,28 @@ class NewComment extends React.Component {
             postId: this.props.postId,
             owner: this.props.owner,
             error: null,
-            commentAddError: null,
-            commentAddSucces: null,
         }
         this.handleInput = this.handleInput.bind(this);
         this.submit = this.submit.bind(this);
-        this.hideMessages = this.hideMessages.bind(this);
     }
 
+    createNotification = (type, title="aaa", message="aaa") => {
+        console.log("creating notification");
+        console.log(type);
+        store.addNotification({
+            title: title,
+            message: message,
+            type: type,
+            insert: "top",
+            container: "bottom-right",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 3000,
+              onScreen: true
+            }
+          });
+    };
     handleInput = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -38,47 +55,27 @@ class NewComment extends React.Component {
         })
     }
 
-    hideMessages = () => {
-        setTimeout(()=> {
-            console.log("I am hiding the messages.");
-            this.setState({
-                commentAddError: null,
-                commentAddSuccess: null,    
-            })
-        }, 2000);
-    }
-
     submit = (event) => {
+        event.preventDefault();
         if (this.state.text.length) {
             AddComment(this.state.userId, this.state.postId, this.state.text)
             .then(response => {
                 console.log(response);
                 this.props.updateComments();
                 this.setState({
-                    commentAddError: null,
-                    commentAddSuccess: "Comment posted successfully",
                     text: "",
                 })
-                this.hideMessages();
+                this.createNotification('success', 'Hello,', 'Comment posted succesffully');
             })
             .catch(err => {
                 console.log(err);
-                this.setState({
-                    commentAddError: "Sorry, we could not post your comment",
-                    commentAddSuccess: null,
-                })
-                this.hideMessages();
+                this.createNotification('danger', 'Sorry,', 'Comment could not be posted');
             })
         }
         else {
-            this.setState({
-                commentAddError: "You cannot post an empty comment",
-                commentAddSuccess: null,
-            })
-            this.hideMessages();
+            this.createNotification('danger', 'Sorry,', "A comment can't be empty");
         }
-    
-        event.preventDefault();
+        
     }
 
     componentDidMount() {
@@ -106,12 +103,10 @@ class NewComment extends React.Component {
                 </div>
                 <div className="owner-name">{this.state.username}</div>
             </div>
-            <form className="text-comment flex-layout" onSubmit={this.submit}>
-                <div className="error-message">{this.state.commentAddError}</div>
-                <div className="success-message">{this.state.commentAddSuccess}</div>
-                <textarea className="comment-textarea" name="text" placeholder="Add your comment here..." value={this.state.text} onChange={this.handleInput}>{this.state.text}</textarea>
-                <button className="my-button pagi-button" type="submit">Add</button>
-            </form>
+            <div className="text-comment flex-layout">
+                <textarea className="comment-textarea" name="text" placeholder="Add your comment here..." value={this.state.text} onChange={this.handleInput}></textarea>
+                <button className="my-button pagi-button" onClick={this.submit}>Add</button>
+            </div>
         </div>
 
 
@@ -152,6 +147,43 @@ class OneComment extends React.Component {
         this.cardHide = this.cardHide.bind(this);
         this.cardShow2 = this.cardShow2.bind(this);
         this.cardHide2 = this.cardHide2.bind(this);
+    }
+
+    format = (str) => {
+        str = str.replaceAll('\n', ' ')
+        let init = str.split(' ')
+        let counter = 0
+        let final = []
+        init.forEach(word => {
+            final.push(word)
+        })
+        let i =0;
+        let spaces=0;
+        init.forEach(word => {
+            counter+=word.length
+            if (word.length>25) {
+                let br=15
+                let news = []
+                let start=0
+                let end=Math.round(br)
+                for (let j=0; j<=counter/br+1; j++) {
+                    news.push(word.substring(start, end))
+                    start+=Math.round(br)
+                    end+=Math.round(br)
+                }
+                final[final.indexOf(word)]=news.join('\n');
+            }
+            else if (counter>20) {
+                final.splice(i+1+spaces, 0, '\n')
+                spaces++;
+                console.log(final)
+                counter=0;
+            }
+            i++;
+        })
+        let s = final.join(' ')
+        s=s.replace('\n ', '\n').replace(' ', '\n')
+        return (s);
     }
 
     cardShow = () => {
@@ -332,7 +364,7 @@ class OneComment extends React.Component {
                         </div>
                         <div className="post-date comment-date">at {commentDatetime}</div>
                     </div>
-                    <div className="text-comment">{this.state.comment.text}</div>
+                    <div className="text-comment">{this.format(this.state.comment.text)}</div>
                     <div className="comment-like-container flex-layout">
                         <img className="like-icon" src={like_icon} alt="like-icon"/>
                         {this.state.likesNum>1 &&
@@ -473,34 +505,7 @@ class Comments extends React.Component {
     }
 
     removeComment = (id) => {
-        /*console.log(`I will delete comment ${id}`)
-        let commIndex = null;
-        if (this.state.how==="sample") {
-            console.log(`I am looking for it at he comments list:`)
-            console.log([this.state.commentSample])
-            this.setState({
-                commentsList: [],
-            })
-            console.log("New comments list: []")
-        }
-        else {
-            console.log(`I am looking for it at he comments list:`)
-            console.log(this.state.commentsList)
-            this.state.commentsList.forEach(comment => {
-                if (comment.id===id) {
-                    console.log(`Found comment at index ${this.state.commentsList.indexOf(comment)}`)
-                    commIndex = this.state.commentsList.indexOf(comment);
-                }
-            })
-            let tempCommentsList = this.state.commentsList;
-            tempCommentsList.splice(commIndex, 1);
-            console.log("New comments list:")
-            console.log(tempCommentsList);
-            this.setState({
-                commentsList: tempCommentsList,
-            })
-        }*/
-        let x = this.props.updateParent();
+        this.props.updateParent();
     }
 
     componentDidMount() {

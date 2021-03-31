@@ -277,7 +277,7 @@ class FollowBox extends React.Component {
                 console.log(this.state.hisFollowersList);
                 return(
                     <OutsideClickHandler onOutsideClick={this.hide}>
-                        <div className="follows-pop-up">
+                        <div className="follows-pop-up center-content">
                             {(this.state.followsError) && 
                                 <div className="error-message">
                                     {this.state.followsError}
