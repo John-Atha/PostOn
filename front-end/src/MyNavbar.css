@@ -4,6 +4,9 @@
     top: 0;
     z-index: 2 !important;
 }
+#basic-navbar-nav {
+    max-width: 93vw;
+}
 .navbar-icon {
     height: 20px;
 }
@@ -12,10 +15,25 @@
 }
 
 .seen {
-    background-color: lightgray;
+    background-color: rgb(247, 244, 244);
 }
 
 .not-seen {
     background-color: white;
     font-weight: bold;
+}
+
+.notif {
+    font-size: small;
+    margin: 1% 0%;
+}
+
+.dropdown-menu {
+    background-color: var(--colorback) !important;
+    max-width: 300px;
+}
+
+* {
+    word-break:break-all !important;
+    word-wrap: break-word !important;
 }

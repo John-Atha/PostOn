@@ -27,6 +27,29 @@ class MyNavbar extends React.Component {
         this.textGen = this.textGen.bind(this);
         this.categorize = this.categorize.bind(this);
         this.dateShow = this.dateShow.bind(this);
+        this.previousPage = this.previousPage.bind(this);
+        this.nextPage = this.nextPage.bind(this);
+        this.moveOn = this.moveOn.bind(this);
+        this.format = this.format.bind(this);
+    }
+    moveOn = () => {
+        setTimeout(() => this.getNotif(), 1000);
+    }
+    previousPage = () => {
+        setTimeout(this.setState({
+            start: this.state.start-5,
+            end: this.state.end-5,
+            likesList: [],
+        }), 0)
+        this.moveOn();
+    }
+    nextPage = () => {
+        setTimeout(this.setState({
+            start: this.state.start+5,
+            end: this.state.end+5,
+            likesList: [],
+        }), 0)
+        this.moveOn();
     }
 
     dateShow = (date) => {
@@ -34,6 +57,43 @@ class MyNavbar extends React.Component {
         let day = datetime[0]
         let time = datetime[1].substring(0, 8)
         return `${day} ${time}`
+    }
+
+    format = (str) => {
+        str = str.replaceAll('\n', ' ')
+        let init = str.split(' ')
+        let counter = 0
+        let final = []
+        init.forEach(word => {
+            final.push(word)
+        })
+        let i =0;
+        let spaces=0;
+        init.forEach(word => {
+            counter+=word.length
+            if (word.length>25) {
+                let br=15
+                let news = []
+                let start=0
+                let end=Math.round(br)
+                for (let j=0; j<=counter/br+1; j++) {
+                    news.push(word.substring(start, end))
+                    start+=Math.round(br)
+                    end+=Math.round(br)
+                }
+                final[final.indexOf(word)]=news.join('\n');
+            }
+            else if (counter>20) {
+                final.splice(i+1+spaces, 0, '\n')
+                spaces++;
+                console.log(final)
+                counter=0;
+            }
+            i++;
+        })
+        let s = final.join(' ')
+        s=s.replace('\n ', '\n').replace(' ', '\n')
+        return (s);
     }
 
     categorize = (notif) => {
@@ -60,7 +120,7 @@ class MyNavbar extends React.Component {
             link=`/posts/${notif.comment.post.id}`;
         }
         else if (this.categorize(notif)==="follow") {
-            link=`/users/${notif.follower.id}`;
+            link=`/users/${notif.following.id}`;
         }
         else if (this.categorize(notif)==="postlike") {
             link=`/posts/${notif.post.id}`;
@@ -70,18 +130,18 @@ class MyNavbar extends React.Component {
     textGen = (notif) => {
         let text = "notification";
         if (this.categorize(notif)==="comment") {
-            text=`On ${this.dateShow(notif.date)}, ${notif.owner.username} commented on your post:\n${notif.text}`;
+            text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} commented on your post:\n${notif.text}`;
         }
         else if (this.categorize(notif)==="commentlike") {
-            text=`On ${this.dateShow(notif.date)}, ${notif.owner.username} liked you comment:\n${notif.comment.text}`;
+            text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} liked you comment:\n${notif.comment.text}`;
         }
         else if (this.categorize(notif)==="follow") {
-            text=`On ${this.dateShow(notif.date)}, ${notif.follower.username} asked to follow you.`;
+            text=`On ${this.dateShow(notif.date)},\n${notif.following.username} asked to follow you.`;
         }
         else if (this.categorize(notif)==="postlike") {
-            text=`On ${this.dateShow(notif.date)}, ${notif.owner.username} liked one of your posts`;
+            text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} liked one of your posts`;
         }
-        return text;
+        return this.format(text);
     }
 
     getNotif = () => {
@@ -160,18 +220,26 @@ class MyNavbar extends React.Component {
                             {this.state.notifList.map((value, index) => {
                                 if (value.seen) {
                                     return(
-                                        <NavDropdown.Item className="with-whitespace seen" key={index} href={this.linkGen(value)}>{this.textGen(value)}</NavDropdown.Item>
+                                        <NavDropdown.Item className=" notif with-whitespace seen" key={index} href={this.linkGen(value)}>{this.textGen(value)}</NavDropdown.Item>
                                     )
                                 }
                                 else {
                                     return(
-                                        <NavDropdown.Item className="with-whitespace not-seen" key={index} href={this.linkGen(value)}>{this.textGen(value)}</NavDropdown.Item>
+                                        <NavDropdown.Item className="notif with-whitespace not-seen" key={index} href={this.linkGen(value)}>{this.textGen(value)}</NavDropdown.Item>
                                     )
                                 }
                             })}
                             {!this.state.notifList.length && 
                                 <div style={{padding: '1% 4%'}} className="error-message">No notifications found</div>
                             }
+                            {this.state.notifList.length>0 &&
+                                <div className="pagi-buttons-container flex-layout center-content">
+                                    <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
+                                    <button disabled={this.state.notifList.length<5} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
+                                </div>
+                            }
+
+                            
                         </NavDropdown>
                 }
                     {this.state.logged && 
