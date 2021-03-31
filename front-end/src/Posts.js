@@ -126,7 +126,7 @@ class OnePost extends React.Component {
         })
         .catch(err => {
             console.log(err);
-            this.createNotification('error', 'Sorry,', 'Post could not be updated');
+            this.createNotification('danger', 'Sorry,', 'Post could not be updated');
         })
     }
     editText = () => {
