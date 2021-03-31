@@ -42,11 +42,6 @@
     overflow-y: scroll;
 }
 
-* {
-    word-break:break-all !important;
-    word-wrap: break-word !important;
-}
-
 .read-button {
     background-color: var(--color2);
     height: min-content;

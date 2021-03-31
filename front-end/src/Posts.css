@@ -9,6 +9,9 @@
         width: 80%;
         left: 10%;
     }
+    .all-comments-container {
+        max-width: 80vw;
+    }
 }
 
 
@@ -22,6 +25,9 @@
     .likes-pop-up {
         width: 80%;
         left: 10%;
+    }
+    .all-comments-container {
+        max-width: 50vw;
     }
 }
 
