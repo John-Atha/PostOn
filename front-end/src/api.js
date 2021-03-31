@@ -440,3 +440,15 @@ export const getNotifications = (id, start, end) => {
         params: params,
     })
 }
+
+export const readAllNotifications = (id) => {
+    const token = localStorage.getItem('token');
+    const headers = {
+        "Authorization" :"Bearer "+ token,
+    }
+    const body={}
+    const requestUrl = `users/${id}/allread`;
+    return axios.put(requestUrl, body, {
+        headers: headers, 
+    })
+}

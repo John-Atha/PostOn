@@ -28,12 +28,27 @@
     margin: 1% 0%;
 }
 
+.notif:hover {
+    background-color: var(--color2);
+}
+
 .dropdown-menu {
     background-color: var(--colorback) !important;
     max-width: 300px;
 }
 
+.notif-container {
+    max-height: 60vh;
+    overflow-y: scroll;
+}
+
 * {
     word-break:break-all !important;
     word-wrap: break-word !important;
+}
+
+.read-button {
+    background-color: var(--color2);
+    height: min-content;
+    width: 150px;
 }

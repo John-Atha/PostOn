@@ -4,7 +4,7 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown'
 
-import {isLogged, getOneUser, getNotifications} from './api'
+import {isLogged, getOneUser, getNotifications, readAllNotifications} from './api'
 import notif_icon from './images/notif.png';
 import stats_icon from './images/stats.png';
 
@@ -31,7 +31,20 @@ class MyNavbar extends React.Component {
         this.nextPage = this.nextPage.bind(this);
         this.moveOn = this.moveOn.bind(this);
         this.format = this.format.bind(this);
+        this.markAllRead = this.markAllRead.bind(this);
     }
+    markAllRead = () => {
+        console.log(this.state.userId)
+        readAllNotifications(this.state.userId)
+        .then(response => {
+            console.log(response);
+            this.getNotif();
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+
     moveOn = () => {
         setTimeout(() => this.getNotif(), 1000);
     }
@@ -51,14 +64,12 @@ class MyNavbar extends React.Component {
         }), 0)
         this.moveOn();
     }
-
     dateShow = (date) => {
         let datetime = date.replace('T', ' ').replace('Z', '').split(' ')
         let day = datetime[0]
         let time = datetime[1].substring(0, 8)
         return `${day} ${time}`
     }
-
     format = (str) => {
         str = str.replaceAll('\n', ' ')
         let init = str.split(' ')
@@ -95,7 +106,6 @@ class MyNavbar extends React.Component {
         s=s.replace('\n ', '\n').replace(' ', '\n')
         return (s);
     }
-
     categorize = (notif) => {
         if (notif.post && notif.text) {
             return "comment";
@@ -110,7 +120,6 @@ class MyNavbar extends React.Component {
             return "postlike";
         }
     }
-
     linkGen = (notif) => {
         let link="/users/2";
         if (this.categorize(notif)==="comment") {
@@ -217,18 +226,25 @@ class MyNavbar extends React.Component {
                     }
                     {this.state.logged && 
                         <NavDropdown title={<img className="navbar-icon" src={notif_icon} alt="notifications" />} id="basic-nav-dropdown">
-                            {this.state.notifList.map((value, index) => {
-                                if (value.seen) {
-                                    return(
-                                        <NavDropdown.Item className=" notif with-whitespace seen" key={index} href={this.linkGen(value)}>{this.textGen(value)}</NavDropdown.Item>
-                                    )
-                                }
-                                else {
-                                    return(
-                                        <NavDropdown.Item className="notif with-whitespace not-seen" key={index} href={this.linkGen(value)}>{this.textGen(value)}</NavDropdown.Item>
-                                    )
-                                }
-                            })}
+                            {this.state.notifList.length && 
+                                <div className="center-content">
+                                    <button className="my-button margin-left read-button" onClick={this.markAllRead}>Mark all as read</button>
+                                </div>
+                            }
+                            <div className="notif-container">
+                                {this.state.notifList.map((value, index) => {
+                                    if (value.seen) {
+                                        return(
+                                            <NavDropdown.Item className="notif with-whitespace seen" key={index} href={this.linkGen(value)}>{this.textGen(value)}</NavDropdown.Item>
+                                        )
+                                    }
+                                    else {
+                                        return(
+                                            <NavDropdown.Item className="notif with-whitespace not-seen" key={index} href={this.linkGen(value)}>{this.textGen(value)}</NavDropdown.Item>
+                                        )
+                                    }
+                                })}
+                            </div>
                             {!this.state.notifList.length && 
                                 <div style={{padding: '1% 4%'}} className="error-message">No notifications found</div>
                             }
