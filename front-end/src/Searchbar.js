@@ -6,7 +6,7 @@ import Form from 'react-bootstrap/Form'
 import FormControl from 'react-bootstrap/FormControl'
 import Button from 'react-bootstrap/Button'
 import OutsideClickHandler from 'react-outside-click-handler';
-
+import user_icon from './images/user-icon.png';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 
@@ -122,7 +122,10 @@ class Searchbar extends React.Component {
                             if (this.matches(value.username)) {
                                 return (
                                     <a key={index} className="one-suggestion flex-layout" href={`users/${value.id}`}>
-                                        {value.username}
+                                        <div className="user-photo-container-small">
+                                                <img className="user-photo" src={user_icon} alt="user profile" />
+                                        </div>
+                                        <div className="owner-name">{value.username}</div>
                                     </a>
                                 )
                             }
