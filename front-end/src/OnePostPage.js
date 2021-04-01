@@ -120,7 +120,8 @@ class OnePostPage extends React.Component {
                          date={this.state.date}
                          liked={this.state.liked}
                          updateHome={()=>{}}
-                         updateParent={this.deleteMe} />
+                         updateParent={this.deleteMe}
+                         commentsShow={true} />
                 }
             </div>
         )

@@ -44,7 +44,7 @@ class OnePost extends React.Component {
             likes_error: null,
             comments_error: null,
             likesShow: false,
-            commentsShow: false,
+            commentsShow: this.props.commentsShow ? this.props.commentsShow : false,
             edit: false,
             showCard: false,
             showCard2: false,
@@ -272,7 +272,12 @@ class OnePost extends React.Component {
         this.statsSample();
     }
     componentDidUpdate(prevProps) {
-        if (prevProps.id!==this.props.id || prevProps.liked!==this.props.liked) {
+        if (prevProps.id!==this.props.id || 
+            prevProps.owner!==this.props.owner||
+            prevProps.media!==this.props.media ||
+            prevProps.text!==this.props.text ||
+            prevProps.date!==this.props.date ||
+            prevProps.liked!==this.props.liked) {
             console.log("NEW POST!!")
             this.setState({
                 id: this.props.id,

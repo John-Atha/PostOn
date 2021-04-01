@@ -66,6 +66,9 @@ class MyNavbar extends React.Component {
             console.log(err);
             this.createNotification("danger", "Sorry", "Could not mark notification as read");
         })
+        setTimeout(()=>{
+            window.location.href=this.linkGen(notif)
+        }, 1000)
     }
 
     createNotification = (type, title="aaa", message="aaa") => {
@@ -299,10 +302,8 @@ class MyNavbar extends React.Component {
                                     else {
                                         return(
                                             <NavDropdown.Item className="notif with-whitespace not-seen" 
-                                                              key={index} 
-                                                              href={this.linkGen(value)}
-                                                              >
-                                                    <div onClick={this.markOneAsRead(value)}>
+                                                              key={index}>
+                                                    <div onClick={()=>this.markOneAsRead(value)}>
                                                         {this.textGen(value)}
                                                     </div>
                                             </NavDropdown.Item>
