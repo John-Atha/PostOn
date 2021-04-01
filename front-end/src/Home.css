@@ -6,7 +6,7 @@
 
 body {
     background-color: var(--colorback);
-    min-width: 300px;
+    min-width: 380px;
     max-width: 100vw;
 }
 

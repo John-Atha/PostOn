@@ -7,7 +7,7 @@ import ProfileCard from  './ProfileCard';
 import MyNavbar from './MyNavbar';
 import UserPosts from './UserPosts';
 import {getUser, getFollowersCount, getFollowsCount, getFollows, getFollowers, getFollowsPagi, getFollowersPagi, followUser, unfollowUser, isLogged} from './api';
-
+import Searchbar from './Searchbar';
 
 class OneUser extends React.Component {
     constructor(props) {
@@ -565,6 +565,7 @@ class Profile extends React.Component {
         return(
             <div className="all-page">
                 <MyNavbar />
+                <Searchbar />
                 <div className="profile-main center-content">
                         <h3 className="profile-username margin-top-smaller">
                             {this.state.username}

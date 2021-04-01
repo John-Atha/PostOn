@@ -3,6 +3,7 @@ import ProfileCard from './ProfileCard';
 import {isLogged, getActivity} from './api';
 import './Activity.css';
 import MyNavbar from './MyNavbar';
+import Searchbar from './Searchbar';
 
 const dateShow = (date) => {
     let datetime = date.replace('T', ' ').replace('Z', '').split(' ')
@@ -339,6 +340,7 @@ class Activity extends React.Component {
         return (
         <div className="all-page padding-bottom">
             <MyNavbar />
+            <Searchbar />
             <div className="main-activity-container flex-layout">
                 {this.state.actList.map((value, index) => {
                     if (value.post && value.text) {

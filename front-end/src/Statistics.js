@@ -5,6 +5,7 @@ import MyNavbar from './MyNavbar';
 import CanvasJSReact from './canvasjs.react.js';
 
 import {getMonthlyStatsGen, getDailyStatsGen, isLogged} from './api';
+import Searchbar from './Searchbar';
 
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -254,6 +255,7 @@ class Statistics extends React.Component {
             return(
                 <div className="all-page">
                     <MyNavbar />
+                    <Searchbar />
                     <div className="main-page center-content">
                         <h4 className="margin-top-smaller">Pick a statistics category</h4>
                         <div className="flex-layout center-content margin-top-smaller">

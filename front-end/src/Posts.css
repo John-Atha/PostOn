@@ -1,10 +1,10 @@
 @media only screen and (max-width:300px) {
-    .posts-container {
+    .posts-container, .profile-main, .main-page, .main-activity-container {
         margin-top: 100px;
     }
 }
 @media only screen and (min-width:300px) {
-    .posts-container {
+    .posts-container, .profile-main, .main-page, .main-activity-container {
         margin-top: 50px;
     }
 }

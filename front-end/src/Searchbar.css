@@ -19,7 +19,7 @@
 }
 
 .form-container {
-    z-index: 10;
+    z-index: 2;
     margin-top: 5px;
     margin-left: 1%;
     position: absolute;

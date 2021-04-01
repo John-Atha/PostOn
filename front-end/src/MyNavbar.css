@@ -2,7 +2,7 @@
     background-color: var(--color2) !important;
     position: sticky !important;
     top: 0;
-    z-index: 2 !important;
+    z-index: 3 !important;
 }
 #basic-navbar-nav {
     max-width: 93vw;
@@ -35,6 +35,7 @@
 .dropdown-menu {
     background-color: var(--colorback) !important;
     max-width: 300px;
+    z-index: 3 !important;
 }
 
 .notif-container {
