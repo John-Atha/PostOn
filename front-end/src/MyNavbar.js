@@ -3,7 +3,6 @@ import "./MyNavbar.css";
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown'
-
 import {isLogged, getOneUser, getNotifications, readAllNotifications, markAsRead} from './api'
 import notif_icon from './images/notif.png';
 import stats_icon from './images/stats.png';
@@ -11,6 +10,7 @@ import stats_icon from './images/stats.png';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 
+import Searchbar from './Searchbar';
 
 class MyNavbar extends React.Component {
     constructor(props) {
@@ -209,7 +209,6 @@ class MyNavbar extends React.Component {
         }
         return this.format(text);
     }
-
     getNotif = () => {
         getNotifications(this.state.userId, this.state.start, this.state.end)
         .then(response => {
@@ -222,13 +221,11 @@ class MyNavbar extends React.Component {
             console.log(err);
         })
     }
-
     logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('refresh');
         window.location.href="/";
     }
-
     componentDidMount() {
         isLogged()
         .then(response => {
@@ -253,10 +250,8 @@ class MyNavbar extends React.Component {
             })
         })
     }
-
     render(){
         return(
-
             <Navbar bg="light" expand="sm">
                 <Navbar.Brand href="/">Jwitter</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -320,8 +315,6 @@ class MyNavbar extends React.Component {
                                     <button disabled={this.state.notifList.length<5} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
                                 </div>
                             }
-
-                            
                         </NavDropdown>
                 }
                     {this.state.logged && 
@@ -334,6 +327,7 @@ class MyNavbar extends React.Component {
                         <Nav.Link href="/register">Register</Nav.Link>
                     } 
                 </Nav>
+                <Searchbar />
                 </Navbar.Collapse>
             </Navbar>
         )

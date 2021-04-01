@@ -1,0 +1,22 @@
+#suggestions-box {
+    height: min-content;
+    max-height: 200px;
+    overflow-y: scroll;
+    width: 250px;
+    background-color: white;
+    border-radius: 0px;
+    border: 1px solid lightgrey;
+    z-index: 2;
+}
+.one-suggestion {
+    color: grey;
+}
+.one-suggestion:hover {
+    text-decoration: none;
+    font-weight: bold;
+    background-color: antiquewhite;
+    color: grey;
+}
+.form-inline {
+    width: 350px;
+}
