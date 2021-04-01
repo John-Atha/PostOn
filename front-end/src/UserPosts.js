@@ -1,16 +1,8 @@
 import React from "react";
 import "./Posts.css";
 
-import {isLogged, getPosts, getPostsCommentsSample, getAllLikes, getLikesSample, LikePost, UnLikePost, editPost, getUsersPosts} from './api';
-import user_icon from './images/user-icon.png'; 
-import like_icon from './images/like.png';
-import liked_icon from './images/liked.png';
-import comment_icon from './images/comment.png';
-import edit_icon from './images/edit.png';
-import ProfileCard from './ProfileCard';
-import Likes from './Likes';
+import {isLogged, getUsersPosts} from './api';
 
-import Comments from './Comments';
 
 import OnePost from './OnePost';
 

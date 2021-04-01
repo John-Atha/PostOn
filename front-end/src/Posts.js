@@ -115,19 +115,24 @@ class OnePost extends React.Component {
 
     }
     saveText = () => {
-        editPost(this.state.id, this.state.text)
-        .then(response => {
-            console.log(response);
-            this.setState({
-                edit: false,
-                text_init: this.state.text,
+        if (!this.state.text.length) {
+            this.createNotification('warning', 'Sorry', 'You can\'t have an empty post' )
+        }
+        else {
+            editPost(this.state.id, this.state.text)
+            .then(response => {
+                console.log(response);
+                this.setState({
+                    edit: false,
+                    text_init: this.state.text,
+                })
+                this.createNotification('success', 'Hello,', 'Post changed succesffully');
             })
-            this.createNotification('success', 'Hello,', 'Post changed succesffully');
-        })
-        .catch(err => {
-            console.log(err);
-            this.createNotification('danger', 'Sorry,', 'Post could not be updated');
-        })
+            .catch(err => {
+                console.log(err);
+                this.createNotification('danger', 'Sorry,', 'Post could not be updated');
+            })
+        }
     }
     editText = () => {
         this.setState({
