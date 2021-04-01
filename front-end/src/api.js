@@ -452,3 +452,17 @@ export const readAllNotifications = (id) => {
         headers: headers, 
     })
 }
+
+export const markAsRead = (id, category) => {
+    const token = localStorage.getItem('token');
+    const headers = {
+        "Authorization" :"Bearer "+ token,
+    }
+    const body = {
+        "seen": true,
+    }
+    const requestUrl = `${category}/${id}/mod`;
+    return axios.put(requestUrl, body, {
+        headers: headers,
+    })
+}

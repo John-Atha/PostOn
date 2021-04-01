@@ -4,9 +4,12 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown'
 
-import {isLogged, getOneUser, getNotifications, readAllNotifications} from './api'
+import {isLogged, getOneUser, getNotifications, readAllNotifications, markAsRead} from './api'
 import notif_icon from './images/notif.png';
 import stats_icon from './images/stats.png';
+
+import 'react-notifications-component/dist/theme.css'
+import { store } from 'react-notifications-component';
 
 
 class MyNavbar extends React.Component {
@@ -32,19 +35,70 @@ class MyNavbar extends React.Component {
         this.moveOn = this.moveOn.bind(this);
         this.format = this.format.bind(this);
         this.markAllRead = this.markAllRead.bind(this);
+        this.markOneAsRead = this.markOneAsRead.bind(this);
+    }
+
+    markOneAsRead = (notif) => {
+        let category = "";
+        switch(this.categorize(notif)) {
+            case "comment":
+                console.log("marking the comment as read")
+                category="comments"
+                break;
+            case "commentlike":
+                console.log("marking the like on comment as read")
+                category="likecomments"
+                break;
+            case "follow":
+                console.log("marking the follow as read")
+                category="follows"
+                break;
+            default:
+                console.log("marking the like on the post as read")
+                category="likes"   
+        }
+        markAsRead(notif.id, category)
+        .then(response=>{
+            console.log(response);
+            this.createNotification("success", "OK", "Notification marked as read");
+        })
+        .catch(err => {
+            console.log(err);
+            this.createNotification("danger", "Sorry", "Could not mark notification as read");
+        })
+    }
+
+    createNotification = (type, title="aaa", message="aaa") => {
+    console.log("creating notification");
+    console.log(type);
+    store.addNotification({
+        title: title,
+        message: message,
+        type: type,
+        insert: "top",
+        container: "bottom-right",
+        animationIn: ["animate__animated", "animate__fadeIn"],
+        animationOut: ["animate__animated", "animate__fadeOut"],
+        dismiss: {
+            duration: 3000,
+            onScreen: true
+        }
+        });
     }
     markAllRead = () => {
         console.log(this.state.userId)
+        this.createNotification('warning', 'Hello,', 'Wait for us to mark them all as read');
         readAllNotifications(this.state.userId)
         .then(response => {
             console.log(response);
             this.getNotif();
+            this.createNotification('success', 'Hello,', 'Notifications marked succesffully');
         })
         .catch(err => {
             console.log(err);
+            this.createNotification('danger', 'Sorry,', 'Could not mark all as read');
         })
     }
-
     moveOn = () => {
         setTimeout(() => this.getNotif(), 1000);
     }
@@ -235,12 +289,23 @@ class MyNavbar extends React.Component {
                                 {this.state.notifList.map((value, index) => {
                                     if (value.seen) {
                                         return(
-                                            <NavDropdown.Item className="notif with-whitespace seen" key={index} href={this.linkGen(value)}>{this.textGen(value)}</NavDropdown.Item>
+                                            <NavDropdown.Item className="notif with-whitespace seen" 
+                                                              key={index} 
+                                                              href={this.linkGen(value)}>
+                                                    {this.textGen(value)}
+                                            </NavDropdown.Item>
                                         )
                                     }
                                     else {
                                         return(
-                                            <NavDropdown.Item className="notif with-whitespace not-seen" key={index} href={this.linkGen(value)}>{this.textGen(value)}</NavDropdown.Item>
+                                            <NavDropdown.Item className="notif with-whitespace not-seen" 
+                                                              key={index} 
+                                                              href={this.linkGen(value)}
+                                                              >
+                                                    <div onClick={this.markOneAsRead(value)}>
+                                                        {this.textGen(value)}
+                                                    </div>
+                                            </NavDropdown.Item>
                                         )
                                     }
                                 })}

@@ -105,7 +105,7 @@ class OnePostPage extends React.Component {
         return(
             <div className="all-page">
                 <MyNavbar />
-                { this.state.liked!==null &&
+                { this.state.owner!==null &&
                     <OnePost userId={this.state.userId} 
                          logged={this.state.logged}
                          id={this.state.id}
