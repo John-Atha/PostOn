@@ -252,7 +252,8 @@ class MyNavbar extends React.Component {
     }
     render(){
         return(
-            <Navbar bg="light" expand="sm">
+            <div>
+                <Navbar bg="light" expand="sm">
                 <Navbar.Brand href="/">Jwitter</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
@@ -316,7 +317,7 @@ class MyNavbar extends React.Component {
                                 </div>
                             }
                         </NavDropdown>
-                }
+                    }
                     {this.state.logged && 
                         <Nav.Link href="#" onClick={this.logout}>Logout</Nav.Link>
                     }
@@ -325,11 +326,11 @@ class MyNavbar extends React.Component {
                     }
                     {!this.state.logged &&
                         <Nav.Link href="/register">Register</Nav.Link>
-                    } 
+                    }
                 </Nav>
-                <Searchbar />
                 </Navbar.Collapse>
             </Navbar>
+            </div>
         )
     }
     

@@ -7,6 +7,7 @@ import Posts from "./Posts";
 import Explore from './Explore';
 import ProfileBox from './ProfileBox';
 
+import Searchbar from './Searchbar';
 
 class Home extends React.Component {
     constructor(props) {
@@ -61,6 +62,7 @@ class Home extends React.Component {
                     {this.state.logged &&
                         <ProfileBox userId={this.state.userId} logged={this.state.logged} update1={this.state.update1} update2={this.state.update2} />
                     }
+                    <Searchbar />
                 </div>
             </div>
         )

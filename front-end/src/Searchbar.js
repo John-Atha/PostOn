@@ -90,18 +90,22 @@ class Searchbar extends React.Component {
         console.log("showing suggestions:");
         const box = document.getElementById('suggestions-box');
         box.style.display="block";
+        const button = document.getElementById('search-button');
+        button.disabled = false;
     }
     hideSuggestions = () => {
         console.log("hiding suggestions");
         const box = document.getElementById('suggestions-box');
         box.style.display="none";
+        const button = document.getElementById('search-button');
+        button.disabled = true;
     }
 
     render() {
         return(
-                <Form inline onSubmit={this.search}>
-                    <OutsideClickHandler onOutsideClick={this.hideSuggestions}>
-                    <div className="flex-item-expand">
+                <Form inline onSubmit={this.search} className="form-container">
+                    <OutsideClickHandler onOutsideClick={this.hideSuggestions} >
+                    <div className="flex-layout">
                     <FormControl 
                         style={{width: '250px'}}
                         type="text" 
@@ -111,7 +115,7 @@ class Searchbar extends React.Component {
                         className="mr-sm-2" 
                         onChange={this.handleInput} 
                         onFocus={this.showSuggestions} />
-                    <Button variant="outline-success" onClick={this.search}>Search</Button>
+                    <Button id="search-button" variant="outline-dark" onClick={this.search}>Search</Button>
                     </div>
                     <div id="suggestions-box">
                         {this.state.all.map((value, index) => {
@@ -125,7 +129,6 @@ class Searchbar extends React.Component {
                         })}
                     </div>
                     </OutsideClickHandler>
-
                 </Form>
         )
     }

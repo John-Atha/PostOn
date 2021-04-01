@@ -17,6 +17,14 @@
     background-color: antiquewhite;
     color: grey;
 }
-.form-inline {
-    width: 350px;
+
+.form-container {
+    z-index: 10;
+    margin-top: 5px;
+    margin-left: 1%;
+    position: absolute;
+}
+
+#search-button {
+    margin-left: 2px;
 }

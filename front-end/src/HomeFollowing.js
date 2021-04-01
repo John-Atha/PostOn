@@ -7,6 +7,8 @@ import Posts from "./Posts";
 import Explore from './Explore';
 import ProfileBox from './ProfileBox';
 
+import Searchbar from './Searchbar';
+
 class HomeFollowing extends React.Component {
     constructor(props) {
         super(props);
@@ -55,6 +57,7 @@ class HomeFollowing extends React.Component {
             return (
                 <div className="all-page">
                     <MyNavbar />
+                    <Searchbar />
                     <div className="main-home-container flex-layout">
                         <Explore userId={this.state.userId} logged={this.state.logged} update1={this.state.update1} updateMyPar={this.updateProfBox} />
                         <Posts case="following" updateHome={this.updateHome}/>

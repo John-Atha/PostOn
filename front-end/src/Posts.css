@@ -1,3 +1,14 @@
+@media only screen and (max-width:300px) {
+    .posts-container {
+        margin-top: 100px;
+    }
+}
+@media only screen and (min-width:300px) {
+    .posts-container {
+        margin-top: 50px;
+    }
+}
+
 @media only screen and (max-width: 920px) {
     .explore-container {
         display: none;
@@ -32,7 +43,6 @@
 }
 
 .posts-container {
-    margin-top: 1%;
     width: auto !important;
 }
 .post-container {
