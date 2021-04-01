@@ -28,3 +28,16 @@
 #search-button {
     margin-left: 2px;
 }
+
+#search-button {
+    border: 2px solid grey;
+}
+
+.form-control {
+    border: 1px solid grey;
+}
+
+
+.form-control:hover {
+    border: 2px solid grey;
+}
