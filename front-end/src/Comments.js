@@ -148,7 +148,23 @@ class OneComment extends React.Component {
         this.cardShow2 = this.cardShow2.bind(this);
         this.cardHide2 = this.cardHide2.bind(this);
     }
-
+    createNotification = (type, title="aaa", message="aaa") => {
+        console.log("creating notification");
+        console.log(type);
+        store.addNotification({
+            title: title,
+            message: message,
+            type: type,
+            insert: "top",
+            container: "bottom-right",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 3000,
+              onScreen: true
+            }
+          });
+    };
     format = (str) => {
         str = str.replaceAll('\n', ' ')
         let init = str.split(' ')
@@ -185,7 +201,6 @@ class OneComment extends React.Component {
         s=s.replace('\n ', '\n').replace(' ', '\n')
         return (s);
     }
-
     cardShow = () => {
             this.setState({
                 showCard: true,
@@ -206,20 +221,16 @@ class OneComment extends React.Component {
                 showCard2: false,
             })
     }
-
-
     preDelete = () => {
         this.setState({
             showModal: true,
         })
     }
-
     hideModal = () => {
         this.setState({
             showModal: false,
         })
     }
-
     commentDelete = () => {
         DeleteComment(this.state.comment.id)
         .then(response => {
@@ -227,15 +238,16 @@ class OneComment extends React.Component {
             this.setState({
                 delete: true,
             })
+            this.createNotification("success", "Hello,", "Comment deleted successfully")
             this.hideModal();
             let x = this.props.updateParent(this.state.comment.id);
         })
         .catch(err => {
             console.log(err);
             this.hideModal();
+            this.createNotification("danger", "Sorry,", "We couldn't delete your comment")
         })
     }
-
     commentLike = () => {
         LikeComment(this.state.userId, this.state.comment.id)
         .then(response => {
@@ -249,7 +261,6 @@ class OneComment extends React.Component {
             console.log(err);
         })
     }
-
     commentUnLike = () => {
         getAllLikes(1, this.state.comment.id, "comment")
         .then(response => {
@@ -274,14 +285,12 @@ class OneComment extends React.Component {
             console.log(err);
         })
     }
-
     showLikes = (event) => {
         this.setState({
             likesShow: true,
             followsUpd: this.state.followsUpd+1,
         })
     }
-
     likesSample = () => {
         setTimeout(()=> {}, 2000);
         getLikesSample(this.state.comment.id, "comment")
@@ -301,7 +310,6 @@ class OneComment extends React.Component {
         })
 
     }
-
     checkLiked = () => {
         if (this.state.logged) {
             setTimeout(()=> {}, 2000);
@@ -327,7 +335,6 @@ class OneComment extends React.Component {
             })
         }
     }
-
     componentDidMount() {
         this.likesSample();
         this.checkLiked();
@@ -421,14 +428,14 @@ class OneComment extends React.Component {
 
                     </div>
                     {
-                            this.state.showModal===true && 
-                                <div className="comments-pop-up box-colors">
+                            this.state.showModal && 
+                                <div className="comments-pop-up box-colors center-content">
                                     <div className="message center-content">
                                         Are you sure you want delete this comment?<br></br>
                                     </div>
                                     <div className="modal-buttons-container center-content flex-layout margin-top-small">
-                                        <button className="my-button flex-item margin-top-small" onClick={this.hideModal}>No, I changed my mind</button>
-                                        <button className="my-button flex-item margin-top-small" onClick={this.commentDelete}>Yes, delete anyway</button>                                        
+                                        <button className="my-button flex-item-small margin-top-small margin" onClick={this.hideModal}>No, I changed my mind</button>
+                                        <button className="my-button flex-item-small margin-top-small margin" onClick={this.commentDelete}>Yes, delete anyway</button>                                        
                                     </div>
                                 </div>
                         

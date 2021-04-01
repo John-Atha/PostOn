@@ -100,6 +100,7 @@ class UserPosts extends React.Component {
                                     userId={this.state.userId}
                                     logged={this.state.logged}
                                     updateHome={this.props.updateHome}
+                                    updateParent={this.askPosts}
                         />
                     )
                     

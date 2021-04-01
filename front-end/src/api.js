@@ -466,3 +466,15 @@ export const markAsRead = (id, category) => {
         headers: headers,
     })
 }
+
+export const deletePost = (id) => {
+    const token = localStorage.getItem('token');
+    const headers = {
+        "Authorization" :"Bearer "+ token,
+    }
+    const requestUrl = `posts/${id}/mod`;
+    return axios.delete(requestUrl, {
+        headers: headers,
+    })
+
+}

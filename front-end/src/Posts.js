@@ -160,6 +160,7 @@ class Posts extends React.Component {
                                     logged={this.state.logged}
                                     liked={liked}
                                     updateHome={this.props.updateHome}
+                                    updateParent={this.askPosts}
                         />
                     )
                     

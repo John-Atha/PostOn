@@ -1,18 +1,18 @@
 import React from "react";
 import "./Posts.css";
 
-import {isLogged, getPosts, getPostsCommentsSample, getAllLikes, getLikesSample, myLikes, LikePost, UnLikePost, editPost, getUsersPosts} from './api';
+import {getPostsCommentsSample, getAllLikes, getLikesSample, LikePost, UnLikePost, editPost, deletePost} from './api';
 import user_icon from './images/user-icon.png'; 
 import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
 import comment_icon from './images/comment.png';
 import edit_icon from './images/edit.png';
+import delete_icon from './images/delete-icon.png';
 
 import Likes from './Likes';
 
 import Comments from './Comments';
 import ProfileCard from './ProfileCard';
-import Profile from "./Profile";
 
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
@@ -48,6 +48,8 @@ class OnePost extends React.Component {
             edit: false,
             showCard: false,
             showCard2: false,
+            delete: false,
+            showModal: false,
         }
         this.likesSample = this.likesSample.bind(this);
         this.commentsSample = this.commentsSample.bind(this);
@@ -64,6 +66,9 @@ class OnePost extends React.Component {
         this.cardHide = this.cardHide.bind(this);
         this.cardShow2 = this.cardShow2.bind(this);
         this.cardHide2 = this.cardHide2.bind(this);
+        this.postDelete = this.postDelete.bind(this);
+        this.preDelete = this.preDelete.bind(this);
+        this.hideModal = this.hideModal.bind(this);
     }
     createNotification = (type, title="aaa", message="aaa") => {
         console.log("creating notification");
@@ -82,7 +87,34 @@ class OnePost extends React.Component {
             }
           });
     };
-
+    preDelete = () => {
+        console.log("Chose to delete")
+        this.setState({
+            showModal: true,
+        })
+    }
+    hideModal = () => {
+        this.setState({
+            showModal: false,
+        })
+    }
+    postDelete = () => {
+        deletePost(this.state.id)
+        .then(response => {
+            console.log(response);
+            this.setState({
+                delete: true,
+            })
+            this.createNotification("success", "Hello,", "Post deleted successfully")
+            this.hideModal();
+            let x = this.props.updateParent();
+        })
+        .catch(err => {
+            console.log(err);
+            this.hideModal();
+            this.createNotification("danger", "Sorry,", "We couldn't delete your post")
+        })
+    }
     cardShow2 = () => {
         this.setState({
             showCard2: true,
@@ -283,10 +315,14 @@ class OnePost extends React.Component {
                         <div className="post-date">{time}<br></br>{date}</div>
                     </div>
                     {this.state.userId===this.state.owner.id &&
-                        <div className="center-content flex-item-small edit-action">
-                            <button className="edit-action flex-layout button-as-link" onClick={this.editText}>
-                                    <img className="like-icon" src={edit_icon} alt="edit-icon"/>
+                        <div className="center-content flex-layout edit-action-container">
+                            <button className="flex-layout button-as-link margin-right-small edit-action" onClick={this.editText}>
+                                    <img className="like-icon-small" src={edit_icon} alt="edit-icon"/>
                                     <div>Edit</div>
+                            </button>
+                            <button className="flex-layout button-as-link edit-action" onClick={this.preDelete}>
+                                    <img className="like-icon-small" src={delete_icon} alt="delete-icon"/>
+                                    <div>Delete</div>
                             </button>
                         </div>
                     }
@@ -393,6 +429,18 @@ class OnePost extends React.Component {
                             followsUpd={this.state.followsUpd}
                     />
                 }
+                {this.state.showModal && 
+                    <div className="posts-pop-up box-colors center-content">
+                        <div className="message center-content">
+                            Are you sure you want delete this post?<br></br>
+                        </div>
+                        <div className="modal-buttons-container center-content flex-layout margin-top-small">
+                            <button className="my-button flex-item-small margin-top-small margin" onClick={this.hideModal}>No, I changed my mind</button>
+                            <button className="my-button flex-item-small margin-top-small margin" onClick={this.postDelete}>Yes, delete anyway</button>                                        
+                        </div>
+                    </div>
+                }                
+                
             </div>
         )
     }

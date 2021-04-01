@@ -41,6 +41,11 @@ class OnePostPage extends React.Component {
         this.checkLogged = this.checkLogged.bind(this);
         this.getPostInfo = this.getPostInfo.bind(this);
         this.checkLiked = this.checkLiked.bind(this);
+        this.deleteMe = this.deleteMe.bind(this);
+    }
+
+    deleteMe = () => {
+        window.location.href="/";
     }
 
     checkLogged = () => {
@@ -114,7 +119,8 @@ class OnePostPage extends React.Component {
                          text={this.state.text}
                          date={this.state.date}
                          liked={this.state.liked}
-                         updateHome={()=>{}} />
+                         updateHome={()=>{}}
+                         updateParent={this.deleteMe} />
                 }
             </div>
         )
