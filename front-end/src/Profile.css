@@ -21,11 +21,14 @@
 
 
 .profile-info {
-    background-color: white;
+    background-color: rgb(242, 240, 240);
     border-radius: 7px;
     margin: 1%;
     padding: 1%;
+    padding-bottom: 5%;
     line-height: 2;
+    min-height: min-content;
+    flex-grow: 1;
 }
 
 .profile-main {
@@ -37,11 +40,10 @@
     font-weight: bold;
 }
 
-.user-photo-container2 {
+.user-photo-profile-container {
     height:170px;
-    width: 200px;
-    margin-left: auto;
-    margin-right: auto;
+    width: 180px;
+    margin-left: 1%;
     border-radius: 50%;
 }
 
@@ -58,11 +60,11 @@
 }
 
 .foll-button {
-    margin-right: 2%;
-    margin-left: 2%;
     background-color: var(--color2);
     border-radius: 8px;
     border: none;
+    width: 80px;
+    height: min-content;
 }
 
 .foll-button:hover {

@@ -95,7 +95,7 @@ class ProfileBox extends React.Component {
             <div className="profile-box">
                 <div className="flex-layout">
                     <div className="user-photo-container-small">
-                            <img className="user-photo" src={this.state.photo} alt="user profile" />
+                            <img className="user-photo" src={this.state.photo} alt="user" />
                     </div>
                     <div className="owner-name">{this.state.username}</div>
                 </div>

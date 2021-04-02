@@ -570,43 +570,43 @@ class Profile extends React.Component {
                             {this.state.username}
                         </h3>
                 </div>
-                <div className="profile-main center-content">
-                    <div className="user-photo-container2">
+                <div className="flex-layout">
+                    <div className="user-photo-profile-container">
                         <img className="user-photo" src={this.state.photo} alt="user profile" />
                     </div>
-                    <div className="un-follow-button-container center-content">
+                    <div className="margin-top-small margin-left center-content">
+                        <button className="foll-button" style={{width: '80%'}} onClick={this.showFollowers}>
+                            {this.state.followersNum} followers
+                        </button>
+                        <button className="foll-button margin-top-small" style={{width: '80%'}} onClick={this.showFollows}>
+                            {this.state.followsNum} follows
+                        </button>
+                        <div>
                         {this.state.logged && !this.state.isFollowed && !this.state.isFollowing && this.state.me!==this.state.userId &&
-                            <button className="my-button un-follow-button pale-blue flex-item" onClick={this.follow}>Follow</button>
+                            <button className="foll-button margin-top-small" style={{width: '90%', 'background-color': 'white'}} onClick={this.follow}>Follow</button>
                         }
                         {this.state.logged && !this.state.isFollowed && this.state.isFollowing && this.state.me!==this.state.userId &&
-                            <button className="my-button un-follow-button pale-blue flex-item" onClick={this.follow}>Follow Back</button>
+                            <button className="foll-button margin-top" style={{width: '90%', 'background-color': 'white'}} onClick={this.follow}>Follow Back</button>
                         }
                         {this.state.logged && this.state.isFollowed && this.state.me!==this.state.userId &&
-                            <button className="my-button un-follow-button flex-item" onClick={this.unfollow}>Unfollow</button>
+                            <button className="foll-button margin-top-small" style={{width: '90%', 'background-color': 'white'}} onClick={this.unfollow}>Unfollow</button>
                         }
                     </div>
-
-                    <div className="margin-left profile-info">
-                        <div className="center-content">
+                </div>
+                    <div className="profile-info">
+                        <div>
                             {this.state.moto}
                         </div>
-                        <div className="center-content">
+                        <div>
                             country: {this.state.country}
                         </div>
-                            <div className="center-content flex-layout">
-                                <button className="foll-button" onClick={this.showFollowers}>
-                                    Followers: {this.state.followersNum}
-                                </button>
-                                <button className="foll-button" onClick={this.showFollows}>
-                                    Follows: {this.state.followsNum}
-                                </button>
-                            </div>
                     </div>
                 </div>
                 <div className="adjusted-width">
-                    <h4 className="center-text">{this.state.username}'s posts</h4>
-                    <UserPosts whose={this.state.userId}
-                           updateHome={this.updateMyFollows} />
+                    <hr className="no-margin"></hr>
+                    <h4 className="center-text">Posts</h4>
+                    <hr className="no-margin"></hr>
+                    <UserPosts whose={this.state.userId} updateHome={this.updateMyFollows} />
                 </div>
                 {this.state.followsShow &&
                     <FollowBox  userId={this.state.userId}
