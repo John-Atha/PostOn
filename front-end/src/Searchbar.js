@@ -121,7 +121,7 @@ class Searchbar extends React.Component {
                         {this.state.all.map((value, index) => {
                             if (this.matches(value.username)) {
                                 return (
-                                    <a key={index} className="one-suggestion flex-layout" href={`users/${value.id}`}>
+                                    <a key={index} className="one-suggestion flex-layout" href={`/users/${value.id}`}>
                                         <div className="user-photo-container-small">
                                                 <img className="user-photo" src={value.photo} alt="user profile" />
                                         </div>
