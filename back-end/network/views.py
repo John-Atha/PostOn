@@ -1396,15 +1396,21 @@ def UserPostPhoto(request, id):
     else:
         return JsonResponse({"error": "Only POST method is allowed."}, status=400)
 
-def UserPhotoGet(request, id):
-    if request.method=="GET":
+
+def PostPostPhoto(request, id):
+    if request.method=="POST":
         try:
-            user = User.objects.get(id=id)
-        except User.DoesNotExist:
-            return JsonResponse({"error": "Ivalid user id."}, status=400)
-        if user.photo:
-            return JsonResponse({"path": request.build_absolute_uri('/')[:-1]+user.photo.url}, status=200)
-        else:
-            return JsonResponse({"path": request.build_absolute_uri('/')[:-1]+'/media/user-icon.png'}, status=200)
+            post = Post.objects.get(id=id)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "Invalid post id."}, status=400)
+        #if post.owner==request.user:
+        post.media=request.FILES['image']
+        post.save()
+        return JsonResponse({
+            "id": post.id,
+            "media": request.build_absolute_uri('/')[:-1]+post.media.url,
+        }, status=200)
+        #else:
+        #    return JsonResponse({"error": "You have to be the owner of a post to update it."}, status=400)
     else:
-        return JsonResponse({"error": "Only GET method is allowed."}, status=400)
+        return JsonResponse({"error": "Only POST method is allowed."}, status=400)

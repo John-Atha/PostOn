@@ -55,7 +55,7 @@ class Post(models.Model):
 
     def serialize(self, path=""):
         if self.media:
-            photoVal = self.media.path
+            photoVal = path+self.media.url
         else:
             photoVal = None
 
