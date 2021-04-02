@@ -3,11 +3,12 @@ from itertools import chain
 from operator import attrgetter
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, FileResponse
 from rest_framework.decorators import api_view
 from .models import *
 from datetime import datetime
 import imghdr
+from base64 import decodestring
 
 def paginate(start, end, items):
     if start is not None:
@@ -1386,7 +1387,10 @@ def UserPostPhoto(request, id):
         if user==request.user:
             user.photo = request.FILES['image']
             user.save()
-            return JsonResponse({"message": "Photo saved successfully."}, status=200)
+            return JsonResponse({ 
+                "id": user.id,
+                "photo": request.build_absolute_uri('/')[:-1]+user.photo.url,
+            },status=200)
         else:
             return JsonResponse({"error": "You cannot update the photo of another user"}, status=400)
     else:
@@ -1399,8 +1403,7 @@ def UserPhotoGet(request, id):
         except User.DoesNotExist:
             return JsonResponse({"error": "Ivalid user id."}, status=400)
         if user.photo:
-            format = imghdr.what(user.photo)
-            return HttpResponse(user.photo, content_type=f"image/{format}")
+            return JsonResponse({"path": request.build_absolute_uri('/')[:-1]+user.photo.url}, status=200)
         else:
             return JsonResponse({"error": "There is not a photo for this user."}, status=402)
     else:
