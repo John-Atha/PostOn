@@ -26,11 +26,11 @@ class User(AbstractUser):
     def __str__(self):
         return f"{self.username}, {self.email}, {self.moto}, {self.country}"
 
-    def serialize(self):
+    def serialize(self, path=""):
         if self.photo:
-            photoVal = self.photo.path
+            photoVal = path+self.photo.url
         else:
-            photoVal = None
+            photoVal = path+'/media/user-icon.png'
         if self.country:
             country1 = self.country.serialize()
         else:
@@ -53,7 +53,7 @@ class Post(models.Model):
     def __str__(self):
         return f"{self.owner}, {self.text}, {self.date}"
 
-    def serialize(self):
+    def serialize(self, path=""):
         if self.media:
             photoVal = self.media.path
         else:
@@ -61,7 +61,7 @@ class Post(models.Model):
 
         return {
             "id": self.id,
-            "owner": self.owner.serialize(),
+            "owner": self.owner.serialize(path),
             "media": photoVal,
             "text": self.text,
             "date": self.date,
@@ -76,11 +76,11 @@ class Comment(models.Model):
     def __str__(self):
         return f"{self.owner}, {self.post}, {self.text}, {self.date}"
 
-    def serialize(self):
+    def serialize(self, path=""):
         return {
             "id": self.id,
-            "owner": self.owner.serialize(),
-            "post": self.post.serialize(),
+            "owner": self.owner.serialize(path),
+            "post": self.post.serialize(path),
             "text": self.text,
             "date": self.date,
             "seen": self.seen,
@@ -95,11 +95,11 @@ class Like(models.Model):
     def __str__(self):
         return f"{self.owner}, {self.post}, {self.date}"
 
-    def serialize(self):
+    def serialize(self, path=""):
         return {
             "id": self.id,
-            "owner": self.owner.serialize(),
-            "post": self.post.serialize(),
+            "owner": self.owner.serialize(path),
+            "post": self.post.serialize(path),
             "date": self.date,
             "seen": self.seen,
         } 
@@ -113,11 +113,11 @@ class LikeComment(models.Model):
     def __str__(self):
         return f"{self.owner}, {self.comment}, {self.date}"
 
-    def serialize(self):
+    def serialize(self, path=""):
         return {
             "id": self.id,
-            "owner": self.owner.serialize(),
-            "comment": self.comment.serialize(),
+            "owner": self.owner.serialize(path),
+            "comment": self.comment.serialize(path),
             "date": self.date,
             "seen": self.seen,
         } 
@@ -131,11 +131,11 @@ class Follow(models.Model):
     def __str__(self):
         return f"{self.following}, {self.followed}, {self.date}"
 
-    def serialize(self):
+    def serialize(self, path=""):
         return {
             "id": self.id,
-            "following": self.following.serialize(),
-            "followed": self.followed.serialize(),
+            "following": self.following.serialize(path),
+            "followed": self.followed.serialize(path),
             "date": self.date,
             "seen": self.seen,
         } 

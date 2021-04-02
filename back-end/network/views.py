@@ -138,7 +138,7 @@ def OneUser(request, id):
             user = User.objects.get(id=id)
         except User.DoesNotExist:
             return JsonResponse({"error": f"Invalid user id ({id})."}, status=400)   
-        return JsonResponse(user.serialize())
+        return JsonResponse(user.serialize(request.build_absolute_uri('/')[:-1]))
 
 @api_view(['Get', 'Put'])
 def OneUserMod(request, id):
@@ -167,7 +167,7 @@ def OneUserMod(request, id):
             if smthNew:
                 try:
                     user.save()
-                    return JsonResponse(user.serialize(), status=200)
+                    return JsonResponse(user.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                 except:
                     return JsonResponse({"error": "Username probably already exists"} , status=400)
             else:
@@ -188,7 +188,7 @@ def AllUsers(request):
             if len(users)==0:
                 return JsonResponse({"error": "No users found."}, status=402)
             else:
-                return JsonResponse([user.serialize() for user in users], safe=False, status=200)
+                return JsonResponse([user.serialize(request.build_absolute_uri('/')[:-1]) for user in users], safe=False, status=200)
         except TypeError:
             return result
 
@@ -226,7 +226,7 @@ def OnePost(request, id):
             post = Post.objects.get(id=id)
         except Post.DoesNotExist:
             return JsonResponse({"error": f"Invalid post id ({id})."}, status=400)
-        return(JsonResponse(post.serialize(), status=200))
+        return(JsonResponse(post.serialize(request.build_absolute_uri('/')[:-1]), status=200))
 
 @api_view(['Put', 'Delete'])
 def OnePostMod(request, id):
@@ -246,7 +246,7 @@ def OnePostMod(request, id):
                             post.text = data["text"]
                             post.date = str(datetime.now())
                             post.save()
-                            return JsonResponse(post.serialize(), status=200)
+                            return JsonResponse(post.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                 else:
                     return JsonResponse({"error": "Only the post's owner can modify it"}, status=400)
             else:
@@ -287,7 +287,7 @@ def UserPosts(request, id):
             if len(posts)==0:
                 return JsonResponse({"error": "No posts found for this user"}, status=402)
             else:
-                return JsonResponse([post.serialize() for post in posts], safe=False, status=200)
+                return JsonResponse([post.serialize(request.build_absolute_uri('/')[:-1]) for post in posts], safe=False, status=200)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
 
@@ -300,7 +300,7 @@ def AllPosts(request):
             if len(posts)==0:
                 return JsonResponse({"error": "No posts found."}, status=402)
             else:
-                return JsonResponse([post.serialize() for post in posts], safe=False, status=200)
+                return JsonResponse([post.serialize(request.build_absolute_uri('/')[:-1]) for post in posts], safe=False, status=200)
         except TypeError:
             return result
     else:
@@ -321,7 +321,7 @@ def AllPostsMod(request):
                                 if len(str(data["text"])):
                                     post = Post(owner=owner, text=str(data["text"]))
                                     post.save()
-                                    return JsonResponse(post.serialize(), status=200)
+                                    return JsonResponse(post.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                                 else:
                                     return JsonResponse({"error": "No text given."}, status=400)   
                             else:
@@ -348,7 +348,7 @@ def AllFollows(request):
             if len(AllFollows)==0:
                 return JsonResponse({"error": "No follows found"}, status=402)
             else:
-                return JsonResponse([follow.serialize() for follow in AllFollows], safe=False, status=200)
+                return JsonResponse([follow.serialize(request.build_absolute_uri('/')[:-1]) for follow in AllFollows], safe=False, status=200)
         except TypeError:
             return result
     else:
@@ -370,7 +370,7 @@ def AllFollowsMod(request):
                                     if followed!=following:
                                         follow = Follow(following=following, followed=followed)
                                         follow.save()
-                                        return JsonResponse(follow.serialize(), status=200)
+                                        return JsonResponse(follow.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                                     else:
                                         return JsonResponse({"error": "A user cannot follow his/her self"}, status=400)
                                 except User.DoesNotExist:
@@ -399,7 +399,7 @@ def OneFollow(request, id):
         except Follow.DoesNotExist:
             return JsonResponse({"error": "Invalid follow id"}, status=400)
         if request.method=="GET":
-            return JsonResponse(follow.serialize(), status=200)
+            return JsonResponse(follow.serialize(request.build_absolute_uri('/')[:-1]), status=200)
 
 @api_view(['Delete', 'Put']) 
 def OneFollowMod(request, id):
@@ -423,7 +423,7 @@ def OneFollowMod(request, id):
                     if data["seen"]==True or data["seen"]==False:
                         follow.seen=data["seen"]
                         follow.save()
-                        return JsonResponse(follow.serialize(), status=200)
+                        return JsonResponse(follow.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                     else:
                         return JsonResponse({"error": "'seen' field can have only True/False value"}, status=400)
                 else:
@@ -443,7 +443,7 @@ def UserFollows(request, id):
                 if len(follows)==0:
                     return JsonResponse({"error": "No follows found."}, status=402)
                 else:
-                    return JsonResponse([follow.serialize() for follow in follows], safe=False, status=200)
+                    return JsonResponse([follow.serialize(request.build_absolute_uri('/')[:-1]) for follow in follows], safe=False, status=200)
             except TypeError:
                 return result
         except User.DoesNotExist:
@@ -462,7 +462,7 @@ def UserFollowers(request, id):
                 if len(follows)==0:
                     return JsonResponse({"error": "No follows found."}, status=402)
                 else:
-                    return JsonResponse([follow.serialize() for follow in follows], safe=False, status=200)
+                    return JsonResponse([follow.serialize(request.build_absolute_uri('/')[:-1]) for follow in follows], safe=False, status=200)
             except TypeError:
                 return result
         except User.DoesNotExist:
@@ -479,7 +479,7 @@ def AllLikes(request):
             if len(likes)==0:
                 return JsonResponse({"error": "No likes found."}, status=402)
             else:
-                return JsonResponse([like.serialize() for like in likes], safe=False, status=200)
+                return JsonResponse([like.serialize(request.build_absolute_uri('/')[:-1]) for like in likes], safe=False, status=200)
         except TypeError:
             return result
     else:
@@ -506,7 +506,7 @@ def AllLikesMod(request):
                                         post = Post.objects.get(id=postId)
                                         like = Like(owner=owner, post=post)
                                         like.save()
-                                        return JsonResponse(like.serialize(), status=200)
+                                        return JsonResponse(like.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                                     except Post.DoesNotExist:
                                         return JsonResponse({"error": "Invalid post id."}, status=400)                                
                                 except ValueError:
@@ -534,7 +534,7 @@ def OneLike(request, id):
             like= Like.objects.get(id=id)
         except Like.DoesNotExist:
             return JsonResponse({"error": "Invalid like id"}, status=400)
-        return JsonResponse(like.serialize(), status=200)
+        return JsonResponse(like.serialize(request.build_absolute_uri('/')[:-1]), status=200)
 
 @api_view(['Put', 'Delete'])
 def OneLikeMod(request, id):
@@ -558,7 +558,7 @@ def OneLikeMod(request, id):
                     if data["seen"]==True or data["seen"]==False:
                         like.seen=data["seen"]
                         like.save()
-                        return JsonResponse(like.serialize(), status=200)
+                        return JsonResponse(like.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                     else:
                         return JsonResponse({"error": "'seen' field can have only True/False value"}, status=400)
                 else:
@@ -578,7 +578,7 @@ def UserLikes(request, id):
                 if len(likes)==0:
                     return JsonResponse({"error": "No likes found."}, status=402)
                 else:
-                    return JsonResponse([like.serialize() for like in likes], safe=False, status=200)
+                    return JsonResponse([like.serialize(request.build_absolute_uri('/')[:-1]) for like in likes], safe=False, status=200)
             except TypeError:
                 return result
         except User.DoesNotExist:
@@ -598,7 +598,7 @@ def UserLiked(request, id):
                 if len(likes)==0:
                     return JsonResponse({"error": "No likes found."}, status=402)
                 else:
-                    return JsonResponse([like.serialize() for like in likes], safe=False, status=200)
+                    return JsonResponse([like.serialize(request.build_absolute_uri('/')[:-1]) for like in likes], safe=False, status=200)
             except TypeError:
                 return result
         except User.DoesNotExist:
@@ -615,7 +615,7 @@ def AllComments(request):
             if len(comments)==0:
                 return JsonResponse({"error": "No comments found."}, status=402)
             else:
-                return JsonResponse([comment.serialize() for comment in comments], safe=False, status=200)
+                return JsonResponse([comment.serialize(request.build_absolute_uri('/')[:-1]) for comment in comments], safe=False, status=200)
         except TypeError:
             return result
     else:
@@ -645,7 +645,7 @@ def AllCommentsMod(request):
                                             if len(text)>0:
                                                 comment = Comment(owner=owner, post=post, text=text)
                                                 comment.save()
-                                                return JsonResponse(comment.serialize(), status=200)
+                                                return JsonResponse(comment.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                                             else:
                                                 return JsonResponse({"error": "Invalid text given"}, status=400)
                                         else:
@@ -677,7 +677,7 @@ def OneComment(request, id):
             comment= Comment.objects.get(id=id)
         except Comment.DoesNotExist:
             return JsonResponse({"error": "Invalid comment id"}, status=400)
-        return JsonResponse(comment.serialize(), status=200)
+        return JsonResponse(comment.serialize(request.build_absolute_uri('/')[:-1]), status=200)
 
 @api_view(['Delete', 'Put'])
 def OneCommentMod(request, id):
@@ -701,7 +701,7 @@ def OneCommentMod(request, id):
                     if data["seen"]==True or data["seen"]==False:
                         comment.seen=data["seen"]
                         comment.save()
-                        return JsonResponse(comment.serialize(), status=200)
+                        return JsonResponse(comment.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                     else:
                         return JsonResponse({"error": "'seen' field can have only True/False value"}, status=400)
                 else:
@@ -721,7 +721,7 @@ def UserComments(request, id):
                 if len(comments)==0:
                     return JsonResponse({"error": "No comments found."}, status=402)
                 else:
-                    return JsonResponse([comment.serialize() for comment in comments], safe=False, status=200)
+                    return JsonResponse([comment.serialize(request.build_absolute_uri('/')[:-1]) for comment in comments], safe=False, status=200)
             except TypeError:
                 return result
         except User.DoesNotExist:
@@ -741,7 +741,7 @@ def UserCommented(request, id):
                 if len(comments)==0:
                     return JsonResponse({"error": "No comments found."}, status=402)
                 else:
-                    return JsonResponse([comment.serialize() for comment in comments], safe=False, status=200)
+                    return JsonResponse([comment.serialize(request.build_absolute_uri('/')[:-1]) for comment in comments], safe=False, status=200)
             except TypeError:
                 return result
         except User.DoesNotExist:
@@ -758,7 +758,7 @@ def AllLikeComments(request):
             if len(likeComments)==0:
                 return JsonResponse({"error": "No likes on comments found."}, status=402)
             else:
-                return JsonResponse([likeComment.serialize() for likeComment in likeComments], safe=False, status=200)
+                return JsonResponse([likeComment.serialize(request.build_absolute_uri('/')[:-1]) for likeComment in likeComments], safe=False, status=200)
         except TypeError:
             return result
     else:
@@ -785,7 +785,7 @@ def AllLikeCommentsMod(request):
                                         comment = Comment.objects.get(id=commentId)
                                         likeComment = LikeComment(owner=owner, comment=comment)
                                         likeComment.save()
-                                        return JsonResponse(likeComment.serialize(), status=200)
+                                        return JsonResponse(likeComment.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                                     except Comment.DoesNotExist:
                                         return JsonResponse({"error": "Invalid comment id."}, status=400)                                
                                 except ValueError:
@@ -814,7 +814,7 @@ def OneLikeComment(request, id):
         except LikeComment.DoesNotExist:
             return JsonResponse({"error": "Invalid like on comment id"}, status=400)
         if request.method=="GET":
-            return JsonResponse(likeComment.serialize(), status=200)
+            return JsonResponse(likeComment.serialize(request.build_absolute_uri('/')[:-1]), status=200)
 
 @api_view(['Put', 'Delete'])
 def OneLikeCommentMod(request, id):
@@ -840,7 +840,7 @@ def OneLikeCommentMod(request, id):
                         if data["seen"]==True or data["seen"]==False:
                             likeComment.seen=data["seen"]
                             likeComment.save()
-                            return JsonResponse(likeComment.serialize(), status=200)
+                            return JsonResponse(likeComment.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                         else:
                             return JsonResponse({"error": "'seen' field can have only True/False value"}, status=400)
                     else:
@@ -862,7 +862,7 @@ def UserLikesComments(request, id):
                 if len(likeComments)==0:
                     return JsonResponse({"error": "No likeComments found."}, status=402)
                 else:
-                    return JsonResponse([likeComment.serialize() for likeComment in likeComments], safe=False, status=200)
+                    return JsonResponse([likeComment.serialize(request.build_absolute_uri('/')[:-1]) for likeComment in likeComments], safe=False, status=200)
             except TypeError:
                 return result
         except User.DoesNotExist:
@@ -882,7 +882,7 @@ def UserLikedComments(request, id):
                 if len(likeComments)==0:
                     return JsonResponse({"error": "No likeComments found."}, status=402)
                 else:
-                    return JsonResponse([likeComment.serialize() for likeComment in likeComments], safe=False, status=200)
+                    return JsonResponse([likeComment.serialize(request.build_absolute_uri('/')[:-1]) for likeComment in likeComments], safe=False, status=200)
             except TypeError:
                 return result
         except User.DoesNotExist:
@@ -915,7 +915,7 @@ def UserActivity(request, id):
                 if len(activity)==0:
                     return JsonResponse({"error": "No activity found."}, status=402)
                 else:
-                    return JsonResponse([act.serialize() for act in activity], safe=False, status=200)
+                    return JsonResponse([act.serialize(request.build_absolute_uri('/')[:-1]) for act in activity], safe=False, status=200)
             except TypeError:
                 return result
         else:
@@ -947,7 +947,7 @@ def UserNotifications(request, id):
                 if len(notifications)==0:
                     return JsonResponse({"error": "No notifications found."}, status=402)
                 else:
-                    return JsonResponse([notification.serialize() for notification in notifications], safe=False, status=200)
+                    return JsonResponse([notification.serialize(request.build_absolute_uri('/')[:-1]) for notification in notifications], safe=False, status=200)
             except TypeError:
                 return result
         else:
@@ -1095,7 +1095,7 @@ def OnePostLikes(request, id):
             if len(likes)==0:
                 return JsonResponse({"error": "No likes found."}, status=402)
             else:
-                return JsonResponse([like.serialize() for like in likes], safe=False, status=200)
+                return JsonResponse([like.serialize(request.build_absolute_uri('/')[:-1]) for like in likes], safe=False, status=200)
         except TypeError:
             return result
 
@@ -1114,7 +1114,7 @@ def OnePostLikesSample(request, id):
             else:
                 answer = {
                     "likes": len(likes),
-                    "one-liker": likes[0].owner.serialize()
+                    "one-liker": likes[0].owner.serialize(request.build_absolute_uri('/')[:-1])
                 }
                 return JsonResponse(answer, status=200)
 
@@ -1133,7 +1133,7 @@ def OnePostComments(request, id):
             if len(comments)==0:
                 return JsonResponse({"error": "No comments found."}, status=402)
             else:
-                return JsonResponse([comment.serialize() for comment in comments], safe=False, status=200)
+                return JsonResponse([comment.serialize(request.build_absolute_uri('/')[:-1]) for comment in comments], safe=False, status=200)
         except TypeError:
             return result
 
@@ -1152,7 +1152,7 @@ def OnePostCommentsSample(request, id):
             else:
                 answer = {
                     "comments": len(comments),
-                    "one-comment": comments[0].serialize()
+                    "one-comment": comments[0].serialize(request.build_absolute_uri('/')[:-1])
                 }
                 return JsonResponse(answer, status=200)
 
@@ -1171,7 +1171,7 @@ def OneCommentLikes(request, id):
             if len(likes)==0:
                 return JsonResponse({"error": "No likes found."}, status=402)
             else:
-                return JsonResponse([like.serialize() for like in likes], safe=False, status=200)
+                return JsonResponse([like.serialize(request.build_absolute_uri('/')[:-1]) for like in likes], safe=False, status=200)
         except TypeError:
             return result
 
@@ -1190,7 +1190,7 @@ def OneCommentLikesSample(request, id):
             else:
                 answer = {
                     "likes": len(likes),
-                    "one-liker": likes[0].owner.serialize()
+                    "one-liker": likes[0].owner.serialize(request.build_absolute_uri('/')[:-1])
                 }
                 return JsonResponse(answer, status=200)
 
@@ -1233,7 +1233,7 @@ def UserFollowsPosts(request, id):
                     if len(posts)==0:
                         return JsonResponse({"error": "No posts found."}, status=402)
                     else:
-                        return JsonResponse([post.serialize() for post in posts], safe=False, status=200)
+                        return JsonResponse([post.serialize(request.build_absolute_uri('/')[:-1]) for post in posts], safe=False, status=200)
                 except TypeError:
                     return result   
             else:
@@ -1405,6 +1405,6 @@ def UserPhotoGet(request, id):
         if user.photo:
             return JsonResponse({"path": request.build_absolute_uri('/')[:-1]+user.photo.url}, status=200)
         else:
-            return JsonResponse({"error": "There is not a photo for this user."}, status=402)
+            return JsonResponse({"path": request.build_absolute_uri('/')[:-1]+'/media/user-icon.png'}, status=200)
     else:
         return JsonResponse({"error": "Only GET method is allowed."}, status=400)
