@@ -20,6 +20,7 @@ class NewComment extends React.Component {
         this.state = {
             userId: this.props.userId,
             username: null,
+            photo: null,
             logged: this.props.logged,
             text: "",
             postId: this.props.postId,
@@ -84,6 +85,7 @@ class NewComment extends React.Component {
             console.log(response);
             this.setState({
                 username: response.data.username,
+                photo: response.data.photo,
             })
         })
         .catch(err => {
@@ -99,7 +101,7 @@ class NewComment extends React.Component {
             <div className="comment-box flex-item-expand">
             <div className="flex-layout">
                 <div className="user-photo-container-small">
-                        <img className="user-photo" src={user_icon} alt="user profile" />
+                        <img className="user-photo" src={this.state.photo} alt="user profile" />
                 </div>
                 <div className="owner-name">{this.state.username}</div>
             </div>
@@ -126,7 +128,8 @@ class OneComment extends React.Component {
             liked: false,
             followsUpd: 0,
             likerSample: {
-                username: "Loading..."
+                username: "Loading...",
+                photo: null,
             },
             likes_error: null,
             likesShow: false,
@@ -355,7 +358,7 @@ class OneComment extends React.Component {
                 <div className="comment-box flex-item-expand">
                     <div className="flex-layout">
                         <div className="user-photo-container-small">
-                                <img className="user-photo" src={user_icon} alt="user profile" />
+                                <img className="user-photo" src={this.state.comment.owner.photo} alt="user profile" />
                         </div>
                         <div className="owner-name"
                             onMouseEnter={this.cardShow}

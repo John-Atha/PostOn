@@ -1,6 +1,5 @@
 import React from 'react';
 import './Profile.css';
-import user_icon from './images/user-icon.png'; 
 import OutsideClickHandler from 'react-outside-click-handler';
 import ProfileCard from  './ProfileCard';
 
@@ -503,7 +502,7 @@ class Profile extends React.Component {
                 username: response.data.username,
                 moto: response.data.moto,
                 country: response.data.country.title,
-                //photo....
+                photo: response.data.photo,
             })
             setTimeout(()=>{
                 this.countFollowers();
@@ -573,7 +572,7 @@ class Profile extends React.Component {
                 </div>
                 <div className="profile-main center-content">
                     <div className="user-photo-container2">
-                        <img className="user-photo" src={user_icon} alt="user profile" />
+                        <img className="user-photo" src={this.state.photo} alt="user profile" />
                     </div>
                     <div className="un-follow-button-container center-content">
                         {this.state.logged && !this.state.isFollowed && !this.state.isFollowing && this.state.me!==this.state.userId &&

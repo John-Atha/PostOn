@@ -71,10 +71,19 @@ class OneLike extends React.Component {
     render() {
         return(
             <div className="one-like flex-layout">
-                <div className="like-owner flex-item-small"
+                <div className="like-owner flex-item-small flex-layout"
                         onMouseEnter={this.cardShow}
                         onMouseLeave={this.cardHide}>
-                    {this.state.owner.username}
+
+                    <div className="user-photo-container-small"
+                                    onMouseEnter={this.cardShow}
+                                    onMouseLeave={this.cardHide} >
+                        <img className="user-photo" src={this.state.owner.photo} alt="user profile" />
+                    </div>
+                    <div className="owner-name">
+                            {this.state.owner.username}
+                    </div>
+
                     {this.state.showCard &&
                         <ProfileCard id={this.state.owner.id}
                                 username={this.state.owner.username}

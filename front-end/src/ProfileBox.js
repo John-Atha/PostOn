@@ -1,7 +1,6 @@
 import React from 'react';
 import './ProfileBox.css'
 
-import user_icon from './images/user-icon.png'; 
 
 import {getUser, getFollowersCount, getFollowsCount} from './api';
 
@@ -11,6 +10,7 @@ class ProfileBox extends React.Component {
         this.state = {
             userId: this.props.userId,
             username: null,
+            photo: null,
             email: null,
             followers: null,
             follows: null,
@@ -58,6 +58,7 @@ class ProfileBox extends React.Component {
             console.log(response);
             this.setState({
                 username: response.data.username,
+                photo: response.data.photo,
                 email:response.data.email,
             })
         })
@@ -94,7 +95,7 @@ class ProfileBox extends React.Component {
             <div className="profile-box">
                 <div className="flex-layout">
                     <div className="user-photo-container-small">
-                            <img className="user-photo" src={user_icon} alt="user profile" />
+                            <img className="user-photo" src={this.state.photo} alt="user profile" />
                     </div>
                     <div className="owner-name">{this.state.username}</div>
                 </div>

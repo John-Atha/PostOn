@@ -70,7 +70,7 @@ class OneUser extends React.Component {
                 
                 <div className="flex-layout flex-item-small">
                     <div className="user-photo-container-small">
-                            <img className="user-photo" src={user_icon} alt="user profile" />
+                            <img className="user-photo" src={this.state.user.photo} alt="user profile" />
                     </div>
                     <div className="owner-name"
                         onMouseEnter={this.cardShow}

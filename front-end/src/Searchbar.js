@@ -123,7 +123,7 @@ class Searchbar extends React.Component {
                                 return (
                                     <a key={index} className="one-suggestion flex-layout" href={`users/${value.id}`}>
                                         <div className="user-photo-container-small">
-                                                <img className="user-photo" src={user_icon} alt="user profile" />
+                                                <img className="user-photo" src={value.photo} alt="user profile" />
                                         </div>
                                         <div className="owner-name">{value.username}</div>
                                     </a>

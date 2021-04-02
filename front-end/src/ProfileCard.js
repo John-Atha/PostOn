@@ -12,7 +12,7 @@ class ProfileCard extends React.Component {
             id: this.props.id,
             username: this.props.username,
             moto: this.props.moto,
-            photo: this.props.photo!==null ? this.props.photo : user_icon,
+            photo: this.props.photo,
             position: this.props.position,
         }
         this.seeProfile = this.seeProfile.bind(this);
@@ -26,7 +26,7 @@ class ProfileCard extends React.Component {
         if (this.state.position==="top") {
             return(
                 <Card style={{ width: '170px', height:'min-content', padding: '1%'}} className="profile-card pos-top center-content">
-                    <Card.Img variant="top" src={user_icon} className="user-photo-container"/>
+                    <Card.Img variant="top" src={this.state.photo} className="user-photo-container"/>
                     <Card.Body style={{padding:'0%'}}>
                         <Card.Title style={{marginBottom: '3%', paddingBottom: '0%'}}>{this.state.username}</Card.Title>
                         <Card.Text>
@@ -44,7 +44,7 @@ class ProfileCard extends React.Component {
         else if (this.state.position==="bottom") {
             return(
                 <Card style={{ width: '170px', height:'min-content', padding: '1%'}} className="profile-card pos-bottom center-content">
-                    <Card.Img variant="top" src={user_icon} className="user-photo-container"/>
+                    <Card.Img variant="top" src={this.state.photo} className="user-photo-container"/>
                     <Card.Body style={{padding:'0%'}}>
                         <Card.Title style={{marginBottom: '3%', paddingBottom: '0%'}}>{this.state.username}</Card.Title>
                         <Card.Text>
@@ -64,7 +64,7 @@ class ProfileCard extends React.Component {
         else if (this.state.position==="left") {
             return(
                 <Card style={{ width: '170px', height:'min-content', padding: '1%'}} className="profile-card pos-left center-content">
-                    <Card.Img variant="top" src={user_icon} className="user-photo-container"/>
+                    <Card.Img variant="top" src={this.state.photo} className="user-photo-container"/>
                     <Card.Body style={{padding:'0%'}}>
                         <Card.Title style={{marginBottom: '3%', paddingBottom: '0%'}}>{this.state.username}</Card.Title>
                         <Card.Text>
@@ -82,7 +82,7 @@ class ProfileCard extends React.Component {
         else if (this.state.position==="top-close") {
             return(
                 <Card style={{ width: '170px', height:'min-content', padding: '1%'}} className="profile-card pos-top-close center-content">
-                    <Card.Img variant="top" src={user_icon} className="user-photo-container"/>
+                    <Card.Img variant="top" src={this.state.photo} className="user-photo-container"/>
                     <Card.Body style={{padding:'0%'}}>
                         <Card.Title style={{marginBottom: '3%', paddingBottom: '0%'}}>{this.state.username}</Card.Title>
                         <Card.Text>
@@ -100,7 +100,7 @@ class ProfileCard extends React.Component {
         else if (this.state.position==="bottom-more") {
             return(
                 <Card style={{ width: '170px', height:'min-content', padding: '1%'}} className="profile-card pos-bottom-more center-content">
-                    <Card.Img variant="top" src={user_icon} className="user-photo-container"/>
+                    <Card.Img variant="top" src={this.state.photo} className="user-photo-container"/>
                     <Card.Body style={{padding:'0%'}}>
                         <Card.Title style={{marginBottom: '3%', paddingBottom: '0%'}}>{this.state.username}</Card.Title>
                         <Card.Text>
@@ -118,7 +118,7 @@ class ProfileCard extends React.Component {
         else if (this.state.position==="right-more") {
             return(
                 <Card style={{ width: '170px', height:'min-content', padding: '1%'}} className="profile-card pos-right-more center-content">
-                    <Card.Img variant="top" src={user_icon} className="user-photo-container"/>
+                    <Card.Img variant="top" src={this.state.photo} className="user-photo-container"/>
                     <Card.Body style={{padding:'0%'}}>
                         <Card.Title style={{marginBottom: '3%', paddingBottom: '0%'}}>{this.state.username}</Card.Title>
                         <Card.Text>
@@ -136,7 +136,7 @@ class ProfileCard extends React.Component {
         else {
             return(
                 <Card style={{ width: '170px', height:'min-content', padding: '1%'}} className="profile-card pos-right center-content">
-                    <Card.Img variant="top" src={user_icon} className="user-photo-container"/>
+                    <Card.Img variant="top" src={this.state.photo} className="user-photo-container"/>
                     <Card.Body style={{padding:'0%'}}>
                         <Card.Title style={{marginBottom: '3%', paddingBottom: '0%'}}>{this.state.username}</Card.Title>
                         <Card.Text>

@@ -478,3 +478,8 @@ export const deletePost = (id) => {
     })
 
 }
+
+export const getUserPhoto = (id) => {
+    const requestUrl=`users/${id}/photo`;
+    return axios.get(requestUrl);
+}

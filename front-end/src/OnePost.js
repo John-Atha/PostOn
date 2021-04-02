@@ -2,7 +2,6 @@ import React from "react";
 import "./Posts.css";
 
 import {getPostsCommentsSample, getAllLikes, getLikesSample, LikePost, UnLikePost, editPost, deletePost} from './api';
-import user_icon from './images/user-icon.png'; 
 import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
 import comment_icon from './images/comment.png';
@@ -34,7 +33,7 @@ class OnePost extends React.Component {
             commentsNum: 0,
             followsUpd: 0,
             likerSample: {
-                username: "Loading..."
+                username: "Loading...",
             },
             commentSample: {
                 owner: {
@@ -302,7 +301,7 @@ class OnePost extends React.Component {
                     <div className="user-photo-container"
                                     onMouseEnter={this.cardShow}
                                     onMouseLeave={this.cardHide} >
-                        <img className="user-photo" src={user_icon} alt="user profile" />
+                        <img className="user-photo" src={this.state.owner.photo} alt="user profile" />
                     </div>
                     <div onMouseEnter={this.cardShow}
                              onMouseLeave={this.cardHide}>
