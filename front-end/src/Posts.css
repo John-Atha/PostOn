@@ -9,6 +9,21 @@
     }
 }
 
+@media only screen and (max-width:450px) {
+    .post-media {
+        height: auto;
+        width: 80%;
+    }
+}
+
+@media only screen and (min-width:450px) {
+    .post-media {
+        height: auto;
+        width: 200px;
+        margin: 2% auto;
+    }
+}
+
 @media only screen and (max-width: 920px) {
     .explore-container {
         display: none;
@@ -88,12 +103,15 @@
     border-radius: 40%;
 }
 
-.post-text {
+.post-body {
     min-height: 100px;
     height: min-content;
     padding: 2% 0%;
 }
 
+.post-media {
+    border-radius: 5px;
+}
 
 .stats-sample {
     min-height: min-content;
@@ -151,7 +169,12 @@
 
 .post-textarea-edit {
     width: 100%;
+    margin-left: 2%;
     height: 150px !important;
+}
+
+.post-text {
+    margin-left: 2%;
 }
 
 .posts-pop-up {
