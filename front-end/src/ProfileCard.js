@@ -1,7 +1,6 @@
 import React from 'react';
 import './ProfileCard.css';
-import user_icon from './images/user-icon.png'; 
-
+import {getFollowsCount, getFollowersCount} from './api';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 
@@ -14,12 +13,44 @@ class ProfileCard extends React.Component {
             moto: this.props.moto,
             photo: this.props.photo,
             position: this.props.position,
+            followsNum: 0,
+            followersNum: 0,
         }
         this.seeProfile = this.seeProfile.bind(this);
+        this.countFollows = this.countFollows.bind(this);
+        this.countFollowers = this.countFollowers.bind(this);
     }
 
+    countFollows = () => {
+        getFollowsCount(this.state.id)
+        .then(response => {
+            console.log(response);
+            this.setState({
+                followsNum: response.data.follows,
+            })
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+    countFollowers = () => {
+        getFollowersCount(this.state.id)
+        .then(response => {
+            console.log(response);
+            this.setState({
+                followersNum: response.data.followers,
+            })
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
     seeProfile = () => {
         window.location.href=`/users/${this.state.id}`;
+    }
+    componentDidMount() {
+        this.countFollows();
+        this.countFollowers();
     }
 
     render() {
@@ -33,8 +64,8 @@ class ProfileCard extends React.Component {
                             {this.setState.moto &&
                                 <br></br>
                             }
-                            25 followers<br></br>
-                            32 following<br></br>
+                            {this.state.followersNum} followers<br></br>
+                            {this.state.followsNum} following<br></br>
                         </Card.Text>
                         <Button variant="primary" style={{padding:'1%'}} onClick={this.seeProfile}>See profile</Button>
                     </Card.Body>
@@ -51,8 +82,8 @@ class ProfileCard extends React.Component {
                             {this.setState.moto &&
                                 <br></br>
                             }
-                            25 followers<br></br>
-                            32 following<br></br>
+                            {this.state.followersNum} followers<br></br>
+                            {this.state.followsNum} following<br></br>
                         </Card.Text>
                         <Button variant="primary" style={{padding:'1%'}} onClick={this.seeProfile}>See profile</Button>
                     </Card.Body>
@@ -71,8 +102,8 @@ class ProfileCard extends React.Component {
                             {this.setState.moto &&
                                 <br></br>
                             }
-                            25 followers<br></br>
-                            32 following<br></br>
+                            {this.state.followersNum} followers<br></br>
+                            {this.state.followsNum} following<br></br>
                         </Card.Text>
                         <Button variant="primary" style={{padding:'1%'}} onClick={this.seeProfile}>See profile</Button>
                     </Card.Body>
@@ -89,8 +120,8 @@ class ProfileCard extends React.Component {
                             {this.setState.moto &&
                                 <br></br>
                             }
-                            25 followers<br></br>
-                            32 following<br></br>
+                            {this.state.followersNum} followers<br></br>
+                            {this.state.followsNum} following<br></br>
                         </Card.Text>
                         <Button variant="primary" style={{padding:'1%'}} onClick={this.seeProfile}>See profile</Button>
                     </Card.Body>
@@ -107,8 +138,8 @@ class ProfileCard extends React.Component {
                             {this.setState.moto &&
                                 <br></br>
                             }
-                            25 followers<br></br>
-                            32 following<br></br>
+                            {this.state.followersNum} followers<br></br>
+                            {this.state.followsNum} following<br></br>
                         </Card.Text>
                         <Button variant="primary" style={{padding:'1%'}} onClick={this.seeProfile}>See profile</Button>
                     </Card.Body>
@@ -125,8 +156,8 @@ class ProfileCard extends React.Component {
                             {this.setState.moto &&
                                 <br></br>
                             }
-                            25 followers<br></br>
-                            32 following<br></br>
+                            {this.state.followersNum} followers<br></br>
+                            {this.state.followsNum} following<br></br>
                         </Card.Text>
                         <Button variant="primary" style={{padding:'1%'}} onClick={this.seeProfile}>See profile</Button>
                     </Card.Body>
@@ -143,8 +174,8 @@ class ProfileCard extends React.Component {
                             {this.setState.moto &&
                                 <br></br>
                             }
-                            25 followers<br></br>
-                            32 following<br></br>
+                            {this.state.followersNum} followers<br></br>
+                            {this.state.followsNum} following<br></br>
                         </Card.Text>
                         <Button variant="primary" style={{padding:'1%'}} onClick={this.seeProfile}>See profile</Button>
                     </Card.Body>
