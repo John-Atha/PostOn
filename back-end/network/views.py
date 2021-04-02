@@ -3,10 +3,11 @@ from itertools import chain
 from operator import attrgetter
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from rest_framework.decorators import api_view
 from .models import *
 from datetime import datetime
+import imghdr
 
 def paginate(start, end, items):
     if start is not None:
@@ -94,11 +95,13 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             login(request, user)
-            return JsonResponse({"message": "Logged in successfully", "id":user.id}, status=200)
+            return HttpResponseRedirect(reverse("index"))
         else:
-            return JsonResponse({"error": "Invalid username/password"}, status=401)
+            return render(request, "network/login.html", {
+                "message": "Invalid username and/or password."
+            })
     else:
-        return JsonResponse({"error": "Only POST method is allowed."}, status=400)
+        return render(request, "network/login.html")
 
 def logout_view(request):
     logout(request)
@@ -1372,3 +1375,33 @@ def UsersMonthlyFollowsStats(request, id):
                 return JsonResponse({"error": "You cannot see the stats of another user"}, status=400)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
+
+@api_view(['Post'])
+def UserPostPhoto(request, id):
+    if request.method=="POST":        
+        try:
+            user = User.objects.get(id=id)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Ivalid user id."}, status=400)
+        if user==request.user:
+            user.photo = request.FILES['image']
+            user.save()
+            return JsonResponse({"message": "Photo saved successfully."}, status=200)
+        else:
+            return JsonResponse({"error": "You cannot update the photo of another user"}, status=400)
+    else:
+        return JsonResponse({"error": "Only POST method is allowed."}, status=400)
+
+def UserPhotoGet(request, id):
+    if request.method=="GET":
+        try:
+            user = User.objects.get(id=id)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Ivalid user id."}, status=400)
+        if user.photo:
+            format = imghdr.what(user.photo)
+            return HttpResponse(user.photo, content_type=f"image/{format}")
+        else:
+            return JsonResponse({"error": "There is not a photo for this user."}, status=402)
+    else:
+        return JsonResponse({"error": "Only GET method is allowed."}, status=400)
