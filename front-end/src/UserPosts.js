@@ -92,7 +92,7 @@ class UserPosts extends React.Component {
 
     render() {
         return(
-            <div className="posts-container padding-bottom flex-item" style={{'margin-top': '1%'}}>
+            <div className="posts-container padding-bottom flex-item" style={{'marginTop': '1%'}}>
 
                 {this.state.postsList.length && this.state.postsList.map((value, index) => {
                     let liked=null;

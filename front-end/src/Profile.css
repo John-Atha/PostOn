@@ -82,3 +82,17 @@
     border: none;
     border-radius: 5px;
 }
+
+.photo-pop-up {
+    z-index: 1;
+    top: 20%;
+    width: min-content;
+    margin-left: 0%;
+    position: absolute;
+    background-color: var(--color2);
+    height: min-content;
+    border-radius: 7px;
+    padding: 7% 0%;
+    animation:
+        pop-up-appearing 1s;
+}

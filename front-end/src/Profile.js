@@ -5,7 +5,7 @@ import ProfileCard from  './ProfileCard';
 
 import MyNavbar from './MyNavbar';
 import UserPosts from './UserPosts';
-import {getUser, updateUser, getFollowersCount, getFollowsCount, getFollows, getFollowers, getFollowsPagi, getFollowersPagi, followUser, unfollowUser, isLogged} from './api';
+import {getUser, updateUser, updateUserPhoto, getFollowersCount, getFollowsCount, getFollows, getFollowers, getFollowsPagi, getFollowersPagi, followUser, unfollowUser, isLogged} from './api';
 import Searchbar from './Searchbar';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
@@ -374,6 +374,8 @@ class Profile extends React.Component {
             isFollowed: false,
             edit: false,
             updateFlag: 0,
+            photoEdit: false,
+            photoNew: "",
         }
         this.countFollows = this.countFollows.bind(this);
         this.countFollowers = this.countFollowers.bind(this);
@@ -392,6 +394,7 @@ class Profile extends React.Component {
         this.saveChanges = this.saveChanges.bind(this);
         this.discardChanges = this.discardChanges.bind(this);
     }
+
     createNotification = (type, title="aaa", message="aaa") => {
         console.log("creating notification");
         console.log(type);
@@ -414,6 +417,7 @@ class Profile extends React.Component {
             this.createNotification('danger', 'Sorry,', "You can't have an empty username");
         }
         else {
+            
             updateUser(this.state.userId, this.state.username, this.state.moto||"")
             .then(response => {
                 console.log(response);
@@ -432,7 +436,31 @@ class Profile extends React.Component {
                     username: this.state.username_init,
                     moto: this.state.moto_init,
                 })
-            }) 
+            })
+            if (this.state.photoNew) {
+                var bodyFormData = new FormData();
+                console.log("PHOTONEW")
+                console.log(this.state.photoNew);
+                bodyFormData.append('image', this.state.photoNew);
+                updateUserPhoto(this.state.userId, bodyFormData)
+                .then(response=> {
+                    console.log(response);
+                    this.setState({
+                        photo: response.data.photo,
+                        newPhoto: "",
+                        edit: false,
+                        updateFlag: this.state.updateFlag+1,
+                    })
+                    this.createNotification('success', 'Hello,', "Profile photo updated successfully");
+                })
+                .catch(err => {
+                    console.log(err);
+                    this.setState({
+                        photoNew: "",
+                    })
+                    this.createNotification('danger', 'Sorry,', "Could not update profile picture.");
+                })
+            }
         }
         window.scrollTo({
             top:0,
@@ -445,6 +473,7 @@ class Profile extends React.Component {
         this.setState({
             username: this.state.username_init,
             moto: this.state.moto_init,
+            photoNew: "",
             edit: false,
         })
         window.scrollTo({
@@ -455,7 +484,6 @@ class Profile extends React.Component {
         this.createNotification('success', 'Hello,', 'Changes cancelled');
 
     }
-
     handleInput = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -463,13 +491,11 @@ class Profile extends React.Component {
             [name]: value,
         })
     }
-
     editProf = () => {
         this.setState({
             edit: true,
         })
     }
-
     follow = () => {
         console.log(`follower id: ${this.state.me}`)
         console.log(`followed id: ${this.state.userId}`)
@@ -658,7 +684,7 @@ class Profile extends React.Component {
                             {this.state.username}
                         </h3>
                 </div>
-                <div className="flex-layout">
+                <div className="flex-layout" style={{position: 'relative'}}>
                         <div className="user-photo-profile-container">
                             <img className="user-photo" src={this.state.photo} alt="user profile" />
                         </div>
@@ -671,16 +697,16 @@ class Profile extends React.Component {
                             </button>
                             <div>
                             {this.state.logged && !this.state.isFollowed && !this.state.isFollowing && this.state.me!==this.state.userId &&
-                                <button className="foll-button margin-top-small" style={{width: '90%', 'background-color': 'white'}} onClick={this.follow}>Follow</button>
+                                <button className="foll-button margin-top-small" style={{width: '90%', backgroundColor: 'white'}} onClick={this.follow}>Follow</button>
                             }
                             {this.state.logged && !this.state.isFollowed && this.state.isFollowing && this.state.me!==this.state.userId &&
-                                <button className="foll-button margin-top" style={{width: '90%', 'background-color': 'white'}} onClick={this.follow}>Follow Back</button>
+                                <button className="foll-button margin-top" style={{width: '90%', backgroundColor: 'white'}} onClick={this.follow}>Follow Back</button>
                             }
                             {this.state.logged && this.state.isFollowed && this.state.me!==this.state.userId &&
-                                <button className="foll-button margin-top-small" style={{width: '90%', 'background-color': 'white'}} onClick={this.unfollow}>Unfollow</button>
+                                <button className="foll-button margin-top-small" style={{width: '90%', backgroundColor: 'white'}} onClick={this.unfollow}>Unfollow</button>
                             }
                             {this.state.logged && this.state.me===this.state.userId &&
-                                <button className="foll-button margin-top-small" style={{width: '90%', 'background-color': 'white'}} onClick={this.editProf}>Edit Profile</button>               
+                                <button className="foll-button margin-top-small" style={{width: '90%', backgroundColor: 'white'}} onClick={this.editProf}>Edit info</button>               
                             }
                         </div>
                 </div>
@@ -696,11 +722,14 @@ class Profile extends React.Component {
                         <div>
                             <div>Username</div>
                             <hr style={{'margin-top': '0%','margin-bottom': '1%'}}></hr>
-                            <input name="username" className="clean-style" style={{width: '50%'}} value={this.state.username} onChange={this.handleInput} />
+                            <input type="text" name="username" className="clean-style" style={{width: '50%'}} value={this.state.username} onChange={this.handleInput} />
                             <div >Bio</div>
                             <hr style={{'margin-top': '0%','margin-bottom': '1%'}}></hr>
                             <textarea name="moto" className="clean-style" style={{width: '90%'}} value={this.state.moto} onChange={this.handleInput} />
-                            <div className="flexbox-layout">
+                            <div>Profile picture</div>
+                            <hr style={{'margin-top': '0%','margin-bottom': '1%'}}></hr>
+                            <input type="file" name="photoNew" value={this.state.photoNew} onChange={this.handleInput} placeholder="Upload a photo" />
+                            <div className="flex-layout margin-top-smaller">
                                 <button className="my-button save-moto-button" style={{margin: '1%'}} onClick={this.saveChanges}>Save</button>
                                 <button className="my-button save-moto-button" style={{margin: '1%'}} onClick={this.discardChanges}>Cancel</button>
                             </div>

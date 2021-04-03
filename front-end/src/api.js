@@ -501,3 +501,17 @@ export const updateUser = (id, username="", moto="") => {
         headers: headers,
     })
 }
+
+export const updateUserPhoto = (id, params) => {
+    const requestUrl=`users/${id}/photo/mod`;
+    const token = localStorage.getItem('token');
+    const headers = {
+        "Authorization" :"Bearer "+ token,
+        "Content-Type": "multipart/form-data",
+    }
+    console.log("PARAMS");
+    console.log(params);
+    return axios.post(requestUrl, params, {
+        headers: headers,
+    })
+}
