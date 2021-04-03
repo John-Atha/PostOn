@@ -71,3 +71,14 @@
     transform: scale(1.1);
     -webkit-transform: scale(1.1);
 }
+
+.save-moto-button {
+    height: min-content;
+    background-color: var(--color2);
+    padding: 0% 1% !important;
+}
+
+.clean-style {
+    border: none;
+    border-radius: 5px;
+}

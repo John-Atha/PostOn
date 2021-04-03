@@ -84,6 +84,12 @@ class UserPosts extends React.Component {
         setTimeout(()=>this.askPosts(), 200);
     }
 
+    componentDidUpdate(prevProps) {
+        if (prevProps.updateMe!==this.props.updateMe) {
+            this.askPosts();
+        }
+    }
+
     render() {
         return(
             <div className="posts-container padding-bottom flex-item" style={{'margin-top': '1%'}}>

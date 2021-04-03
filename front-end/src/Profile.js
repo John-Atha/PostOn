@@ -5,8 +5,10 @@ import ProfileCard from  './ProfileCard';
 
 import MyNavbar from './MyNavbar';
 import UserPosts from './UserPosts';
-import {getUser, getFollowersCount, getFollowsCount, getFollows, getFollowers, getFollowsPagi, getFollowersPagi, followUser, unfollowUser, isLogged} from './api';
+import {getUser, updateUser, getFollowersCount, getFollowsCount, getFollows, getFollowers, getFollowsPagi, getFollowersPagi, followUser, unfollowUser, isLogged} from './api';
 import Searchbar from './Searchbar';
+import 'react-notifications-component/dist/theme.css'
+import { store } from 'react-notifications-component';
 
 class OneUser extends React.Component {
     constructor(props) {
@@ -355,7 +357,9 @@ class Profile extends React.Component {
             me: null,
             logged: false,
             username: null,
+            username_init: null,
             moto: null,
+            moto_init: null,
             country: null,
             photo: null,
             followsNum: 0,
@@ -368,6 +372,8 @@ class Profile extends React.Component {
             myFollowersList: [],
             isFollowing: false,
             isFollowed: false,
+            edit: false,
+            updateFlag: 0,
         }
         this.countFollows = this.countFollows.bind(this);
         this.countFollowers = this.countFollowers.bind(this);
@@ -381,6 +387,87 @@ class Profile extends React.Component {
         this.hideFollowers = this.hideFollowers.bind(this);
         this.follow = this.follow.bind(this);
         this.unfollow = this.unfollow.bind(this);
+        this.editProf = this.editProf.bind(this);
+        this.handleInput = this.handleInput.bind(this);
+        this.saveChanges = this.saveChanges.bind(this);
+        this.discardChanges = this.discardChanges.bind(this);
+    }
+    createNotification = (type, title="aaa", message="aaa") => {
+        console.log("creating notification");
+        console.log(type);
+        store.addNotification({
+            title: title,
+            message: message,
+            type: type,
+            insert: "top",
+            container: "bottom-right",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+              duration: 3000,
+              onScreen: true
+            }
+          });
+    };
+    saveChanges = () => {
+        if (!this.state.username.length) {
+            this.createNotification('danger', 'Sorry,', "You can't have an empty username");
+        }
+        else {
+            updateUser(this.state.userId, this.state.username, this.state.moto||"")
+            .then(response => {
+                console.log(response);
+                this.createNotification('success', 'Hello,', "Profile updated successfully");
+                this.setState({
+                    username_init: this.state.username,
+                    moto_init: this.state.moto,
+                    edit: false,
+                    updateFlag: this.state.updateFlag+1,
+                })
+            })
+            .catch(err => {
+                console.log(err);
+                this.createNotification('danger', 'Sorry,', "Username probably already exists");
+                this.setState({
+                    username: this.state.username_init,
+                    moto: this.state.moto_init,
+                })
+            }) 
+        }
+        window.scrollTo({
+            top:0,
+            left:0,
+            behavior:'smooth'
+        });
+
+    }
+    discardChanges = () => {
+        this.setState({
+            username: this.state.username_init,
+            moto: this.state.moto_init,
+            edit: false,
+        })
+        window.scrollTo({
+            top:0,
+            left:0,
+            behavior:'smooth'
+        });
+        this.createNotification('success', 'Hello,', 'Changes cancelled');
+
+    }
+
+    handleInput = (event) => {
+        const name = event.target.name;
+        const value = event.target.value;
+        this.setState({
+            [name]: value,
+        })
+    }
+
+    editProf = () => {
+        this.setState({
+            edit: true,
+        })
     }
 
     follow = () => {
@@ -412,7 +499,6 @@ class Profile extends React.Component {
             console.log(err);
         })
     }
-
     countFollowers = () => {
         getFollowersCount(this.state.userId)
         .then(response => {
@@ -500,7 +586,9 @@ class Profile extends React.Component {
             console.log(response);
             this.setState({
                 username: response.data.username,
+                username_init: response.data.username,
                 moto: response.data.moto,
+                moto_init: response.data.moto,
                 country: response.data.country.title,
                 photo: response.data.photo,
             })
@@ -571,42 +659,60 @@ class Profile extends React.Component {
                         </h3>
                 </div>
                 <div className="flex-layout">
-                    <div className="user-photo-profile-container">
-                        <img className="user-photo" src={this.state.photo} alt="user profile" />
-                    </div>
-                    <div className="margin-top-small margin-left center-content">
-                        <button className="foll-button" style={{width: '80%'}} onClick={this.showFollowers}>
-                            {this.state.followersNum} followers
-                        </button>
-                        <button className="foll-button margin-top-small" style={{width: '80%'}} onClick={this.showFollows}>
-                            {this.state.followsNum} follows
-                        </button>
-                        <div>
-                        {this.state.logged && !this.state.isFollowed && !this.state.isFollowing && this.state.me!==this.state.userId &&
-                            <button className="foll-button margin-top-small" style={{width: '90%', 'background-color': 'white'}} onClick={this.follow}>Follow</button>
-                        }
-                        {this.state.logged && !this.state.isFollowed && this.state.isFollowing && this.state.me!==this.state.userId &&
-                            <button className="foll-button margin-top" style={{width: '90%', 'background-color': 'white'}} onClick={this.follow}>Follow Back</button>
-                        }
-                        {this.state.logged && this.state.isFollowed && this.state.me!==this.state.userId &&
-                            <button className="foll-button margin-top-small" style={{width: '90%', 'background-color': 'white'}} onClick={this.unfollow}>Unfollow</button>
-                        }
-                    </div>
+                        <div className="user-photo-profile-container">
+                            <img className="user-photo" src={this.state.photo} alt="user profile" />
+                        </div>
+                        <div className="margin-top-small margin-left center-content">
+                            <button className="foll-button" style={{width: '80%'}} onClick={this.showFollowers}>
+                                {this.state.followersNum} followers
+                            </button>
+                            <button className="foll-button margin-top-small" style={{width: '80%'}} onClick={this.showFollows}>
+                                {this.state.followsNum} follows
+                            </button>
+                            <div>
+                            {this.state.logged && !this.state.isFollowed && !this.state.isFollowing && this.state.me!==this.state.userId &&
+                                <button className="foll-button margin-top-small" style={{width: '90%', 'background-color': 'white'}} onClick={this.follow}>Follow</button>
+                            }
+                            {this.state.logged && !this.state.isFollowed && this.state.isFollowing && this.state.me!==this.state.userId &&
+                                <button className="foll-button margin-top" style={{width: '90%', 'background-color': 'white'}} onClick={this.follow}>Follow Back</button>
+                            }
+                            {this.state.logged && this.state.isFollowed && this.state.me!==this.state.userId &&
+                                <button className="foll-button margin-top-small" style={{width: '90%', 'background-color': 'white'}} onClick={this.unfollow}>Unfollow</button>
+                            }
+                            {this.state.logged && this.state.me===this.state.userId &&
+                                <button className="foll-button margin-top-small" style={{width: '90%', 'background-color': 'white'}} onClick={this.editProf}>Edit Profile</button>               
+                            }
+                        </div>
                 </div>
+                {!this.state.edit &&
                     <div className="profile-info">
                         <div>
                             {this.state.moto}
                         </div>
+                    </div>
+                }
+                {this.state.edit &&
+                    <div className="profile-info">
                         <div>
-                            country: {this.state.country}
+                            <div>Username</div>
+                            <hr style={{'margin-top': '0%','margin-bottom': '1%'}}></hr>
+                            <input name="username" className="clean-style" style={{width: '50%'}} value={this.state.username} onChange={this.handleInput} />
+                            <div >Bio</div>
+                            <hr style={{'margin-top': '0%','margin-bottom': '1%'}}></hr>
+                            <textarea name="moto" className="clean-style" style={{width: '90%'}} value={this.state.moto} onChange={this.handleInput} />
+                            <div className="flexbox-layout">
+                                <button className="my-button save-moto-button" style={{margin: '1%'}} onClick={this.saveChanges}>Save</button>
+                                <button className="my-button save-moto-button" style={{margin: '1%'}} onClick={this.discardChanges}>Cancel</button>
+                            </div>
                         </div>
                     </div>
+                }
                 </div>
                 <div className="adjusted-width">
                     <hr className="no-margin"></hr>
                     <h4 className="center-text">Posts</h4>
                     <hr className="no-margin"></hr>
-                    <UserPosts whose={this.state.userId} updateHome={this.updateMyFollows} />
+                    <UserPosts whose={this.state.userId} updateHome={this.updateMyFollows} updateMe={this.state.updateFlag} />
                 </div>
                 {this.state.followsShow &&
                     <FollowBox  userId={this.state.userId}

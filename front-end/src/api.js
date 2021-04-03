@@ -483,3 +483,21 @@ export const getUserPhoto = (id) => {
     const requestUrl=`users/${id}/photo`;
     return axios.get(requestUrl);
 }
+
+export const updateUser = (id, username="", moto="") => {
+    const requestUrl=`users/${id}/mod`;
+    const token = localStorage.getItem('token');
+    const headers = {
+        "Authorization" :"Bearer "+ token,
+    }
+    let body = {};
+    if (username.length) {
+        body["username"]=username;
+    }
+    if (moto.length) {
+        body["moto"]=moto
+    }
+    return axios.put(requestUrl, body, {
+        headers: headers,
+    })
+}
