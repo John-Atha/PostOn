@@ -558,3 +558,14 @@ export const UserLikesComment = (id1, id2) => {
     const requestUrl = `users/${id1}/likes/comments/${id2}`;
     return axios.get(requestUrl);
 }
+
+export const UserDelete = (id) => {
+    const token = localStorage.getItem('token');
+    const headers = {
+        "Authorization": "Bearer "+token,
+    }
+    const requestUrl = `users/${id}/mod`;
+    return axios.delete(requestUrl, {
+        headers: headers
+    })
+}

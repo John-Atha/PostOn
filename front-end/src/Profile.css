@@ -4,8 +4,8 @@
         margin-left: 0%;
     }
     .follows-pop-up {
-        width: 80%;
-        margin-left: 10%;
+        width: 95%;
+        margin-left: 2.5%;
     }
 }
 @media only screen and (min-width: 830px) {
@@ -66,7 +66,7 @@
     z-index: 1;
     top: 05%;
     position: absolute;
-    background-color: white;
+    background-color: rgb(230, 227, 227);
     min-height: min-content;
     border-radius: 7px;
     padding: 2% 1%;
@@ -110,4 +110,10 @@
     padding: 7% 0%;
     animation:
         pop-up-appearing 1s;
+}
+
+.delete-account-button {
+    background-color: red !important;
+    color: white !important;
+    font-weight: bolder;
 }

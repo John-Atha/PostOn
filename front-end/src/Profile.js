@@ -5,7 +5,7 @@ import ProfileCard from  './ProfileCard';
 
 import MyNavbar from './MyNavbar';
 import UserPosts from './UserPosts';
-import {getUser, updateUser, updateUserPhoto, getFollowersCount, getFollowsCount, getFollows, getFollowers, getFollowsPagi, getFollowersPagi, followUser, unfollowUser, isLogged} from './api';
+import {getUser, updateUser, updateUserPhoto, getFollowersCount, getFollowsCount, getFollows, getFollowers, getFollowsPagi, getFollowersPagi, followUser, unfollowUser, isLogged, UserDelete} from './api';
 import Searchbar from './Searchbar';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
@@ -385,6 +385,8 @@ class Profile extends React.Component {
             edit: false,
             updateFlag: 0,
             photoEdit: false,
+            deleteAcc: false,
+            error: null,
         }
         this.countFollows = this.countFollows.bind(this);
         this.countFollowers = this.countFollowers.bind(this);
@@ -402,6 +404,38 @@ class Profile extends React.Component {
         this.handleInput = this.handleInput.bind(this);
         this.saveChanges = this.saveChanges.bind(this);
         this.discardChanges = this.discardChanges.bind(this);
+        this.preDelete= this.preDelete.bind(this);
+        this.delete = this.delete.bind(this);
+        this.hideModal = this.hideModal.bind(this);
+        this.logout = this.logout.bind(this);
+    }
+    hideModal = () => {
+        this.setState({
+            deleteAcc: false,
+        })
+    }
+    logout = () => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('refresh');
+        window.location.href="/";
+    }
+    preDelete = () => {
+        this.setState({
+            deleteAcc: true,
+        })
+    }
+    delete = () => {
+        UserDelete(this.state.userId)
+        .then(response => {
+            console.log(response);
+            this.createNotification('success', 'Goodbye,', 'Thank you for choosing us.')
+            setTimeout(()=> {this.logout()}, 2000)
+        })
+        .catch(err => {
+            console.log(err);
+            this.createNotification('success', 'Goodbye,', 'Thank you for choosing us.')
+            setTimeout(()=> {this.logout()}, 2000)
+        })
     }
 
     createNotification = (type, title="aaa", message="aaa") => {
@@ -455,7 +489,6 @@ class Profile extends React.Component {
                     console.log(response);
                     this.setState({
                         photo: response.data.photo,
-                        //newPhoto: "",
                         edit: false,
                         updateFlag: this.state.updateFlag+1,
                     })
@@ -623,7 +656,7 @@ class Profile extends React.Component {
                 username_init: response.data.username,
                 moto: response.data.moto,
                 moto_init: response.data.moto,
-                country: response.data.country.title,
+                //country: response.data.country.title,
                 photo: response.data.photo,
             })
             setTimeout(()=>{
@@ -634,7 +667,7 @@ class Profile extends React.Component {
         .catch(err => {
             console.log(err);
             this.setState({
-                error: "Sorry, we could not find user's profile."
+                error: "Sorry, we could not find this user's profile."
             })
         })
     }
@@ -651,9 +684,6 @@ class Profile extends React.Component {
         })
         .catch(err => {
             console.log(err)
-            this.setState({
-                error: "Not logged in"
-            })
         })
     }
     componentDidMount() {
@@ -687,11 +717,28 @@ class Profile extends React.Component {
             <div className="all-page">
                 <MyNavbar />
                 <Searchbar />
-                <div className="profile-main center-content">
+                {!this.state.error &&
+                    <div className="profile-main center-content">
                         <h3 className="profile-username margin-top-smaller">
                             {this.state.username}
                         </h3>
-                </div>
+                    </div>        
+                }
+                {this.state.deleteAcc && !this.state.error &&
+                    <OutsideClickHandler onOutsideClick={this.hideModal}>
+                        <div className="posts-pop-up box-colors center-content" style={{'backgroundColor': 'red', 'top': '130px'}}>
+                            <div className="message center-content" style={{'color': 'white', 'fontWeight': 'bolder'}}>
+                                Are you sure you want delete your account?<br></br>
+                                There is no way back!
+                            </div>
+                            <div className="modal-buttons-container center-content flex-layout margin-top-small">
+                                <button className="my-button flex-item-small margin-top-small margin" onClick={this.hideModal}>No, I changed my mind</button>
+                                <button className="my-button flex-item-small margin-top-small margin" onClick={this.delete}>Yes, delete anyway</button>                                        
+                            </div>
+                        </div>
+                    </OutsideClickHandler>
+                }
+                {!this.state.error &&
                 <div className="flex-layout" style={{position: 'relative'}}>
                         <div className="user-photo-profile-container">
                             <img className="user-photo" src={this.state.photo} alt="user profile" />
@@ -716,6 +763,10 @@ class Profile extends React.Component {
                             {this.state.logged && this.state.me===this.state.userId &&
                                 <button className="foll-button margin-top-small" style={{width: '90%', backgroundColor: 'white'}} onClick={this.editProf}>Edit info</button>               
                             }
+                            {this.state.logged && this.state.me===this.state.userId &&
+                                <button className="foll-button margin-top-small delete-account-button" style={{width: '90%', backgroundColor: 'white'}} onClick={this.preDelete}>Delete account</button>               
+                            }
+
                         </div>
                 </div>
                 {!this.state.edit && this.state.moto &&
@@ -745,13 +796,16 @@ class Profile extends React.Component {
                     </div>
                 }
                 </div>
+                }
+                {!this.state.error &&
                 <div className="adjusted-width">
                     <hr className="no-margin"></hr>
                     <h4 className="center-text">Posts</h4>
                     <hr className="no-margin"></hr>
                     <UserPosts whose={this.state.userId} me={this.state.me} updateHome={this.updateMyFollows} updateMe={this.state.updateFlag} />
                 </div>
-                {this.state.followsShow &&
+                }
+                {this.state.followsShow && !this.state.error &&
                     <FollowBox  userId={this.state.userId}
                                 me={this.state.me}
                                 logged={this.state.logged}
@@ -763,7 +817,7 @@ class Profile extends React.Component {
                                 hideFollowers={this.hideFollowers}
                                 updateMyFollows={this.updateMyFollows} />
                 }
-                {this.state.followersShow &&
+                {this.state.followersShow && !this.state.error &&
                     <FollowBox  userId={this.state.userId}
                                 me={this.state.me}
                                 logged={this.state.logged}
@@ -774,6 +828,14 @@ class Profile extends React.Component {
                                 hideFollows={this.hideFollows}
                                 hideFollowers={this.hideFollowers}
                                 updateMyFollows={this.updateMyFollows} />
+                }
+                {this.state.error!==null &&
+                    <div className="center-content">
+                        <div className="error-message margin-top">
+                            {this.state.error}
+                        </div>
+                    </div>
+                    
                 }
             </div>
             
