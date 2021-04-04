@@ -606,6 +606,25 @@ def UserLiked(request, id):
     else:
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
 
+def UserLikesPost(request, id, id2):
+    if request.method=="GET":
+        try:
+            user = User.objects.get(id=id)
+        except User.DoesNotExist:
+            return JsonResponse({"error": "Invalid user id."}, status=400)
+        try:
+            post = Post.objects.get(id=id2)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "Invalid post id."}, status=400)
+        try:
+            like = Like.objects.get(owner=user, post=post)
+        except Like.DoesNotExist:
+            return JsonResponse({"likes": False}, status=200)
+        return JsonResponse({"likes": True}, status=200)
+    else:
+        return JsonResponse({"error": "Only GET method is allowed."}, status=400)
+
+
 def AllComments(request):
     if request.method=="GET":
         comments = Comment.objects.order_by('-date')

@@ -8,6 +8,7 @@
 * GET   /users?start=index1&end=index2              :       returns all users with index1<user_index<index2 (or 400, 402)
 * GET   /users/{id}                                 :       returns user with the given id (or 400) 
 * PUT   /users{id}/mod                                 :       updates username and/or moto (or 400 or 401) 
+* POST  /users/{id}/photo/mod                       : updates the profile picture of the user with the given id (or returns 400)
 * GET   /users/{id}/activity                            :       returns the activity (likes, comments, likes on comments, posts, follows) of user with given id (or 400, or 402)
 * GET   /users/{id}/notifications                       :       returns the (unread) notifications (likes & comments on my posts, likes on my comments, new followers) of user with given id (or 400, or 402)
 * PUT   /users/{id}/allread                             :       marks all the unread notifications of user with given id to seen
@@ -30,12 +31,14 @@
 * GET   /posts/{id}                                         :       returns post with given id (or 400)
 * PUT   /posts{id}/mod                                         :       updates text of post with given id (or 400 or 401)
 * DEL   /posts{id}/mod                                         :       deletes post with given id (or 400 or 401)
+* POST  /posts/{id}/photo/mod                       : updates the picture of the post with the given id (or returns 400)
 * GET   /users/{id}/posts?start=index1&end=index2           :       returns all posts by the user with the given id and index1<post_index<index2 (or 400 or 402)
 * GET   /users/{id}/follows/posts?start=index1&end=index2   :       returns all posts by the followed users from the user with the given id and index1<post_index<index2 (or 400 or 402)
 * GET   /posts/{id}/likes?start=index1&end=index2   :       returns all likes on the post with the given id and index1<like_index<index2 (or 400 or 402)
 * GET   /posts/{id}/likes/sample                    :       returns #likes and the first like on the post with the given id (or 400 or 402)
 * GET   /posts/{id}/comments?start=index1&end=index2   :       returns all comments on the post with the given id and index1<comment_index<index2 (or 400 or 402)
 * GET   /posts/{id}/comments/sample                    :       returns #comments and the first comment on the post with the given id (or 400 or 402)
+
 
 #### Follows
 * GET   /follows                                      :       returns all follows (or 402)
@@ -56,6 +59,7 @@
 * PUT   /likes{id}/mod                                 :       updates the like with the given id to seen / not seen (or 400 or 401)
 * GET   /users/{id}/likes?start=index1&end=index2   :       returns the likes that this user has posted with index1<like_index<index2 (or 402)
 * GET   /users/{id}/liked?start=index1&end=index2   :       returns the likes on posts of this owner with index1<like_index<index2 (or 402)
+* GET   /users/{id1}/likes/posts/{id2}                :       returns {"likes":true} if the user with id1 likes the post with id2 (or false if he/she doesn't)
 
 #### Comments
 * GET   /comments?start=index1&end=index2              :       returns all comments with index1<like_index<index2 (or 400, or 402)

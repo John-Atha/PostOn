@@ -26,6 +26,7 @@ urlpatterns = [
     path("Jwitter/api/users/<int:id>/followers/count", views.UserFollowersCount, name="UserFollowersCount"),
     path("Jwitter/api/users/<int:id>/follows/posts", views.UserFollowsPosts, name="UserFollowsPosts"),
     path("Jwitter/api/users/<int:id>/likes", views.UserLikes, name="UserLikes"),
+    path("Jwitter/api/users/<int:id>/likes/posts/<int:id2>", views.UserLikesPost, name="UserLikesPost"),
     path("Jwitter/api/users/<int:id>/liked", views.UserLiked, name="UserLiked"),
     path("Jwitter/api/users/<int:id>/comments", views.UserComments, name="UserComments"),
     path("Jwitter/api/users/<int:id>/commented", views.UserCommented, name="UserCommented"),
