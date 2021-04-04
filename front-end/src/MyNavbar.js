@@ -259,6 +259,9 @@ class MyNavbar extends React.Component {
                     {this.state.logged &&
                         <Nav.Link href={`/users/${this.state.userId}`}>{this.state.username}</Nav.Link>
                     }
+                    {!this.state.logged && 
+                        <div className="error-message" style={{'marginTop': '8px', 'marginRight': '5px'}}>Not logged in</div>
+                    }
                     {!this.state.logged &&
                         <Nav.Link href="/">Posts</Nav.Link>
                     }
@@ -277,7 +280,7 @@ class MyNavbar extends React.Component {
                     }
                     {this.state.logged && 
                         <NavDropdown title={<img className="navbar-icon" src={notif_icon} alt="notifications" />} id="basic-nav-dropdown">
-                            {this.state.notifList.length && 
+                            {this.state.notifList.length!==0 && 
                                 <div className="center-content">
                                     <button className="my-button margin-left read-button" onClick={this.markAllRead}>Mark all as read</button>
                                 </div>
