@@ -509,8 +509,41 @@ export const updateUserPhoto = (id, params) => {
         "Authorization" :"Bearer "+ token,
         "Content-Type": "multipart/form-data",
     }
-    console.log("PARAMS");
-    console.log(params);
+    return axios.post(requestUrl, params, {
+        headers: headers,
+    })
+}
+
+export const PostPostText = (text="") => {
+    const requestUrl=`posts/mod`;
+    const token = localStorage.getItem('token');
+    let userId=null;
+    if (token) {
+        const decoded = jwt_decode(token);
+        userId = decoded.user_id;
+    }
+    const headers = {
+        "Authorization" :"Bearer "+ token,
+        "Content-Type": "multipart/form-data",
+    }
+    const body = {
+        "owner":  {
+            "id": userId,
+        },
+        "text": text,
+    }
+    return axios.post(requestUrl, body, {
+        headers: headers,
+    })
+}
+
+export const PostPostPhoto = (id, params) => {
+    const requestUrl=`posts/${id}/photo/mod`;
+    const token = localStorage.getItem('token');
+    const headers = {
+        "Authorization" :"Bearer "+ token,
+        "Content-Type": "multipart/form-data",
+    }
     return axios.post(requestUrl, params, {
         headers: headers,
     })

@@ -52,6 +52,7 @@
 
 .posts-container {
     width: auto !important;
+    position: relative;
 }
 .post-container {
     border-radius: 7px;
@@ -183,4 +184,35 @@
     padding: 2% 2%;
     animation:
         pop-up-appearing 1s;
+}
+
+.add-post-button {
+    position: absolute;
+    top: 5px;
+    background-color: var(--color2);
+    margin-left: 1%;
+    width: 280px !important;
+}
+
+.small-icon {
+    height: 17px;
+    width:  17px;
+    margin-right: 2px;
+    margin-top: -2px;
+}
+
+.new-post-container {
+    background-color: white;
+    border-radius: 7px;
+    margin: 1%;
+    padding: 1%;
+}
+
+.backcolor2 {
+    background-color: var(--color2);
+    padding: 1%;
+}
+
+.backcolor2:focus {
+    outline: none;
 }

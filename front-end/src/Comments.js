@@ -333,18 +333,20 @@ class OneComment extends React.Component {
             .catch(err => {
                 console.log(err);
                 this.setState({
-                    error: "No likes found."
+                    error: "No likes found.",
+                    liked: false,
                 })
             })
         }
     }
     componentDidMount() {
+        console.log("I am one comment")
         this.likesSample();
         this.checkLiked();
     }
 
     render() {
-        if (this.state.delete) {
+        if (this.state.delete || !this.state.comment.text || !this.state.comment) {
             return(
                 <div></div>
             )
@@ -478,6 +480,7 @@ class Comments extends React.Component {
                 commentsList: [],
             })
             this.askComments();
+            this.props.reTakeSample();
         }, 1000);
     }
     
@@ -509,6 +512,7 @@ class Comments extends React.Component {
                 console.log(err);
                 this.setState({
                     comments_err: "No more comments found",
+                    commentsList: [],
                 })
             })
         }
@@ -536,14 +540,19 @@ class Comments extends React.Component {
                                 logged={this.state.logged}
                                 postId={this.state.postId}
                                 updateComments={this.updateMe}/>
-                    <OneComment userId={this.state.userId}
-                                logged={this.state.logged}
-                                comment={this.state.commentSample}
-                                updateParent={this.removeComment}
-                                updateHome={this.props.updateHome}
-                                followsUpd={this.state.followsUpd}
-                                />
-                    <button className="button-as-link center-text" onClick={this.seeMore}>Show more comments</button>
+                    {this.state.commentSample!==null &&
+                                        <OneComment userId={this.state.userId}
+                                        logged={this.state.logged}
+                                        comment={this.state.commentSample}
+                                        updateParent={this.removeComment}
+                                        updateHome={this.props.updateHome}
+                                        followsUpd={this.state.followsUpd}
+                                        />        
+                    }
+                    {this.state.commentSample &&
+                        <button className="button-as-link center-text" onClick={this.seeMore}>Show more comments</button>
+                    }
+
                 </div>
             )
         }

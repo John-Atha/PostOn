@@ -726,7 +726,7 @@ class Profile extends React.Component {
                             <textarea name="moto" className="clean-style" style={{width: '90%'}} value={this.state.moto} onChange={this.handleInput} />
                             <div>Profile picture</div>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
-                            <input id="new_profile_photo" type="file" placeholder="Upload a photo" />
+                            <input id="new_profile_photo" type="file" accept="image/*" />
                             <div className="flex-layout margin-top-smaller">
                                 <button className="my-button save-moto-button" style={{margin: '1%'}} onClick={this.saveChanges}>Save</button>
                                 <button className="my-button save-moto-button" style={{margin: '1%'}} onClick={this.discardChanges}>Cancel</button>

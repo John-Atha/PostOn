@@ -241,7 +241,9 @@ class OnePost extends React.Component {
         .catch(err => {
             console.log(err);
             this.setState({
+                commentsNum: 0,
                 comments_error: "No comments found",
+                commentSample: null,
             })
         })
     }
@@ -258,6 +260,7 @@ class OnePost extends React.Component {
         .catch(err => {
             console.log(err);
             this.setState({
+                likesNum: 0,
                 likes_error: "No likes found",
             })
         })
@@ -345,7 +348,7 @@ class OnePost extends React.Component {
                         <div className="center-content">
                             <img className="post-media" src={this.state.media} />
                         </div>
-                        <textarea className="post-textarea-edit" name="text" value={this.state.text} onChange={this.handleInput}></textarea>
+                        <textarea className="post-textarea-edit margin-top-smaller" name="text" value={this.state.text} onChange={this.handleInput}></textarea>
                         <div className="flex-layout center-content">
                             <button className="my-button pagi-button flex-item-small" onClick={this.saveText}>Save change</button>
                             <button className="my-button pagi-button flex-item-small" onClick={this.discardText}>Discard change</button>
@@ -426,7 +429,7 @@ class OnePost extends React.Component {
                     />
                 }
                 <hr className="no-margin"></hr>
-                {this.state.commentsNum && this.state.commentsShow &&
+                {this.state.commentsShow &&
                     <Comments userId={this.state.userId}
                             postId={this.state.id}
                             logged={this.state.logged}
@@ -435,6 +438,7 @@ class OnePost extends React.Component {
                             updateParent={this.commentsSample}
                             updateHome={this.props.updateHome}
                             followsUpd={this.state.followsUpd}
+                            reTakeSample={this.commentsSample}
                     />
                 }
                 {this.state.showModal && 
