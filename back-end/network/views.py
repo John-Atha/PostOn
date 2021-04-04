@@ -1184,7 +1184,7 @@ def OnePostCommentsSample(request, id):
                 return JsonResponse({"error": "No comments found for this post"}, status=402)
             else:
                 answer = {
-                    "comments": len(comments),
+                    "comments": comments.values('owner__id').distinct().count(),
                     "one-comment": comments[0].serialize(request.build_absolute_uri('/')[:-1])
                 }
                 return JsonResponse(answer, status=200)
