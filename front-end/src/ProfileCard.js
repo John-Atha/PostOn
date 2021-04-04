@@ -20,7 +20,6 @@ class ProfileCard extends React.Component {
         this.countFollows = this.countFollows.bind(this);
         this.countFollowers = this.countFollowers.bind(this);
     }
-
     countFollows = () => {
         getFollowsCount(this.state.id)
         .then(response => {
@@ -52,7 +51,6 @@ class ProfileCard extends React.Component {
         this.countFollows();
         this.countFollowers();
     }
-
     render() {
         return(
             <Card style={{ width: '170px', height:'min-content', padding: '1%'}} className={`profile-card pos-${this.state.position} center-content`}>
@@ -72,4 +70,5 @@ class ProfileCard extends React.Component {
         )
     }
 }
+
 export default ProfileCard;

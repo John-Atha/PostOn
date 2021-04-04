@@ -1,7 +1,5 @@
 import React from 'react';
 import './ProfileBox.css'
-
-
 import {getUser, getFollowersCount, getFollowsCount} from './api';
 
 class ProfileBox extends React.Component {
@@ -20,7 +18,6 @@ class ProfileBox extends React.Component {
         this.countFollowers = this.countFollowers.bind(this);
         this.getUserInfo = this.getUserInfo.bind(this);
     }
-
     countFollows = () => {
         getFollowsCount(this.state.userId)
         .then(response => {
@@ -35,7 +32,6 @@ class ProfileBox extends React.Component {
                 follows: "-",
             })
         })
-
     }
     countFollowers = () => {
         getFollowersCount(this.state.userId)
@@ -69,17 +65,14 @@ class ProfileBox extends React.Component {
             })
         })
     }
-
     load = () => {
         this.getUserInfo();
         this.countFollowers();
         this.countFollows();
     }
-
     componentDidMount() {
         this.load();
     }
-
     componentDidUpdate(prevProps) {
         if (prevProps.userId!==this.props.userId) {
             this.load();
@@ -89,7 +82,6 @@ class ProfileBox extends React.Component {
             this.countFollows();
         }
     }
-
     render() {
         return (
             <div className="profile-box">

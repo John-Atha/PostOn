@@ -1,9 +1,7 @@
 import React from "react";
 import "./Likes.css";
 import ProfileCard from  './ProfileCard';
-
 import {getLikes, getFollowers, getFollows, followUser, unfollowUser} from './api';
-
 import OutsideClickHandler from 'react-outside-click-handler';
 
 class OneLike extends React.Component {
@@ -19,7 +17,6 @@ class OneLike extends React.Component {
         this.cardShow = this.cardShow.bind(this);
         this.cardHide = this.cardHide.bind(this);
     }
-
     cardShow = () => {
         this.setState({
             mouseOutLink: false,
@@ -32,7 +29,6 @@ class OneLike extends React.Component {
             showCard: false,
         })
     }
-
     follow = () => {
         console.log(`follower id: ${this.props.me}`)
         console.log(`followed id: ${this.state.owner.id}`)
@@ -46,7 +42,6 @@ class OneLike extends React.Component {
             this.props.updatePar();
         })
     }
-
     unfollow = () => {
         unfollowUser(this.props.followId)
         .then(response => {
@@ -58,7 +53,6 @@ class OneLike extends React.Component {
             this.props.updatePar();
         })
     }
-
     componentDidUpdate(prevProps) {
         if (prevProps.owner!==this.props.owner || prevProps.followed!==this.props.followed || prevProps.following!==this.props.following) {
             this.setState({
@@ -67,7 +61,6 @@ class OneLike extends React.Component {
             })
         }
     }
-
     render() {
         return(
             <div className="one-like flex-layout">
@@ -91,7 +84,6 @@ class OneLike extends React.Component {
                                 photo={this.state.owner.photo}
                                 position={"bottom"} />
                     }
-
                 </div>
                 <div className="un-follow-button-container flex-item-small">
                 {this.state.logged && !this.props.followed && !this.props.following && this.props.me!==this.props.owner.id &&
@@ -108,7 +100,6 @@ class OneLike extends React.Component {
         )
     }
 }
-
 class Likes extends React.Component {
     constructor(props) {
         super(props);
@@ -135,7 +126,6 @@ class Likes extends React.Component {
         this.askFollows = this.askFollows.bind(this);
         this.updateFollows = this.updateFollows.bind(this);
     }
-    
     disappear = (event) => {
         event.target.parentElement.style.display = "none";
     }
@@ -178,20 +168,14 @@ class Likes extends React.Component {
         })
     }
     hide = (event) => {
-       // console.log(event);
-       // document.querySelectorAll('.likes-pop-up').forEach(el => {
-       //     el.style.display="none";
-       // });
         event.preventDefault();
         this.setState({
             showMe: false,
         })
     }
-
     componentDidMount() {
         this.askLikes();
     }
-
     componentDidUpdate(prevProps) {
         if (prevProps.userId!==this.props.userId || prevProps.followsUpd!==this.props.followsUpd || prevProps.showMe!==this.props.showMe) {
             console.log("I updated the follows list")
@@ -201,14 +185,13 @@ class Likes extends React.Component {
             })
         }
     }
-
     askFollows = () => {
         setTimeout(()=>{
             console.log(`I am asking follows for user ${this.props.userId}`)
             getFollows(this.props.userId)
             .then(response => {
                 console.log(response);
-                let tempFollowsList = []; ////
+                let tempFollowsList = [];
                 let tempFollowsObjIdList = [];
                 response.data.forEach(el=> {
                         tempFollowsList.push(el.followed.id);
@@ -242,10 +225,8 @@ class Likes extends React.Component {
                 console.log(err);
                 console.log("No more follows found for this user (as a follower).");
             });
-
         }, 1000)
     }
-
     updateFollows = () => {
         this.setState({
             followsList: [],
@@ -255,7 +236,6 @@ class Likes extends React.Component {
         setTimeout(()=>{this.askFollows()}, 0);
         this.props.updateHome();
     }
-
     render() {
         if (this.state.showMe) {
             return (
@@ -312,7 +292,6 @@ class Likes extends React.Component {
                             <button disabled={this.state.likesList.length<5} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
                         </div>
                     }
-
                 </div>
                 </OutsideClickHandler>
             )
@@ -322,11 +301,7 @@ class Likes extends React.Component {
                 <div></div>
             )
         }
-
     }
-
-
-
 }
 
 export default Likes;

@@ -2,7 +2,6 @@ import React from 'react';
 import './Profile.css';
 import OutsideClickHandler from 'react-outside-click-handler';
 import ProfileCard from  './ProfileCard';
-
 import MyNavbar from './MyNavbar';
 import UserPosts from './UserPosts';
 import {getUser, updateUser, updateUserPhoto, getFollowersCount, getFollowsCount, getFollows, getFollowers, getFollowsPagi, getFollowersPagi, followUser, unfollowUser, isLogged, UserDelete} from './api';
@@ -23,7 +22,6 @@ class OneUser extends React.Component {
         this.cardShow = this.cardShow.bind(this);
         this.cardHide = this.cardHide.bind(this);
     }
-
     cardShow = () => {
         this.setState({
             mouseOutLink: false,
@@ -36,7 +34,6 @@ class OneUser extends React.Component {
             showCard: false,
         })
     }
-
     follow = () => {
         console.log(`follower id: ${this.props.me}`)
         console.log(`followed id: ${this.state.user.id}`)
@@ -50,7 +47,6 @@ class OneUser extends React.Component {
             this.props.updatePar();
         })
     }
-
     unfollow = () => {
         unfollowUser(this.props.followId)
         .then(response => {
@@ -62,7 +58,6 @@ class OneUser extends React.Component {
             this.props.updatePar();
         })
     }
-
     componentDidUpdate(prevProps) {
         if (prevProps.user!==this.props.user || prevProps.followed!==this.props.followed || prevProps.following!==this.props.following) {
             this.setState({
@@ -71,7 +66,6 @@ class OneUser extends React.Component {
             })
         }
     }
-
     render() {
         return(
             <div className="one-like flex-layout center-content">
@@ -86,7 +80,6 @@ class OneUser extends React.Component {
                     <div className="owner-name">
                             {this.state.user.username}
                     </div>
-                    
                     {this.state.showCard &&
                         <ProfileCard id={this.state.user.id}
                                 username={this.state.user.username}
@@ -111,9 +104,7 @@ class OneUser extends React.Component {
             </div>
         )
     }
-
 }
-
 class FollowBox extends React.Component {
     constructor(props) {
         super(props);
@@ -136,7 +127,6 @@ class FollowBox extends React.Component {
         this.askHisFollows = this.askHisFollows.bind(this);
         this.hide = this.hide.bind(this);
     }
-
     hide = (event) => {
         if (this.props.case==="follows") {
             this.props.hideFollows();
@@ -206,7 +196,6 @@ class FollowBox extends React.Component {
                     this.setState({
                         followersError: "No more followers found for this user.",
                     })
-
                 });
             }, 100)
         }
@@ -215,7 +204,6 @@ class FollowBox extends React.Component {
         this.askHisFollows();
         console.log(this.props.case)
     }
-
     render() {
         if (this.state.case==="follows" && this.state.hisFollowsList.length) {
                 console.log("results:")
@@ -278,7 +266,6 @@ class FollowBox extends React.Component {
                                     <button disabled={this.state.followsError} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
                                 </div>
                             }            
-
                         </div>
                     </OutsideClickHandler>
                 )
@@ -358,7 +345,6 @@ class FollowBox extends React.Component {
         }
     }
 }
-
 class Profile extends React.Component {
     constructor(props) {
         super(props);
@@ -437,7 +423,6 @@ class Profile extends React.Component {
             setTimeout(()=> {this.logout()}, 2000)
         })
     }
-
     createNotification = (type, title="aaa", message="aaa") => {
         console.log("creating notification");
         console.log(type);
@@ -507,7 +492,6 @@ class Profile extends React.Component {
             left:0,
             behavior:'smooth'
         });
-
     }
     discardChanges = () => {
         this.setState({
@@ -523,7 +507,6 @@ class Profile extends React.Component {
             behavior:'smooth'
         });
         this.createNotification('warning', 'Hello,', 'Changes cancelled');
-
     }
     handleInput = (event) => {
         const name = event.target.name;
@@ -637,7 +620,6 @@ class Profile extends React.Component {
                 console.log("No more follows found for this user (as a follower).");
             });
         }, 100)
-
     }
     updateMyFollows = () => {
         this.setState({
@@ -766,7 +748,6 @@ class Profile extends React.Component {
                             {this.state.logged && this.state.me===this.state.userId &&
                                 <button className="foll-button margin-top-small delete-account-button" style={{width: '90%', backgroundColor: 'white'}} onClick={this.preDelete}>Delete account</button>               
                             }
-
                         </div>
                 </div>
                 {!this.state.edit && this.state.moto &&
@@ -835,10 +816,8 @@ class Profile extends React.Component {
                             {this.state.error}
                         </div>
                     </div>
-                    
                 }
             </div>
-            
         )
     }
 }

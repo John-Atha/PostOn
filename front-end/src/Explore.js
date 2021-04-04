@@ -1,7 +1,6 @@
 import React from 'react';
 import './Explore.css'
 import ProfileCard from './ProfileCard';
-
 import {getUsers, getFollows, getFollowers, followUser, unfollowUser} from './api';
 
 class OneUser extends React.Component {
@@ -19,7 +18,6 @@ class OneUser extends React.Component {
         this.cardShow = this.cardShow.bind(this);
         this.cardHide = this.cardHide.bind(this);
     }
-
     cardShow = () => {
         this.setState({
             showCard: true,
@@ -62,11 +60,9 @@ class OneUser extends React.Component {
             })
         }
     }
-
     render() {
         return (
             <div className="one-user-line flex-layout">
-                
                 <div className="flex-layout flex-item-small">
                     <div className="user-photo-container-small">
                             <img className="user-photo" src={this.state.user.photo} alt="user profile" />
@@ -99,13 +95,10 @@ class OneUser extends React.Component {
                         <button className="my-button un-follow-button" onClick={this.unfollow}>UnFollow</button>
                     </div>
                 }
-
-
             </div>
         )
     }
 }
-
 class Explore extends React.Component {
     constructor(props) {
         super(props);
@@ -128,7 +121,6 @@ class Explore extends React.Component {
         this.askFollows = this.askFollows.bind(this);
         this.updateFollows = this.updateFollows.bind(this);
     }
-
     moveOn = () => {
         window.scrollTo({
             top:0,
@@ -151,7 +143,6 @@ class Explore extends React.Component {
         }), 0)
         this.moveOn();
     }
-
     askFollows = () => {
         setTimeout(()=>{
             getFollows(this.props.userId)
@@ -198,7 +189,6 @@ class Explore extends React.Component {
         }, 100)
 
     }
-
     askUsers = () => {
         getUsers(this.state.start, this.state.end)
         .then(response => {
@@ -218,7 +208,6 @@ class Explore extends React.Component {
             })
         })        
     }
-
     updateFollows = () => {
         this.setState({
             followsList: [],
@@ -228,11 +217,9 @@ class Explore extends React.Component {
         this.props.updateMyPar();
         setTimeout(()=>{this.askFollows()}, 0);
     }
-
     componentDidMount() {
         this.askUsers();
     }
-
     componentDidUpdate(prevProps) {
         if (prevProps.userId !==this.props.userId) {
             console.log(`Updated to user ${this.props.userId}`);
@@ -243,7 +230,6 @@ class Explore extends React.Component {
             this.updateFollows();
         }
     }
-
     render() {
         return(
             <div className="explore-container center-content">

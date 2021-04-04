@@ -8,19 +8,15 @@
     padding: 1%;
     font-size: 0.8rem;
 }
-
 .one-user-line {
     margin:4% 0%;
 }
-
 .explore-container .pagi-buttons-container .pagi-button {
     background-color: var(--colorback);
 }
-
 .pale-red {
     background-color: rgb(243, 188, 188);
 }
-
 .pale-blue {
     background-color: rgba(137, 218, 247, 0.482);
 }

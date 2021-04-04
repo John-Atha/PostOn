@@ -16,7 +16,6 @@ class OnePostPage extends React.Component {
             text: null,
             text_init: null,
             date: null,
-            liked: null,
             likesNum: 0,
             commentsNum: 0,
             likerSample: {
@@ -40,14 +39,11 @@ class OnePostPage extends React.Component {
         }
         this.checkLogged = this.checkLogged.bind(this);
         this.getPostInfo = this.getPostInfo.bind(this);
-        this.checkLiked = this.checkLiked.bind(this);
         this.deleteMe = this.deleteMe.bind(this);
     }
-
     deleteMe = () => {
         window.location.href="/";
     }
-
     checkLogged = () => {
         isLogged()
         .then(response => {
@@ -75,7 +71,6 @@ class OnePostPage extends React.Component {
                 text_init: response.data.text,
                 date: response.data.date,
             })
-            this.checkLiked();
         })
         .catch(err => {
             console.log(err);
@@ -84,28 +79,11 @@ class OnePostPage extends React.Component {
             })
         })
     }
-    checkLiked = () => {
-        getAllLikes(1, this.state.id, "post")
-        .then(response => {
-            console.log(`post ${this.state.id} likes are:`)
-            console.log(response);
-            let likesList = response.data;
-            likesList.forEach(like => {
-                if(like.owner.id===this.state.userId) {
-                    console.log("post is liked")
-                    this.setState({
-                        liked: true,
-                    })
-                }
-            })
-        })
-    }
     componentDidMount() {
         console.log(`Page of post ${this.state.id}`)
         this.checkLogged();
         this.getPostInfo();
     }
-
     render() {
         return(
             <div className="all-page">
@@ -118,7 +96,6 @@ class OnePostPage extends React.Component {
                          media={this.state.media}
                          text={this.state.text}
                          date={this.state.date}
-                         liked={this.state.liked}
                          updateHome={()=>{}}
                          updateParent={this.deleteMe}
                          commentsShow={true} />
@@ -126,7 +103,6 @@ class OnePostPage extends React.Component {
             </div>
         )
     }
-
 }
 
 export default OnePostPage;

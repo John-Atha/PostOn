@@ -1,10 +1,8 @@
 import React from "react";
 import "./Posts.css";
-
-import {isLogged, getPosts, myLikes, getUsersPosts, PostPostText, PostPostPhoto, deletePost} from './api';
+import {isLogged, getPosts, getUsersPosts, PostPostText, PostPostPhoto, deletePost} from './api';
 import OnePost from './OnePost';
 import add_icon from './images/add.png';
-
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 
@@ -34,7 +32,6 @@ class Posts extends React.Component {
         this.cancelAdd = this.cancelAdd.bind(this);
         this.handleInput = this.handleInput.bind(this);
     }
-
     createNotification = (type, title="aaa", message="aaa") => {
         console.log("creating notification");
         console.log(type);
@@ -52,7 +49,6 @@ class Posts extends React.Component {
             }
           });
     };
-
     handleInput = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -60,7 +56,6 @@ class Posts extends React.Component {
             [name]: value,
         })
     }
-
     cancelAdd = () => {
         this.setState({
             newText: "",
@@ -68,7 +63,6 @@ class Posts extends React.Component {
         })
         this.createNotification('warning', 'Hello,', 'Publsh was cancelled');
     }
-
     preAddPost = () => {
         if(!this.state.logged) {
             this.createNotification('danger', 'Sorry,', 'You have to create an account to upload a new post');
@@ -79,7 +73,6 @@ class Posts extends React.Component {
             })    
         }
     }
-
     addPost = () => {
         const input = document.getElementById('new-post-photo');
         let img = null;
@@ -186,7 +179,6 @@ class Posts extends React.Component {
             }
         }
     }
-
     moveOn = () => {
         window.scrollTo({
             top:0,
@@ -195,7 +187,6 @@ class Posts extends React.Component {
         });
         setTimeout(() => this.askPosts(), 500);
     }
-    
     previousPage = () => {
         setTimeout(this.setState({
             start: this.state.start-10,
@@ -211,7 +202,6 @@ class Posts extends React.Component {
         this.moveOn();
         setTimeout(()=>this.askLikes(), 750);
     }
-
     askPosts = () => {
         setTimeout(()=> {}, 1000)
         console.log(`I am asking posts from ${this.state.start} to ${this.state.end}`)
@@ -248,7 +238,6 @@ class Posts extends React.Component {
             })
         }
     }
-
     componentDidMount() {
         isLogged()
         .then(response => {
@@ -267,7 +256,6 @@ class Posts extends React.Component {
         })
         setTimeout(()=>this.askPosts(), 200);
     }
-
     render() {
         return(
             <div className="posts-container padding-bottom flex-item" style={{paddingTop: '50px'}}>
@@ -285,7 +273,6 @@ class Posts extends React.Component {
                             </div>
                     </div>
                 }
-
                 {this.state.postsList.map((value, index) => {
                     return(
                         <OnePost key={index}
@@ -300,7 +287,6 @@ class Posts extends React.Component {
                                     updateParent={this.askPosts}
                         />
                     )
-                    
                 })}
                 {this.state.postsList.length!==0 &&
                     <div className="pagi-buttons-container flex-layout center-content">

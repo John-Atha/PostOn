@@ -5,7 +5,6 @@
         height: 900px;
     }
 }
-
 @media only screen and (min-width: 1000px) {
     .diagrams-cont {
         width: 80%;
@@ -13,7 +12,6 @@
         height: 250px;
     }
 }
-
 .diagram-container {
     height: 250px;
 }

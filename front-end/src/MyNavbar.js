@@ -6,7 +6,6 @@ import NavDropdown from 'react-bootstrap/NavDropdown'
 import {isLogged, getOneUser, getNotifications, readAllNotifications, markAsRead} from './api'
 import notif_icon from './images/notif.png';
 import stats_icon from './images/stats.png';
-
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 
@@ -35,7 +34,6 @@ class MyNavbar extends React.Component {
         this.markAllRead = this.markAllRead.bind(this);
         this.markOneAsRead = this.markOneAsRead.bind(this);
     }
-
     markOneAsRead = (notif) => {
         let category = "";
         switch(this.categorize(notif)) {
@@ -68,22 +66,21 @@ class MyNavbar extends React.Component {
             window.location.href=this.linkGen(notif)
         }, 1000)
     }
-
     createNotification = (type, title="aaa", message="aaa") => {
-    console.log("creating notification");
-    console.log(type);
-    store.addNotification({
-        title: title,
-        message: message,
-        type: type,
-        insert: "top",
-        container: "bottom-right",
-        animationIn: ["animate__animated", "animate__fadeIn"],
-        animationOut: ["animate__animated", "animate__fadeOut"],
-        dismiss: {
-            duration: 3000,
-            onScreen: true
-        }
+        console.log("creating notification");
+        console.log(type);
+        store.addNotification({
+            title: title,
+            message: message,
+            type: type,
+            insert: "top",
+            container: "bottom-right",
+            animationIn: ["animate__animated", "animate__fadeIn"],
+            animationOut: ["animate__animated", "animate__fadeOut"],
+            dismiss: {
+                duration: 3000,
+                onScreen: true
+            }
         });
     }
     markAllRead = () => {
@@ -337,7 +334,6 @@ class MyNavbar extends React.Component {
             </div>
         )
     }
-    
 }
 
 export default MyNavbar;

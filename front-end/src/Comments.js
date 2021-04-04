@@ -1,17 +1,13 @@
 import React from "react";
 import './Comments.css';
-
 import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
 import delete_icon from './images/delete-icon.png';
-
 import Likes from './Likes';
 import {getPostsComments, getLikesSample, getLikes, getAllLikes, LikeComment, UnLikeComment, DeleteComment, AddComment, getUser, UserLikesComment} from './api';
 import ProfileCard from  './ProfileCard';
-
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
-
 
 class NewComment extends React.Component {
     constructor(props) {
@@ -29,7 +25,6 @@ class NewComment extends React.Component {
         this.handleInput = this.handleInput.bind(this);
         this.submit = this.submit.bind(this);
     }
-
     createNotification = (type, title="aaa", message="aaa") => {
         console.log("creating notification");
         console.log(type);
@@ -54,7 +49,6 @@ class NewComment extends React.Component {
             [name]: value,
         })
     }
-
     submit = (event) => {
         event.preventDefault();
         if (this.state.text.length) {
@@ -77,7 +71,6 @@ class NewComment extends React.Component {
         }
         
     }
-
     componentDidMount() {
         getUser(this.state.userId)
         .then(response => {
@@ -94,7 +87,6 @@ class NewComment extends React.Component {
             })
         })
     }
-
     render() {
         if (this.state.logged) {
             return(
@@ -121,7 +113,6 @@ class NewComment extends React.Component {
         }
     }
 }
-
 class OneComment extends React.Component {
     constructor(props) {
         super(props);
@@ -322,7 +313,6 @@ class OneComment extends React.Component {
                 likesNum: 0,
             })
         })
-
     }
     checkLiked = () => {
         if (this.state.logged) {
@@ -347,7 +337,6 @@ class OneComment extends React.Component {
         this.likesSample();
         this.checkLiked();
     }
-
     render() {
         if (this.state.delete || !this.state.comment.text || !this.state.comment) {
             return(
@@ -446,15 +435,12 @@ class OneComment extends React.Component {
                                         <button className="my-button flex-item-small margin-top-small margin" onClick={this.commentDelete}>Yes, delete anyway</button>                                        
                                     </div>
                                 </div>
-                        
                     }
-                
                 </div>
             )
         }
     }
 }
-
 class Comments extends React.Component {
     constructor(props) {
         super(props);
@@ -476,7 +462,6 @@ class Comments extends React.Component {
         this.removeComment = this.removeComment.bind(this);
         this.updateMe = this.updateMe.bind(this);
     }
-
     updateMe = () => {
         setTimeout(()=>{
             this.setState({
@@ -486,7 +471,6 @@ class Comments extends React.Component {
             this.props.reTakeSample();
         }, 1000);
     }
-    
     seeMore = () => {
         setTimeout(this.setState({
             start: this.state.how==="sample" ? 1 : this.state.start+5,
@@ -495,7 +479,6 @@ class Comments extends React.Component {
         }), 0)
         setTimeout(() => this.askComments(), 0);    
     }
-
     askComments = () => {
         if (this.state.how!=="sample") {
             setTimeout(()=>{}, 2000);
@@ -508,7 +491,6 @@ class Comments extends React.Component {
                     commentsList: this.state.commentsList.concat(response.data),
                     nomore: response.data.length<5,
                 })
-                
                 console.log(this.state.commentsList.concat(response.data))
             })
             .catch(err => {
@@ -520,11 +502,9 @@ class Comments extends React.Component {
             })
         }
     }
-
     removeComment = (id) => {
         this.props.updateParent();
     }
-
     componentDidMount() {
         if (this.state.how==="sample") {
             ;
@@ -533,9 +513,7 @@ class Comments extends React.Component {
             this.askComments();
         }
     }
-
     render() {
-
         if (this.state.how==="sample") {
             return (
                 <div className="all-comments-container center-content">
@@ -555,7 +533,6 @@ class Comments extends React.Component {
                     {this.state.commentSample &&
                         <button className="button-as-link center-text" onClick={this.seeMore}>Show more comments</button>
                     }
-
                 </div>
             )
         }
@@ -566,7 +543,6 @@ class Comments extends React.Component {
                                 logged={this.state.logged}
                                 postId={this.state.postId}
                                 updateComments={this.updateMe}/>
-
                     {
                         this.state.commentsList.map((value, index) => {
                             //console.log(value);
@@ -588,8 +564,6 @@ class Comments extends React.Component {
                 </div>
             )
         }
-
-        
     }
 }
 

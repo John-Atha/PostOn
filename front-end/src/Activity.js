@@ -10,9 +10,7 @@ const dateShow = (date) => {
     let day = datetime[0]
     let time = datetime[1].substring(0, 8)
     return `${day} ${time}`
-
 }
-
 class CommentAction extends React.Component {
     constructor(props) {
         super(props);
@@ -71,7 +69,6 @@ class CommentAction extends React.Component {
         )
     }
 }
-
 class PostLikeAction extends React.Component {
     constructor(props) {
         super(props);
@@ -125,7 +122,6 @@ class PostLikeAction extends React.Component {
         )
     }
 }
-
 class CommentLikeAction extends React.Component {
     constructor(props) {
         super(props);
@@ -184,7 +180,6 @@ class CommentLikeAction extends React.Component {
         )
     }
 }
-
 class PostAction extends React.Component {
     constructor(props) {
         super(props);
@@ -211,7 +206,6 @@ class PostAction extends React.Component {
         )
     }
 }
-
 class FollowAction extends React.Component {
     constructor(props) {
         super(props);
@@ -260,7 +254,6 @@ class FollowAction extends React.Component {
         )
     }
 }
-
 class Activity extends React.Component {
     constructor(props) {
         super(props);
@@ -277,7 +270,6 @@ class Activity extends React.Component {
         this.nextPage = this.nextPage.bind(this);
         this.moveOn = this.moveOn.bind(this);
     }
-
     moveOn = () => {
         window.scrollTo({
             top:0,
@@ -300,7 +292,6 @@ class Activity extends React.Component {
         }), 0)
         this.moveOn();
     }
-
     askActivity = () => {
         console.log(`I am asking activity from ${this.state.start} to ${this.state.end}`)
         getActivity(this.state.userId, this.state.start, this.state.end)
@@ -317,7 +308,6 @@ class Activity extends React.Component {
             })
         })
     }
-
     componentDidMount() {
         isLogged()
         .then(response => {
@@ -335,7 +325,6 @@ class Activity extends React.Component {
             })
         })
     }
-
     render() {
         return (
         <div className="all-page padding-bottom">
@@ -383,14 +372,9 @@ class Activity extends React.Component {
             {!this.state.logged &&
                 <div className="error-message margin-top center-text">You have to create an account to keep track of your activity.</div>
             }
-
         </div>
-
-
         )
     }
-
-
 }
 
 export default Activity;

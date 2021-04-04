@@ -8,7 +8,6 @@
         width: 80%;
     }
 }
-
 .one-activity-container {
     height: min-content;
     background-color: var(--boxback);
@@ -16,11 +15,9 @@
     border-radius: 7px;
     padding: 1%;
 }
-
 .as-link {
     color: rgb(0, 94, 255);
 }
-
 .as-link:hover {
     text-decoration: underline;
 }

@@ -1,16 +1,12 @@
 import React from 'react';
-
 import './Statistics.css';
 import MyNavbar from './MyNavbar';
 import CanvasJSReact from './canvasjs.react.js';
-
 import {getMonthlyStatsGen, getDailyStatsGen, isLogged} from './api';
 import Searchbar from './Searchbar';
-
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class Diagram extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -22,7 +18,6 @@ class Diagram extends React.Component {
         }
         this.compute = this.compute.bind(this);
     }
-
     compute = () => {
         if (this.state.type==="pie") {
             console.log("I am pie and i am computing")
@@ -80,15 +75,12 @@ class Diagram extends React.Component {
                 }
             })
             setTimeout(()=>{console.log(tempData)}, 2000);
-
         }
     }
-
     componentDidMount() {
         console.log(this.props.stats)
         this.compute()
     }
-
     componentDidUpdate(prevProps) {
         if (prevProps.stats!==this.props.stats) {
             this.setState({
@@ -97,7 +89,6 @@ class Diagram extends React.Component {
             this.compute();
         }
     }
-
     render() {
         if (this.state.data!=={}) {
             return(
@@ -112,9 +103,7 @@ class Diagram extends React.Component {
             )
         }
     }
-
 }
-
 class OneStats extends React.Component {
     constructor(props) {
         super(props);
@@ -128,9 +117,7 @@ class OneStats extends React.Component {
         }
         this.askMonthly = this.askMonthly.bind(this);
         this.askDaily = this.askDaily.bind(this);
-
     }
-
     askMonthly = () => {
         getMonthlyStatsGen(this.state.choice.charAt(0).toLowerCase()+this.state.choice.slice(1), this.props.case==="general" ? null : this.state.userId)
         .then(response => {
@@ -147,7 +134,6 @@ class OneStats extends React.Component {
             })
         })
     }
-
     askDaily = () => {
         getDailyStatsGen(this.state.choice.charAt(0).toLowerCase()+this.state.choice.slice(1), this.props.case==="general" ? null : this.state.userId)
         .then(response => {
@@ -164,12 +150,10 @@ class OneStats extends React.Component {
             })
         })    
     }
-
     componentDidMount() {
         this.askMonthly();
         this.askDaily();
     }
-
     componentDidUpdate(prevProps) {
         if (prevProps.userId!==this.props.userId) {
             this.setState({
@@ -177,7 +161,6 @@ class OneStats extends React.Component {
             })
         }
     }
-
     render() {
         if (this.state.monthlyStats.length!==0) {
             return(
@@ -197,9 +180,7 @@ class OneStats extends React.Component {
         }
     }
 }
-
 class Statistics extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -211,7 +192,6 @@ class Statistics extends React.Component {
         this.pick = this.pick.bind(this);
         this.updateColors = this.updateColors.bind(this);
     }
-
     updateColors = (pressed) => {
         pressed.style.backgroundColor="green"
         document.querySelectorAll('.stats-choice-button').forEach(el => {
@@ -220,7 +200,6 @@ class Statistics extends React.Component {
             }
         })
     }
-
     pick = (event) => {
         this.setState({
             choice: event.target.innerHTML,
@@ -228,7 +207,6 @@ class Statistics extends React.Component {
         this.updateColors(event.target);
         setTimeout(()=>{console.log(this.state.choice);}, 1000);
     }
-
     componentDidMount() {
         isLogged()
         .then(response => {
@@ -249,7 +227,6 @@ class Statistics extends React.Component {
             this.updateColors(document.getElementById('stats-posts-button'));
         }
     }
-
     render() {
         if(this.state.case==="personal" && !this.state.logged) {
             return(
@@ -293,7 +270,6 @@ class Statistics extends React.Component {
             )
         }
     }
-
 }
 
 export default Statistics;

@@ -1,7 +1,6 @@
 .text-comment {
     margin: 2% 0%;
 }
-
 .comment-box {
     background-color: var(--colorback);
     border-radius: 7px;
@@ -16,12 +15,10 @@
     animation:
         pop-up-appearing 1s; 
 }
-
 .comment-date {
     margin-top: 6px;
     margin-left: 6px;
 }
-
 .user-photo-container-small {
     height:25px;
     width:25px;
@@ -29,7 +26,6 @@
     padding: 0%;
     margin-right: 0.5%;
 }
-
 .comments-pop-up {
     z-index: 1;
     top: -100%;
@@ -44,12 +40,10 @@
     animation:
         pop-up-appearing 1s;
 }
-
 .modal-buttons-container {
     width: 80%;
     margin-left: 10%;
 }
-
 .comment-textarea {
     width: 80%;
     height: 40px;

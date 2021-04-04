@@ -1,14 +1,12 @@
 .posts-container, .profile-main, .main-page, .main-activity-container {
     margin-top: 50px;
 }
-
 @media only screen and (max-width:450px) {
     .post-media {
         height: auto;
         width: 80%;
     }
 }
-
 @media only screen and (min-width:450px) {
     .post-media {
         height: auto;
@@ -16,7 +14,6 @@
         margin: 2% auto;
     }
 }
-
 @media only screen and (max-width: 920px) {
     .explore-container {
         display: none;
@@ -32,8 +29,6 @@
         max-width: 80vw;
     }
 }
-
-
 @media only screen and (min-width: 920px) {
     .explore-container {
         display: block;
@@ -49,7 +44,6 @@
         max-width: 50vw;
     }
 }
-
 .posts-container {
     width: auto !important;
     position: relative;
@@ -64,25 +58,21 @@
     margin: 0% 1%;
     margin-bottom: 1%;
 }
-
 .pagi-button {
     margin-right: 2%;
     margin-left: 2%;
     background-color: var(--color2);
     max-width: 100px !important;
 }
-
 .owner-name {
     font-weight: bold;
     position: relative;
 }
-
 .post-date{
     font-size: small;
     margin-bottom: 2%;
     line-height: 90%;
 }
-
 .user-photo-container {
     height:50px;
     width:50px;
@@ -90,23 +80,19 @@
     padding: 0%;
     margin-right: 0.5%;
 }
-
 .user-photo {
     height: 100%;
     width: 100%;
     border-radius: 40%;
 }
-
 .post-body {
     min-height: 100px;
     height: min-content;
     padding: 2% 0%;
 }
-
 .post-media {
     border-radius: 5px;
 }
-
 .stats-sample {
     min-height: min-content;
 }
@@ -122,7 +108,6 @@
     width: 20px;
     height:80%;
 }
-
 .likes-sample {
     margin-right: 20px;
     width: 200px;
@@ -131,45 +116,37 @@
 .comments-sample {
     width: 200px;
 }
-
 .post-actions {
     width: 100%;
 }
-
 .likes-action, .comments-action, .edit-action-container {
     color: grey;
     font-weight: bold;
     text-decoration: none;
 }
-
 .likes-action:hover, .comments-action:hover, .edit-action:hover {
     color: blue;
     transform: scale(1.1);
     -webkit-transform: scale(1.1);
     text-decoration: none;
 }
-
 .liker-sample, .likes-sample-num {
     font-size: small !important;
 } 
-
 .edit-action-container {
     position: absolute;
     right: 0;
     margin-right: 7px;
     font-size: small;
 }
-
 .post-textarea-edit {
     width: 100%;
     margin-left: 2%;
     height: 150px !important;
 }
-
 .post-text {
     margin-left: 2%;
 }
-
 .posts-pop-up {
     z-index: 1;
     top: 05%;
@@ -184,7 +161,6 @@
     animation:
         pop-up-appearing 1s;
 }
-
 .add-post-button {
     position: absolute;
     top: 5px;
@@ -195,30 +171,25 @@
     border-radius: 8px;
     border: none;
 }
-
 .small-icon {
     height: 17px;
     width:  17px;
     margin-right: 2px;
     margin-top: -2px;
 }
-
 .new-post-container {
     background-color: white;
     border-radius: 7px;
     margin: 1%;
     padding: 1%;
 }
-
 .backcolor2 {
     background-color: var(--color2);
     padding: 1%;
 }
-
 .backcolor2:focus {
     outline: none;
 }
-
 .margin-side {
     margin: 0% 2%;
 }

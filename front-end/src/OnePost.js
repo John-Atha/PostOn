@@ -1,18 +1,14 @@
 import React from "react";
 import "./Posts.css";
-
 import {getPostsCommentsSample, getAllLikes, getLikesSample, LikePost, UnLikePost, editPost, deletePost, UserLikesPost} from './api';
 import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
 import comment_icon from './images/comment.png';
 import edit_icon from './images/edit.png';
 import delete_icon from './images/delete-icon.png';
-
 import Likes from './Likes';
-
 import Comments from './Comments';
 import ProfileCard from './ProfileCard';
-
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 
@@ -70,7 +66,6 @@ class OnePost extends React.Component {
         this.hideModal = this.hideModal.bind(this);
         this.checkLiked = this.checkLiked.bind(this);
     }
-
     checkLiked = () => {
         UserLikesPost(this.state.userId, this.state.id)
         .then(response => {
@@ -86,7 +81,6 @@ class OnePost extends React.Component {
             })
         })
     }
-
     createNotification = (type, title="aaa", message="aaa") => {
         console.log("creating notification");
         console.log(type);
@@ -211,7 +205,6 @@ class OnePost extends React.Component {
                     .catch(err => {
                         console.log(err);
                     })
-            
                 }
             })
         })
@@ -287,7 +280,6 @@ class OnePost extends React.Component {
                 likes_error: "No likes found",
             })
         })
-
     }
     statsSample = () => {
         this.likesSample();
@@ -318,7 +310,6 @@ class OnePost extends React.Component {
             this.checkLiked();
         }
     }
-
     render() {
         let datetime = this.state.date!==null ? this.state.date.replace('T', ' ').replace('Z', '').split(' ') : null;
         let date = datetime!==null ? datetime[0] : null;
@@ -342,7 +333,6 @@ class OnePost extends React.Component {
                                      photo={this.state.owner.photo}
                                      position={"right"} />
                             }
-
                         </div>
                         <div className="post-date">{time}<br></br>{date}</div>
                     </div>

@@ -5,7 +5,6 @@ import logo from './images/logo.png'
 import {login, isLogged} from './api';
 
 class Login extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -19,7 +18,6 @@ class Login extends React.Component {
         this.handleInput = this.handleInput.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-
     componentDidMount() {
         isLogged()
         .then(response => {
@@ -36,8 +34,6 @@ class Login extends React.Component {
             })
         })
     }
-
-
     handleInput = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -47,7 +43,6 @@ class Login extends React.Component {
         })
         console.log(name+": "+value)
     }
-
     handleSubmit = (event) => {
         if (this.state.username.length && this.state.password.length) {
             var bodyFormData = new FormData();
@@ -62,8 +57,6 @@ class Login extends React.Component {
                 })
                 let token = response.data.access
                 let refresh = response.data.refresh
-                console.log(token);
-                console.log(refresh);
                 localStorage.setItem('token', token)
                 localStorage.setItem('refresh', refresh)
                 setTimeout(() => {
@@ -72,7 +65,6 @@ class Login extends React.Component {
             })
             .catch(err => {
                 console.log(err);
-                console.log(err.status);
                 this.setState({
                     error: "Login failed, try again."
                 })
@@ -85,7 +77,6 @@ class Login extends React.Component {
         }
         event.preventDefault();
     }
-
     render() {
         if (this.state.logged) {
             window.location.href = "/";
@@ -114,14 +105,12 @@ class Login extends React.Component {
                                 <div>First time here?</div>
                                 <a href="/register">Create an account</a>
                             </div>
-                        
                         </div>
                     </div>
                 </div>
             )
         }
     }
-
 }
 
 export default Login;

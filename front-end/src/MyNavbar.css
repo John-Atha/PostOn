@@ -13,36 +13,29 @@
 .navbar-icon2 {
     height: 23px;
 }
-
 .seen {
     background-color: rgb(247, 244, 244);
 }
-
 .not-seen {
     background-color: white;
     font-weight: bold;
 }
-
 .notif {
     font-size: small;
     margin: 1% 0%;
 }
-
 .notif:hover {
     background-color: var(--color2);
 }
-
 .dropdown-menu {
     background-color: var(--colorback) !important;
     max-width: 300px;
     z-index: 3 !important;
 }
-
 .notif-container {
     max-height: 60vh;
     overflow-y: scroll;
 }
-
 .read-button {
     background-color: var(--color2);
     height: min-content;

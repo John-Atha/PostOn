@@ -2,24 +2,20 @@ html, body {
     min-width: 350px !important;
     position: relative !important;
 }
-
 :root {
     --color2: #cadfed;
     --colorback: rgb(235, 234, 234);
     --boxback: white;
 }
-
 body {
     background-color: var(--colorback);
 }
-
 .center-content {
     justify-items: center;
     justify-content: center;
     align-items: center;
     text-align: center;
 }
-
 .blur {
     background: inherit;
     box-shadow: 0 8px 32px 0 var(--colorback);
@@ -29,7 +25,6 @@ body {
 .margin {
     margin: 2%;
 }
-
 .margin-top {
     margin-top: 10%;
 }
@@ -63,26 +58,22 @@ body {
     transform: scale(1.1);
     -webkit-transform: scale(1.1);
 }
-
 .error-message {
     color: red;
 }
 .success-message {
     color: green;
 }
-
 .flex-item {
     flex-grow: 1;
     height: min-content;
     width: 300px !important;
 }
-
 .flex-item-big {
     flex-grow: 1;
     height: min-content;
     width: 400px !important;
 }
-
 .flex-item-small {
     flex-grow: 1;
     height: min-content;
@@ -93,61 +84,49 @@ body {
     height: min-content;
     width: 50px !important;
 }
-
 .flex-item-expand {
     flex-basis: 100%;
     height: min-content;
 }
-
 .flex-item-expand2 {
     flex-basis: 70%;
     height: min-content;
 }
-
 .flex-layout {
     display: flex;
     flex-flow: row wrap;
 }
-
 .button-as-link {
     background-color: inherit;
     padding: 0%;
     border: none;
     color: rgb(13, 13, 235);
 }
-
 .button-as-link-grey {
     background-color: inherit;
     padding: 0%;
     border: none;
     color: grey;
 }
-
 .button-as-link:hover {
     text-decoration: underline;
 }
-
 .button-as-link-grey:hover {
     color: black;
 }
-
 .no-margin {
     margin: 1%;
 }
-
 .blue-color {
     color: blue;
 }
-
 .hidden {
     display: none;
 }
-
 textarea {
     border: 1px solid grey;
     border-radius: 6px;
 }
-
 .with-whitespace {
     white-space: pre;
     position: relative; 

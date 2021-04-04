@@ -11,8 +11,6 @@
         margin-right: 0%;
     }
 }
-
-
 @media only screen and (min-width: 830px) {
     .login-box-container{
         width: 300px; 
@@ -26,7 +24,6 @@
         margin-right: 0%;
     }
 }
-
 .login-box-container {
     min-width: min-content;
     height: 100%;
@@ -35,19 +32,16 @@
     border-radius: 6px;
     padding: 2%;
 }
-
 .login-input {
     border: none;
     border-radius: 7px;
     width: 80%;
     height: 30px;
 }
-
 .login-input:hover, .login-input:focus {
     border: 2px solid lightblue;
     outline: none;
 }
-
 .submit-button {
     background-color: white;
 }

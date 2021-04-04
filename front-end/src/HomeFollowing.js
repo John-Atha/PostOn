@@ -1,12 +1,10 @@
 import React from 'react';
 import './Home.css';
 import MyNavbar from './MyNavbar'
-
 import {isLogged} from './api';
 import Posts from "./Posts";
 import Explore from './Explore';
 import ProfileBox from './ProfileBox';
-
 import Searchbar from './Searchbar';
 
 class HomeFollowing extends React.Component {
@@ -22,7 +20,6 @@ class HomeFollowing extends React.Component {
         this.updateHome = this.updateHome.bind(this);
         this.updateProfBox = this.updateProfBox.bind(this);
     }
-
     componentDidMount() {
         isLogged()
         .then(response => {
@@ -39,19 +36,16 @@ class HomeFollowing extends React.Component {
             })
         })
     }
-
     updateProfBox = () => {
         this.setState({
             update2: this.state.update2+1,
         })
     }
-
     updateHome = () => {
         this.setState({
             update1: this.state.update1+1,
         })
     }
-
     render() {
         if (this.state.logged===true) {
             return (
@@ -78,7 +72,6 @@ class HomeFollowing extends React.Component {
             )
         }
     }
- 
 }
 
 

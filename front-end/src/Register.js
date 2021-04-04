@@ -1,11 +1,10 @@
 import React from "react";
-import "./Register.css";
+import "./Login.css";
 import MyNavbar from './MyNavbar';
 import logo from './images/logo.png'
 import {register, login, isLogged} from './api';
 
 class Register extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -20,7 +19,6 @@ class Register extends React.Component {
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInput = this.handleInput.bind(this);
     }
-
     componentDidMount() {
         isLogged()
         .then(response => {
@@ -37,7 +35,6 @@ class Register extends React.Component {
             })
         })
     }
-
     handleInput = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -47,7 +44,6 @@ class Register extends React.Component {
         })
         console.log(name+": "+value)
     }
-
     handleSubmit = (event) => {
         if (this.state.username.length && this.state.password.length && this.state.passwordConfirm.length && this.state.email.length) {
             if (this.state.password === this.state.passwordConfirm) {
@@ -110,7 +106,6 @@ class Register extends React.Component {
         }
         event.preventDefault();
     }
-
     render() {
         if (this.state.logged) {
             window.location.href = "/";

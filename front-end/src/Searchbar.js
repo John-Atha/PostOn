@@ -1,7 +1,6 @@
 import React from 'react';
 import './Searchbar.css';
 import {getUsers} from './api';
-
 import Form from 'react-bootstrap/Form'
 import FormControl from 'react-bootstrap/FormControl'
 import Button from 'react-bootstrap/Button'
@@ -9,9 +8,7 @@ import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 
-
 class Searchbar extends React.Component {
-
     constructor(props) {
         super(props);
         this.state = {
@@ -71,7 +68,6 @@ class Searchbar extends React.Component {
         else {
             this.createNotification('danger', 'Sorry,', `User ${this.state.input} not found`);
         }
-
     }
     componentDidMount() {
         getUsers()
@@ -99,7 +95,6 @@ class Searchbar extends React.Component {
         const button = document.getElementById('search-button');
         button.disabled = true;
     }
-
     render() {
         return(
                 <Form inline onSubmit={this.search} className="form-container">

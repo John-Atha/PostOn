@@ -1,8 +1,6 @@
 import React from "react";
 import "./Posts.css";
-
 import {isLogged, getUsersPosts, PostPostText, PostPostPhoto, deletePost} from './api';
-
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 import add_icon from './images/add.png'
@@ -48,7 +46,6 @@ class UserPosts extends React.Component {
             }
           });
     };
-
     handleInput = (event) => {
         const name = event.target.name;
         const value = event.target.value;
@@ -56,7 +53,6 @@ class UserPosts extends React.Component {
             [name]: value,
         })
     }
-
     cancelAdd = () => {
         this.setState({
             newText: "",
@@ -64,13 +60,11 @@ class UserPosts extends React.Component {
         })
         this.createNotification('warning', 'Hello,', 'Publsh was cancelled');
     }
-
     preAddPost = () => {
         this.setState({
             add : true,
         })
     }
-
     addPost = () => {
         const input = document.getElementById('new-post-photo');
         let img = null;
@@ -177,7 +171,6 @@ class UserPosts extends React.Component {
             }
         }
     }
-
     moveOn = () => {
         window.scrollTo({
             top:0,
@@ -186,7 +179,6 @@ class UserPosts extends React.Component {
         });
         setTimeout(() => this.askPosts(), 500);
     }
-    
     previousPage = () => {
         setTimeout(this.setState({
             start: this.state.start-10,
@@ -219,7 +211,6 @@ class UserPosts extends React.Component {
             })
         })
     }
-
     componentDidMount() {
         isLogged()
         .then(response => {
@@ -237,7 +228,6 @@ class UserPosts extends React.Component {
         })
         setTimeout(()=>this.askPosts(), 200);
     }
-
     componentDidUpdate(prevProps) {
         if (prevProps.updateMe!==this.props.updateMe) {
             this.askPosts();
@@ -248,7 +238,6 @@ class UserPosts extends React.Component {
             })
         }
     }
-
     render() {
         return(
             <div className="posts-container padding-bottom flex-item" style={{paddingTop: '50px', marginTop: '1%'}} >
@@ -272,7 +261,6 @@ class UserPosts extends React.Component {
                             </div>
                     </div>
                 }
-
                 {this.state.postsList.map((value, index) => {
                     return(
                         <OnePost key={index}
@@ -287,7 +275,6 @@ class UserPosts extends React.Component {
                                     updateParent={this.askPosts}
                         />
                     )
-                    
                 })}
                 {this.state.postsList.length!==0 &&
                     <div className="pagi-buttons-container flex-layout center-content">
