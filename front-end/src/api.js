@@ -548,3 +548,8 @@ export const PostPostPhoto = (id, params) => {
         headers: headers,
     })
 }
+
+export const UserLikesPost = (id1, id2) => {
+    const requestUrl = `users/${id1}/likes/posts/${id2}`;
+    return axios.get(requestUrl);
+}

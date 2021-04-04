@@ -20,8 +20,6 @@ class Posts extends React.Component {
             start: 1,
             end: 10,
             case: this.props.case,
-            likesEnd: 1,
-            likesList: [],
             whose: this.props.whose,
             add: false,
             newText: "",
@@ -31,7 +29,6 @@ class Posts extends React.Component {
         this.nextPage = this.nextPage.bind(this);
         this.moveOn = this.moveOn.bind(this);
         this.askPosts = this.askPosts.bind(this);
-        this.askLikes = this.askLikes.bind(this);
         this.addPost = this.addPost.bind(this);
         this.preAddPost = this.preAddPost.bind(this);
         this.cancelAdd = this.cancelAdd.bind(this);
@@ -215,36 +212,6 @@ class Posts extends React.Component {
         setTimeout(()=>this.askLikes(), 750);
     }
 
-    askLikes = () => {
-        this.state.postsList.forEach((value) => {
-            if (this.state.likesList.includes(value.id)) {
-                this.likesIncr++;
-            }
-        })
-        console.log(`I ask likes from ${this.state.likesEnd} to ${this.state.likesEnd+this.likesIncr+1}`);
-        myLikes(this.state.likesEnd, this.state.likesEnd+this.likesIncr, this.state.userId)
-        .then(response => {
-            console.log(response);
-            let tempLikesList = this.state.likesList;
-            response.data.forEach(el => {
-                if (!tempLikesList.includes(el.post.id)) {
-                    tempLikesList.push(el.post.id);
-                }
-            })
-            this.setState({
-                likesList: tempLikesList,
-                likesEnd: this.state.likesEnd+this.likesIncr,
-            })
-            console.log("likesList: ");
-            console.log(tempLikesList);
-            this.likesIncr = 0;
-        })
-        .catch(err => {
-            console.log(err);
-            console.log("No more likes found for this user.")
-        })
-    }
-
     askPosts = () => {
         setTimeout(()=> {}, 1000)
         console.log(`I am asking posts from ${this.state.start} to ${this.state.end}`)
@@ -314,14 +281,6 @@ class Posts extends React.Component {
                 }
 
                 {this.state.postsList.map((value, index) => {
-                    let liked=null;
-                    if (this.state.likesList.includes(value.id)) {
-                        console.log("liked")
-                        liked=true;
-                    }
-                    else {
-                        liked=false;
-                    }
                     return(
                         <OnePost key={index}
                                     id={value.id}
@@ -331,7 +290,6 @@ class Posts extends React.Component {
                                     date={value.date}
                                     userId={this.state.userId}
                                     logged={this.state.logged}
-                                    liked={liked}
                                     updateHome={this.props.updateHome}
                                     updateParent={this.askPosts}
                         />

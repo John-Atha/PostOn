@@ -1,7 +1,7 @@
 import React from "react";
 import "./Posts.css";
 
-import {getPostsCommentsSample, getAllLikes, getLikesSample, LikePost, UnLikePost, editPost, deletePost} from './api';
+import {getPostsCommentsSample, getAllLikes, getLikesSample, LikePost, UnLikePost, editPost, deletePost, UserLikesPost} from './api';
 import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
 import comment_icon from './images/comment.png';
@@ -28,7 +28,7 @@ class OnePost extends React.Component {
             text: this.props.text,
             text_init :this.props.text,
             date: this.props.date,
-            liked: this.props.liked,
+            liked: false,
             likesNum: 0,
             commentsNum: 0,
             followsUpd: 0,
@@ -68,7 +68,25 @@ class OnePost extends React.Component {
         this.postDelete = this.postDelete.bind(this);
         this.preDelete = this.preDelete.bind(this);
         this.hideModal = this.hideModal.bind(this);
+        this.checkLiked = this.checkLiked.bind(this);
     }
+
+    checkLiked = () => {
+        UserLikesPost(this.state.userId, this.state.id)
+        .then(response => {
+            console.log(response);
+            this.setState({
+                liked: response.data.likes,
+            })
+        })
+        .catch(err => {
+            console.log(err);
+            this.setState({
+                liked: false,
+            })
+        })
+    }
+
     createNotification = (type, title="aaa", message="aaa") => {
         console.log("creating notification");
         console.log(type);
@@ -277,6 +295,7 @@ class OnePost extends React.Component {
     }
     componentDidMount() {
         this.statsSample();
+        this.checkLiked();
     }
     componentDidUpdate(prevProps) {
         if (prevProps.id!==this.props.id || 
@@ -284,8 +303,7 @@ class OnePost extends React.Component {
             prevProps.owner!==this.props.owner||
             prevProps.media!==this.props.media ||
             prevProps.text!==this.props.text ||
-            prevProps.date!==this.props.date ||
-            prevProps.liked!==this.props.liked) {
+            prevProps.date!==this.props.date) {
             console.log("NEW POST!!")
             this.setState({
                 id: this.props.id,
@@ -295,9 +313,9 @@ class OnePost extends React.Component {
                 text: this.props.text,
                 text_init: this.props.text,
                 date: this.props.date,
-                liked: this.props.liked    
             })
             this.statsSample();
+            this.checkLiked();
         }
     }
 
