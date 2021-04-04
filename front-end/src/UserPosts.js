@@ -292,7 +292,7 @@ class UserPosts extends React.Component {
                         <button disabled={!this.state.postsList.length} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
                     </div>
                 }
-                {!this.state.postsList.length!==0 &&
+                {!this.state.postsList.length &&
                     <div className="error-message margin-top center-text">Oops, no posts found..</div>
                 }
             </div>

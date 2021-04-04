@@ -75,10 +75,18 @@ class OneUser extends React.Component {
     render() {
         return(
             <div className="one-like flex-layout">
-                <div className="like-owner flex-item-small"                        
+                <div className="like-owner flex-item-small flex-layout"                        
                         onMouseEnter={this.cardShow}
                         onMouseLeave={this.cardHide}>
-                    {this.state.user.username}
+                    <div className="user-photo-container-small"
+                                    onMouseEnter={this.cardShow}
+                                    onMouseLeave={this.cardHide} >
+                        <img className="user-photo" src={this.state.user.photo} alt="user profile" />
+                    </div>
+                    <div className="owner-name">
+                            {this.state.user.username}
+                    </div>
+                    
                     {this.state.showCard &&
                         <ProfileCard id={this.state.user.id}
                                 username={this.state.user.username}

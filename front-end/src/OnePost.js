@@ -339,17 +339,21 @@ class OnePost extends React.Component {
                 <hr className="no-margin"></hr>
                 {!this.state.edit &&
                     <div className="post-body">
-                        <div className="center-content">
-                            <img className="post-media" src={this.state.media} alt="media"/>
-                        </div>
+                        {this.state.media &&
+                            <div className="center-content">
+                                <img className="post-media" src={this.state.media} alt="media"/>
+                            </div>
+                        }
                         <div className="post-text">{this.state.text}</div>
                     </div>       
                 }
                 {this.state.edit &&
                     <div className="post-body">
-                        <div className="center-content">
-                            <img className="post-media" src={this.state.media} alt="media" />
-                        </div>
+                        {this.state.media &&
+                            <div className="center-content">
+                                <img className="post-media" src={this.state.media} alt="media" />
+                            </div>
+                        }
                         <textarea className="post-textarea-edit margin-top-smaller" name="text" value={this.state.text} onChange={this.handleInput}></textarea>
                         <div className="flex-layout center-content">
                             <button className="my-button pagi-button flex-item-small" onClick={this.saveText}>Save change</button>
