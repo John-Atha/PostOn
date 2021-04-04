@@ -1,12 +1,5 @@
-@media only screen and (max-width:300px) {
-    .posts-container, .profile-main, .main-page, .main-activity-container {
-        margin-top: 100px;
-    }
-}
-@media only screen and (min-width:300px) {
-    .posts-container, .profile-main, .main-page, .main-activity-container {
-        margin-top: 50px;
-    }
+.posts-container, .profile-main, .main-page, .main-activity-container {
+    margin-top: 50px;
 }
 
 @media only screen and (max-width:450px) {

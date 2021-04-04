@@ -118,18 +118,20 @@ class Searchbar extends React.Component {
                     <Button id="search-button" variant="outline-dark" onClick={this.search}>Search</Button>
                     </div>
                     <div id="suggestions-box">
-                        {this.state.all.map((value, index) => {
-                            if (this.matches(value.username)) {
-                                return (
-                                    <a key={index} className="one-suggestion flex-layout" href={`/users/${value.id}`}>
-                                        <div className="user-photo-container-small">
-                                                <img className="user-photo" src={value.photo} alt="user profile" />
-                                        </div>
-                                        <div className="owner-name">{value.username}</div>
-                                    </a>
-                                )
-                            }
-                        })}
+                        {this.state.input.length!==0 && 
+                            this.state.all.map((value, index) => {
+                                if (this.matches(value.username)) {
+                                    return (
+                                        <a key={index} className="one-suggestion flex-layout" href={`/users/${value.id}`}>
+                                            <div className="user-photo-container-small">
+                                                    <img className="user-photo" src={value.photo} alt="user profile" />
+                                            </div>
+                                            <div className="owner-name">{value.username}</div>
+                                        </a>
+                                    )
+                                }
+                            })
+                        }
                     </div>
                     </OutsideClickHandler>
                 </Form>
