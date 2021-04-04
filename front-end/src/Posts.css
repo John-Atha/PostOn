@@ -12,7 +12,7 @@
 @media only screen and (min-width:450px) {
     .post-media {
         height: auto;
-        width: 200px;
+        width: 400px;
         margin: 2% auto;
     }
 }
@@ -133,8 +133,7 @@
 }
 
 .post-actions {
-    width: 50%;
-    margin-left: 25%;
+    width: 100%;
 }
 
 .likes-action, .comments-action, .edit-action-container {
@@ -192,6 +191,9 @@
     background-color: var(--color2);
     margin-left: 1%;
     width: 280px !important;
+    padding: 1%;
+    border-radius: 8px;
+    border: none;
 }
 
 .small-icon {
@@ -215,4 +217,8 @@
 
 .backcolor2:focus {
     outline: none;
+}
+
+.margin-side {
+    margin: 0% 2%;
 }

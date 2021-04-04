@@ -398,7 +398,7 @@ class OnePost extends React.Component {
                 </div>
                 <hr className="no-margin"></hr>
                 <div className="post-actions center-content flex-layout">
-                    <div className="flex-item-small center-content">
+                    <div className="center-content margin-side">
                         {!this.state.liked &&
                             <button className="likes-action flex-layout button-as-link" onClick={this.postLike}>
                                 <img className="like-icon" src={like_icon} alt="like-icon"/>
@@ -412,7 +412,7 @@ class OnePost extends React.Component {
                             </button>
                         }                        
                     </div>
-                    <div className="flex-item-small center-content">
+                    <div className="center-content margin-side">
                         <button className="comments-action flex-layout button-as-link" onClick={this.showHideComments}>
                                 <img className="like-icon" src={comment_icon} alt="comment-icon"/>
                                 <div>Comment</div>

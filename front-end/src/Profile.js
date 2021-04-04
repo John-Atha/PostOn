@@ -479,7 +479,7 @@ class Profile extends React.Component {
             left:0,
             behavior:'smooth'
         });
-        this.createNotification('success', 'Hello,', 'Changes cancelled');
+        this.createNotification('warning', 'Hello,', 'Changes cancelled');
 
     }
     handleInput = (event) => {

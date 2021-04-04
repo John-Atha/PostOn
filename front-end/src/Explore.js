@@ -250,7 +250,7 @@ class Explore extends React.Component {
             <div className="explore-container center-content">
                 <h5>Explore</h5>
                 {
-                    this.state.usersList.length && this.state.usersList.map((value, index) => {
+                    this.state.usersList.length!==0 && this.state.usersList.map((value, index) => {
                         //console.log(value);
                         if (value.id!==this.props.userId) {
                             if (this.state.followsList.includes(value.id)) {
@@ -289,13 +289,13 @@ class Explore extends React.Component {
                         }
                         })
                 }
-                {this.state.usersList.length && 
+                {this.state.usersList.length!==0 && 
                     <div className="pagi-buttons-container flex-layout center-content">
                         <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
                         <button disabled={!this.state.usersList.length} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
                     </div>            
                 }
-                {!this.state.usersList.length &&
+                {!this.state.usersList.length!==0 &&
                     <div className="error-message margin-top center-text">{this.state.error}</div>
                 }
             </div>

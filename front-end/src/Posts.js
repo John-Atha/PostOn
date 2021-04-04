@@ -308,7 +308,7 @@ class Posts extends React.Component {
                     </div>
                 }
 
-                {this.state.postsList.length && this.state.postsList.map((value, index) => {
+                {this.state.postsList.map((value, index) => {
                     let liked=null;
                     if (this.state.likesList.includes(value.id)) {
                         console.log("liked")
@@ -333,7 +333,7 @@ class Posts extends React.Component {
                     )
                     
                 })}
-                {this.state.postsList.length &&
+                {this.state.postsList.length!==0 &&
                     <div className="pagi-buttons-container flex-layout center-content">
                         <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
                         <button disabled={!this.state.postsList.length} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
@@ -342,7 +342,7 @@ class Posts extends React.Component {
                 {!this.state.postsList.length &&
                     <div className="error-message margin-top center-text">Oops, no posts found..</div>
                 }
-                <button className="add-post-button my-button" onClick={this.preAddPost}>
+                <button className="add-post-button" onClick={this.preAddPost}>
                     <img className="small-icon" src={add_icon}/>
                     New post
                 </button>
