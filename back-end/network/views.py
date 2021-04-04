@@ -318,12 +318,12 @@ def AllPostsMod(request):
                         owner = User.objects.get(id=ownId)
                         if request.user==owner:
                             if data.get("text") is not None:
-                                if len(str(data["text"])):
-                                    post = Post(owner=owner, text=str(data["text"]))
-                                    post.save()
-                                    return JsonResponse(post.serialize(request.build_absolute_uri('/')[:-1]), status=200)
-                                else:
-                                    return JsonResponse({"error": "No text given."}, status=400)   
+                                #if len(str(data["text"])):
+                                post = Post(owner=owner, text=str(data["text"]))
+                                post.save()
+                                return JsonResponse(post.serialize(request.build_absolute_uri('/')[:-1]), status=200)
+                                #else:
+                                #    return JsonResponse({"error": "No text given."}, status=400)   
                             else:
                                 return JsonResponse({"error": "No text given."}, status=400)  
                         else:
@@ -1396,21 +1396,21 @@ def UserPostPhoto(request, id):
     else:
         return JsonResponse({"error": "Only POST method is allowed."}, status=400)
 
-
+@api_view(['Post'])
 def PostPostPhoto(request, id):
     if request.method=="POST":
         try:
             post = Post.objects.get(id=id)
         except Post.DoesNotExist:
             return JsonResponse({"error": "Invalid post id."}, status=400)
-        #if post.owner==request.user:
-        post.media=request.FILES['image']
-        post.save()
-        return JsonResponse({
-            "id": post.id,
-            "media": request.build_absolute_uri('/')[:-1]+post.media.url,
-        }, status=200)
-        #else:
-        #    return JsonResponse({"error": "You have to be the owner of a post to update it."}, status=400)
+        if post.owner==request.user:
+            post.media = request.FILES['image']
+            post.save()
+            return JsonResponse({
+                "id": post.id,
+                "media": request.build_absolute_uri('/')[:-1]+post.media.url,
+            }, status=200)
+        else:
+            return JsonResponse({"error": "You have to be the owner of a post to update it."}, status=400)
     else:
         return JsonResponse({"error": "Only POST method is allowed."}, status=400)
