@@ -375,7 +375,6 @@ class Profile extends React.Component {
             edit: false,
             updateFlag: 0,
             photoEdit: false,
-            photoNew: "",
         }
         this.countFollows = this.countFollows.bind(this);
         this.countFollowers = this.countFollowers.bind(this);
@@ -437,27 +436,25 @@ class Profile extends React.Component {
                     moto: this.state.moto_init,
                 })
             })
-            if (this.state.photoNew) {
+            const input = document.getElementById('new_profile_photo');
+            if (input.value) {
                 var bodyFormData = new FormData();
-                console.log("PHOTONEW")
-                console.log(this.state.photoNew);
-                bodyFormData.append('image', this.state.photoNew);
+                bodyFormData.append('image', input.files[0]);
                 updateUserPhoto(this.state.userId, bodyFormData)
                 .then(response=> {
                     console.log(response);
                     this.setState({
                         photo: response.data.photo,
-                        newPhoto: "",
+                        //newPhoto: "",
                         edit: false,
                         updateFlag: this.state.updateFlag+1,
                     })
+                    input.value = "";
                     this.createNotification('success', 'Hello,', "Profile photo updated successfully");
                 })
                 .catch(err => {
                     console.log(err);
-                    this.setState({
-                        photoNew: "",
-                    })
+                    input.value = "";
                     this.createNotification('danger', 'Sorry,', "Could not update profile picture.");
                 })
             }
@@ -473,9 +470,10 @@ class Profile extends React.Component {
         this.setState({
             username: this.state.username_init,
             moto: this.state.moto_init,
-            photoNew: "",
             edit: false,
         })
+        const input = document.getElementById('new_profile_photo');
+        input.value="";
         window.scrollTo({
             top:0,
             left:0,
@@ -721,14 +719,14 @@ class Profile extends React.Component {
                     <div className="profile-info">
                         <div>
                             <div>Username</div>
-                            <hr style={{'margin-top': '0%','margin-bottom': '1%'}}></hr>
+                            <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <input type="text" name="username" className="clean-style" style={{width: '50%'}} value={this.state.username} onChange={this.handleInput} />
                             <div >Bio</div>
-                            <hr style={{'margin-top': '0%','margin-bottom': '1%'}}></hr>
+                            <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <textarea name="moto" className="clean-style" style={{width: '90%'}} value={this.state.moto} onChange={this.handleInput} />
                             <div>Profile picture</div>
-                            <hr style={{'margin-top': '0%','margin-bottom': '1%'}}></hr>
-                            <input type="file" name="photoNew" value={this.state.photoNew} onChange={this.handleInput} placeholder="Upload a photo" />
+                            <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
+                            <input id="new_profile_photo" type="file" placeholder="Upload a photo" />
                             <div className="flex-layout margin-top-smaller">
                                 <button className="my-button save-moto-button" style={{margin: '1%'}} onClick={this.saveChanges}>Save</button>
                                 <button className="my-button save-moto-button" style={{margin: '1%'}} onClick={this.discardChanges}>Cancel</button>
