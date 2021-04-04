@@ -267,7 +267,7 @@ def UserPosts(request, id):
     else:
         try:
             user = User.objects.get(id=id)
-            posts = user.posts.all()
+            posts = user.posts.all().order_by('-date')
             if request.GET.get("start"):
                 try:
                     start = int(request.GET.get("start"))
