@@ -132,7 +132,7 @@ class OneStats extends React.Component {
     }
 
     askMonthly = () => {
-        getMonthlyStatsGen(this.state.choice.charAt(0).toLowerCase()+this.state.choice.slice(1), this.state.userId)
+        getMonthlyStatsGen(this.state.choice.charAt(0).toLowerCase()+this.state.choice.slice(1), this.props.case==="general" ? null : this.state.userId)
         .then(response => {
             console.log(response);
             this.setState({
@@ -143,12 +143,13 @@ class OneStats extends React.Component {
             console.log(err);
             this.setState({
                 monthlyErr: err,
+                monthlyStats: [],
             })
         })
     }
 
     askDaily = () => {
-        getDailyStatsGen(this.state.choice.charAt(0).toLowerCase()+this.state.choice.slice(1), this.state.userId)
+        getDailyStatsGen(this.state.choice.charAt(0).toLowerCase()+this.state.choice.slice(1), this.props.case==="general" ? null : this.state.userId)
         .then(response => {
             console.log(response);
             this.setState({
@@ -159,6 +160,7 @@ class OneStats extends React.Component {
             console.log(err);
             this.setState({
                 dailyErr: err,
+                dailyStats: [],
             })
         })    
     }
@@ -177,12 +179,22 @@ class OneStats extends React.Component {
     }
 
     render() {
-        return (
-            <div className="margin-top-smaller flex-layout diagrams-cont">
-                <Diagram type="pie" stats={this.state.dailyStats}    choice={this.state.choice} />
-                <Diagram type="line" stats={this.state.monthlyStats} choice={this.state.choice} />
-            </div>
-        )
+        if (this.state.monthlyStats.length!==0) {
+            return(
+                <div className="margin-top-smaller flex-layout diagrams-cont">
+                    <Diagram type="pie" stats={this.state.dailyStats}    choice={this.state.choice} />
+                    <Diagram type="line" stats={this.state.monthlyStats} choice={this.state.choice} />
+                </div>
+            )
+        }
+        else {
+            return(
+                <div className="error-message margin-top-small">
+                    Sorry, we could not find any relative activity.<br></br>
+                    Try another category from the buttons above.
+                </div>
+            )
+        }
     }
 }
 
@@ -259,10 +271,10 @@ class Statistics extends React.Component {
                     <div className="main-page center-content">
                         <h4 className="margin-top-smaller">Pick a statistics category</h4>
                         <div className="flex-layout center-content margin-top-smaller">
-                            <button className="flex-item my-button pagi-button stats-choice-button" onClick={this.pick}>Likes</button>
-                            <button className="flex-item my-button pagi-button stats-choice-button" onClick={this.pick}>Comments</button>
-                            <button className="flex-item my-button pagi-button stats-choice-button" id="stats-posts-button" onClick={this.pick}>Posts</button>
-                            <button className="flex-item my-button pagi-button stats-choice-button" onClick={this.pick}>Follows</button>
+                            <button className="flex-item my-button pagi-button stats-choice-button margin" onClick={this.pick}>Likes</button>
+                            <button className="flex-item my-button pagi-button stats-choice-button margin" onClick={this.pick}>Comments</button>
+                            <button className="flex-item my-button pagi-button stats-choice-button margin" id="stats-posts-button" onClick={this.pick}>Posts</button>
+                            <button className="flex-item my-button pagi-button stats-choice-button margin" onClick={this.pick}>Follows</button>
                         </div>
                         {this.state.choice==="Likes" &&
                             <OneStats choice={this.state.choice} case={this.state.case} userId={this.state.userId}/>
