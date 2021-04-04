@@ -6,7 +6,7 @@ import liked_icon from './images/liked.png';
 import delete_icon from './images/delete-icon.png';
 
 import Likes from './Likes';
-import {getPostsComments, getLikesSample, getLikes, getAllLikes, LikeComment, UnLikeComment, DeleteComment, AddComment, getUser} from './api';
+import {getPostsComments, getLikesSample, getLikes, getAllLikes, LikeComment, UnLikeComment, DeleteComment, AddComment, getUser, UserLikesComment} from './api';
 import ProfileCard from  './ProfileCard';
 
 import 'react-notifications-component/dist/theme.css'
@@ -327,24 +327,16 @@ class OneComment extends React.Component {
     checkLiked = () => {
         if (this.state.logged) {
             setTimeout(()=> {}, 2000);
-            console.log(`I am asking likes from ${this.state.start} to ${this.state.end}.`);
-            getLikes(this.state.start, this.state.end, this.state.comment.id, "comment")
+            UserLikesComment(this.state.userId, this.state.comment.id)
             .then(response => {
                 console.log(response);
-                let tempLikersList = [];
-                response.data.forEach(like => {
-                    tempLikersList.push(like.owner.id);
-                })
                 this.setState({
-                    liked: tempLikersList.includes(this.state.userId),
-                    error: null,
+                    liked: response.data.likes,
                 })
-                console.log("liked "+ this.state.liked)
             })
             .catch(err => {
                 console.log(err);
                 this.setState({
-                    error: "No likes found.",
                     liked: false,
                 })
             })
