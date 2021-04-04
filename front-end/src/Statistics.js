@@ -28,9 +28,9 @@ class Diagram extends React.Component {
             console.log("I am pie and i am computing")
             let tempData = [];
             let sum = 0;
-            for (const[key, value] of Object.entries(this.props.stats)) {
-                sum+=value;
-            }
+            Object.entries(this.props.stats).forEach(el => {
+                sum+=el[1];
+            })
             console.log(`sum= ${sum}`);
             for (const [key, value] of Object.entries(this.props.stats)) {
                 tempData.push({

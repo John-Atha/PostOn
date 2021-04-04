@@ -1,7 +1,6 @@
 import React from "react";
 import './Comments.css';
 
-import user_icon from './images/user-icon.png'; 
 import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
 import delete_icon from './images/delete-icon.png';
@@ -243,7 +242,7 @@ class OneComment extends React.Component {
             })
             this.createNotification("success", "Hello,", "Comment deleted successfully")
             this.hideModal();
-            let x = this.props.updateParent(this.state.comment.id);
+            this.props.updateParent(this.state.comment.id);
         })
         .catch(err => {
             console.log(err);

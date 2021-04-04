@@ -251,7 +251,7 @@ class UserPosts extends React.Component {
             <div className="posts-container padding-bottom flex-item" style={{paddingTop: '50px', marginTop: '1%'}} >
                 { this.state.userId===this.state.whose &&
                     <button className="add-post-button" onClick={this.preAddPost}>
-                        <img className="small-icon" src={add_icon}/>
+                        <img className="small-icon" src={add_icon} alt="add" />
                         New post
                     </button>
                 }

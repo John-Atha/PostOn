@@ -10,8 +10,6 @@ import stats_icon from './images/stats.png';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 
-import Searchbar from './Searchbar';
-
 class MyNavbar extends React.Component {
     constructor(props) {
         super(props);

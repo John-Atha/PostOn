@@ -1,7 +1,6 @@
 import React from 'react';
 import './Explore.css'
 import ProfileCard from './ProfileCard';
-import user_icon from './images/user-icon.png'; 
 
 import {getUsers, getFollows, getFollowers, followUser, unfollowUser} from './api';
 
@@ -286,6 +285,11 @@ class Explore extends React.Component {
                                             updatePar={this.updateFollows} />
                                 )    
                             }
+                        }
+                        else {
+                            return(
+                                <div key={index}></div>
+                            )
                         }
                         })
                 }

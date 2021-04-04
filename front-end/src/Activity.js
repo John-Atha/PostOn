@@ -51,7 +51,7 @@ class CommentAction extends React.Component {
                     <div>
                         of user 
                     </div>
-                    <a href="#" className="with-whitespace"
+                    <div className="as-link with-whitespace"
                         onMouseEnter={this.cardShow}
                         onMouseLeave={this.cardHide}>
                         {" "+this.state.post.owner.username}
@@ -62,7 +62,7 @@ class CommentAction extends React.Component {
                                      photo={this.state.post.owner.photo}
                                      position={"right"} />
                         }
-                    </a>.
+                    </div>.
                 </div>
                 <div className="margin-top-smaller">
                     {this.state.text}
@@ -108,7 +108,7 @@ class PostLikeAction extends React.Component {
                     <div>
                         of user 
                     </div>
-                    <a href="#" className="with-whitespace"
+                    <div className="as-link with-whitespace"
                         onMouseEnter={this.cardShow}
                         onMouseLeave={this.cardHide}>
                         {" "+this.state.post.owner.username}
@@ -119,7 +119,7 @@ class PostLikeAction extends React.Component {
                                      photo={this.state.post.owner.photo}
                                      position={"right"} />
                         }
-                    </a>
+                    </div>
                 </div>
             </div>
         )
@@ -163,7 +163,7 @@ class CommentLikeAction extends React.Component {
                     <div>
                         of user 
                     </div>
-                    <a href="#" className="with-whitespace"
+                    <div className="as-link with-whitespace"
                         onMouseEnter={this.cardShow}
                         onMouseLeave={this.cardHide}>
                         {" "+this.state.comment.owner.username}
@@ -174,7 +174,7 @@ class CommentLikeAction extends React.Component {
                                      photo={this.state.comment.owner.photo}
                                      position={"right"} />
                         }
-                    </a>.
+                    </div>.
                 </div>
                 <div className="margin-top-smaller">
                     {this.state.comment.text}
@@ -243,7 +243,7 @@ class FollowAction extends React.Component {
                     <div className="with-whitespace">
                         On {dateShow(this.state.date)}, you followed the user
                     </div>
-                    <a href="#" className="with-whitespace"
+                    <div className="as-link with-whitespace"
                                 onMouseEnter={this.cardShow}
                                 onMouseLeave={this.cardHide}>
                         {" "+this.state.followed.username}
@@ -254,7 +254,7 @@ class FollowAction extends React.Component {
                                      photo={this.state.followed.photo}
                                      position={"right"} />
                         }
-                    </a>.
+                    </div>.
                 </div>
             </div>
         )
@@ -371,7 +371,7 @@ class Activity extends React.Component {
 
                 })}
             </div>
-            {this.state.actList.length &&
+            {this.state.actList.length!==0 &&
                 <div className="pagi-buttons-container flex-layout center-content">
                     <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
                     <button disabled={!this.state.actList.length} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>

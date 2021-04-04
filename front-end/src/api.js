@@ -106,7 +106,7 @@ export const getLikes = (start, end="", id, on) => {
 
 export const getLikesSample = (id, on) => {
     let requestUrl = "";
-    if (on=="post") {
+    if (on==="post") {
         requestUrl = `/posts/${id}/likes/sample`;
     }
     else {

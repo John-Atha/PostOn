@@ -2,7 +2,7 @@ import React from 'react';
 import MyNavbar from './MyNavbar';
 import OnePost from './OnePost';
 
-import {isLogged, getOnePost, editPost, getAllLikes, LikePost, UnLikePost, getPostsCommentsSample, getLikesSample} from './api';
+import {isLogged, getOnePost, getAllLikes} from './api';
 
 class OnePostPage extends React.Component {
     constructor(props) {

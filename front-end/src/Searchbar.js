@@ -6,7 +6,6 @@ import Form from 'react-bootstrap/Form'
 import FormControl from 'react-bootstrap/FormControl'
 import Button from 'react-bootstrap/Button'
 import OutsideClickHandler from 'react-outside-click-handler';
-import user_icon from './images/user-icon.png';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 
@@ -128,6 +127,11 @@ class Searchbar extends React.Component {
                                             </div>
                                             <div className="owner-name">{value.username}</div>
                                         </a>
+                                    )
+                                }
+                                else {
+                                    return(
+                                        <div key={index}></div>
                                     )
                                 }
                             })

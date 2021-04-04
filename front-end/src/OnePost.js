@@ -106,7 +106,7 @@ class OnePost extends React.Component {
             })
             this.createNotification("success", "Hello,", "Post deleted successfully")
             this.hideModal();
-            let x = this.props.updateParent();
+            this.props.updateParent();
         })
         .catch(err => {
             console.log(err);
@@ -306,7 +306,7 @@ class OnePost extends React.Component {
                     <div className="user-photo-container"
                                     onMouseEnter={this.cardShow}
                                     onMouseLeave={this.cardHide} >
-                        <img className="user-photo" src={this.state.owner.photo} alt="user profile" />
+                        <img className="user-photo" src={this.state.owner.photo} alt="user" />
                     </div>
                     <div onMouseEnter={this.cardShow}
                              onMouseLeave={this.cardHide}>
@@ -326,11 +326,11 @@ class OnePost extends React.Component {
                     {this.state.userId===this.state.owner.id &&
                         <div className="center-content flex-layout edit-action-container">
                             <button className="flex-layout button-as-link margin-right-small edit-action" onClick={this.editText}>
-                                    <img className="like-icon-small" src={edit_icon} alt="edit-icon"/>
+                                    <img className="like-icon-small" src={edit_icon} alt="edit"/>
                                     <div>Edit</div>
                             </button>
                             <button className="flex-layout button-as-link edit-action" onClick={this.preDelete}>
-                                    <img className="like-icon-small" src={delete_icon} alt="delete-icon"/>
+                                    <img className="like-icon-small" src={delete_icon} alt="delete"/>
                                     <div>Delete</div>
                             </button>
                         </div>
@@ -340,7 +340,7 @@ class OnePost extends React.Component {
                 {!this.state.edit &&
                     <div className="post-body">
                         <div className="center-content">
-                            <img className="post-media" src={this.state.media} />
+                            <img className="post-media" src={this.state.media} alt="media"/>
                         </div>
                         <div className="post-text">{this.state.text}</div>
                     </div>       
@@ -348,7 +348,7 @@ class OnePost extends React.Component {
                 {this.state.edit &&
                     <div className="post-body">
                         <div className="center-content">
-                            <img className="post-media" src={this.state.media} />
+                            <img className="post-media" src={this.state.media} alt="media" />
                         </div>
                         <textarea className="post-textarea-edit margin-top-smaller" name="text" value={this.state.text} onChange={this.handleInput}></textarea>
                         <div className="flex-layout center-content">

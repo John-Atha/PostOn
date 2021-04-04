@@ -211,7 +211,7 @@ class Posts extends React.Component {
     }
 
     askLikes = () => {
-        this.state.postsList.map((value) => {
+        this.state.postsList.forEach((value) => {
             if (this.state.likesList.includes(value.id)) {
                 this.likesIncr++;
             }
@@ -343,7 +343,7 @@ class Posts extends React.Component {
                     <div className="error-message margin-top center-text">Oops, no posts found..</div>
                 }
                 <button className="add-post-button" onClick={this.preAddPost}>
-                    <img className="small-icon" src={add_icon}/>
+                    <img className="small-icon" src={add_icon} alt="add" />
                     New post
                 </button>
             </div>
