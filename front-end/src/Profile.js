@@ -708,7 +708,7 @@ class Profile extends React.Component {
                             }
                         </div>
                 </div>
-                {!this.state.edit &&
+                {!this.state.edit && this.state.moto &&
                     <div className="profile-info">
                         <div>
                             {this.state.moto}
@@ -739,7 +739,7 @@ class Profile extends React.Component {
                     <hr className="no-margin"></hr>
                     <h4 className="center-text">Posts</h4>
                     <hr className="no-margin"></hr>
-                    <UserPosts whose={this.state.userId} updateHome={this.updateMyFollows} updateMe={this.state.updateFlag} />
+                    <UserPosts whose={this.state.userId} me={this.state.me} updateHome={this.updateMyFollows} updateMe={this.state.updateFlag} />
                 </div>
                 {this.state.followsShow &&
                     <FollowBox  userId={this.state.userId}

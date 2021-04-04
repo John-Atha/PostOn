@@ -19,6 +19,23 @@
     }
 }
 
+@media only screen and (max-width: 450px) {
+    .user-photo-profile-container {
+        height:auto;
+        max-height: 18vh;
+        min-height: 15vh;
+        width: 30vw;
+    }
+}
+@media only screen and (min-width: 450px) {
+    .user-photo-profile-container {
+        height:auto;
+        max-height: 30vh;
+        min-height: 20vh;
+        width: 30vw;
+    }    
+}
+
 
 .profile-info {
     background-color: rgb(242, 240, 240);
@@ -41,17 +58,15 @@
 }
 
 .user-photo-profile-container {
-    height:170px;
-    width: 180px;
     margin-left: 1%;
     border-radius: 50%;
 }
 
 .follows-pop-up {
     z-index: 1;
-    top: 20%;
+    top: 05%;
     position: absolute;
-    background-color: rgb(230, 230, 230);
+    background-color: white;
     min-height: min-content;
     border-radius: 7px;
     padding: 2% 1%;

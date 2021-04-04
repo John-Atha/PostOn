@@ -275,6 +275,7 @@ class OnePost extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (prevProps.id!==this.props.id || 
+            prevProps.userId!==this.props.userId || 
             prevProps.owner!==this.props.owner||
             prevProps.media!==this.props.media ||
             prevProps.text!==this.props.text ||
@@ -283,6 +284,7 @@ class OnePost extends React.Component {
             console.log("NEW POST!!")
             this.setState({
                 id: this.props.id,
+                userId: this.props.userId,
                 owner: this.props.owner,
                 media: this.props.media,
                 text: this.props.text,
