@@ -8,6 +8,8 @@
 * GET   /users?start=index1&end=index2              :       returns all users with index1<user_index<index2 (or 400, 402)
 * GET   /users/{id}                                 :       returns user with the given id (or 400) 
 * PUT   /users{id}/mod                                 :       updates username and/or moto (or 400 or 401) 
+* DEL   /users{id}/mod                                 :       deletes account of user with the given id (or 400 or 401) 
+
 * POST  /users/{id}/photo/mod                       : updates the profile picture of the user with the given id (or returns 400)
 * GET   /users/{id}/activity                            :       returns the activity (likes, comments, likes on comments, posts, follows) of user with given id (or 400, or 402)
 * GET   /users/{id}/notifications                       :       returns the (unread) notifications (likes & comments on my posts, likes on my comments, new followers) of user with given id (or 400, or 402)

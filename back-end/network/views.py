@@ -140,10 +140,10 @@ def OneUser(request, id):
             return JsonResponse({"error": f"Invalid user id ({id})."}, status=400)   
         return JsonResponse(user.serialize(request.build_absolute_uri('/')[:-1]))
 
-@api_view(['Get', 'Put'])
+@api_view(['Put', 'Delete'])
 def OneUserMod(request, id):
-    if request.method!="PUT":
-        return JsonResponse({"error": "Only PUT method is allowed."}, status=400)
+    if request.method!="PUT" and request.method!="DELETE":
+        return JsonResponse({"error": "Only PUT and DEL methods are allowed."}, status=400)
     else:
         try:
             user = User.objects.get(id=id)
@@ -151,29 +151,26 @@ def OneUserMod(request, id):
             return JsonResponse({"error": f"Invalid user id ({id})."}, status=400) 
         #if JWTAuthentication.authenticate(self, request) is not None:
         if request.user==user:
-            #if request.user.is_authenticated:
-            smthNew = False
-            data = json.loads(request.body)
-            #if request.PUT["photo"] is not None:
-            #    smthNew = True
-            #    user.photo = request.PUT["photo"]
-            #else:
-            if data.get("username") is not None:  
-                user.username = data["username"]
-                smthNew = True
-            if data.get("moto") is not None:
-                user.moto = data["moto"]
-                smthNew = True
-            if smthNew:
-                try:
-                    user.save()
-                    return JsonResponse(user.serialize(request.build_absolute_uri('/')[:-1]), status=200)
-                except:
-                    return JsonResponse({"error": "Username probably already exists"} , status=400)
+            if request.method=="PUT":
+                smthNew = False
+                data = json.loads(request.body)
+                if data.get("username") is not None:  
+                    user.username = data["username"]
+                    smthNew = True
+                if data.get("moto") is not None:
+                    user.moto = data["moto"]
+                    smthNew = True
+                if smthNew:
+                    try:
+                        user.save()
+                        return JsonResponse(user.serialize(request.build_absolute_uri('/')[:-1]), status=200)
+                    except:
+                        return JsonResponse({"error": "Username probably already exists"} , status=400)
+                else:
+                    return JsonResponse({"error": "Give new username and/or moto field"} , status=400)                
             else:
-                return JsonResponse({"error": "Give new username and/or moto field"} , status=400)                
-            #else:
-            #    return JsonResponse({"error": "Authentication required"}, status=401)
+                user.delete()
+                return JsonResponse({"message": "Account deleted successfully"}, status=200)
         else:
             return JsonResponse({"error": "Only the owner of the profile can update it"}, status=401)
 
