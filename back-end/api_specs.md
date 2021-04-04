@@ -60,6 +60,7 @@
 * GET   /users/{id}/likes?start=index1&end=index2   :       returns the likes that this user has posted with index1<like_index<index2 (or 402)
 * GET   /users/{id}/liked?start=index1&end=index2   :       returns the likes on posts of this owner with index1<like_index<index2 (or 402)
 * GET   /users/{id1}/likes/posts/{id2}                :       returns {"likes":true} if the user with id1 likes the post with id2 (or false if he/she doesn't)
+* GET   /users/{id1}/likes/comments/{id2}                :       returns {"likes":true} if the user with id1 likes the comment with id2 (or false if he/she doesn't)
 
 #### Comments
 * GET   /comments?start=index1&end=index2              :       returns all comments with index1<like_index<index2 (or 400, or 402)
