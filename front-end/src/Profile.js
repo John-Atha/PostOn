@@ -74,8 +74,8 @@ class OneUser extends React.Component {
 
     render() {
         return(
-            <div className="one-like flex-layout">
-                <div className="like-owner flex-item-small flex-layout"                        
+            <div className="one-like flex-layout center-content">
+                <div className="like-owner flex-item-small flex-layout center-content"                        
                         onMouseEnter={this.cardShow}
                         onMouseLeave={this.cardHide}>
                     <div className="user-photo-container-small"
@@ -95,17 +95,19 @@ class OneUser extends React.Component {
                                 position={"bottom"} />
                     }
                 </div>
-                <div className="un-follow-button-container flex-item-small">
-                {this.state.logged && !this.props.followed && !this.props.following && this.props.me!==this.props.user.id &&
-                    <button className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow</button>
+                {this.state.logged &&
+                    <div className="un-follow-button-container flex-item-small">
+                    {!this.props.followed && !this.props.following && this.props.me!==this.props.user.id &&
+                        <button className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow</button>
+                    }
+                    {!this.props.followed && this.props.following && this.props.me!==this.props.user.id &&
+                        <button className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow Back</button>
+                    }
+                    {this.props.followed && this.props.me!==this.props.user.id &&
+                        <button className="my-button un-follow-button" onClick={this.unfollow}>Unfollow</button>
+                    }
+                    </div>
                 }
-                {this.state.logged && !this.props.followed && this.props.following && this.props.me!==this.props.user.id &&
-                    <button className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow Back</button>
-                }
-                {this.state.logged && this.props.followed && this.props.me!==this.props.user.id &&
-                    <button className="my-button un-follow-button" onClick={this.unfollow}>Unfollow</button>
-                }
-                </div>
             </div>
         )
     }

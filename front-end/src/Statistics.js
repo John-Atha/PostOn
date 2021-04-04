@@ -245,7 +245,7 @@ class Statistics extends React.Component {
                     <MyNavbar />
                     <div className="main-page center-content">
                         <div className="error-message">
-                            You have to create an account to have your persinal statistics page
+                            You have to create an account to have your personal statistics page
                         </div>
                     </div>
                 </div>

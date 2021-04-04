@@ -96,22 +96,29 @@ class NewComment extends React.Component {
     }
 
     render() {
-        return(
-            <div className="comment-box flex-item-expand">
-            <div className="flex-layout">
-                <div className="user-photo-container-small">
-                        <img className="user-photo" src={this.state.photo} alt="user profile" />
+        if (this.state.logged) {
+            return(
+                <div className="comment-box flex-item-expand">
+                    <div className="flex-layout">
+                        <div className="user-photo-container-small">
+                                <img className="user-photo" src={this.state.photo} alt="user profile" />
+                        </div>
+                        <div className="owner-name">{this.state.username}</div>
+                    </div>
+                    <div className="text-comment flex-layout">
+                        <textarea className="comment-textarea" name="text" placeholder="Add your comment here..." value={this.state.text} onChange={this.handleInput}></textarea>
+                        <button className="my-button pagi-button" onClick={this.submit}>Add</button>
+                    </div>
                 </div>
-                <div className="owner-name">{this.state.username}</div>
-            </div>
-            <div className="text-comment flex-layout">
-                <textarea className="comment-textarea" name="text" placeholder="Add your comment here..." value={this.state.text} onChange={this.handleInput}></textarea>
-                <button className="my-button pagi-button" onClick={this.submit}>Add</button>
-            </div>
-        </div>
-
-
-        )
+            )   
+        }
+        else {
+            return (
+                <div className="error-message">
+                    You have to create an account to post comments.
+                </div>
+            )
+        }
     }
 }
 
@@ -251,17 +258,22 @@ class OneComment extends React.Component {
         })
     }
     commentLike = () => {
-        LikeComment(this.state.userId, this.state.comment.id)
-        .then(response => {
-            console.log(response);
-            this.setState({
-                liked: true,
+        if (!this.state.logged) {
+            this.createNotification('danger', 'Sorry', 'You have to create an account to like a comment')
+        }
+        else {
+            LikeComment(this.state.userId, this.state.comment.id)
+            .then(response => {
+                console.log(response);
+                this.setState({
+                    liked: true,
+                })
+                this.likesSample();
             })
-            this.likesSample();
-        })
-        .catch(err => {
-            console.log(err);
-        })
+            .catch(err => {
+                console.log(err);
+            })
+        }
     }
     commentUnLike = () => {
         getAllLikes(1, this.state.comment.id, "comment")

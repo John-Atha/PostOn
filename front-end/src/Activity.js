@@ -377,8 +377,11 @@ class Activity extends React.Component {
                     <button disabled={!this.state.actList.length} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
                 </div>
             }
-            {!this.state.actList.length &&
+            {!this.state.actList.length && this.state.logged &&
                 <div className="error-message margin-top center-text">Oops, no activity found..</div>
+            }
+            {!this.state.logged &&
+                <div className="error-message margin-top center-text">You have to create an account to keep track of your activity.</div>
             }
 
         </div>

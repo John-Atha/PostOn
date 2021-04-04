@@ -71,7 +71,7 @@ class OneLike extends React.Component {
     render() {
         return(
             <div className="one-like flex-layout">
-                <div className="like-owner flex-item-small flex-layout"
+                <div className="like-owner flex-item-small flex-layout center-content"
                         onMouseEnter={this.cardShow}
                         onMouseLeave={this.cardHide}>
 

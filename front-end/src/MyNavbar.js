@@ -320,6 +320,9 @@ class MyNavbar extends React.Component {
                         <Nav.Link href="#" onClick={this.logout}>Logout</Nav.Link>
                     }
                     {!this.state.logged &&
+                        <Nav.Link href="/stats/general">General statistics</Nav.Link>
+                    }
+                    {!this.state.logged &&
                         <Nav.Link href="/login">Login</Nav.Link>
                     }
                     {!this.state.logged &&

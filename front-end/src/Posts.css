@@ -191,7 +191,7 @@
     background-color: var(--color2);
     margin-left: 1%;
     width: 280px !important;
-    padding: 1%;
+    padding: 8px;
     border-radius: 8px;
     border: none;
 }

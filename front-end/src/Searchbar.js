@@ -108,7 +108,7 @@ class Searchbar extends React.Component {
                     <FormControl 
                         style={{width: '250px'}}
                         type="text" 
-                        placeholder="Search" 
+                        placeholder="Search for a user..." 
                         name="input" 
                         value={this.state.input} 
                         className="mr-sm-2" 

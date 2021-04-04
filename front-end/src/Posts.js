@@ -73,9 +73,14 @@ class Posts extends React.Component {
     }
 
     preAddPost = () => {
-        this.setState({
-            add : true,
-        })
+        if(!this.state.logged) {
+            this.createNotification('danger', 'Sorry,', 'You have to create an account to upload a new post');
+        }
+        else {
+            this.setState({
+                add : true,
+            })    
+        }
     }
 
     addPost = () => {
@@ -342,7 +347,7 @@ class Posts extends React.Component {
                 {!this.state.postsList.length &&
                     <div className="error-message margin-top center-text">Oops, no posts found..</div>
                 }
-                <button className="add-post-button" onClick={this.preAddPost}>
+                <button className="add-post-button" onClick={this.preAddPost} >
                     <img className="small-icon" src={add_icon} alt="add" />
                     New post
                 </button>

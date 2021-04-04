@@ -203,17 +203,22 @@ class OnePost extends React.Component {
         
     }
     postLike = () => {
-        LikePost(this.state.userId, this.state.id)
-        .then(response => {
-            console.log(response);
-            this.setState({
-                liked: true,
+        if (!this.state.logged) {
+            this.createNotification('danger', 'Sorry', 'You have to create an account to like a post')
+        }
+        else {
+            LikePost(this.state.userId, this.state.id)
+            .then(response => {
+                console.log(response);
+                this.setState({
+                    liked: true,
+                })
+                this.likesSample();
             })
-            this.likesSample();
-        })
-        .catch(err => {
-            console.log(err);
-        })
+            .catch(err => {
+                console.log(err);
+            })    
+        }
     }
     showLikes = (event) => {
         this.setState({
