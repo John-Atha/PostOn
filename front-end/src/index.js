@@ -13,6 +13,7 @@ import Profile from './Profile';
 import OnePostPage from './OnePostPage';
 import ReactNotifications from "react-notifications-component";
 import Searchbar from './Searchbar';
+import NotFound from './NotFound';
 
 function FindProfile() {
   let {id} = useParams();
@@ -57,6 +58,9 @@ ReactDOM.render(
         </Route>
         <Route path="/search" exact>
           <Searchbar />
+        </Route>
+        <Route path="*">
+          <NotFound />
         </Route>
       </Switch>   
     </BrowserRouter>

@@ -4,7 +4,7 @@ import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
 import delete_icon from './images/delete-icon.png';
 import Likes from './Likes';
-import {getPostsComments, getLikesSample, getLikes, getAllLikes, LikeComment, UnLikeComment, DeleteComment, AddComment, getUser, UserLikesComment} from './api';
+import {getPostsComments, getLikesSample, getAllLikes, LikeComment, UnLikeComment, DeleteComment, AddComment, getUser, UserLikesComment} from './api';
 import ProfileCard from  './ProfileCard';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
