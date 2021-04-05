@@ -8,7 +8,6 @@ from rest_framework.decorators import api_view
 from .models import *
 from datetime import datetime
 import imghdr
-from base64 import decodestring
 
 def paginate(start, end, items):
     if start is not None:

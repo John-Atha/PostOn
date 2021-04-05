@@ -2,7 +2,7 @@
 
 * If an endpoint gets a request with an unsupported request method, a corresponding error message with status code 400 is returned. 
 * Base url: Jwitter/api
-* All query parameters are optional, but use is recommended for higher performance
+* All query parameters are optional, but use is recommended for higher performance (pagination)
 
 #### Users
 * GET   /users?start=index1&end=index2              :       returns all users with index1<user_index<index2 (or 400, 402)

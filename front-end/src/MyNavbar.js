@@ -265,7 +265,7 @@ class MyNavbar extends React.Component {
                     {this.state.logged &&
                         <NavDropdown title="Posts" id="basic-nav-dropdown">
                             <NavDropdown.Item href="/">All Posts</NavDropdown.Item>
-                            <NavDropdown.Item href="/following">Following Posts</NavDropdown.Item>
+                            <NavDropdown.Item href="/following">Following's Posts</NavDropdown.Item>
                         </NavDropdown>        
                     }   
                     {this.state.logged && 
