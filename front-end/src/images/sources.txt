@@ -1,0 +1,11 @@
+Images which were not png initially, were conerted to png with: https://www.remove.bg/
+
+add.png: https://www.pngwing.com/en/free-png-iushd
+comment.png: https://www.vecteezy.com/vector-art/638738-comments-icon-sign-illustration
+delete-icon.png: https://icon-library.com/icon/delete-icon-0.html
+edit.png: https://www.pngkey.com/detail/u2w7w7y3u2t4w7i1_edit-comments-edit-icon-png/
+like.png: https://www.stickpng.com/img/download/585e4e6ccb11b227491c339e
+liked.png: same as like.png but color editted with https://www9.lunapic.com/editor/
+notif.png: https://www.pngitem.com/download/mmJiwT_blueberry-tab-bar-notification-notification-icon-png-transparent/
+stats.png: https://www.pinterest.ch/pin/680606562431382965/
+user-icon.png: https://www.iconfinder.com/icons/1608727/user_icon
