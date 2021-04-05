@@ -9,3 +9,5 @@ liked.png: same as like.png but color editted with https://www9.lunapic.com/edit
 notif.png: https://www.pngitem.com/download/mmJiwT_blueberry-tab-bar-notification-notification-icon-png-transparent/
 stats.png: https://www.pinterest.ch/pin/680606562431382965/
 user-icon.png: https://www.iconfinder.com/icons/1608727/user_icon
+
+favicon produced by: https://favicon.io/favicon-generator/

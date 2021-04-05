@@ -61,7 +61,7 @@ class Login extends React.Component {
                 localStorage.setItem('refresh', refresh)
                 setTimeout(() => {
                     window.location.href="/"
-                }, 1000)
+                }, 500)
             })
             .catch(err => {
                 console.log(err);
