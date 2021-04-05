@@ -1,9 +1,24 @@
 ## Jwitter
 
-* Project no4 for the CS50 Web Programming Course with Python and Javascript 2020
-* A twitter clone website
+* Project no4 for the CS50 Web Programming Course with Python and Javascript 2020.
+* Technologies used:
+    * Backend: Python (Django framework)
+    * Front-end: HTML, CSS, JS (React framework) with create-react-app
+* A social media website (Twitter-like), where users can:
+    * create an account (or login)
+    * create their profile (with image and bio)
+    * upload/edit/delete posts (with image and/or text)
+    * like/unlike posts
+    * upload/delete comments on posts
+    * like/unlike comments on posts
+    * follow/unfollow other users
+    * be followed by other users
+    * see their notifications
+    * see their activity
+    * have access to a statitics page (personal and/or general)
 
 - - -
+
 * Developer: Giannis Athanasiou
 * Github Username: John-Atha
 * Email: giannisj3@gmail.com

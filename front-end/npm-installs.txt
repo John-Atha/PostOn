@@ -1,11 +1,7 @@
 npm i react-bootstrap bootstrap
 npm i react-router-dom
 npm i axios
-npm i js-cookie
 npm i jwt-decode
 npm i react-outside-click-handler
-npm i react-chartist
-npm i chartist
 npm i canvasjs-react-charts
-npm i react-notifications -> uninstalled
 npm i react-notifications-component
