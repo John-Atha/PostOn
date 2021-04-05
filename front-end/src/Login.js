@@ -87,7 +87,7 @@ class Login extends React.Component {
                     <MyNavbar />
                     <div className="login-main-page flex-layout center-content">
                         <div className="logo-container flex-item">
-                            <img src={logo} alt="Jwitter logo"/>
+                            <img src={logo} className="logo" alt="Jwitter logo"/>
                         </div>
                         <div className="login-box-container flex-item blur center-content margin-top-small">
                             <h3>Welcome</h3>
