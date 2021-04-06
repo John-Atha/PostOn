@@ -11,6 +11,7 @@ import Comments from './Comments';
 import ProfileCard from './ProfileCard';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
+import OutsideClickHandler from 'react-outside-click-handler';
 
 class OnePost extends React.Component {
     constructor(props) {
@@ -39,7 +40,7 @@ class OnePost extends React.Component {
             likes_error: null,
             comments_error: null,
             likesShow: false,
-            commentsShow: this.props.commentsShow ? this.props.commentsShow : false,
+            commentsShow: true,
             edit: false,
             showCard: false,
             showCard2: false,
@@ -461,15 +462,17 @@ class OnePost extends React.Component {
                     />
                 }
                 {this.state.showModal && 
-                    <div className="posts-pop-up box-colors center-content">
-                        <div className="message center-content">
-                            Are you sure you want delete this post?<br></br>
+                    <OutsideClickHandler onOutsideClick={this.hideModal}>
+                        <div className="posts-pop-up box-colors center-content">
+                            <div className="message center-content">
+                                Are you sure you want delete this post?<br></br>
+                            </div>
+                            <div className="modal-buttons-container center-content flex-layout margin-top-small">
+                                <button className="my-button flex-item-small margin-top-small margin" onClick={this.hideModal}>No, I changed my mind</button>
+                                <button className="my-button flex-item-small margin-top-small margin" onClick={this.postDelete}>Yes, delete anyway</button>                                        
+                            </div>
                         </div>
-                        <div className="modal-buttons-container center-content flex-layout margin-top-small">
-                            <button className="my-button flex-item-small margin-top-small margin" onClick={this.hideModal}>No, I changed my mind</button>
-                            <button className="my-button flex-item-small margin-top-small margin" onClick={this.postDelete}>Yes, delete anyway</button>                                        
-                        </div>
-                    </div>
+                    </OutsideClickHandler>
                 }                
                 
             </div>

@@ -30,9 +30,6 @@
 .comments-pop-up {
     z-index: 1;
     top: -100%;
-    width: 70%;
-    min-width: 150px;
-    margin-left: 15%;
     position: absolute;
     background-color: var(--color2);
     min-height: min-content;
@@ -49,4 +46,8 @@
     width: 80%;
     height: 40px;
     padding: 1%;
+}
+.delete-icon {
+    width: 21px;
+    height: 90%;
 }

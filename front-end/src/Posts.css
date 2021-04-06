@@ -6,24 +6,69 @@
         height: auto;
         width: 80%;
     }
+    .posts-pop-up {
+        width: 90vw;
+        min-width: 150px;
+        margin-left: 0vw;    
+    }
+    .comments-pop-up {
+        width: 90vw;
+        min-width: 150px;
+        margin-left: -5vw;    
+    }
+    .likes-pop-up {
+        width: 90vw;
+        left: 5w;
+    }
+    .follows-pop-up {
+        width: 95%;
+        margin-left: 2.5%;
+    }
+    .delete-pop-up {
+        width: 90vw;
+        min-width: 150px;
+        margin-left: 5vw;    
+    }
 }
 @media only screen and (min-width:450px) {
     .post-media {
         height: auto;
         width: 400px;
-        margin: 2% auto;
+    }
+    .posts-pop-up {
+        width: 50%;
+        min-width: 150px;
+        margin-left: 25%;    
+    }
+    .comments-pop-up {
+        width: 70%;
+        min-width: 150px;
+        margin-left: 15%;    
+    }
+    .likes-pop-up {
+        width: 80%;
+        left: 10%;
+    }
+    .follows-pop-up {
+        width: 50%;
+        margin-left: 25%;
+    }
+    .delete-pop-up {
+        width: 50%;
+        min-width: 150px;
+        margin-left: 25%;    
     }
 }
+
+
+
+
 @media only screen and (max-width: 920px) {
     .explore-container {
         display: none;
     }
     .profile-box {
         display: none;
-    }
-    .likes-pop-up {
-        width: 80%;
-        left: 10%;
     }
     .all-comments-container {
         max-width: 80vw;
@@ -35,10 +80,6 @@
     }
     .profile-box {
         display: block;
-    }
-    .likes-pop-up {
-        width: 80%;
-        left: 10%;
     }
     .all-comments-container {
         max-width: 50vw;
@@ -88,7 +129,7 @@
 .post-body {
     min-height: 100px;
     height: min-content;
-    padding: 2% 0%;
+    padding: 5px 0px;
 }
 .post-media {
     border-radius: 5px;
@@ -147,12 +188,9 @@
 .post-text {
     margin-left: 2%;
 }
-.posts-pop-up {
+.posts-pop-up, .delete-pop-up {
     z-index: 1;
     top: 05%;
-    width: 50%;
-    min-width: 150px;
-    margin-left: 25%;
     position: absolute;
     background-color: var(--color2);
     min-height: min-content;

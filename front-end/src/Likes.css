@@ -28,6 +28,7 @@
 .un-follow-button {
     padding: 1%;
     width: 100%;
+    max-width: 175px;
     background-color: rgb(250, 249, 249);
     animation:
         pop-up-appearing-slow 1s;

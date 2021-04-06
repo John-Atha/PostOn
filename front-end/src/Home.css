@@ -10,6 +10,10 @@ html, body {
 body {
     background-color: var(--colorback);
 }
+input {
+    overflow-wrap: break-word;
+    width: 100%;
+}
 .center-content {
     justify-items: center;
     justify-content: center;

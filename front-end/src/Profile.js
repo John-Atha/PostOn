@@ -708,7 +708,7 @@ class Profile extends React.Component {
                 }
                 {this.state.deleteAcc && !this.state.error &&
                     <OutsideClickHandler onOutsideClick={this.hideModal}>
-                        <div className="posts-pop-up box-colors center-content" style={{'backgroundColor': 'red', 'top': '130px'}}>
+                        <div className="delete-pop-up box-colors center-content" style={{'backgroundColor': 'red', 'top': '130px'}}>
                             <div className="message center-content" style={{'color': 'white', 'fontWeight': 'bolder'}}>
                                 Are you sure you want delete your account?<br></br>
                                 There is no way back!
