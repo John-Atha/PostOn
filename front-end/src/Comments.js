@@ -382,7 +382,7 @@ class OneComment extends React.Component {
                         }
                         {this.state.mine &&
                             <button className="likes-action flex-layout button-as-link margin-left" onClick={this.preDelete}>
-                                <img className="like-icon" src={delete_icon} alt="like-icon"/>
+                                <img className="delete-icon" src={delete_icon} alt="like-icon"/>
                                 <div>Delete</div>
                             </button>
                         }
@@ -433,6 +433,9 @@ class Comments extends React.Component {
             })
             this.askComments();
             this.props.reTakeSample();
+            if(this.state.how==="sample") {
+                this.seeMore();
+            }
         }, 1000);
     }
     seeMore = () => {
@@ -461,7 +464,6 @@ class Comments extends React.Component {
                 console.log(err);
                 this.setState({
                     comments_err: "No more comments found",
-                    commentsList: [],
                 })
             })
         }
