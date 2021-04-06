@@ -234,28 +234,22 @@ def OnePostMod(request, id):
         except Post.DoesNotExist:
             return JsonResponse({"error": f"Invalid post id ({id})."}, status=400)
         if request.method=="PUT":
-            if request.user.is_authenticated:
-                if request.user==post.owner:
-                    data = json.loads(request.body)
-                    if data.get("text") is not None:
-                        if post.text!=data["text"]:
-                            post.text = data["text"]
-                            post.date = str(datetime.now())
-                            post.save()
-                            return JsonResponse(post.serialize(request.build_absolute_uri('/')[:-1]), status=200)
-                else:
-                    return JsonResponse({"error": "Only the post's owner can modify it"}, status=400)
+            if request.user==post.owner:
+                data = json.loads(request.body)
+                if data.get("text") is not None:
+                    if post.text!=data["text"]:
+                        post.text = data["text"]
+                        post.date = str(datetime.now())
+                        post.save()
+                        return JsonResponse(post.serialize(request.build_absolute_uri('/')[:-1]), status=200)
             else:
-                return JsonResponse({"error": "Authentication required"}, status=401) 
+                return JsonResponse({"error": "Only the post's owner can modify it"}, status=400)
         elif request.method=="DELETE":
-            if request.user.is_authenticated:
-                if request.user==post.owner:
-                    post.delete()
-                    return JsonResponse({"message": "Post deleted successfully"}, status=200)
-                else:
-                    return JsonResponse({"error": "Only the post's owner can delete it"}, status=400)
+            if request.user==post.owner:
+                post.delete()
+                return JsonResponse({"message": "Post deleted successfully"}, status=200)
             else:
-                return JsonResponse({"error": "Authentication required"}, status=401) 
+                return JsonResponse({"error": "Only the post's owner can delete it"}, status=400)
 
 def UserPosts(request, id):
     if request.method!="GET":
@@ -305,33 +299,33 @@ def AllPosts(request):
 @api_view(['Post'])
 def AllPostsMod(request):
     if request.method=="POST":
-        if request.user.is_authenticated:
-            data = json.loads(request.body)
-            if data.get("owner") is not None:
-                if data.get("owner").get("id") is not None:
-                    ownId = data["owner"]["id"]
-                    try:
-                        owner = User.objects.get(id=ownId)
-                        if request.user==owner:
-                            if data.get("text") is not None:
-                                #if len(str(data["text"])):
-                                post = Post(owner=owner, text=str(data["text"]))
-                                post.save()
-                                return JsonResponse(post.serialize(request.build_absolute_uri('/')[:-1]), status=200)
-                                #else:
-                                #    return JsonResponse({"error": "No text given."}, status=400)   
-                            else:
-                                return JsonResponse({"error": "No text given."}, status=400)  
+        #if request.user.is_authenticated:
+        data = json.loads(request.body)
+        if data.get("owner") is not None:
+            if data.get("owner").get("id") is not None:
+                ownId = data["owner"]["id"]
+                try:
+                    owner = User.objects.get(id=ownId)
+                    if request.user==owner:
+                        if data.get("text") is not None:
+                            #if len(str(data["text"])):
+                            post = Post(owner=owner, text=str(data["text"]))
+                            post.save()
+                            return JsonResponse(post.serialize(request.build_absolute_uri('/')[:-1]), status=200)
+                            #else:
+                            #    return JsonResponse({"error": "No text given."}, status=400)   
                         else:
-                            return JsonResponse({"error": "You cannot post on behalf of another user"}, status=400)      
-                    except User.DoesNotExist:
-                        return JsonResponse({"error": "Bad owner given."}, status=400)        
-                else:
-                    return JsonResponse({"error": "Bad owner given."}, status=400)
+                            return JsonResponse({"error": "No text given."}, status=400)  
+                    else:
+                        return JsonResponse({"error": "You cannot post on behalf of another user"}, status=400)      
+                except User.DoesNotExist:
+                    return JsonResponse({"error": "Bad owner given."}, status=400)        
             else:
-                return JsonResponse({"error": "No owner given."}, status=400)       
+                return JsonResponse({"error": "Bad owner given."}, status=400)
         else:
-            return JsonResponse({"error": "Authentication required"}, status=401) 
+            return JsonResponse({"error": "No owner given."}, status=400)       
+        #else:
+        #    return JsonResponse({"error": "Authentication required"}, status=401) 
     else:
         return JsonResponse({"error": "Only POST method is allowed."}, status=400)
 
@@ -857,31 +851,31 @@ def OneLikeCommentMod(request, id):
             likeComment= LikeComment.objects.get(id=id)
         except LikeComment.DoesNotExist:
             return JsonResponse({"error": "Invalid like on comment id"}, status=400)
-        if request.user.is_authenticated:
-            if request.method=="DELETE":
-                if request.user==likeComment.owner:
-                    likeComment.delete()
-                    return JsonResponse({"message": "Like on comment deleted succesfully"}, status=200)
-                else:
-                    return JsonResponse({"error": "You cannot un-like a comment on behalf of another user"}, status=400)
-            elif request.method=="PUT":
-                if request.user==likeComment.comment.owner:
+        #if request.user.is_authenticated:
+        if request.method=="DELETE":
+            if request.user==likeComment.owner:
+                likeComment.delete()
+                return JsonResponse({"message": "Like on comment deleted succesfully"}, status=200)
+            else:
+                return JsonResponse({"error": "You cannot un-like a comment on behalf of another user"}, status=400)
+        elif request.method=="PUT":
+            if request.user==likeComment.comment.owner:
 
-                    data = json.loads(request.body)
-                    if data.get("seen") is not None:
-                        if data["seen"]==True or data["seen"]==False:
-                            likeComment.seen=data["seen"]
-                            likeComment.save()
-                            return JsonResponse(likeComment.serialize(request.build_absolute_uri('/')[:-1]), status=200)
-                        else:
-                            return JsonResponse({"error": "'seen' field can have only True/False value"}, status=400)
+                data = json.loads(request.body)
+                if data.get("seen") is not None:
+                    if data["seen"]==True or data["seen"]==False:
+                        likeComment.seen=data["seen"]
+                        likeComment.save()
+                        return JsonResponse(likeComment.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                     else:
-                        print(data.get("seen"))
-                        return JsonResponse({"error": "Only updatable field is the 'seen' field"}, status=400)
+                        return JsonResponse({"error": "'seen' field can have only True/False value"}, status=400)
                 else:
-                    return JsonResponse({"error": "You cannot mark a comment as seen / not seen on behalf of its writer"}, status=400)
-        else:
-            return JsonResponse({"error": "Authentication required"}, status=401)
+                    print(data.get("seen"))
+                    return JsonResponse({"error": "Only updatable field is the 'seen' field"}, status=400)
+            else:
+                return JsonResponse({"error": "You cannot mark a comment as seen / not seen on behalf of its writer"}, status=400)
+        #else:
+        #    return JsonResponse({"error": "Authentication required"}, status=401)
 
 def UserLikesComments(request, id):
     if request.method=="GET":
@@ -994,31 +988,31 @@ def UserAllAsRead(request, id):
             user = User.objects.get(id=id)
         except User.DoesNotExist:
             return JsonResponse({"error": "Invalid user id"}, status=400)
-        if request.user.is_authenticated:
-            if request.user==user:
-                follows = Follow.objects.filter(followed=user).filter(seen=False)
-                myComments = Comment.objects.filter(owner=user)
-                myPosts = Post.objects.filter(owner=user)
-                LikesComments = LikeComment.objects.filter(comment__in=myComments).filter(seen=False)
-                LikesPosts = Like.objects.filter(post__in=myPosts).filter(seen=False)
-                CommentsPosts = Comment.objects.filter(post__in=myPosts).filter(seen=False)
-                for foll in follows:
-                    foll.seen=True
-                    foll.save()
-                for like in LikesComments:
-                    like.seen=True
-                    like.save()
-                for like in LikesPosts:
-                    like.seen=True
-                    like.save()
-                for comm in CommentsPosts:
-                    comm.seen=True
-                    comm.save()
-                return JsonResponse({"message": "Everything marked as read successfully"}, status=200)
-            else:
-                return JsonResponse({"error": "You cannot mark as a read another user's notifications"}, status=400)
+        #if request.user.is_authenticated:
+        if request.user==user:
+            follows = Follow.objects.filter(followed=user).filter(seen=False)
+            myComments = Comment.objects.filter(owner=user)
+            myPosts = Post.objects.filter(owner=user)
+            LikesComments = LikeComment.objects.filter(comment__in=myComments).filter(seen=False)
+            LikesPosts = Like.objects.filter(post__in=myPosts).filter(seen=False)
+            CommentsPosts = Comment.objects.filter(post__in=myPosts).filter(seen=False)
+            for foll in follows:
+                foll.seen=True
+                foll.save()
+            for like in LikesComments:
+                like.seen=True
+                like.save()
+            for like in LikesPosts:
+                like.seen=True
+                like.save()
+            for comm in CommentsPosts:
+                comm.seen=True
+                comm.save()
+            return JsonResponse({"message": "Everything marked as read successfully"}, status=200)
         else:
-            return JsonResponse({"error": "Authentication required"}, status=401)
+            return JsonResponse({"error": "You cannot mark as a read another user's notifications"}, status=400)
+        #else:
+        #    return JsonResponse({"error": "Authentication required"}, status=401)
 
 def MonthlyLikesStats(request):
     if request.method!="GET":
