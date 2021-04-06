@@ -67,7 +67,7 @@
     z-index: 1;
     top: 05%;
     position: absolute;
-    background-color: rgb(230, 227, 227);
+    background-color: var(--color3);
     min-height: min-content;
     border-radius: 7px;
     padding: 2% 1%;

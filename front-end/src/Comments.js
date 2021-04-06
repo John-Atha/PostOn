@@ -8,6 +8,7 @@ import {getPostsComments, getLikesSample, getAllLikes, LikeComment, UnLikeCommen
 import ProfileCard from  './ProfileCard';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
+import OutsideClickHandler from 'react-outside-click-handler';
 
 class NewComment extends React.Component {
     constructor(props) {
@@ -388,8 +389,8 @@ class OneComment extends React.Component {
                         }
 
                     </div>
-                    {
-                            this.state.showModal && 
+                    {this.state.showModal && 
+                        <OutsideClickHandler onOutsideClick={this.hideModal}>
                                 <div className="comments-pop-up box-colors center-content">
                                     <div className="message center-content">
                                         Are you sure you want delete this comment?<br></br>
@@ -399,6 +400,7 @@ class OneComment extends React.Component {
                                         <button className="my-button flex-item-small margin-top-small margin" onClick={this.commentDelete}>Yes, delete anyway</button>                                        
                                     </div>
                                 </div>
+                        </OutsideClickHandler>
                     }
                 </div>
             )
