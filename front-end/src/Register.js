@@ -38,10 +38,18 @@ class Register extends React.Component {
     handleInput = (event) => {
         const name = event.target.name;
         const value = event.target.value;
-        this.setState({
-            [name]: value,
-            error: null,
-        })
+        if (name==="username" && this.state.username.length>13 && value.length>13) {
+            this.setState({
+                error: "Username should be less than 15 characters"
+            })
+        }
+        else {
+            this.setState({
+                [name]: value,
+                error: null,
+            })    
+        } 
+
         console.log(name+": "+value)
     }
     handleSubmit = (event) => {

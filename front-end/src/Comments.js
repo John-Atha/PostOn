@@ -165,42 +165,6 @@ class OneComment extends React.Component {
             }
           });
     };
-    format = (str) => {
-        str = str.replaceAll('\n', ' ')
-        let init = str.split(' ')
-        let counter = 0
-        let final = []
-        init.forEach(word => {
-            final.push(word)
-        })
-        let i =0;
-        let spaces=0;
-        init.forEach(word => {
-            counter+=word.length
-            if (word.length>25) {
-                let br=15
-                let news = []
-                let start=0
-                let end=Math.round(br)
-                for (let j=0; j<=counter/br+1; j++) {
-                    news.push(word.substring(start, end))
-                    start+=Math.round(br)
-                    end+=Math.round(br)
-                }
-                final[final.indexOf(word)]=news.join('\n');
-            }
-            else if (counter>20) {
-                final.splice(i+1+spaces, 0, '\n')
-                spaces++;
-                console.log(final)
-                counter=0;
-            }
-            i++;
-        })
-        let s = final.join(' ')
-        s=s.replace('\n ', '\n').replace(' ', '\n')
-        return (s);
-    }
     cardShow = () => {
             this.setState({
                 showCard: true,
@@ -368,7 +332,7 @@ class OneComment extends React.Component {
                         </div>
                         <div className="post-date comment-date">at {commentDatetime}</div>
                     </div>
-                    <div className="text-comment">{this.format(this.state.comment.text)}</div>
+                    <div className="text-comment">{this.state.comment.text}</div>
                     <div className="comment-like-container flex-layout">
                         <img className="like-icon" src={like_icon} alt="like-icon"/>
                         {this.state.likesNum>1 &&

@@ -1,5 +1,6 @@
 .text-comment {
     margin: 2% 0%;
+    overflow-wrap: break-word;
 }
 .comment-box {
     background-color: var(--colorback);
