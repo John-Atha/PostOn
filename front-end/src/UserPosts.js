@@ -194,7 +194,10 @@ class UserPosts extends React.Component {
         this.moveOn();
     }
     askPosts = () => {
-        setTimeout(()=> {}, 1000)
+        this.setState({
+            postsList: [],
+        })
+        setTimeout(()=> {}, 3000)
         console.log(`I am asking posts from ${this.state.start} to ${this.state.end}`)
         getUsersPosts(this.state.whose, this.state.start, this.state.end)
         .then(response => {

@@ -203,7 +203,10 @@ class Posts extends React.Component {
         setTimeout(()=>this.askLikes(), 750);
     }
     askPosts = () => {
-        setTimeout(()=> {}, 1000)
+        this.setState({
+            postsList: [],
+        })
+        setTimeout(()=> {}, 3000)
         console.log(`I am asking posts from ${this.state.start} to ${this.state.end}`)
         if (this.state.whose) {
             getUsersPosts(this.state.whose, this.state.start, this.state.end)
