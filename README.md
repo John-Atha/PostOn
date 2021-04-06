@@ -16,6 +16,7 @@
     * see their notifications
     * see their activity
     * have access to a statitics page (personal and/or general)
+* More implementation details in `backend/api_specs` and `front-end/README.md`
 
 - - -
 
