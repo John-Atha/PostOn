@@ -33,7 +33,7 @@
     animation:
         pop-up-appearing-slow 1s;
 }
-.likes-pop-up {
+.likes-pop-up, .likes-comments-pop-up {
     z-index: 1;
     top: 10%;
     position: absolute;

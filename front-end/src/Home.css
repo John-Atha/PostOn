@@ -133,6 +133,6 @@ textarea {
     border-radius: 6px;
 }
 .with-whitespace {
-    white-space: pre;
+    white-space: pre-wrap;
     position: relative; 
 }

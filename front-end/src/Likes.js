@@ -238,61 +238,66 @@ class Likes extends React.Component {
     }
     render() {
         if (this.state.showMe) {
+            console.log(`On: ${this.state.on}`);
+            let classN = "likes-pop-up center-content";
+            if (this.state.on==="comment") {
+                classN = "likes-comments-pop-up center-content";
+            }
             return (
                 <OutsideClickHandler onOutsideClick={this.hide}>
-                    <div className="likes-pop-up center-content" >
-                    <button className="close-button" onClick={this.disappear}>X</button>
-                    <h5>Likes</h5>
-                    {(this.state.error) && 
-                        <div className="error-message">
-                            No likes found...
-                        </div>
-                    }
-                    {this.state.likesList.length>0 &&
-                        this.state.likesList.map((value, index) => {
-                            if (this.state.followsList.includes(value.owner.id)) {
-                                return (
-                                    <OneLike key={index}
-                                            owner={value.owner} 
-                                            me={this.props.userId}
-                                            logged={this.props.logged}
-                                            followId={this.state.followsObjIdList[this.state.followsList.indexOf(value.owner.id)]}
-                                            followed={true}
-                                            updatePar={this.updateFollows} />
-                                )
-                            }
-                            else if (!this.state.followsList.includes(value.owner.id) && this.state.followersList.includes(value.owner.id)) {
-                                return (
-                                    <OneLike key={index}
-                                            owner={value.owner}
-                                            me={this.props.userId} 
-                                            logged={this.props.logged} 
-                                            followed={false} 
-                                            following={true}
-                                            updatePar={this.updateFollows} />
-                                )
-                            }
+                    <div className={classN} >
+                        <button className="close-button" onClick={this.disappear}>X</button>
+                        <h5>Likes</h5>
+                        {(this.state.error) && 
+                            <div className="error-message">
+                                No likes found...
+                            </div>
+                        }
+                        {this.state.likesList.length>0 &&
+                            this.state.likesList.map((value, index) => {
+                                if (this.state.followsList.includes(value.owner.id)) {
+                                    return (
+                                        <OneLike key={index}
+                                                owner={value.owner} 
+                                                me={this.props.userId}
+                                                logged={this.props.logged}
+                                                followId={this.state.followsObjIdList[this.state.followsList.indexOf(value.owner.id)]}
+                                                followed={true}
+                                                updatePar={this.updateFollows} />
+                                    )
+                                }
+                                else if (!this.state.followsList.includes(value.owner.id) && this.state.followersList.includes(value.owner.id)) {
+                                    return (
+                                        <OneLike key={index}
+                                                owner={value.owner}
+                                                me={this.props.userId} 
+                                                logged={this.props.logged} 
+                                                followed={false} 
+                                                following={true}
+                                                updatePar={this.updateFollows} />
+                                    )
+                                }
 
-                            else {
-                                return (
-                                    <OneLike key={index}
-                                            owner={value.owner}
-                                            me={this.props.userId} 
-                                            logged={this.props.logged} 
-                                            followed={false} 
-                                            following={false}
-                                            updatePar={this.updateFollows} />
-                                )
-                            }
-                        })
-                    }
-                    {this.state.likesList.length>0 &&
-                        <div className="pagi-buttons-container flex-layout center-content">
-                            <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
-                            <button disabled={this.state.likesList.length<5} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
-                        </div>
-                    }
-                </div>
+                                else {
+                                    return (
+                                        <OneLike key={index}
+                                                owner={value.owner}
+                                                me={this.props.userId} 
+                                                logged={this.props.logged} 
+                                                followed={false} 
+                                                following={false}
+                                                updatePar={this.updateFollows} />
+                                    )
+                                }
+                            })
+                        }
+                        {this.state.likesList.length>0 &&
+                            <div className="pagi-buttons-container flex-layout center-content">
+                                <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
+                                <button disabled={this.state.likesList.length<5} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
+                            </div>
+                        }
+                    </div>
                 </OutsideClickHandler>
             )
         }
