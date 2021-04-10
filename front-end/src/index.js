@@ -14,6 +14,9 @@ import OnePostPage from './OnePostPage';
 import ReactNotifications from "react-notifications-component";
 import Searchbar from './Searchbar';
 import NotFound from './NotFound';
+import $ from 'jquery';
+import Popper from 'popper.js';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 function FindProfile() {
   let {id} = useParams();

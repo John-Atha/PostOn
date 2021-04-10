@@ -5,3 +5,4 @@ npm i jwt-decode
 npm i react-outside-click-handler
 npm i canvasjs-react-charts
 npm i react-notifications-component
+npm i jquery popper.js
