@@ -20,6 +20,10 @@
         width: 90vw;
         left: 5w;
     }
+    .likes-comments-pop-up {
+        width: 90vw;
+        left: 0vw;
+    }
     .follows-pop-up {
         width: 95%;
         margin-left: 2.5%;
@@ -45,7 +49,7 @@
         min-width: 150px;
         margin-left: 15%;    
     }
-    .likes-pop-up {
+    .likes-pop-up, .likes-comments-pop-up {
         width: 80%;
         left: 10%;
     }
@@ -63,27 +67,25 @@
 
 
 
-@media only screen and (max-width: 920px) {
+@media only screen and (max-width: 950px) {
     .explore-container {
         display: none;
     }
     .profile-box {
         display: none;
-    }
-    .all-comments-container {
-        max-width: 80vw;
     }
 }
-@media only screen and (min-width: 920px) {
+@media only screen and (min-width: 950px) {
     .explore-container {
         display: block;
     }
     .profile-box {
         display: block;
     }
-    .all-comments-container {
-        max-width: 50vw;
-    }
+}
+
+.all-comments-container {
+    width: 100%;
 }
 .posts-container {
     width: auto !important;
@@ -187,6 +189,8 @@
 }
 .post-text {
     margin-left: 2%;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
 }
 .posts-pop-up, .delete-pop-up {
     z-index: 1;

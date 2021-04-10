@@ -200,7 +200,7 @@ class Posts extends React.Component {
             end: this.state.end+10,
         }), 0)
         this.moveOn();
-        setTimeout(()=>this.askLikes(), 750);
+        //setTimeout(()=>this.askLikes(), 750);
     }
     askPosts = () => {
         this.setState({
@@ -249,7 +249,7 @@ class Posts extends React.Component {
                 logged: response.data.authenticated,
                 userId: response.data.id,
             });
-            this.askLikes();
+            //this.askLikes();
         })
         .catch(err => {
             console.log(err);
@@ -294,7 +294,7 @@ class Posts extends React.Component {
                 {this.state.postsList.length!==0 &&
                     <div className="pagi-buttons-container flex-layout center-content">
                         <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
-                        <button disabled={!this.state.postsList.length} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
+                        <button disabled={this.state.postsList.length<10} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
                     </div>
                 }
                 {!this.state.postsList.length &&

@@ -89,7 +89,7 @@ class MyNavbar extends React.Component {
         readAllNotifications(this.state.userId)
         .then(response => {
             console.log(response);
-            this.getNotif();
+            this.getNotif("mark");
             this.createNotification('success', 'Hello,', 'Notifications marked succesffully');
         })
         .catch(err => {
@@ -176,13 +176,24 @@ class MyNavbar extends React.Component {
         }
         return text;
     }
-    getNotif = () => {
+    getNotif = (x="") => {
         getNotifications(this.state.userId, this.state.start, this.state.end)
         .then(response => {
             console.log(response);
             this.setState({
                 notifList: response.data,
             })
+            let unread = 0;
+            response.data.forEach(notif => {
+                if (!notif.seen) {
+                    unread++;
+                }
+            })
+            if ((window.location.href==="https://jwitter-front.herokuapp.com/" || 
+                window.location.href==="https://jwitter-front.herokuapp.com/following") &&
+                this.state.start===1 && x!=="mark" && unread>0) {
+                    this.createNotification('success', 'Hello,', `You have more than ${unread} new notifications`)
+                }
         })
         .catch(err => {
             console.log(err);

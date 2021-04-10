@@ -1,6 +1,6 @@
 import React from "react";
 import "./Posts.css";
-import {getPostsCommentsSample, getAllLikes, getLikesSample, LikePost, UnLikePost, editPost, deletePost, UserLikesPost} from './api';
+import {getPostsCommentsSample, getAllLikes, getLikesSample, LikePost, UnLikePost, editPost, deletePost, UserLikesPost, isLogged} from './api';
 import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
 import comment_icon from './images/comment.png';
@@ -17,8 +17,8 @@ class OnePost extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            userId: this.props.userId,
-            logged: this.props.logged,
+            userId: null,
+            logged: false,
             id: this.props.id,
             owner: this.props.owner,
             media: this.props.media,
@@ -66,21 +66,48 @@ class OnePost extends React.Component {
         this.preDelete = this.preDelete.bind(this);
         this.hideModal = this.hideModal.bind(this);
         this.checkLiked = this.checkLiked.bind(this);
+        this.checkLogged = this.checkLogged.bind(this);
     }
-    checkLiked = () => {
-        UserLikesPost(this.state.userId, this.state.id)
+
+    checkLogged = () => {
+        isLogged()
         .then(response => {
             console.log(response);
             this.setState({
-                liked: response.data.likes,
+                logged: response.data.authenticated,
+                userId: response.data.id,
             })
+            setTimeout(()=>{this.checkLiked();},500);
         })
         .catch(err => {
-            console.log(err);
+            console.log(err)
+            this.setState({
+                error: "Not logged in"
+            })
+        })
+    }
+
+    checkLiked = () => {
+        if (this.state.userId) {
+            UserLikesPost(this.state.userId, this.state.id)
+            .then(response => {
+                console.log(response);
+                this.setState({
+                    liked: response.data.likes,
+                })
+            })
+            .catch(err => {
+                console.log(err);
+                this.setState({
+                    liked: false,
+                })
+            })
+        }
+        else {
             this.setState({
                 liked: false,
             })
-        })
+        }
     }
     createNotification = (type, title="aaa", message="aaa") => {
         console.log("creating notification");
@@ -223,17 +250,22 @@ class OnePost extends React.Component {
             this.createNotification('danger', 'Sorry', 'You have to create an account to like a post')
         }
         else {
-            LikePost(this.state.userId, this.state.id)
-            .then(response => {
-                console.log(response);
-                this.setState({
-                    liked: true,
-                })
-                this.likesSample();
-            })
-            .catch(err => {
-                console.log(err);
-            })    
+            this.checkLiked();
+            setTimeout(()=> {
+                if (!this.state.liked) {
+                    LikePost(this.state.userId, this.state.id)
+                    .then(response => {
+                        console.log(response);
+                        this.setState({
+                            liked: true,
+                        })
+                        this.likesSample();
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })  
+                }
+            },500)    
         }
     }
     showLikes = (event) => {
@@ -291,20 +323,23 @@ class OnePost extends React.Component {
         this.commentsSample();
     }
     componentDidMount() {
+        this.checkLogged();
         this.statsSample();
-        this.checkLiked();
     }
     componentDidUpdate(prevProps) {
         if (prevProps.id!==this.props.id || 
+            prevProps.logged!==this.props.logged || 
             prevProps.userId!==this.props.userId || 
             prevProps.owner!==this.props.owner||
             prevProps.media!==this.props.media ||
             prevProps.text!==this.props.text ||
             prevProps.date!==this.props.date) {
             console.log("NEW POST!!")
+            this.checkLogged();
             this.setState({
                 id: this.props.id,
-                userId: this.props.userId,
+                //logged: this.props.logged,
+                //userId: this.props.userId,
                 owner: this.props.owner,
                 media: this.props.media,
                 text: this.props.text,
