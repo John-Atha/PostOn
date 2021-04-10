@@ -45,35 +45,50 @@ class CommentAction extends React.Component {
             showCard: false,
         })
     }
+    componentDidUpdate(prevProps) {
+        if (prevProps.action!==this.props.action) {
+                this.setState({
+                    owner: this.props.action.owner,
+                    post: this.props.action.post,
+                    date: this.props.action.date,
+                    text: this.props.action.test,
+                })
+            }
+    }
+
     render() {
         return(
             <div className="one-activity-container">
-                <div className="description flex-layout">
-                    <div className="with-whitespace">
-                        On {dateShow(this.state.date)}, you commented on a
+                {this.state.post && this.state.text && this.state.date && this.state.owner &&
+                    <div className="description flex-layout">
+                        <div className="with-whitespace">
+                            On {dateShow(this.state.date)}, you commented on a
+                        </div>
+                        <a href={`/posts/${this.state.post.id}`} className="with-whitespace">
+                            {" post "}
+                        </a>
+                        <div>
+                            of user 
+                        </div>
+                        <div className="as-link with-whitespace"
+                            onMouseEnter={this.cardShow}
+                            onMouseLeave={this.cardHide}>
+                            {" "+this.state.post.owner.username}
+                            {this.state.showCard &&
+                                    <ProfileCard id={this.state.post.owner.id}
+                                        username={this.state.post.owner.username}
+                                        moto={this.state.post.owner.moto}
+                                        photo={this.state.post.owner.photo}
+                                        position={"right"} />
+                            }
+                        </div>.
                     </div>
-                    <a href={`/posts/${this.state.post.id}`} className="with-whitespace">
-                        {" post "}
-                    </a>
-                    <div>
-                        of user 
+                }
+                {this.state.post && this.state.text && this.state.date && this.state.owner &&
+                    <div className="margin-top-smaller">
+                        {format(this.state.text)}
                     </div>
-                    <div className="as-link with-whitespace"
-                        onMouseEnter={this.cardShow}
-                        onMouseLeave={this.cardHide}>
-                        {" "+this.state.post.owner.username}
-                        {this.state.showCard &&
-                                <ProfileCard id={this.state.post.owner.id}
-                                     username={this.state.post.owner.username}
-                                     moto={this.state.post.owner.moto}
-                                     photo={this.state.post.owner.photo}
-                                     position={"right"} />
-                        }
-                    </div>.
-                </div>
-                <div className="margin-top-smaller">
-                    {format(this.state.text)}
-                </div>
+                }
             </div>
         )
     }
@@ -101,32 +116,43 @@ class PostLikeAction extends React.Component {
             showCard: false,
         })
     }
+    componentDidUpdate(prevProps) {
+        if (prevProps.action!==this.props.action) {
+                this.setState({
+                    owner: this.props.action.owner,
+                    post: this.props.action.post,
+                    date: this.props.action.date,
+                })
+            }
+    }
     render() {
         return(
             <div className="one-activity-container">
-                <div className="description flex-layout">
-                    <div className="with-whitespace">
-                        On {dateShow(this.state.date)}, you liked a
+                {this.state.post && this.state.owner && this.state.date &&
+                    <div className="description flex-layout">
+                        <div className="with-whitespace">
+                            On {dateShow(this.state.date)}, you liked a
+                        </div>
+                        <a href={`/posts/${this.state.post.id}`} className="with-whitespace">
+                            {" post "}
+                        </a>
+                        <div>
+                            of user 
+                        </div>
+                        <div className="as-link with-whitespace"
+                            onMouseEnter={this.cardShow}
+                            onMouseLeave={this.cardHide}>
+                            {" "+this.state.post.owner.username}
+                            {this.state.showCard &&
+                                    <ProfileCard id={this.state.post.owner.id}
+                                        username={this.state.post.owner.username}
+                                        moto={this.state.post.owner.moto}
+                                        photo={this.state.post.owner.photo}
+                                        position={"right"} />
+                            }
+                        </div>
                     </div>
-                    <a href={`/posts/${this.state.post.id}`} className="with-whitespace">
-                        {" post "}
-                    </a>
-                    <div>
-                        of user 
-                    </div>
-                    <div className="as-link with-whitespace"
-                        onMouseEnter={this.cardShow}
-                        onMouseLeave={this.cardHide}>
-                        {" "+this.state.post.owner.username}
-                        {this.state.showCard &&
-                                <ProfileCard id={this.state.post.owner.id}
-                                     username={this.state.post.owner.username}
-                                     moto={this.state.post.owner.moto}
-                                     photo={this.state.post.owner.photo}
-                                     position={"right"} />
-                        }
-                    </div>
-                </div>
+                }
             </div>
         )
     }
@@ -155,36 +181,49 @@ class CommentLikeAction extends React.Component {
             showCard: false,
         })
     }
+    componentDidUpdate(prevProps) {
+        if (prevProps.action!==this.props.action) {
+                this.setState({
+                    owner: this.props.action.owner,
+                    comment: this.props.action.comment,
+                    date: this.props.action.date,
+                })
+            }
+    }
+
     render() {
         return(
             <div className="one-activity-container">
-                <div className="description flex-layout">
-                    <div className="with-whitespace">
-                        On {dateShow(this.state.date)}, you liked a
+                {this.state.owner && this.state.comment && this.state.date &&
+                    <div className="description flex-layout">
+                        <div className="with-whitespace">
+                            On {dateShow(this.state.date)}, you liked a
+                        </div>
+                        <a href={`/posts/${this.state.comment.post.id}`} className="with-whitespace">
+                            {" comment "}
+                        </a>
+                        <div>
+                            of user 
+                        </div>
+                        <div className="as-link with-whitespace"
+                            onMouseEnter={this.cardShow}
+                            onMouseLeave={this.cardHide}>
+                            {" "+this.state.comment.owner.username}
+                            {this.state.showCard &&
+                                    <ProfileCard id={this.state.comment.owner.id}
+                                            username={this.state.comment.owner.username}
+                                            moto={this.state.comment.owner.moto}
+                                            photo={this.state.comment.owner.photo}
+                                            position={"right"} />
+                            }
+                        </div>.
                     </div>
-                    <a href={`/posts/${this.state.comment.post.id}`} className="with-whitespace">
-                        {" comment "}
-                    </a>
-                    <div>
-                        of user 
+                }
+                {this.state.owner && this.state.comment && this.state.date &&
+                    <div className="margin-top-smaller">
+                        {format(this.state.comment.text)}
                     </div>
-                    <div className="as-link with-whitespace"
-                        onMouseEnter={this.cardShow}
-                        onMouseLeave={this.cardHide}>
-                        {" "+this.state.comment.owner.username}
-                        {this.state.showCard &&
-                                <ProfileCard id={this.state.comment.owner.id}
-                                     username={this.state.comment.owner.username}
-                                     moto={this.state.comment.owner.moto}
-                                     photo={this.state.comment.owner.photo}
-                                     position={"right"} />
-                        }
-                    </div>.
-                </div>
-                <div className="margin-top-smaller">
-                    {format(this.state.comment.text)}
-                </div>
-
+                }
             </div>
         )
     }
@@ -198,19 +237,32 @@ class PostAction extends React.Component {
             date: this.props.action.date,
         }
     }
+    componentDidUpdate(prevProps) {
+        if (prevProps.action!==this.props.action) {
+                console.log("post updated")
+                this.setState({
+                    owner: this.props.action.owner,
+                    post: this.props.action.post,
+                    date: this.props.action.date,
+                })
+            }
+    }
+
     render() {
         return(
             <div className="one-activity-container">
-                <div className="description flex-layout">
-                    <div className="with-whitespace">
-                        On {dateShow(this.state.date)}, you uploaded a
+                {this.state.owner && this.state.post && this.state.date &&
+                    <div className="description flex-layout">
+                        <div className="with-whitespace">
+                            On {dateShow(this.state.date)}, you uploaded a
+                        </div>
+                        {this.state.post!==null &&
+                            <a href={`/posts/${this.state.post.id}`} className="with-whitespace">
+                                {" post "}.
+                            </a>
+                        }
                     </div>
-                    {this.state.post!==null &&
-                        <a href={`/posts/${this.state.post.id}`} className="with-whitespace">
-                            {" post "}.
-                        </a>
-                    }
-                </div>
+                }
             </div>
         )
     }
@@ -219,7 +271,7 @@ class FollowAction extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            owner: this.props.action.owner,
+            owner: this.props.action.following,
             followed: this.props.action.followed,
             date: this.props.action.date,
             showCard: false,
@@ -239,26 +291,40 @@ class FollowAction extends React.Component {
             showCard: false,
         })
     }
+    componentDidUpdate(prevProps) {
+        if (prevProps.action.followed!==this.props.action.followed ||
+            prevProps.action.following!==this.props.action.following ||
+            prevProps.action.date!==this.props.action.date) {
+                this.setState({
+                    owner: this.props.action.following,
+                    followed: this.props.action.followed,
+                    date: this.props.action.date,
+                })
+            }
+    }
+
     render() {
         return(
             <div className="one-activity-container">
-                <div className="description flex-layout">
-                    <div className="with-whitespace">
-                        On {dateShow(this.state.date)}, you followed the user
+                {this.state.owner && this.state.followed && this.state.date && 
+                    <div className="description flex-layout">
+                        <div className="with-whitespace">
+                            On {dateShow(this.state.date)}, you followed the user
+                        </div>
+                        <div className="as-link with-whitespace"
+                                    onMouseEnter={this.cardShow}
+                                    onMouseLeave={this.cardHide}>
+                            {" "+this.state.followed.username}
+                            {this.state.showCard &&
+                                    <ProfileCard id={this.state.followed.id}
+                                            username={this.state.followed.username}
+                                            moto={this.state.followed.moto}
+                                            photo={this.state.followed.photo}
+                                            position={"right"} />
+                            }
+                        </div>.
                     </div>
-                    <div className="as-link with-whitespace"
-                                onMouseEnter={this.cardShow}
-                                onMouseLeave={this.cardHide}>
-                        {" "+this.state.followed.username}
-                        {this.state.showCard &&
-                                <ProfileCard id={this.state.followed.id}
-                                     username={this.state.followed.username}
-                                     moto={this.state.followed.moto}
-                                     photo={this.state.followed.photo}
-                                     position={"right"} />
-                        }
-                    </div>.
-                </div>
+                }
             </div>
         )
     }
@@ -325,7 +391,7 @@ class Activity extends React.Component {
                 logged: response.data.authenticated,
                 userId: response.data.id,
             })
-            setTimeout(()=>{this.askActivity();}, 2000);
+            setTimeout(()=>{this.askActivity();}, 0);
         })
         .catch(err => {
             console.log(err)
@@ -342,26 +408,31 @@ class Activity extends React.Component {
             <div className="main-activity-container flex-layout">
                 {this.state.actList.map((value, index) => {
                     if (value.post && value.text) {
+                        console.log("comment-action")
                         return(
                             <CommentAction key={index} action={value} />
                         )
                     }
                     else if (value.comment) {
+                        console.log("comment-like-action")
                         return(
                             <CommentLikeAction key={index} action={value} />
                         )
                     }
-                    else if (value.text) {
+                    else if (value.text || value.media) {
+                        console.log("post-action")
                         return(
                             <PostAction key={index} action={value} />
                         ) 
                     }
                     else if (value.following) {
+                        console.log("follow-action")
                         return(
                             <FollowAction key={index} action={value} />
                         ) 
                     }
                     else {
+                        console.log("post-like-action")
                         return(
                             <PostLikeAction key={index} action={value} />
                         )
