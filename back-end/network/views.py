@@ -960,9 +960,9 @@ def UserNotifications(request, id):
             follows = Follow.objects.filter(followed=user)#.filter(seen=False)
             myComments = Comment.objects.filter(owner=user)
             myPosts = Post.objects.filter(owner=user)
-            LikesComments = LikeComment.objects.filter(comment__in=myComments)#.filter(seen=False)
-            LikesPosts = Like.objects.filter(post__in=myPosts)#.filter(seen=False)
-            CommentsPosts = Comment.objects.filter(post__in=myPosts)#.filter(seen=False)
+            LikesComments = LikeComment.objects.filter(comment__in=myComments).exclude(owner=user)#.filter(seen=False)
+            LikesPosts = Like.objects.filter(post__in=myPosts).exclude(owner=user)#.filter(seen=False)
+            CommentsPosts = Comment.objects.filter(post__in=myPosts).exclude(owner=user)#.filter(seen=False)
             notifications = sorted(
                 chain(follows, LikesComments, LikesPosts, CommentsPosts),
                 key = attrgetter('date'),
@@ -1152,7 +1152,7 @@ def OnePostComments(request, id):
             post = Post.objects.get(id=id)
         except Post.DoesNotExist:
             return JsonResponse({"error": "Invalid post id."}, status=400)
-        comments = Comment.objects.filter(post=post).order_by('-date')
+        comments = Comment.objects.filter(post=post).order_by('date')
         result = paginate(request.GET.get("start"), request.GET.get("end"), comments)
         try:
             comments = result
