@@ -734,19 +734,19 @@ class Profile extends React.Component {
                             </button>
                             <div>
                             {this.state.logged && !this.state.isFollowed && !this.state.isFollowing && this.state.me!==this.state.userId &&
-                                <button className="foll-button margin-top-small" style={{width: '90%', backgroundColor: 'white'}} onClick={this.follow}>Follow</button>
+                                <button className="foll-button margin-top-small" style={{width: '90%', backgroundColor: 'white', color: 'black'}} onClick={this.follow}>Follow</button>
                             }
                             {this.state.logged && !this.state.isFollowed && this.state.isFollowing && this.state.me!==this.state.userId &&
-                                <button className="foll-button margin-top" style={{width: '90%', backgroundColor: 'white'}} onClick={this.follow}>Follow Back</button>
+                                <button className="foll-button margin-top" style={{width: '90%', backgroundColor: 'white', color: 'black'}} onClick={this.follow}>Follow Back</button>
                             }
                             {this.state.logged && this.state.isFollowed && this.state.me!==this.state.userId &&
-                                <button className="foll-button margin-top-small" style={{width: '90%', backgroundColor: 'white'}} onClick={this.unfollow}>Unfollow</button>
+                                <button className="foll-button margin-top-small" style={{width: '90%', backgroundColor: 'white', color: 'black'}} onClick={this.unfollow}>Unfollow</button>
                             }
                             {this.state.logged && this.state.me===this.state.userId &&
-                                <button className="foll-button margin-top-small" style={{width: '90%', backgroundColor: 'white'}} onClick={this.editProf}>Edit info</button>               
+                                <button className="foll-button margin-top-small" style={{width: '90%', backgroundColor: 'white', color: 'black'}} onClick={this.editProf}>Edit info</button>               
                             }
                             {this.state.logged && this.state.me===this.state.userId &&
-                                <button className="foll-button margin-top-small delete-account-button" style={{width: '90%', backgroundColor: 'white'}} onClick={this.preDelete}>Delete account</button>               
+                                <button className="foll-button margin-top-small delete-account-button" style={{width: '90%', backgroundColor: 'white', color: 'black'}} onClick={this.preDelete}>Delete account</button>               
                             }
                         </div>
                 </div>

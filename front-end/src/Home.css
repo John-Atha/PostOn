@@ -1,16 +1,84 @@
 html, body {
     min-width: 350px !important;
     position: relative !important;
+    background-color: var(--colorback) !important;
 }
+/*
 :root {
     --color2: #cadfed;
     --colorback: rgb(235, 234, 234);
     --boxback: white;
     --color3: rgb(225, 222, 222);
+    --blue: blue;
+    --blue2: rgb(0, 94, 255);
+    --grey: grey;
+    --black: black;
+    --paleblue: rgba(137, 218, 247, 0.482);
+    --unfollowgrey: rgb(250, 249, 249);
+    --white: white;
+    --notifseen: rgb(247, 244, 244);
+}*/
+
+h1,h2,h3,h4,h5 {
+    color: var(--lettersColor);
 }
-body {
+
+hr {
+    background-color: var(--hrcolor);
+}
+.main-home-container, .profile-main, .all-page {
     background-color: var(--colorback);
 }
+
+#root {
+    --color2: #cadfed;
+    --colorback: rgb(235, 234, 234);
+    --boxback: white;
+    --color3: rgb(225, 222, 222);
+    --blue: blue;
+    --blue2: rgb(0, 94, 255);
+    --grey: grey;
+    --black: black;
+    --paleblue: rgba(137, 218, 247, 0.482);
+    --unfollowgrey: rgb(250, 249, 249);
+    --white: white;
+    --notifseen: rgb(247, 244, 244);
+    --postActionColor: white;
+    --statsSampleColor: white;
+    --lettersColor: black;
+    --lettersColor2: grey;
+    --commentback: rgb(235, 234, 234);
+    --profInfoColor: grey;
+    --notifcolor2: #cadfed;
+    --postsContainerColorBack: rgb(235, 234, 234);
+}
+
+#root.dark {
+    --color2: #898989;
+    --colorback: rgba(0, 0, 0, 0.989);
+    --boxback: black;
+    --color3: rgb(14, 14, 14);
+    --blue: rgb(0, 94, 255);
+    --blue2: rgb(0, 94, 255);
+    --grey: rgb(214, 211, 211);
+    --black: black;
+    --paleblue: rgba(137, 218, 247, 0.482);
+    --unfollowgrey: rgb(250, 249, 249);
+    --white: white;
+    --notifseen: rgb(247, 244, 244);
+    --postActionColor: black;
+    --statsSampleColor: black;
+    --lettersColor: white;
+    --lettersColor2: rgb(229, 226, 226);
+    --greyOnDarkOnly: rgb(214, 211, 211);
+    --hrcolor: rgb(21, 20, 20);
+    --commentback: #040404;
+    --profInfoColor: black;
+    --notifcolor2: white;
+    --postsContainerColorBack: rgb(4, 4, 4);
+}
+
+
 input {
     overflow-wrap: break-word;
     width: 100%;
@@ -64,10 +132,10 @@ input {
     -webkit-transform: scale(1.1);
 }
 .error-message {
-    color: red;
+    color: red !important;
 }
 .success-message {
-    color: green;
+    color: green !important;
 }
 .flex-item {
     flex-grow: 1;
@@ -105,31 +173,32 @@ input {
     background-color: inherit;
     padding: 0%;
     border: none;
-    color: rgb(13, 13, 235);
+    color: var(--blue);
 }
 .button-as-link-grey {
     background-color: inherit;
     padding: 0%;
     border: none;
-    color: grey;
+    color: var(--grey);
 }
 .button-as-link:hover {
     text-decoration: underline;
+    color: var(--lettersColor2);
 }
 .button-as-link-grey:hover {
-    color: black;
+    color: var(--lettersColor);
 }
 .no-margin {
     margin: 1%;
 }
 .blue-color {
-    color: blue;
+    color: var(--blue);
 }
 .hidden {
     display: none;
 }
 textarea {
-    border: 1px solid grey;
+    border: 1px solid var(--grey);
     border-radius: 6px;
 }
 .with-whitespace {

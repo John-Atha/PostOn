@@ -37,15 +37,20 @@ class Diagram extends React.Component {
                 options: {
                     animationEnabled: true,
                     exportEnabled: true,
-                    backgroundColor: "#EBEAEA",
+                    backgroundColor: localStorage.getItem('theme')==='light' ? "#EBEAEA": 'rgba(0, 0, 0, 0.989)',
                     title: {
                         text: "Daily",
+                        fontColor: localStorage.getItem('theme')==='light' ? "#EBEAEA": 'white'
+                    },
+                    legend: {
+                        labelFontColor: localStorage.getItem('theme')==='light' ? "#EBEAEA": 'white'
                     },
                     data:[{
                         type: "doughnut",
                         indexLabel: "{label}: {y}%",
                         startAngle: -90,
-                        dataPoints: tempData
+                        dataPoints: tempData,
+                        indexLabelFontColor: localStorage.getItem('theme')==='light' ? "#EBEAEA": 'white'
                     }]
                 }
             })  
@@ -64,13 +69,21 @@ class Diagram extends React.Component {
                     exportEnabled: true,
                     animationEnabled: true,
                     animationDuration: 2000,
-                    backgroundColor: "#EBEAEA",
+                    backgroundColor: localStorage.getItem('theme')==='light' ? "#EBEAEA": 'rgba(0, 0, 0, 0.989)',
                     title: {
                         text: "Monthly",
+                        fontColor: localStorage.getItem('theme')==='light' ? "#EBEAEA": 'white'
+                    },
+                    axisX: {
+                        labelFontColor: localStorage.getItem('theme')==='light' ? "#EBEAEA": 'white'
+                    },
+                    axisY: {
+                        labelFontColor: localStorage.getItem('theme')==='light' ? "#EBEAEA": 'white'
                     },
                     data:[{
                         type: "area",
                         dataPoints: tempData,
+                        fontColor: localStorage.getItem('theme')==='light' ? "#EBEAEA": 'white'
                     }]
                 }
             })

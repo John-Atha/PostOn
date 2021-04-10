@@ -42,7 +42,8 @@
 }
 
 .profile-info {
-    background-color: rgb(242, 240, 240);
+    background-color: var(--color2);
+    color: var(--lettersColor);
     border-radius: 7px;
     margin: 1%;
     padding: 1%;
@@ -58,6 +59,7 @@
 }
 .profile-username {
     font-weight: bold;
+    color: var(--lettersColor);
 }
 .user-photo-profile-container {
     margin-left: 1%;
@@ -76,6 +78,7 @@
 }
 .foll-button {
     background-color: var(--color2);
+    color: var(--lettersColor);
     border-radius: 8px;
     border: none;
     width: 80px;
@@ -87,7 +90,8 @@
 }
 .save-moto-button {
     height: min-content;
-    background-color: var(--color2);
+    background-color: var(--colorback);
+    color: var(--lettersColor);
     padding: 0% 1% !important;
 }
 .clean-style {

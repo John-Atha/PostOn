@@ -1,5 +1,6 @@
 .profile-box {
     background-color: var(--color2);
+    color: var(--lettersColor) !important;
     border-radius: 7px;
     margin-right: 1%;
     margin-top: 5px;

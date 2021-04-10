@@ -8,6 +8,7 @@ import notif_icon from './images/notif.png';
 import stats_icon from './images/stats.png';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
+import { Button } from "bootstrap";
 
 class MyNavbar extends React.Component {
     constructor(props) {
@@ -20,6 +21,7 @@ class MyNavbar extends React.Component {
             notifList: [],
             start: 1,
             end: 5,
+            theme: localStorage.getItem('theme') || 'light',
         }
         this.logout = this.logout.bind(this);
         this.getNotif = this.getNotif.bind(this);
@@ -33,6 +35,9 @@ class MyNavbar extends React.Component {
         this.format = this.format.bind(this);
         this.markAllRead = this.markAllRead.bind(this);
         this.markOneAsRead = this.markOneAsRead.bind(this);
+        this.colorsUpdate = this.colorsUpdate.bind(this);
+        this.goDark = this.goDark.bind(this);
+        this.goLight = this.goLight.bind(this);
     }
     markOneAsRead = (notif) => {
         let category = "";
@@ -204,7 +209,33 @@ class MyNavbar extends React.Component {
         localStorage.removeItem('refresh');
         window.location.href="/";
     }
+    goDark = () => {
+        localStorage.setItem('theme', 'dark');
+        this.setState({
+            'theme': 'dark',
+        })
+        setTimeout(()=>{this.colorsUpdate();}, 200);
+    }
+    goLight = () => {
+        localStorage.setItem('theme', 'light');
+        this.setState({
+            'theme': 'light',
+        })
+        setTimeout(()=>{this.colorsUpdate();}, 200);
+    }
+    colorsUpdate = () => {
+        const root = document.getElementById('root');
+        if (this.state.theme==="light") {
+            root.classList.remove('dark');
+            root.classList.add('light');
+        }
+        else {
+            root.classList.remove('light');
+            root.classList.add('dark');
+        }
+    }
     componentDidMount() {
+        this.colorsUpdate();
         isLogged()
         .then(response => {
             console.log(response);
@@ -311,6 +342,8 @@ class MyNavbar extends React.Component {
                     {!this.state.logged &&
                         <Nav.Link href="/register">Register</Nav.Link>
                     }
+                    <Nav.Link href="#" style={this.state.theme==="light" ? {'border': '1px solid black','borderRadius': '6px', 'padding-left':'1%','width':'100px', 'height': 'min-content'} : {'border': '1px solid white','borderRadius': '6px', 'padding-left':'1%','width':'100px', 'height': 'min-content'} }onClick={this.goDark}>Go dark</Nav.Link>
+                    <Nav.Link href="#" style={this.state.theme==="light" ? {'border': '1px solid black','borderRadius': '6px', 'padding-left':'1%','width':'100px', 'height': 'min-content'} : {'border': '1px solid white','borderRadius': '6px', 'padding-left':'1%','width':'100px', 'height': 'min-content'} }onClick={this.goLight}>Go light</Nav.Link>
                 </Nav>
                 </Navbar.Collapse>
             </Navbar>

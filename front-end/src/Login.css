@@ -39,11 +39,11 @@
     height: 30px;
 }
 .login-input:hover, .login-input:focus {
-    border: 2px solid lightblue;
+    border: 2px solid var(--paleblue);
     outline: none;
 }
 .submit-button {
-    background-color: white;
+    background-color: var(--white);
     width: 150px !important;
 }
 

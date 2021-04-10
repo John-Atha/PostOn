@@ -1,5 +1,6 @@
 .navbar {
     background-color: var(--color2) !important;
+    color: var(--lettersColor) !important;
     position: sticky !important;
     top: 0;
     z-index: 3 !important;
@@ -14,30 +15,38 @@
     height: 23px;
 }
 .seen {
-    background-color: rgb(247, 244, 244);
+    background-color: var(--notifseen);
 }
 .not-seen {
-    background-color: white;
+    background-color: var(--white);
     font-weight: bold;
 }
 .notif {
     font-size: small;
     margin: 1% 0%;
+    background-color: var(--colorback);
 }
 .notif:hover {
-    background-color: var(--color2);
+    background-color: var(--notifcolor2);
 }
 .dropdown-menu {
     background-color: var(--colorback) !important;
-    max-width: 300px;
+    width: 300px;
     z-index: 3 !important;
 }
 .notif-container {
     max-height: 60vh;
     overflow-y: scroll;
+    background-color: var(--colorback);
 }
 .read-button {
     background-color: var(--color2);
     height: min-content;
     width: 150px;
+}
+.dropdown-item {
+    color: var(--lettersColor);
+}
+.nav-link, .navbar-brand {
+    color: var(--lettersColor) !important;
 }

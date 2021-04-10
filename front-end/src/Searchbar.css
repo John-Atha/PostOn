@@ -1,37 +1,38 @@
 #suggestions-box {
-    height: min-content;
-    max-height: 200px;
-    overflow-y: scroll;
-    width: 250px;
-    background-color: white;
-    border-radius: 0px;
-    border: 1px solid lightgrey;
-    z-index: 2;
+  height: min-content;
+  max-height: 200px;
+  overflow-y: scroll;
+  width: 250px;
+  background-color: var(--white);
+  border-radius: 0px;
+  border: 1px solid var(--grey);
+  z-index: 2;
 }
 .one-suggestion {
-    color: grey;
+  color: var(--grey);
+  background-color: var(--colorback);
 }
 .one-suggestion:hover {
-    text-decoration: none;
-    font-weight: bold;
-    background-color: antiquewhite;
-    color: grey;
+  text-decoration: none;
+  font-weight: bold;
+  background-color: var(--color2);
+  color: var(--grey);
 }
 .form-container {
-    z-index: 2;
-    margin-top: 5px;
-    margin-left: 1%;
-    position: absolute;
+  z-index: 2;
+  margin-top: 5px;
+  margin-left: 1%;
+  position: absolute;
 }
 #search-button {
-    margin-left: 2px;
+  margin-left: 2px;
+  color: var(--lettersColor);
+  border: 2px solid var(--grey);
 }
-#search-button {
-    border: 2px solid grey;
-}
+
 .form-control {
-    border: 1px solid grey;
+  border: 1px solid var(--grey);
 }
 .form-control:hover {
-    border: 2px solid grey;
+  border: 2px solid var(--grey);
 }

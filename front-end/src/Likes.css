@@ -29,7 +29,7 @@
     padding: 1%;
     width: 100%;
     max-width: 175px;
-    background-color: rgb(250, 249, 249);
+    background-color: var(--unfollowgrey);
     animation:
         pop-up-appearing-slow 1s;
 }

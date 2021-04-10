@@ -2,9 +2,10 @@
     margin: 2% 0%;
     overflow-wrap: break-word;
     white-space: pre-wrap;
+    color: var(--lettersColor);
 }
 .comment-box {
-    background-color: var(--colorback);
+    background-color: var(--commentback);
     border-radius: 7px;
     padding: 2%;
     padding-bottom: 1%;

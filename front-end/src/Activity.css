@@ -14,9 +14,10 @@
     margin: 0.5%;
     border-radius: 7px;
     padding: 1%;
+    color: var(--lettersColor);
 }
 .as-link {
-    color: rgb(0, 94, 255);
+    color: var(--blue2);
 }
 .as-link:hover {
     text-decoration: underline;

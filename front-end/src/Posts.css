@@ -1,5 +1,6 @@
 .posts-container, .profile-main, .main-page, .main-activity-container {
     margin-top: 50px;
+    background-color: var(--postsContainerColorBack);
 }
 @media only screen and (max-width:450px) {
     .post-media {
@@ -63,10 +64,6 @@
         margin-left: 25%;    
     }
 }
-
-
-
-
 @media only screen and (max-width: 950px) {
     .explore-container {
         display: none;
@@ -106,15 +103,18 @@
     margin-left: 2%;
     background-color: var(--color2);
     max-width: 100px !important;
+    color: var(--lettersColor);
 }
 .owner-name {
     font-weight: bold;
     position: relative;
+    color: var(--lettersColor);
 }
 .post-date{
     font-size: small;
     margin-bottom: 2%;
     line-height: 90%;
+    color: var(--lettersColor);
 }
 .user-photo-container {
     height:50px;
@@ -132,12 +132,15 @@
     min-height: 100px;
     height: min-content;
     padding: 5px 0px;
+    color: var(--lettersColor);
 }
 .post-media {
     border-radius: 5px;
 }
 .stats-sample {
     min-height: min-content;
+    background-color: var(--statsSampleColor);
+    color: var(--lettersColor);
 }
 .likes-sample-num  {
     margin-top:0.5%;
@@ -155,32 +158,39 @@
     margin-right: 20px;
     width: 200px;
     position: relative;
+    color: var(--lettersColor);
 }
 .comments-sample {
     width: 200px;
+    color: var(--lettersColor);
 }
 .post-actions {
     width: 100%;
+    background-color: var(--postActionColor)
 }
 .likes-action, .comments-action, .edit-action-container {
-    color: grey;
+    color: var(--grey);
     font-weight: bold;
     text-decoration: none;
 }
 .likes-action:hover, .comments-action:hover, .edit-action:hover {
-    color: blue;
+    color: var(--blue);
     transform: scale(1.1);
     -webkit-transform: scale(1.1);
     text-decoration: none;
 }
 .liker-sample, .likes-sample-num {
     font-size: small !important;
+    color: var(--grey);
 } 
 .edit-action-container {
     position: absolute;
     right: 0;
     margin-right: 7px;
     font-size: small;
+    background-color: var(--greyOnDarkOnly);
+    padding: 1%;
+    border-radius: 6px;
 }
 .post-textarea-edit {
     width: 100%;
@@ -207,6 +217,7 @@
     position: absolute;
     top: 5px;
     background-color: var(--color2);
+    color: var(--lettersColor);
     margin-left: 1%;
     width: 280px !important;
     padding: 8px;
@@ -220,7 +231,7 @@
     margin-top: -2px;
 }
 .new-post-container {
-    background-color: white;
+    background-color: var(--white);
     border-radius: 7px;
     margin: 1%;
     padding: 1%;

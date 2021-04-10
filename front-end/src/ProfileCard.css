@@ -2,7 +2,7 @@
     position: absolute;
     background-color: rgb(70, 68, 68);
     border-radius: 10px;
-    color: white !important;
+    color: var(--white) !important;
     z-index: 10;
     animation:
         pop-up-appearing 1s;
