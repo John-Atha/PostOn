@@ -46,7 +46,13 @@ class Searchbar extends React.Component {
         })
     }
     matches = (s) => {
-        return s.startsWith(this.state.input);
+        if (this.state.input) {
+            return  s.startsWith(this.state.input.charAt(0).toUpperCase()+this.state.input.slice(1)) ||
+                    s.startsWith(this.state.input.charAt(0).toLowerCase()+this.state.input.slice(1));
+        }
+        else {
+            return s.startsWith(this.state.input);
+        }
     }
     search = (event) => {
         event.preventDefault();
