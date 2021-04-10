@@ -25,6 +25,7 @@ class NewComment extends React.Component {
         }
         this.handleInput = this.handleInput.bind(this);
         this.submit = this.submit.bind(this);
+        this.getUserInfo = this.getUserInfo.bind(this);
     }
     createNotification = (type, title="aaa", message="aaa") => {
         console.log("creating notification");
@@ -72,22 +73,45 @@ class NewComment extends React.Component {
         }
         
     }
-    componentDidMount() {
-        getUser(this.state.userId)
-        .then(response => {
-            console.log(response);
-            this.setState({
-                username: response.data.username,
-                photo: response.data.photo,
+
+    getUserInfo = () => {
+        if (this.props.userId) {
+            getUser(this.props.userId)
+            .then(response => {
+                console.log(response);
+                this.setState({
+                    username: response.data.username,
+                    photo: response.data.photo,
+                })
             })
-        })
-        .catch(err => {
-            console.log(err);
+            .catch(err => {
+                console.log(err);
+                this.setState({
+                    error: "Not logged in."
+                })
+            })
+        }
+        else {
             this.setState({
                 error: "Not logged in."
             })
-        })
+        }
     }
+
+    componentDidMount() {
+        this.getUserInfo();
+    }
+    componentDidUpdate(prevProps) {
+        if (prevProps.userId!==this.props.userId ||
+            prevProps.logged!==this.props.logged) {
+                this.setState({
+                    userId: this.props.userId,
+                    logged: this.props.logged,
+                })
+                this.getUserInfo();            
+            }
+    }
+
     render() {
         if (this.state.logged) {
             return(
@@ -263,21 +287,29 @@ class OneComment extends React.Component {
     }
     likesSample = () => {
         setTimeout(()=> {}, 2000);
-        getLikesSample(this.state.comment.id, "comment")
-        .then(response => {
-            console.log(response);
-            this.setState({
-                likesNum: response.data.likes,
-                likerSample: response.data["one-liker"],
+        if (this.state.comment.id) {
+            getLikesSample(this.state.comment.id, "comment")
+            .then(response => {
+                console.log(response);
+                this.setState({
+                    likesNum: response.data.likes,
+                    likerSample: response.data["one-liker"],
+                })
             })
-        })
-        .catch(err => {
-            console.log(err);
+            .catch(err => {
+                console.log(err);
+                this.setState({
+                    likes_error: "No likes found",
+                    likesNum: 0,
+                })
+            })
+        }
+        else {
             this.setState({
                 likes_error: "No likes found",
                 likesNum: 0,
             })
-        })
+        }
     }
     checkLiked = () => {
         if (this.state.logged) {
@@ -302,6 +334,18 @@ class OneComment extends React.Component {
         this.likesSample();
         this.checkLiked();
     }
+    componentDidUpdate(prevProps) {
+        if (prevProps.userId!==this.props.userId ||
+            prevProps.logged!==this.props.logged ||
+            prevProps.comment!==this.props.comment) {
+                this.setState({
+                    userId: this.props.userId,
+                    logged: this.props.logged,
+                    comment: this.props.comment,
+                })
+            }
+    }
+
     render() {
         if (this.state.delete || !this.state.comment.text || !this.state.comment) {
             return(
@@ -362,7 +406,7 @@ class OneComment extends React.Component {
                             userId={this.state.userId}
                             logged={this.state.logged}
                             liked={this.state.liked}
-                            on={"comment"}
+                            on="comment"
                             updateHome={this.props.updateHome}
                             showMe={true} 
                             followsUpd={this.state.followsUpd}
@@ -481,6 +525,19 @@ class Comments extends React.Component {
             this.askComments();
         }
     }
+
+    componentDidUpdate(prevProps) {
+        if (prevProps.userId!==this.props.userId ||
+            prevProps.logged!==this.props.logged ||
+            prevProps.postId!==this.props.postId) {
+                this.setState({
+                    userId: this.props.userId,
+                    logged: this.props.logged,
+                    postId: this.props.postId,
+                })
+            }
+    }
+
     render() {
         if (this.state.how==="sample") {
             return (

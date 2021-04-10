@@ -1,6 +1,7 @@
 .text-comment {
     margin: 2% 0%;
     overflow-wrap: break-word;
+    white-space: pre-wrap;
 }
 .comment-box {
     background-color: var(--colorback);
@@ -9,9 +10,8 @@
     padding-bottom: 1%;
     position: relative;
     margin: 2% 0%;
-    width: 90%;
+    width: 100%;
     min-width: 200px;
-    margin-left: 5%;
     text-align: left;
     animation:
         pop-up-appearing 1s; 
