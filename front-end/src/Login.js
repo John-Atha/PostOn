@@ -96,9 +96,11 @@ class Login extends React.Component {
                             {!this.state.error && this.state.success && (
                                 <div className="success-message">{this.state.success}</div>
                             )}
-                            <form className="login-form center-content margin-top-smaller flex-layout" onSubmit={this.handleSubmit}>
-                                <input className="login-input margin-top-smaller" type="text" name="username" value={this.state.username} placeholder="Username..."     onChange={this.handleInput}/>
-                                <input className="login-input margin-top-smaller" type="password" name="password" value={this.state.password} placeholder="Password..." onChange={this.handleInput}/>
+                            <form className="login-form center-content margin-top-smaller" onSubmit={this.handleSubmit}>
+                                <div>
+                                    <input className="login-input margin-top-smaller" type="text" name="username" value={this.state.username} placeholder="Username..."     onChange={this.handleInput}/>
+                                    <input className="login-input margin-top-smaller" type="password" name="password" value={this.state.password} placeholder="Password..." onChange={this.handleInput}/>
+                                </div>
                                 <button className="my-button submit-button margin-top-smaller" onClick={this.handleSubmit}>Submit</button>
                             </form>
                             <div className="register-choice-container margin-top-small">

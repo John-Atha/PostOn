@@ -62,7 +62,7 @@ class Register extends React.Component {
                 bodyFormData.append('email', this.state.email);
                 register(bodyFormData)
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                     this.setState({
                         success: "Registered in successfully",
                     })
@@ -71,14 +71,14 @@ class Register extends React.Component {
                     body2.append('password', this.state.password);
                     login(body2)
                     .then(response => {
-                        console.log(response);
+                        //console.log(response);
                         this.setState({
                             success: "Registered in successfully"
                         })
                         let token = response.data.access
                         let refresh = response.data.refresh
-                        console.log(token);
-                        console.log(refresh);
+                        //console.log(token);
+                        //console.log(refresh);
                         localStorage.setItem('token', token)
                         localStorage.setItem('refresh', refresh)
                         setTimeout(() => {
@@ -133,11 +133,13 @@ class Register extends React.Component {
                             {!this.state.error && this.state.success && (
                                 <div className="success-message">{this.state.success}</div>
                             )}
-                            <form className="login-form center-content margin-top-smaller flex-layout" onSubmit={this.handleSubmit}>
-                                <input className="login-input margin-top-smaller" type="text" name="username" value={this.state.username} placeholder="Username..."     onChange={this.handleInput}/>
-                                <input className="login-input margin-top-smaller" type="email" name="email" value={this.state.email} placeholder="Email..."     onChange={this.handleInput}/>
-                                <input className="login-input margin-top-smaller" type="password" name="password" value={this.state.password} placeholder="Password..." onChange={this.handleInput}/>
-                                <input className="login-input margin-top-smaller" type="password" name="passwordConfirm" value={this.state.passwordConfirm} placeholder="Confirm Password..." onChange={this.handleInput}/>
+                            <form className="login-form center-content margin-top-smaller" onSubmit={this.handleSubmit}>
+                                <div>
+                                    <input className="login-input margin-top-smaller" type="text" name="username" value={this.state.username} placeholder="Username..."     onChange={this.handleInput}/>
+                                    <input className="login-input margin-top-smaller" type="email" name="email" value={this.state.email} placeholder="Email..."     onChange={this.handleInput}/>
+                                    <input className="login-input margin-top-smaller" type="password" name="password" value={this.state.password} placeholder="Password..." onChange={this.handleInput}/>
+                                    <input className="login-input margin-top-smaller" type="password" name="passwordConfirm" value={this.state.passwordConfirm} placeholder="Confirm Password..." onChange={this.handleInput}/>
+                                </div>
                                 <button className="my-button submit-button margin-top-smaller" onClick={this.handleSubmit}>Submit</button>
                             </form>
                             <div className="register-choice-container margin-top-small">
