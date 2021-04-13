@@ -67,7 +67,7 @@
 }
 .follows-pop-up {
     z-index: 1;
-    top: 05%;
+    top: 150px;
     position: absolute;
     background-color: var(--color3);
     min-height: min-content;
@@ -90,7 +90,7 @@
 }
 .save-moto-button {
     height: min-content;
-    background-color: var(--colorback);
+    background-color: var(--color2);
     color: var(--lettersColor);
     padding: 0% 1% !important;
 }
