@@ -12,6 +12,7 @@ import ProfileCard from './ProfileCard';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 import OutsideClickHandler from 'react-outside-click-handler';
+import { MentionsInput, Mention } from 'react-mentions'
 
 class PostText extends React.Component {
     constructor(props) {
@@ -46,9 +47,9 @@ class PostText extends React.Component {
     }
     componentDidMount() {
         if (this.state.parts.length) {
-            if (this.state.parts[-1].tag) {
-                if (this.state.parts[-1].tag.index) {
-                    for (let i=0; i<this.state.parts[-1].tag.index; i++) {
+            if (this.state.parts[this.state.parts.length-1].tag) {
+                if (this.state.parts[this.state.parts.length-1].tag.index) {
+                    for (let i=0; i<this.state.parts[this.state.parts.length-1].tag.index; i++) {
                         this.state.showCard.push(false);
                     }
                 }
@@ -121,7 +122,6 @@ class PostText extends React.Component {
 
 }
 
-
 class OnePost extends React.Component {
     constructor(props) {
         super(props);
@@ -157,7 +157,9 @@ class OnePost extends React.Component {
             showModal: false,
             textParts: [],
             usersList: [],
+            usersList2: [],
             hasTag: false,
+            firstFocus: true,
         }
         this.likesSample = this.likesSample.bind(this);
         this.commentsSample = this.commentsSample.bind(this);
@@ -181,7 +183,33 @@ class OnePost extends React.Component {
         this.checkLogged = this.checkLogged.bind(this);
         this.filterPost = this.filterPost.bind(this);
         this.getUsernames = this.getUsernames.bind(this);
+        this.askTags = this.askTags.bind(this);
     }
+    askTags = () => {
+        if (this.state.firstFocus) {
+            this.setState({
+                firstFocus: false,
+            })
+            getUsers()
+            .then(response => {
+                console.log(response);
+                let tempL = [];
+                response.data.forEach(el => {
+                    tempL.push({
+                        "id": el.id,
+                        "display": el.username,
+                    })
+                })
+                this.setState({
+                    usersList2: tempL,
+                })
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
+    }
+
     getUsernames = () => {
         if (this.state.text.includes('@[')) {
             this.setState({
@@ -398,6 +426,7 @@ class OnePost extends React.Component {
                     text_init: this.state.text,
                 })
                 this.createNotification('success', 'Hello,', 'Post changed succesffully');
+                this.filterPost();
             })
             .catch(err => {
                 console.log(err);
@@ -411,12 +440,11 @@ class OnePost extends React.Component {
         })
     }
     handleInput  = (event) => {
-        const name = event.target.name;
         const value = event.target.value;
         this.setState({
-            [name]: value,
+            text: value,
         })
-        console.log(`${name}: ${value}`)
+        console.log(`text: ${value}`)
     }
     postUnLike = () => {
         getAllLikes(1, this.state.id, "post")
@@ -603,7 +631,7 @@ class OnePost extends React.Component {
                                 <img className="post-media" src={this.state.media} alt="media"/>
                             </div>
                         }
-                        <div className="post-text">
+                        <div className="post-text flex-layout">
                             {this.state.hasTag &&
                                 <PostText parts={this.state.textParts} />
                             }
@@ -620,7 +648,13 @@ class OnePost extends React.Component {
                                 <img className="post-media" src={this.state.media} alt="media" />
                             </div>
                         }
-                        <textarea className="post-textarea-edit margin-top-smaller" name="text" value={this.state.text} onChange={this.handleInput}></textarea>
+                        <MentionsInput className="post-textarea-edit margin-top-smaller" name="text" value={this.state.text} onChange={this.handleInput} onFocus={this.askTags}>
+                        <Mention
+                                trigger="@"
+                                data={this.state.usersList2}
+                                className="mention-suggestions"
+                            />
+                        </MentionsInput>
                         <div className="flex-layout center-content">
                             <button className="my-button pagi-button flex-item-small" onClick={this.saveText}>Save change</button>
                             <button className="my-button pagi-button flex-item-small" onClick={this.discardText}>Discard change</button>

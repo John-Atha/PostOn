@@ -197,6 +197,18 @@
     margin-left: 2%;
     height: 150px !important;
 }
+.post-textarea-edit__input {
+    color: var(--lettersColor);
+}
+.post-textarea-edit__suggestions {
+    background-color: var(--color2) !important;
+    border-radius: 6px;
+    top: 5px !important;
+    padding: 5px;
+}
+.post-textarea-edit__suggestions__item:hover {
+    background-color: var(--boxback);
+}
 .post-text {
     margin-left: 2%;
     overflow-wrap: break-word;

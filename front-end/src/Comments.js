@@ -206,9 +206,9 @@ class CommentText extends React.Component {
     }
     componentDidMount() {
         if (this.state.parts.length) {
-            if (this.state.parts[-1].tag) {
-                if (this.state.parts[-1].tag.index) {
-                    for (let i=0; i<this.state.parts[-1].tag.index; i++) {
+            if (this.state.parts[this.state.parts.length-1].tag) {
+                if (this.state.partsthis.state.parts.length[-1].tag.index) {
+                    for (let i=0; i<this.state.parts[this.state.parts.length-1].tag.index; i++) {
                         this.state.showCard.push(false);
                     }
                 }
