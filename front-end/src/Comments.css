@@ -46,9 +46,31 @@
 .comment-textarea {
     width: 80%;
     height: 40px;
-    padding: 1%;
+    padding: 3px;
 }
 .delete-icon {
     width: 21px;
     height: 90%;
+}
+.comment-textarea__input {
+    color: var(--lettersColor);
+}
+.comment-textarea__suggestions {
+    background-color: var(--color2) !important;
+    border-radius: 6px;
+    top: 5px !important;
+    padding: 5px;
+}
+.comment-textarea__suggestions__item:hover {
+    background-color: var(--boxback);
+}
+.mention-suggestions {
+    background-color: var(--color2);
+    border-radius: 6px;
+}
+
+.tag {
+    background-color: var(--color2);
+    border-radius: 3px;
+    padding:1px;
 }

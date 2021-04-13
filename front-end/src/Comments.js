@@ -4,11 +4,12 @@ import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
 import delete_icon from './images/delete-icon.png';
 import Likes from './Likes';
-import {getPostsComments, getLikesSample, getAllLikes, LikeComment, UnLikeComment, DeleteComment, AddComment, getUser, UserLikesComment} from './api';
+import {getUsers, getPostsComments, getLikesSample, getAllLikes, LikeComment, UnLikeComment, DeleteComment, AddComment, getUser, UserLikesComment} from './api';
 import ProfileCard from  './ProfileCard';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 import OutsideClickHandler from 'react-outside-click-handler';
+import { MentionsInput, Mention } from 'react-mentions'
 
 class NewComment extends React.Component {
     constructor(props) {
@@ -19,6 +20,8 @@ class NewComment extends React.Component {
             photo: null,
             logged: this.props.logged,
             text: "",
+            firstFocus: true,
+            usersList: [],
             postId: this.props.postId,
             owner: this.props.owner,
             error: null,
@@ -26,6 +29,7 @@ class NewComment extends React.Component {
         this.handleInput = this.handleInput.bind(this);
         this.submit = this.submit.bind(this);
         this.getUserInfo = this.getUserInfo.bind(this);
+        this.askTags = this.askTags.bind(this);
     }
     createNotification = (type, title="aaa", message="aaa") => {
         console.log("creating notification");
@@ -44,12 +48,36 @@ class NewComment extends React.Component {
             }
           });
     };
+    askTags = () => {
+        if (this.state.firstFocus) {
+            this.setState({
+                firstFocus: false,
+            })
+            getUsers()
+            .then(response => {
+                console.log(response);
+                let tempL = [];
+                response.data.forEach(el => {
+                    tempL.push({
+                        "id": el.id,
+                        "display": el.username,
+                    })
+                })
+                this.setState({
+                    usersList: tempL,
+                })
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
+    }
     handleInput = (event) => {
-        const name = event.target.name;
         const value = event.target.value;
         this.setState({
-            [name]: value,
+            text: value,
         })
+        console.log(`text: ${value}`)
     }
     submit = (event) => {
         event.preventDefault();
@@ -123,7 +151,13 @@ class NewComment extends React.Component {
                         <div className="owner-name">{this.state.username}</div>
                     </div>
                     <div className="text-comment flex-layout">
-                        <textarea className="comment-textarea" name="text" placeholder="Add your comment here..." value={this.state.text} onChange={this.handleInput}></textarea>
+                        <MentionsInput className="comment-textarea" name="text" placeholder="Add your comment here..." value={this.state.text} onChange={this.handleInput} onFocus={this.askTags}>
+                            <Mention
+                                trigger="@"
+                                data={this.state.usersList}
+                                className="mention-suggestions"
+                            />
+                        </MentionsInput>
                         <button className="my-button pagi-button" onClick={this.submit}>Add</button>
                     </div>
                 </div>
@@ -138,6 +172,83 @@ class NewComment extends React.Component {
         }
     }
 }
+
+class CommentText extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            parts: this.props.parts,
+        }
+    }
+    componentDidUpdate(prevProps) {
+        if (prevProps.parts!==this.props.parts) {
+            this.setState({
+                parts: this.props.parts,
+            })
+        }
+    }
+    render() {
+        console.log("my parts");
+        console.log(this.state.parts);
+        if (this.state.parts.length) {
+            return (
+                this.state.parts.map((value, index) => {
+                    if (value.tag.id && !value.dump) {
+                        return(
+                            <div key={index} className="flex-layout">
+                                <div className="owner-name tag"
+                                    onMouseEnter={this.cardShow}
+                                    onMouseLeave={this.cardHide}>
+                                    {value.tag.username}
+                                    {this.state.showCard &&
+                                        <ProfileCard id={value.tag.id}
+                                                username={value.tag.username}
+                                                moto="moto"
+                                                photo="aa"
+                                                position={"top-close"}/>
+                                    }
+                                </div>
+                                <div>&nbsp;</div>
+                            </div>
+                        )
+                    }
+                    else if (value.tag.id && value.dump){
+                        return(
+                            <div key={index} className="flex-layout">
+                                <div className="owner-name tag"
+                                    onMouseEnter={this.cardShow}
+                                    onMouseLeave={this.cardHide}>
+                                    {value.tag.username}
+                                    {this.state.showCard &&
+                                        <ProfileCard id={value.tag.id}
+                                                username={value.tag.username}
+                                                moto="moto"
+                                                photo="aa"
+                                                position={"top-close"}/>
+                                    }
+                                </div>
+                                {" "+value.dump+" "}
+                            </div>
+                        )
+                    }
+                    else {
+                        return(
+                            <div key={index}>
+                                {value.dump+" "}
+                            </div>
+                        )
+                    }
+                })
+            )
+        }
+        else {
+            return(
+                <div></div>
+            )
+        }
+    }
+}
+
 class OneComment extends React.Component {
     constructor(props) {
         super(props);
@@ -159,6 +270,8 @@ class OneComment extends React.Component {
             showModal: false,
             showCard: false,
             showCard2: false,
+            textParts: [],
+            usersList: [],
         }
         this.likesSample = this.likesSample.bind(this);
         this.showLikes = this.showLikes.bind(this);
@@ -172,7 +285,82 @@ class OneComment extends React.Component {
         this.cardHide = this.cardHide.bind(this);
         this.cardShow2 = this.cardShow2.bind(this);
         this.cardHide2 = this.cardHide2.bind(this);
+        this.filterComment = this.filterComment.bind(this);
+        this.getUsernames = this.getUsernames.bind(this);
     }
+
+    getUsernames = () => {
+        if (this.state.comment) {
+            if (this.state.comment.text) {
+                if (this.state.comment.text.includes('@[')) {
+                    getUsers()
+                    .then(response => {
+                        console.log(response);
+                        let tempUsersList = [];
+                        response.data.forEach(el => {
+                            tempUsersList.push(el.username)
+                        })
+                        this.setState({
+                            usersList: tempUsersList,
+                        })
+                        setTimeout(()=>{this.filterComment();}, 500)
+                    })
+                    .catch(err => {
+                        console.log(err);
+                    })    
+                }        
+            }
+        }
+    }
+
+    filterComment = () => {
+        let comment_text = this.state.comment.text;
+        let final_comment_object = [];
+        comment_text = comment_text.replaceAll("@", " @");
+        console.log(comment_text);
+        let s2 = comment_text.trim().split(/\s+/);
+        console.log(s2);
+        s2.forEach(el => {
+            console.log(el)
+            if (el.startsWith('@')) {    
+                this.state.usersList.forEach(sugg => {
+                    if (el.startsWith(`@[${sugg}]`)) {
+                        console.log(`el: ${el}`)
+                        let el2 = el.split(')')
+                        //console.log(`el parts: ${el2}`)
+                        let first = el2[0]
+                        let dump = el2[1]
+                        //console.log(`first: ${first}`)
+                        let username = first.split(']')[0].slice(2)
+                        let id = first.split(']')[1].slice(1)
+                        console.log(`username: ${username}`)
+                        console.log(`id: ${id}`)
+                        console.log(`dump: ${dump}`)
+                        final_comment_object.push({
+                            "tag": {
+                                "username": username,
+                                "id": id,
+                            },
+                            "dump": dump,
+                        })
+                    }
+                })
+            }
+            else {
+                final_comment_object.push({
+                    "tag": {},
+                    "dump": el,
+                })
+            }
+        })
+        console.log("FINAL COMMENT:")
+        console.log(final_comment_object)
+        this.setState({
+            textParts: final_comment_object,
+        })
+    }
+
+
     createNotification = (type, title="aaa", message="aaa") => {
         console.log("creating notification");
         console.log(type);
@@ -333,6 +521,7 @@ class OneComment extends React.Component {
         console.log("I am one comment")
         this.likesSample();
         this.checkLiked();
+        this.getUsernames();
     }
     componentDidUpdate(prevProps) {
         if (prevProps.userId!==this.props.userId ||
@@ -343,6 +532,9 @@ class OneComment extends React.Component {
                     logged: this.props.logged,
                     comment: this.props.comment,
                 })
+                if (!this.state.usersList.length) {
+                    this.getUsernames();
+                }
             }
     }
 
@@ -377,7 +569,9 @@ class OneComment extends React.Component {
                         </div>
                         <div className="post-date comment-date">at {commentDatetime}</div>
                     </div>
-                    <div className="text-comment">{this.state.comment.text}</div>
+                    <div className="text-comment flex-layout">
+                        <CommentText parts={this.state.textParts} />                    
+                    </div>
                     <div className="comment-like-container flex-layout">
                         <img className="like-icon" src={like_icon} alt="like-icon"/>
                         {this.state.likesNum>1 &&
