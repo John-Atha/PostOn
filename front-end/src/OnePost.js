@@ -1,6 +1,6 @@
 import React from "react";
 import "./Posts.css";
-import {getPostsCommentsSample, getAllLikes, getLikesSample, LikePost, UnLikePost, editPost, deletePost, UserLikesPost, isLogged} from './api';
+import {getUsers, getPostsCommentsSample, getAllLikes, getLikesSample, LikePost, UnLikePost, editPost, deletePost, UserLikesPost, isLogged} from './api';
 import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
 import comment_icon from './images/comment.png';
@@ -12,6 +12,117 @@ import ProfileCard from './ProfileCard';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 import OutsideClickHandler from 'react-outside-click-handler';
+
+class PostText extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            parts: this.props.parts,
+            showCard: [],
+        }
+        this.cardShow = this.cardShow.bind(this);
+        this.cardHide = this.cardHide.bind(this);
+    }
+    cardShow = (i) => {
+        let temp = this.state.showCard.slice()
+        temp[i] = true
+        this.setState({
+            showCard: temp,
+        })
+    }
+    cardHide = (i) => {
+        let temp = this.state.showCard.slice()
+        temp[i] = false
+            this.setState({
+                showCard: temp,
+            })
+    }
+    componentDidUpdate(prevProps) {
+        if (prevProps.parts!==this.props.parts) {
+            this.setState({
+                parts: this.props.parts,
+            })
+        }
+    }
+    componentDidMount() {
+        if (this.state.parts.length) {
+            if (this.state.parts[-1].tag) {
+                if (this.state.parts[-1].tag.index) {
+                    for (let i=0; i<this.state.parts[-1].tag.index; i++) {
+                        this.state.showCard.push(false);
+                    }
+                }
+            }
+        }
+    }
+
+    render() {
+        console.log(this.state.parts);
+        if (this.state.parts.length) {
+            console.log(`I am a post with parts:`)
+            console.log(this.state.parts)
+            return (
+                this.state.parts.map((value, index) => {
+                    if (value.tag.id && !value.dump) {
+                        return(
+                            <div key={index} className="flex-layout">
+                                <div className="owner-name tag"
+                                    onMouseEnter={()=>this.cardShow(index)}
+                                    onMouseLeave={()=>this.cardHide(index)}>
+                                    {value.tag.username}
+                                    {this.state.showCard[index] &&
+                                        <ProfileCard id={value.tag.id}
+                                                username={value.tag.username}
+                                                moto={value.tag.moto}
+                                                photo={value.tag.photo}
+                                                position={"top-close"}/>
+                                    }
+                                </div>
+                                <div>&nbsp;</div>
+                            </div>
+                        )
+                    }
+                    else if (value.tag.id && value.dump){
+                        return(
+                            <div key={index} className="flex-layout">
+                                <div className="owner-name tag"
+                                    onMouseEnter={()=>this.cardShow(index)}
+                                    onMouseLeave={()=>this.cardHide(index)}>
+                                    {value.tag.username}
+                                    {this.state.showCard[index] &&
+                                        <ProfileCard id={value.tag.id}
+                                                username={value.tag.username}
+                                                moto={value.tag.moto}
+                                                photo={value.tag.photo}
+                                                position={"top-close"}/>
+                                    }
+                                </div>
+                                {" "+value.dump+" "}
+                            </div>
+                        )
+                    }
+                    else {
+                        return(
+                            <div key={index}>
+                                {value.dump+" "}
+                            </div>
+                        )
+                    }
+                })
+            )
+        }
+        else {
+            console.log("No parts")
+            return(
+                <div></div>
+            )
+        }
+    }
+
+}
+
+
+
 
 class OnePost extends React.Component {
     constructor(props) {
@@ -46,6 +157,9 @@ class OnePost extends React.Component {
             showCard2: false,
             delete: false,
             showModal: false,
+            textParts: [],
+            usersList: [],
+            hasTag: false,
         }
         this.likesSample = this.likesSample.bind(this);
         this.commentsSample = this.commentsSample.bind(this);
@@ -67,6 +181,96 @@ class OnePost extends React.Component {
         this.hideModal = this.hideModal.bind(this);
         this.checkLiked = this.checkLiked.bind(this);
         this.checkLogged = this.checkLogged.bind(this);
+        this.filterPost = this.filterPost.bind(this);
+        this.getUsernames = this.getUsernames.bind(this);
+    }
+    getUsernames = () => {
+        if (this.state.text.includes('@[')) {
+            this.setState({
+                hasTag: true,
+            })
+            getUsers()
+            .then(response => {
+                console.log(response);
+                let tempUsersList = [];
+                response.data.forEach(el => {
+                    tempUsersList.push({
+                        "id": el.id,
+                        "username": el.username,
+                        "photo": el.photo,
+                        "moto": el.moto,
+                    })
+                })
+                this.setState({
+                    usersList: tempUsersList,
+                })
+                setTimeout(()=>{this.filterPost();}, 500)
+            })
+            .catch(err => {
+                console.log(err);
+            })    
+        }
+    }
+    filterPost = () => {
+        console.log("i am filter post");
+        let post_text = this.state.text;
+        let final_post_object = [];
+        post_text = post_text.replaceAll("@", " @");
+        console.log(post_text);
+        let s2 = post_text.trim().split(/\s+/);
+        console.log(s2);
+        let index=0;
+        s2.forEach(el => {
+            console.log(el)
+            if (el.startsWith('@')) {    
+                let matched = false;
+                this.state.usersList.forEach(suggest => {
+                    let sugg=suggest.username;
+                    if (el.startsWith(`@[${sugg}]`)) {
+                        matched = true;
+                        console.log(`el: ${el}`)
+                        let el2 = el.split(')')
+                        //console.log(`el parts: ${el2}`)
+                        let first = el2[0]
+                        let dump = el2[1]
+                        //console.log(`first: ${first}`)
+                        //let username = first.split(']')[0].slice(2)
+                        //let id = first.split(']')[1].slice(1)
+                        console.log(`username: ${suggest.username}`)
+                        console.log(`id: ${suggest.id}`)
+                        console.log(`dump: ${dump}`)
+                        final_post_object.push({
+                            "tag": {
+                                "username": suggest.username,
+                                "id": suggest.id,
+                                "index": index,
+                                "photo": suggest.photo,
+                                "moto": suggest.moto,
+                            },
+                            "dump": dump,
+                        })
+                        index++;
+                    }
+                })
+                if (matched===false) {
+                    final_post_object.push({
+                        "tag": {},
+                        "dump": el,
+                    })    
+                }
+            }
+            else {
+                final_post_object.push({
+                    "tag": {},
+                    "dump": el,
+                })
+            }
+        })
+        console.log("FINAL COMMENT:")
+        console.log(final_post_object)
+        this.setState({
+            textParts: final_post_object,
+        })
     }
 
     checkLogged = () => {
@@ -325,6 +529,7 @@ class OnePost extends React.Component {
     componentDidMount() {
         this.checkLogged();
         this.statsSample();
+        this.getUsernames();
     }
     componentDidUpdate(prevProps) {
         if (prevProps.id!==this.props.id || 
@@ -348,6 +553,9 @@ class OnePost extends React.Component {
             })
             this.statsSample();
             this.checkLiked();
+            if (!this.state.usersList.length) {
+                this.getUsernames();
+            }
         }
     }
     render() {
@@ -397,7 +605,14 @@ class OnePost extends React.Component {
                                 <img className="post-media" src={this.state.media} alt="media"/>
                             </div>
                         }
-                        <div className="post-text">{this.state.text}</div>
+                        <div className="post-text">
+                            {this.state.hasTag &&
+                                <PostText parts={this.state.textParts} />
+                            }
+                            {!this.state.hasTag &&
+                                this.state.text
+                            }
+                        </div>
                     </div>       
                 }
                 {this.state.edit &&

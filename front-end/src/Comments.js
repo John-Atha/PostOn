@@ -299,6 +299,7 @@ class OneComment extends React.Component {
             showCard2: false,
             textParts: [],
             usersList: [],
+            hasTag: false,
         }
         this.likesSample = this.likesSample.bind(this);
         this.showLikes = this.showLikes.bind(this);
@@ -320,6 +321,9 @@ class OneComment extends React.Component {
         if (this.state.comment) {
             if (this.state.comment.text) {
                 if (this.state.comment.text.includes('@[')) {
+                    this.setState({
+                        hasTag: true,
+                    })
                     getUsers()
                     .then(response => {
                         console.log(response);
@@ -616,7 +620,12 @@ class OneComment extends React.Component {
                         <div className="post-date comment-date">at {commentDatetime}</div>
                     </div>
                     <div className="text-comment flex-layout">
-                        <CommentText parts={this.state.textParts} />                    
+                        {this.state.hasTag &&
+                            <CommentText parts={this.state.textParts} />  
+                        }
+                        {!this.state.hasTag &&
+                            this.state.comment.text
+                        }                  
                     </div>
                     <div className="comment-like-container flex-layout">
                         <img className="like-icon" src={like_icon} alt="like-icon"/>
