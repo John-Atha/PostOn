@@ -1,10 +1,11 @@
 import React from "react";
 import "./Posts.css";
-import {isLogged, getPosts, getUsersPosts, PostPostText, PostPostPhoto, deletePost} from './api';
+import {getUsers, isLogged, getPosts, getUsersPosts, PostPostText, PostPostPhoto, deletePost} from './api';
 import OnePost from './OnePost';
 import add_icon from './images/add.png';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
+import { MentionsInput, Mention } from 'react-mentions'
 
 class Posts extends React.Component {
     constructor(props){
@@ -21,6 +22,8 @@ class Posts extends React.Component {
             whose: this.props.whose,
             add: false,
             newText: "",
+            usersList: [],
+            firstFocus: true,
         }
         this.likesIncr = 10;
         this.previousPage = this.previousPage.bind(this);
@@ -31,6 +34,31 @@ class Posts extends React.Component {
         this.preAddPost = this.preAddPost.bind(this);
         this.cancelAdd = this.cancelAdd.bind(this);
         this.handleInput = this.handleInput.bind(this);
+        this.askTags = this.askTags.bind(this);
+    }
+    askTags = () => {
+        if (this.state.firstFocus) {
+            this.setState({
+                firstFocus: false,
+            })
+            getUsers()
+            .then(response => {
+                console.log(response);
+                let tempL = [];
+                response.data.forEach(el => {
+                    tempL.push({
+                        "id": el.id,
+                        "display": el.username,
+                    })
+                })
+                this.setState({
+                    usersList: tempL,
+                })
+            })
+            .catch(err => {
+                console.log(err);
+            })
+        }
     }
     createNotification = (type, title="aaa", message="aaa") => {
         console.log("creating notification");
@@ -50,10 +78,9 @@ class Posts extends React.Component {
           });
     };
     handleInput = (event) => {
-        const name = event.target.name;
         const value = event.target.value;
         this.setState({
-            [name]: value,
+            newText: value,
         })
     }
     cancelAdd = () => {
@@ -269,7 +296,13 @@ class Posts extends React.Component {
                             <input id="new-post-photo" type="file" accept="image/*"/>
                             <div >Text</div>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
-                            <textarea name="newText" className="clean-style backcolor2" style={{width: '90%'}} value={this.state.newText} onChange={this.handleInput} />
+                            <MentionsInput name="newText" className="post-textarea-edit clean-style new-post" style={{width: '90%'}} value={this.state.newText} onChange={this.handleInput} onFocus={this.askTags}>
+                                <Mention
+                                    trigger="@"
+                                    data={this.state.usersList}
+                                    className="mention-suggestions"
+                                />
+                            </MentionsInput>
                             <div className="flex-layout margin-top-smaller">
                                 <button className="my-button save-moto-button" style={{margin: '1%'}} onClick={this.addPost}>Publish</button>
                                 <button className="my-button save-moto-button" style={{margin: '1%'}} onClick={this.cancelAdd}>Cancel</button>

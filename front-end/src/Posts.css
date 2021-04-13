@@ -243,10 +243,11 @@
     margin-top: -2px;
 }
 .new-post-container {
-    background-color: var(--white);
+    background-color: var(--boxback);
     border-radius: 7px;
     margin: 1%;
     padding: 1%;
+    color: var(--lettersColor);
 }
 .backcolor2 {
     background-color: var(--color2);
@@ -258,3 +259,4 @@
 .margin-side {
     margin: 0% 2%;
 }
+
