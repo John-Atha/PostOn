@@ -122,8 +122,6 @@ class PostText extends React.Component {
 }
 
 
-
-
 class OnePost extends React.Component {
     constructor(props) {
         super(props);
