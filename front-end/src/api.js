@@ -30,6 +30,10 @@ export const getOneUser = (id) => {
     const requestUrl = `/users/${id}`;
     return axios.get(requestUrl);
 }
+export const getOneUserByName = (username) => {
+    const requestUrl = `/users/name/${username}`;
+    return axios.get(requestUrl);
+}
 export const login = (params) => {
     const requestUrl = '/token';
     return axios.post(requestUrl, params, {

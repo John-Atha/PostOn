@@ -139,6 +139,21 @@ def OneUser(request, id):
             return JsonResponse({"error": f"Invalid user id ({id})."}, status=400)   
         return JsonResponse(user.serialize(request.build_absolute_uri('/')[:-1]))
 
+def OneUserName(request, username):
+    if request.method!="GET":
+        return JsonResponse({"error": "Only GET method is allowed."}, status=400)
+    else:
+        try:
+            username = str(username)
+        except Exception:
+            return JsonResponse({"error": f"Invalid username ({username})."}, status=400)   
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return JsonResponse({"error": f"Invalid username ({username})."}, status=400)   
+        return JsonResponse(user.serialize(request.build_absolute_uri('/')[:-1]))
+
+
 @api_view(['Put', 'Delete'])
 def OneUserMod(request, id):
     if request.method!="PUT" and request.method!="DELETE":
