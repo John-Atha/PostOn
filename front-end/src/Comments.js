@@ -178,7 +178,24 @@ class CommentText extends React.Component {
         super(props);
         this.state = {
             parts: this.props.parts,
+            showCard: [],
         }
+        this.cardShow = this.cardShow.bind(this);
+        this.cardHide = this.cardHide.bind(this);
+    }
+    cardShow = (i) => {
+        let temp = this.state.showCard.slice()
+        temp[i] = true
+        this.setState({
+            showCard: temp,
+        })
+    }
+    cardHide = (i) => {
+        let temp = this.state.showCard.slice()
+        temp[i] = false
+            this.setState({
+                showCard: temp,
+            })
     }
     componentDidUpdate(prevProps) {
         if (prevProps.parts!==this.props.parts) {
@@ -187,9 +204,19 @@ class CommentText extends React.Component {
             })
         }
     }
+    componentDidMount() {
+        if (this.state.parts.length) {
+            if (this.state.parts[-1].tag) {
+                if (this.state.parts[-1].tag.index) {
+                    for (let i=0; i<this.state.parts[-1].tag.index; i++) {
+                        this.state.showCard.push(false);
+                    }
+                }
+            }
+        }
+    }
+
     render() {
-        console.log("my parts");
-        console.log(this.state.parts);
         if (this.state.parts.length) {
             return (
                 this.state.parts.map((value, index) => {
@@ -197,14 +224,14 @@ class CommentText extends React.Component {
                         return(
                             <div key={index} className="flex-layout">
                                 <div className="owner-name tag"
-                                    onMouseEnter={this.cardShow}
-                                    onMouseLeave={this.cardHide}>
+                                    onMouseEnter={()=>this.cardShow(index)}
+                                    onMouseLeave={()=>this.cardHide(index)}>
                                     {value.tag.username}
-                                    {this.state.showCard &&
+                                    {this.state.showCard[index] &&
                                         <ProfileCard id={value.tag.id}
                                                 username={value.tag.username}
-                                                moto="moto"
-                                                photo="aa"
+                                                moto={value.tag.moto}
+                                                photo={value.tag.photo}
                                                 position={"top-close"}/>
                                     }
                                 </div>
@@ -216,14 +243,14 @@ class CommentText extends React.Component {
                         return(
                             <div key={index} className="flex-layout">
                                 <div className="owner-name tag"
-                                    onMouseEnter={this.cardShow}
-                                    onMouseLeave={this.cardHide}>
+                                    onMouseEnter={()=>this.cardShow(index)}
+                                    onMouseLeave={()=>this.cardHide(index)}>
                                     {value.tag.username}
-                                    {this.state.showCard &&
+                                    {this.state.showCard[index] &&
                                         <ProfileCard id={value.tag.id}
                                                 username={value.tag.username}
-                                                moto="moto"
-                                                photo="aa"
+                                                moto={value.tag.moto}
+                                                photo={value.tag.photo}
                                                 position={"top-close"}/>
                                     }
                                 </div>
@@ -298,7 +325,12 @@ class OneComment extends React.Component {
                         console.log(response);
                         let tempUsersList = [];
                         response.data.forEach(el => {
-                            tempUsersList.push(el.username)
+                            tempUsersList.push({
+                                "id": el.id,
+                                "username": el.username,
+                                "photo": el.photo,
+                                "moto": el.moto,
+                            })
                         })
                         this.setState({
                             usersList: tempUsersList,
@@ -320,31 +352,45 @@ class OneComment extends React.Component {
         console.log(comment_text);
         let s2 = comment_text.trim().split(/\s+/);
         console.log(s2);
+        let index=0;
         s2.forEach(el => {
             console.log(el)
             if (el.startsWith('@')) {    
-                this.state.usersList.forEach(sugg => {
+                let matched = false;
+                this.state.usersList.forEach(suggest => {
+                    let sugg=suggest.username;
                     if (el.startsWith(`@[${sugg}]`)) {
+                        matched = true;
                         console.log(`el: ${el}`)
                         let el2 = el.split(')')
                         //console.log(`el parts: ${el2}`)
                         let first = el2[0]
                         let dump = el2[1]
                         //console.log(`first: ${first}`)
-                        let username = first.split(']')[0].slice(2)
-                        let id = first.split(']')[1].slice(1)
-                        console.log(`username: ${username}`)
-                        console.log(`id: ${id}`)
+                        //let username = first.split(']')[0].slice(2)
+                        //let id = first.split(']')[1].slice(1)
+                        console.log(`username: ${suggest.username}`)
+                        console.log(`id: ${suggest.id}`)
                         console.log(`dump: ${dump}`)
                         final_comment_object.push({
                             "tag": {
-                                "username": username,
-                                "id": id,
+                                "username": suggest.username,
+                                "id": suggest.id,
+                                "index": index,
+                                "photo": suggest.photo,
+                                "moto": suggest.moto,
                             },
                             "dump": dump,
                         })
+                        index++;
                     }
                 })
+                if (matched===false) {
+                    final_comment_object.push({
+                        "tag": {},
+                        "dump": el,
+                    })    
+                }
             }
             else {
                 final_comment_object.push({
