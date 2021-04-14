@@ -1,6 +1,6 @@
 import React from "react";
 import "./Posts.css";
-import {getUsers, getPostsCommentsSample, getAllLikes, getLikesSample, LikePost, UnLikePost, editPost, deletePost, UserLikesPost, isLogged} from './api';
+import {getUsers, getPostsCommentsSample, getAllLikes, getLikesSample, LikePost, UnLikePost, editPost, deletePost, UserLikesPost, isLogged, DelPostTags, PostPostTag} from './api';
 import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
 import comment_icon from './images/comment.png';
@@ -261,7 +261,46 @@ class OnePost extends React.Component {
         this.filterPost = this.filterPost.bind(this);
         this.getUsernames = this.getUsernames.bind(this);
         this.askTags = this.askTags.bind(this);
+        this.updateTags = this.updateTags.bind(this);
+        this.removeTags = this.removeTags.bind(this);
+        this.addTags = this.addTags.bind(this);
     }
+
+    updateTags = () => {
+        console.log("I am updating the tags");
+        this.removeTags();
+        setTimeout(()=>{this.addTags();}, 1000);
+    }
+    removeTags = () => {
+        console.log("I am removing the old tags")
+        DelPostTags(this.state.id)
+        .then(response=> {
+            console.log(response);
+        })
+        .catch(err => {
+            console.log(err);
+        })
+    }
+    addTags = () => {
+        console.log("I am adding the new tags")
+        this.state.textParts.forEach(obj => {
+            if (obj.tag.id) {
+                let object = {
+                    "mentioned": {
+                        "id":  obj.tag.id,
+                    }
+                }
+                PostPostTag(this.state.id, object)
+                .then(response => {
+                    console.log(response);
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+            }
+        })
+    }
+
     askTags = () => {
         if (this.state.firstFocus) {
             this.setState({
@@ -286,7 +325,6 @@ class OnePost extends React.Component {
             })
         }
     }
-
     getUsernames = () => {
         if (this.state.text.includes('@[')) {
             this.setState({
@@ -408,7 +446,6 @@ class OnePost extends React.Component {
             textParts: final_post_object,
         })
     }
-
     checkLogged = () => {
         isLogged()
         .then(response => {
@@ -426,7 +463,6 @@ class OnePost extends React.Component {
             })
         })
     }
-
     checkLiked = () => {
         if (this.state.userId) {
             UserLikesPost(this.state.userId, this.state.id)
@@ -538,10 +574,12 @@ class OnePost extends React.Component {
                 console.log(`new text: ${this.state.text}`)
                 this.createNotification('success', 'Hello,', 'Post changed succesffully');
                 if (this.state.text.includes("@[")) {
-                    this.getUsernames();
+                    this.filterPost()
+                    setTimeout(()=>{this.updateTags();}, 1000);
                 }
                 else {
-                    this.filterPost();
+                    this.getUsernames();
+                    this.removeTags();
                 }
             })
             .catch(err => {
