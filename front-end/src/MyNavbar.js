@@ -54,6 +54,14 @@ class MyNavbar extends React.Component {
                 console.log("marking the follow as read")
                 category="follows"
                 break;
+            case "postMention":
+                console.log("marking the post mention as read")
+                category="posts_mentions"
+                break;
+            case "commentMention":
+                console.log("marking the comment mention as read")
+                category="comments_mentions"
+                break;
             default:
                 console.log("marking the like on the post as read")
                 category="likes"   
@@ -139,6 +147,12 @@ class MyNavbar extends React.Component {
         if (notif.post && notif.text) {
             return "comment";
         }
+        else if (notif.mentioned && notif.comment) {
+            return "commentMention";
+        }
+        else if (notif.mentioned && notif.post) {
+            return "postMention";
+        }
         else if (notif.comment) {
             return "commentlike";
         }
@@ -160,6 +174,12 @@ class MyNavbar extends React.Component {
         else if (this.categorize(notif)==="follow") {
             link=`/users/${notif.following.id}`;
         }
+        else if (this.categorize(notif)==="postMention") {
+            link=`/posts/${notif.post.id}`;
+        }
+        else if (this.categorize(notif)==="commentMention") {
+            link=`/posts/${notif.comment.post.id}`;
+        }
         else if (this.categorize(notif)==="postlike") {
             link=`/posts/${notif.post.id}`;
         }
@@ -167,17 +187,24 @@ class MyNavbar extends React.Component {
     }
     textGen = (notif) => {
         let text = "notification";
+        const reg = /[(][1-9]*[)]/;
         if (this.categorize(notif)==="comment") {
-            text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} commented on your post:\n${this.format(notif.text)}`;
+            text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} commented on your post:\n${this.format(notif.text).replaceAll('@[', '').replaceAll(']', '').replace(reg, ' ')}`;
         }
         else if (this.categorize(notif)==="commentlike") {
-            text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} liked you comment:\n${this.format(notif.comment.text)}`;
+            text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} liked your comment:\n${this.format(notif.comment.text).replaceAll('@[', '').replaceAll(']', '').replace(reg, ' ')}`;
         }
         else if (this.categorize(notif)==="follow") {
             text=`On ${this.dateShow(notif.date)},\n${notif.following.username} asked to follow you.`;
         }
         else if (this.categorize(notif)==="postlike") {
             text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} liked one of your posts`;
+        }
+        else if (this.categorize(notif)==="postMention") {
+            text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} mentioned you in a post`;
+        }
+        else if (this.categorize(notif)==="commentMention") {
+            text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} mentioned you in a comment:\n${this.format(notif.comment.text).replaceAll('@[', '').replaceAll(']', '').replace(reg, ' ')}`;
         }
         return text;
     }
