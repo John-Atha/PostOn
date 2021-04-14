@@ -41,6 +41,8 @@ class PostText extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (prevProps.parts!==this.props.parts) {
+            console.log("my props where updated to:")
+            console.log(this.props.parts);
             this.setState({
                 parts: [],
             })
@@ -313,6 +315,8 @@ class OnePost extends React.Component {
         }
     }
     filterPost = () => {
+        console.log("users i see")
+        console.log(this.state.usersList)
         console.log("i am filter post");
         let post_text = this.state.text;
         console.log("initial text")
@@ -531,8 +535,14 @@ class OnePost extends React.Component {
                     edit: false,
                     text_init: this.state.text,
                 })
+                console.log(`new text: ${this.state.text}`)
                 this.createNotification('success', 'Hello,', 'Post changed succesffully');
-                this.filterPost();
+                if (this.state.text.includes("@[")) {
+                    this.getUsernames();
+                }
+                else {
+                    this.filterPost();
+                }
             })
             .catch(err => {
                 console.log(err);
