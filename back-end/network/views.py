@@ -1522,20 +1522,30 @@ def DeletePostMentions(request, id):
         try:
             post = Post.objects.get(id=id)
         except Post.DoesNotExist:
-            return JsonResponse({"error" "Invalid post id"}, status=400)
+            return JsonResponse({"error": "Invalid post id"}, status=400)
         if request.user==post.owner:
             mentions = post.mentions.all()
             for mention in mentions:
                 mention.delete()
             return JsonResponse({"message": "Mentions deleted."}, status=200)
         else:
-            return JsonResponse({"error": "Only post's owner can modify it"})
+            return JsonResponse({"error": "Only post's owner can modify it"}, status=400)
     else:
         return JsonResponse({"error": "Only DEL method is allowed"}, status=400)
 
 @api_view(['Delete'])
 def DeleteCommentMentions(request, id):
     if request.method=="DELETE":
-        pass
+        try:
+            comment = Comment.objects.get(id=id)
+        except Comment.DoesNotExist:
+            return JsonResponse({"error": "Invalid comment id"}, status=400)
+        if request.user==comment.owner:
+            mentions = comment.mentions.all()
+            for mention in mentions:
+                mention.delete()
+            return JsonResponse({"message": "Mentions deleted."}, status=200)
+        else:
+            return JsonResponse({"error": "Only post's owner can modify it"}, status=400)
     else:
         return JsonResponse({"error": "Only DEL method is allowed"}, status=400)
