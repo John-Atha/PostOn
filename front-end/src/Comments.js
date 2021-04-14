@@ -182,6 +182,7 @@ class CommentText extends React.Component {
         }
         this.cardShow = this.cardShow.bind(this);
         this.cardHide = this.cardHide.bind(this);
+        this.updateList = this.updateList.bind(this);
     }
     cardShow = (i) => {
         let temp = this.state.showCard.slice()
@@ -200,8 +201,14 @@ class CommentText extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.parts!==this.props.parts) {
             this.setState({
-                parts: this.props.parts,
+                parts: [],
             })
+            setTimeout( ()=> {
+                this.setState({
+                    parts: this.props.parts,
+                });
+                this.updateList();    
+            }, 100)
         }
     }
     componentDidMount() {
@@ -214,7 +221,31 @@ class CommentText extends React.Component {
                 }
             }
         }
+        this.updateList();
     }
+
+    updateList = () => {
+        let additions = []
+        let counter = 0
+        for (let i=0; i<this.state.parts.length; i++) {
+            if (this.state.parts[i].tag.id && this.state.parts[i].dump==='\n') {
+                console.log(`found one at index ${i}:`)
+                console.log(this.state.parts[i]);
+                additions.push(i+counter+1);
+                counter++;
+            }
+        }
+        let copy = this.state.parts.slice();
+        additions.forEach(index => {
+            copy.splice(index, 0, {"tag": {}, "dump": "\n"});
+        })
+        this.setState({
+            parts: copy,
+        })
+        console.log("NEW PARTS")
+        console.log(copy);
+    }
+
 
     render() {
         if (this.state.parts.length) {
@@ -241,7 +272,7 @@ class CommentText extends React.Component {
                     }
                     else if (value.tag.id && value.dump){
                         return(
-                            <div key={index} className="flex-layout">
+                            <div key={index} className="flex-layout with-whitespace">
                                 <div className="owner-name tag"
                                     onMouseEnter={()=>this.cardShow(index)}
                                     onMouseLeave={()=>this.cardHide(index)}>
@@ -254,16 +285,61 @@ class CommentText extends React.Component {
                                                 position={"top-close"}/>
                                     }
                                 </div>
-                                {" "+value.dump+" "}
+                                { value.dump==='\n' &&
+                                    <div className="break"></div>
+                                
+                                }
+                                { value.dump!=='\n' &&
+                                    <div>
+                                        {value.dump}
+                                    </div>
+                                }
+                                    
                             </div>
                         )
                     }
                     else {
-                        return(
-                            <div key={index}>
-                                {value.dump+" "}
-                            </div>
-                        )
+                        let text = value.dump;
+                        if (text.endsWith('\n')) {
+                            text = text.split('\n');
+                            console.log("text to be shown:")
+                            console.log(text);
+                            return(
+                                text.map((value, index)=> {
+                                    console.log("text value:")
+                                    console.log(value);
+                                    if (value==="") {
+                                        return(
+                                            <div key={String(index)+String(value)}
+                                                className="break">
+                                            </div>
+                                        )
+                                    }
+                                    else {
+                                        return(
+                                            <div key={String(index)+String(value)}>
+                                                {value+" "}
+                                            </div>
+                                        )
+                                    }
+                                })
+                            )
+                        }
+                        else if (text.includes('\n')) {
+                            text = text.split('\n');
+                            return(
+                                <div key={index}>
+                                    {value.dump+" "}
+                                </div>
+                            )
+                        }
+                        else {
+                            return(
+                                <div key={index}>
+                                    {value.dump}
+                                </div>
+                            )
+                        }
                     }
                 })
             )
@@ -350,14 +426,46 @@ class OneComment extends React.Component {
     }
 
     filterComment = () => {
+        console.log("i am filter post");
         let comment_text = this.state.comment.text;
-        let final_comment_object = [];
-        comment_text = comment_text.replaceAll("@", " @");
+        console.log("initial text")
+        let final_post_object = [];
+        let s3 = [];
+        comment_text = comment_text.replaceAll(")@", ") @");
         console.log(comment_text);
-        let s2 = comment_text.trim().split(/\s+/);
-        console.log(s2);
+        //let s2 = comment_text.trim().split(/\s+/);
+        let s2 = comment_text.split(' ');
+        for (let i=0; i<s2.length; i++) {
+            s2[i]+=' ';
+        }
+        console.log("after fixing spaces")
+        console.log(s2)
+        for (let i=0; i<s2.length; i++) {
+            if (s2[i]!==[' ']) {
+                console.log("sublist")
+                console.log(s2[i])
+                let subList = s2[i].split('\n');
+                console.log(subList)
+                if (subList.length>1) {
+                    for (let j=0; j<subList.length-1; j++) {
+                        if (!subList[j].endsWith('\n')) {
+                            subList[j]+='\n';
+                        }    
+                        s3.push(subList[j]);
+                    }
+                    s3.push(subList[subList.length-1])
+                }
+                else {
+                    s3.push(subList);
+                }
+            }
+        }
+        console.log("BROKEN LIST")
+        //console.log(s2);
+        s3 = s3.flat();
+        console.log(s3);
         let index=0;
-        s2.forEach(el => {
+        s3.forEach(el => {
             console.log(el)
             if (el.startsWith('@')) {    
                 let matched = false;
@@ -376,7 +484,7 @@ class OneComment extends React.Component {
                         console.log(`username: ${suggest.username}`)
                         console.log(`id: ${suggest.id}`)
                         console.log(`dump: ${dump}`)
-                        final_comment_object.push({
+                        final_post_object.push({
                             "tag": {
                                 "username": suggest.username,
                                 "id": suggest.id,
@@ -390,23 +498,23 @@ class OneComment extends React.Component {
                     }
                 })
                 if (matched===false) {
-                    final_comment_object.push({
+                    final_post_object.push({
                         "tag": {},
                         "dump": el,
                     })    
                 }
             }
             else {
-                final_comment_object.push({
+                final_post_object.push({
                     "tag": {},
                     "dump": el,
                 })
             }
         })
         console.log("FINAL COMMENT:")
-        console.log(final_comment_object)
+        console.log(final_post_object)
         this.setState({
-            textParts: final_comment_object,
+            textParts: final_post_object,
         })
     }
 
@@ -619,7 +727,7 @@ class OneComment extends React.Component {
                         </div>
                         <div className="post-date comment-date">at {commentDatetime}</div>
                     </div>
-                    <div className="text-comment flex-layout">
+                    <div className="text-comment flex-layout with-whitespace">
                         {this.state.hasTag &&
                             <CommentText parts={this.state.textParts} />  
                         }
