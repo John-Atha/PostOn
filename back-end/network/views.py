@@ -1017,6 +1017,8 @@ def UserAllAsRead(request, id):
             LikesComments = LikeComment.objects.filter(comment__in=myComments).filter(seen=False)
             LikesPosts = Like.objects.filter(post__in=myPosts).filter(seen=False)
             CommentsPosts = Comment.objects.filter(post__in=myPosts).filter(seen=False)
+            PostMentions = PostMention.objects.filter(mentioned=user).filter(seen=False)
+            CommentMentions = CommentMention.objects.filter(mentioned=user).filter(seen=False)
             for foll in follows:
                 foll.seen=True
                 foll.save()
@@ -1029,6 +1031,12 @@ def UserAllAsRead(request, id):
             for comm in CommentsPosts:
                 comm.seen=True
                 comm.save()
+            for postment in PostMentions:
+                postment.seen=True
+                postment.save()
+            for commentment in CommentMentions:
+                commentment.seen=True
+                commentment.save()
             return JsonResponse({"message": "Everything marked as read successfully"}, status=200)
         else:
             return JsonResponse({"error": "You cannot mark as a read another user's notifications"}, status=400)

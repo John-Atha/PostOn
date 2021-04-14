@@ -86,6 +86,6 @@ urlpatterns = [
     path("Jwitter/api/comments/<int:id>/mentions/add", views.PostCommentMentions, name="PostCommentMentions"),
     path("Jwitter/api/posts/<int:id>/mentions/del", views.DeletePostMentions, name="DeletePostMentions"),
     path("Jwitter/api/comments/<int:id>/mentions/del", views.DeleteCommentMentions, name="DeleteCommentMentions"),
-    path("Jwitter/api/posts/mentions/<int:id>/mod", views.PutPostMentions, name="PutPostMentions"),
-    path("Jwitter/api/comments/mentions/<int:id>/mod", views.PutCommentMentions, name="PutCommentMentions"),
+    path("Jwitter/api/posts_mentions/<int:id>/mod", views.PutPostMentions, name="PutPostMentions"),
+    path("Jwitter/api/comments_mentions/<int:id>/mod", views.PutCommentMentions, name="PutCommentMentions"),
 ]
