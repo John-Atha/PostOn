@@ -982,8 +982,10 @@ def UserNotifications(request, id):
             LikesComments = LikeComment.objects.filter(comment__in=myComments).exclude(owner=user)#.filter(seen=False)
             LikesPosts = Like.objects.filter(post__in=myPosts).exclude(owner=user)#.filter(seen=False)
             CommentsPosts = Comment.objects.filter(post__in=myPosts).exclude(owner=user)#.filter(seen=False)
+            PostMentions = PostMention.objects.filter(mentioned=user).exclude(owner=user)
+            CommentMentions = CommentMention.objects.filter(mentioned=user).exclude(owner=user)
             notifications = sorted(
-                chain(follows, LikesComments, LikesPosts, CommentsPosts),
+                chain(follows, LikesComments, LikesPosts, CommentsPosts, PostMentions, CommentMentions),
                 key = attrgetter('date'),
                 reverse=True)
             result = paginate(request.GET.get("start"), request.GET.get("end"), notifications)
