@@ -257,6 +257,10 @@ def OnePostMod(request, id):
                         post.date = str(datetime.now())
                         post.save()
                         return JsonResponse(post.serialize(request.build_absolute_uri('/')[:-1]), status=200)
+                    else:
+                        return JsonResponse(post.serialize(request.build_absolute_uri('/')[:-1]), status=200)
+                else:
+                    return JsonResponse({"error": "No text given"}, status=400)
             else:
                 return JsonResponse({"error": "Only the post's owner can modify it"}, status=400)
         elif request.method=="DELETE":
