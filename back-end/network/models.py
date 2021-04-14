@@ -124,3 +124,39 @@ class Follow(models.Model):
             "date": self.date,
             "seen": self.seen,
         } 
+
+class PostMention(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="has_post_mentioned", null=False)
+    mentioned = models.ForeignKey(User, on_delete=models.CASCADE, related_name="is_post_mentioned", null=False)
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="mentions", null=False)
+    date = models.DateTimeField(default=datetime.now)
+    seen = models.BooleanField(default=False)
+    def __str__(self):
+        return f"{self.owner}, {self.mentioned}, {self.post}"
+    def serialize(self, path=""):
+        return {
+            "id": self.id,
+            "owner": self.owner.serialize(path),
+            "mentioned": self.mentioned.serialize(path),
+            "post": self.post.serialize(path),
+            "date": self.date,
+            "seen": self.seen,
+        }
+
+class CommentMention(models.Model):
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="has_comment_mentioned", null=False)
+    mentioned = models.ForeignKey(User, on_delete=models.CASCADE, related_name="is_comment_mentioned", null=False)
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE, related_name="mentions", null=False)
+    date = models.DateTimeField(default=datetime.now)
+    seen = models.BooleanField(default=False)
+    def __str__(self):
+        return f"{self.owner}, {self.mentioned}, {self.post}"
+    def serialize(self, path=""):
+        return {
+            "id": self.id,
+            "owner": self.owner.serialize(path),
+            "mentioned": self.mentioned.serialize(path),
+            "comment": self.comment.serialize(path),
+            "date": self.date,
+            "seen": self.seen,
+        }

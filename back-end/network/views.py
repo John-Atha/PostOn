@@ -1459,3 +1459,73 @@ def PostPostPhoto(request, id):
             return JsonResponse({"error": "You have to be the owner of a post to update it."}, status=400)
     else:
         return JsonResponse({"error": "Only POST method is allowed."}, status=400)
+
+@api_view(['Post'])
+def PostPostMentions(request, id):
+    if request.method=="POST":
+        try:
+            post = Post.objects.get(id=id)
+        except Post.DoesNotExist:
+            return JsonResponse({"error": "Invalid post id."}, status=400)
+        if request.user==post.owner:
+            data = json.loads(request.body)
+            if data.get("mentioned"):
+                if data.get("mentioned").get("id"):
+                    mentioned_id = data.get("mentioned").get("id")
+                    try:
+                        mentioned = User.objects.get(id=mentioned_id)
+                    except User.DoesNotExist:
+                        return JsonResponse({"error": "Invalid mentioned user id."}, status=400)
+                    mention = PostMention(owner=request.user, mentioned=mentioned, post=post)
+                    mention.save()
+                    return JsonResponse(mention.serialize(request.build_absolute_uri('/')[:-1]), status=200)
+                else:
+                    return JsonResponse({"error": "No mentioned user id given."})
+            else:
+                return JsonResponse({"error": "No mentioned user id given."})
+        else:
+            return JsonResponse({"error": "Only the post's owner can modify it"}, status=400)
+    else:
+        return JsonResponse({"error": "Only POST method is allowed"}, status=400)
+
+@api_view(['Post'])
+def PostCommentMentions(request, id):
+    if request.method=="POST":
+        try:
+            comment = Comment.objects.get(id=id)
+        except Comment.DoesNotExist:
+            return JsonResponse({"error": "Invalid comment id."}, status=400)
+        if request.user==comment.owner:
+            data = json.loads(request.body)
+            if data.get("mentioned"):
+                if data.get("mentioned").get("id"):
+                    mentioned_id = data.get("mentioned").get("id")
+                    try:
+                        mentioned = User.objects.get(id=mentioned_id)
+                    except User.DoesNotExist:
+                        return JsonResponse({"error": "Invalid mentioned user id."}, status=400)
+                    mention = CommentMention(owner=request.user, mentioned=mentioned, comment=comment)
+                    mention.save()
+                    return JsonResponse(mention.serialize(request.build_absolute_uri('/')[:-1]), status=200)
+                else:
+                    return JsonResponse({"error": "No mentioned user id given."})
+            else:
+                return JsonResponse({"error": "No mentioned user id given."})
+        else:
+            return JsonResponse({"error": "Only the comment's owner can modify it"}, status=400)
+    else:
+        return JsonResponse({"error": "Only POST method is allowed"}, status=400)
+
+@api_view(['Delete'])
+def DeletePostMentions(request, id):
+    if request.method=="DELETE":
+        pass
+    else:
+        return JsonResponse({"error": "Only DEL method is allowed"}, status=400)
+
+@api_view(['Delete'])
+def DeleteCommentMentions(request, id):
+    if request.method=="DELETE":
+        pass
+    else:
+        return JsonResponse({"error": "Only DEL method is allowed"}, status=400)

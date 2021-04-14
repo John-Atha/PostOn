@@ -82,4 +82,8 @@ urlpatterns = [
     path("Jwitter/api/stats/likecomments/daily", views.DailyLikeCommentsStats, name="DailyLikeCommentsStats"),
     path("Jwitter/api/users/<int:id>/photo/mod", views.UserPostPhoto, name="UserPostPhoto"),
     path("Jwitter/api/posts/<int:id>/photo/mod", views.PostPostPhoto, name="PostPostPhoto"),
+    path("Jwitter/api/posts/<int:id>/mentions/add", views.PostPostMentions, name="PostPostMentions"),
+    path("Jwitter/api/comments/<int:id>/mentions/add", views.PostCommentMentions, name="PostCommentMentions"),
+    path("Jwitter/api/posts/<int:id>/mentions/del", views.DeletePostMentions, name="DeletePostMentions"),
+    path("Jwitter/api/comments/<int:id>/mentions/del", views.DeleteCommentMentions, name="DeleteCommentMentions"),
 ]

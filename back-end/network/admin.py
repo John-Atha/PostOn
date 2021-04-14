@@ -77,6 +77,34 @@ class FollowAdmin(admin.ModelAdmin):
 class CountryAdmin(admin.ModelAdmin):
     list_display = ("id", "title", "code")
 
+class PostMentionAdmin(admin.ModelAdmin):
+    list_display = ("id", "owner_id", "owner_username", "mentioned_id", "mentioned_username", "post_id")
+    def owner_id(self, obj:PostMention):
+        return f"{obj.owner.id}"
+    def owner_username(self, obj:PostMention):
+        return f"{obj.owner.username}"
+    def mentioned_id(self, obj:PostMention):
+        return f"{obj.mentioned.id}"
+    def mentioned_username(self, obj:PostMention):
+        return f"{obj.mentioned.username}"
+    def post_id(self, obj:PostMention):
+        return f"{obj.post.id}"
+
+class CommentMentionAdmin(admin.ModelAdmin):
+    list_display = ("id", "owner_id", "owner_username", "mentioned_id", "mentioned_username", "comment_id")
+    def owner_id(self, obj:CommentMention):
+        return f"{obj.owner.id}"
+    def owner_username(self, obj:CommentMention):
+        return f"{obj.owner.username}"
+    def mentioned_id(self, obj:CommentMention):
+        return f"{obj.mentioned.id}"
+    def mentioned_username(self, obj:CommentMention):
+        return f"{obj.mentioned.username}"
+    def post_id(self, obj:CommentMention):
+        return f"{obj.comment.id}"
+
+admin.site.register(CommentMention, CommentMentionAdmin)
+admin.site.register(PostMention, PostMentionAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(Post, PostAdmin)
 admin.site.register(Comment, CommentAdmin)
