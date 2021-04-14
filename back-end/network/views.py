@@ -1529,7 +1529,7 @@ def DeletePostMentions(request, id):
             mentions = post.mentions.all()
             for mention in mentions:
                 mention.delete()
-            return JsonResponse({"message": "Mentions deleted."}, status=200)
+            return JsonResponse({"message": "Mentions deleted sucessfully."}, status=200)
         else:
             return JsonResponse({"error": "Only post's owner can modify it"}, status=400)
     else:
@@ -1546,8 +1546,40 @@ def DeleteCommentMentions(request, id):
             mentions = comment.mentions.all()
             for mention in mentions:
                 mention.delete()
-            return JsonResponse({"message": "Mentions deleted."}, status=200)
+            return JsonResponse({"message": "Mentions deleted sucessfully."}, status=200)
         else:
             return JsonResponse({"error": "Only post's owner can modify it"}, status=400)
     else:
         return JsonResponse({"error": "Only DEL method is allowed"}, status=400)
+
+@api_view(['Put'])
+def PutPostMentions(request, id):
+    if request.method=="PUT":
+        try:
+            mention = PostMention.objects.get(id=id)
+        except PostMention.DoesNotExist:
+            return JsonResponse({"error": "Invalid mention id"}, status=400)
+        if request.user==mention.mentioned:
+            mention.seen = True
+            mention.save()
+            return JsonResponse({"message": "Marked as seen sucessfully."})
+        else:
+            return JsonResponse({"error": "Only the mentioned user can mark the mention as seen"}, status=400)
+    else:
+        return JsonResponse({"error": "Only PUT method is allowed."}, status=400)
+
+@api_view(['Put'])
+def PutCommentMentions(request, id):
+    if request.method=="PUT":
+        try:
+            mention = CommentMention.objects.get(id=id)
+        except CommentMention.DoesNotExist:
+            return JsonResponse({"error": "Invalid mention id"}, status=400)
+        if request.user==mention.mentioned:
+            mention.seen = True
+            mention.save()
+            return JsonResponse({"message": "Marked as seen sucessfully."})
+        else:
+            return JsonResponse({"error": "Only the mentioned user can mark the mention as seen"}, status=400)
+    else:
+        return JsonResponse({"error": "Only PUT method is allowed."}, status=400)
