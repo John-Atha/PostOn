@@ -443,3 +443,24 @@ export const UserDelete = (id) => {
         headers: headers
     })
 }
+export const PostPostTag = (postId, obj) => {
+    const headers = buildAuthHeader();
+    const requestUrl = `posts/${postId}/mentions/add`;
+    return axios.post(requestUrl, obj, {
+        headers: headers,
+    })
+}
+export const DelPostTags = (postId) => {
+    const headers = buildAuthHeader();
+    const requestUrl = `posts/${postId}/mentions/del`;
+    return axios.delete(requestUrl, {
+        headers: headers,
+    })
+}
+export const PostCommentTag = (commentId, obj) => {
+    const headers = buildAuthHeader();
+    const requestUrl = `comments/${commentId}/mentions/add`;
+    return axios.post(requestUrl, obj, {
+        headers: headers,
+    })
+}
