@@ -8,6 +8,18 @@ from rest_framework.decorators import api_view
 from .models import *
 from datetime import datetime
 import imghdr
+import string
+
+def filterUsername(name):
+    allowed = list(string.ascii_letters)
+    allowed.append('_')
+    allowed.append('.')
+    digits = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+    allowed = allowed + digits
+    for c in name:
+        if c not in allowed:
+            return False
+    return True
 
 def paginate(start, end, items):
     if start is not None:
@@ -117,7 +129,10 @@ def register(request):
         confirmation = request.POST["confirmation"]
         if password != confirmation:
             return JsonResponse({"error": "Passwords are different"}, status=400)
-
+        if not len(username):
+            return JsonResponse({"error": "Username cannot be empty"}, status=400)
+        if not filterUsername(username):
+            return JsonResponse({"error": "Username can only contain letters, digits, '.' and '_'."}, status=400)
         # Attempt to create new user
         try:
             user = User.objects.create_user(username, email, password)
