@@ -64,7 +64,6 @@ class Posts extends React.Component {
             })
         }
     }
-
     addTags = (text) => {
         // gets post id from: this.state.newId
         // gets tagsList from: this.state.tagsToPost
@@ -87,8 +86,6 @@ class Posts extends React.Component {
             })
         }, 200)
     }
-
-
     filterPost = (text) => {
         console.log("users i see")
         console.log(this.state.usersList)
@@ -221,6 +218,7 @@ class Posts extends React.Component {
             this.createNotification('danger', 'Sorry,', 'You cannot create an empty post.')
         }
         else {
+            this.createNotification('success', 'Please wait,', 'We are uploading your post.')
             // if no text is given
             if (!this.state.newText.length) {
                 // just create the post with empty text

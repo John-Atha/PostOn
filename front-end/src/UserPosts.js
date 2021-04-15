@@ -209,6 +209,7 @@ class UserPosts extends React.Component {
             this.createNotification('danger', 'Sorry,', 'You cannot create an empty post.')
         }
         else {
+            this.createNotification('success', 'Please wait,', 'We are uploading your post.')
             // if no text is given
             if (!this.state.newText.length) {
                 // just create the post with empty text
