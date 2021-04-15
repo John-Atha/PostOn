@@ -7,3 +7,4 @@ npm i canvasjs-react-charts
 npm i react-notifications-component
 npm i jquery popper.js
 npm i react-mentions
+npm i react-player
