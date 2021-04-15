@@ -34,6 +34,11 @@
         min-width: 150px;
         margin-left: 5vw;    
     }
+    .react-player {
+        position: relative !important;
+        width: 90vw !important;
+        height: 60vh !important; 
+    }
 }
 @media only screen and (min-width:450px) {
     .post-media {
@@ -63,6 +68,12 @@
         min-width: 150px;
         margin-left: 25%;    
     }
+    .react-player {
+        position: relative !important;
+        width: 60vw !important;
+        height: 50vh !important; 
+    }
+
 }
 @media only screen and (max-width: 950px) {
     .explore-container {
@@ -259,4 +270,11 @@
 .margin-side {
     margin: 0% 2%;
 }
+.player-wrapper {
+    width: auto; 
+    height: auto; 
+}
 
+.react-player > div {
+    position: absolute; 
+}

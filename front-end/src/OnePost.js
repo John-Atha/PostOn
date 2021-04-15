@@ -12,7 +12,8 @@ import ProfileCard from './ProfileCard';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 import OutsideClickHandler from 'react-outside-click-handler';
-import { MentionsInput, Mention } from 'react-mentions'
+import { MentionsInput, Mention } from 'react-mentions';
+import ReactPlayer from 'react-player';
 
 class PostTextNoTags extends React.Component {
     constructor(props) {
@@ -20,8 +21,8 @@ class PostTextNoTags extends React.Component {
         this.state = {
             text: this.props.text,
             parts: [],
+            iframes: [],
         }
-        this.filter = this.filter.bind(this);
         this.filter1 = this.filter1.bind(this);
         this.filter2 = this.filter2.bind(this);
         this.isUrl = this.isUrl.bind(this);
@@ -65,7 +66,18 @@ class PostTextNoTags extends React.Component {
     }
     filter2 = () => {
         let copy = this.state.parts.slice()
+        let iframesTemp = [];
         copy.forEach(el => {
+            console.log(`checking ${el} from iframing`)
+            if (el.includes("https://www.youtube.com") || el.includes("https://youtu.be")) {
+                console.log("is is an iframe")    
+                /*if (el.endsWith(' ') || el.endsWith('\n')) {
+                        iframesTemp.push(el.slice(el.length-12, el.length-2));
+                }
+                else {*/
+                    iframesTemp.push(el);
+                //}
+            }
             if (el!=='\n' && el!==' ') {
                 if (el.endsWith('\n')) {
                     let index = copy.indexOf(el);
@@ -79,24 +91,30 @@ class PostTextNoTags extends React.Component {
         })
         this.setState({
             parts: copy.flat(),
+            iframes: [],
         })
         console.log("final filtered:")
         console.log(copy.flat())
+        this.setState({
+            iframes: iframesTemp,
+        })
+        console.log("iframes found:")
+        console.log(this.state.iframes)
+        console.log(iframesTemp)
     }
-    filter = () => {
-        this.filter1();
-    }
+
     componentDidMount() {
-        this.filter();
+        this.filter1();
         console.log("mou hrthe text:")
         console.log(this.state.text)
+
     }
     componentDidUpdate(prevProps) {
         if (prevProps.text!==this.props.text) {
             this.setState({
                 text: this.props.text,
             })
-            this.filter();
+            this.filter1();
         }
     }
     isUrl = (str) => {
@@ -108,40 +126,51 @@ class PostTextNoTags extends React.Component {
         if (!(this.state.parts.length===1 && this.state.parts[0]===" ") && this.state.parts.length) {
             console.log("I have length")
             return(
-                this.state.parts.map((value, index) => {
-                    console.log(`part: ${value}`)
-                        if (this.isUrl(value)) {
-                            console.log("I am a url")
+                <div>
+                    <div className="flex-layout with-whitespace">
+                        {this.state.parts.map((value, index) => {
+                        console.log(`part: ${value}`)
+                            if (this.isUrl(value)) {
+                                console.log("I am a url")
+                                    return(
+                                        <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" 
+                                        href={(value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0, value.length-1) : value}>{value+ " "}</a>
+                                    )
+                            }
+                            else if (value===' ') {
+                                console.log("I am a space")
                                 return(
-                                    <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" 
-                                       href={(value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0, value.length-1) : value}>{value+ " "}</a>
+                                    <div key={index}>&nbsp;</div>
                                 )
-                        }
-                        else if (value===' ') {
-                            console.log("I am a space")
+                            }
+                            else if (value==='\n') {
+                                console.log("I am a new line")
+                                return(
+                                    <div key={index} className="break"></div>
+                                )
+                            }
+                            else if (value==='') {
+                                console.log("I am nothing")
+                                return(
+                                    <div key={index}>NOTHING</div>
+                                )
+                            }
+                            else {
+                                console.log("I am a real string")
+                                return(
+                                    <div key={index}>{value}</div>
+                                )
+                            }
+                        })}
+                    </div>
+                    <div className="player-wrapper margin-top-small">
+                        {this.state.iframes.map((value, index) => {
                             return(
-                                <div key={index}>&nbsp;</div>
+                                <ReactPlayer url={value} key={index} className="react-player"/>
                             )
-                        }
-                        else if (value==='\n') {
-                            console.log("I am a new line")
-                            return(
-                                <div key={index} className="break"></div>
-                            )
-                        }
-                        else if (value==='') {
-                            console.log("I am nothing")
-                            return(
-                                <div key={index}>NOTHING</div>
-                            )
-                        }
-                        else {
-                            console.log("I am a real string")
-                            return(
-                                <div key={index}>{value}</div>
-                            )
-                        }
-                })
+                        })}
+                    </div>
+                </div>
             )
         }
         /*if (false) {
@@ -163,6 +192,7 @@ class PostText extends React.Component {
         this.state = {
             parts: this.props.parts,
             showCard: [],
+            iframes: [],
         }
         this.cardShow = this.cardShow.bind(this);
         this.cardHide = this.cardHide.bind(this);
@@ -217,6 +247,7 @@ class PostText extends React.Component {
     updateList = () => {
         let additions = []
         let counter = 0
+        let iframesTemp = [];
         for (let i=0; i<this.state.parts.length; i++) {
             if (this.state.parts[i].tag.id && this.state.parts[i].dump==='\n') {
                 console.log(`found one at index ${i}:`)
@@ -225,15 +256,35 @@ class PostText extends React.Component {
                 counter++;
             }
         }
-        let copy = this.state.parts.slice();
+        let copy=this.state.parts.slice();
+        copy.forEach(el => {
+            console.log(`checking ${el} from iframing`)
+            if (el.dump.includes("https://www.youtube.com") || el.dump.includes("https://youtu.be")) {
+                console.log("is is an iframe")    
+                /*if (el.endsWith(' ') || el.endsWith('\n')) {
+                        iframesTemp.push(el.slice(el.length-12, el.length-2));
+                }
+                else {*/
+                    iframesTemp.push(el.dump);
+                //}
+            }
+        })
+        //let copy = this.state.parts.slice();
         additions.forEach(index => {
             copy.splice(index, 0, {"tag": {}, "dump": "\n"});
         })
         this.setState({
             parts: copy,
+            iframes: [],
         })
         console.log("NEW PARTS")
         console.log(copy);
+        this.setState({
+            iframes: iframesTemp,
+        })
+        console.log("iframes found:")
+        console.log(this.state.iframes)
+        console.log(iframesTemp)
     }
 
     render() {
@@ -242,116 +293,127 @@ class PostText extends React.Component {
             console.log(`I am a post with parts:`)
             console.log(this.state.parts)
             return (
-                this.state.parts.map((value, index) => {
-                    if (value.tag.id && !value.dump) {
-                        return(
-                            <div key={index} className="flex-layout">
-                                <div className="owner-name tag"
-                                    onMouseEnter={()=>this.cardShow(index)}
-                                    onMouseLeave={()=>this.cardHide(index)}>
-                                    {value.tag.username}
-                                    {this.state.showCard[index] &&
-                                        <ProfileCard id={value.tag.id}
-                                                username={value.tag.username}
-                                                moto={value.tag.moto}
-                                                photo={value.tag.photo}
-                                                position={"top-close"}/>
-                                    }
-                                </div>
-                                <div>&nbsp;</div>
-                            </div>
-                        )
-                    }
-                    else if (value.tag.id && value.dump){
-                        return(
-                            <div key={index} className="flex-layout with-whitespace">
-                                <div className="owner-name tag"
-                                    onMouseEnter={()=>this.cardShow(index)}
-                                    onMouseLeave={()=>this.cardHide(index)}>
-                                    {value.tag.username}
-                                    {this.state.showCard[index] &&
-                                        <ProfileCard id={value.tag.id}
-                                                username={value.tag.username}
-                                                moto={value.tag.moto}
-                                                photo={value.tag.photo}
-                                                position={"top-close"}/>
-                                    }
-                                </div>
-                                { value.dump==='\n' &&
-                                    <div className="break"></div>
-                                
-                                }
-                                { value.dump!=='\n' &&
-                                    <div>
-                                        {value.dump}
-                                    </div>
-                                }
-                                    
-                            </div>
-                        )
-                    }
-                    else {
-                        let text = value.dump;
-                        if (text.endsWith('\n')) {
-                            text = text.split('\n');
-                            console.log("text to be shown:")
-                            console.log(text);
-                            return(
-                                text.map((value, index)=> {
-                                    console.log("text value:")
-                                    console.log(value);
-                                    if (value==="") {
-                                        return(
-                                            <div key={String(index)+String(value)}
-                                                className="break">
-                                            </div>
-                                        )
-                                    }
-                                    else {
-                                        if (this.isUrl(value)) {
-                                            console.log("I am a url")
-                                            return(
-                                                <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace"
-                                                   href={(value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0,value.length-1) : value}>{value+" "}</a>
-                                            )
-                                        }
-                                        else {
-                                            return(
-                                                <div key={String(index)+String(value)}>
-                                                    {value+" "}
-                                                </div>
-                                            )   
-                                        }
-                                    }
-                                })
-                            )
-                        }
-                        else if (text.includes('\n')) {
-                            text = text.split('\n');
-                            return(
-                                <div key={index}>
-                                    {value.dump+" "}
-                                </div>
-                            )
-                        }
-                        else {
-                            if (this.isUrl(value.dump)) {
-                                console.log("I am a url")
+                <div>
+                    <div className="flex-layout with-whitespace">
+                        {this.state.parts.map((value, index) => {
+                            if (value.tag.id && !value.dump) {
                                 return(
-                                    <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" 
-                                       href={(value.dump.endsWith(' ') || value.dump.endsWith('\n')) ? value.dump.slice(0,value.dump.length-1) : value.dump}>{value.dump+" "}</a>
+                                    <div key={index} className="flex-layout">
+                                        <div className="owner-name tag"
+                                            onMouseEnter={()=>this.cardShow(index)}
+                                            onMouseLeave={()=>this.cardHide(index)}>
+                                            {value.tag.username}
+                                            {this.state.showCard[index] &&
+                                                <ProfileCard id={value.tag.id}
+                                                        username={value.tag.username}
+                                                        moto={value.tag.moto}
+                                                        photo={value.tag.photo}
+                                                        position={"top-close"}/>
+                                            }
+                                        </div>
+                                        <div>&nbsp;</div>
+                                    </div>
+                                )
+                            }
+                            else if (value.tag.id && value.dump){
+                                return(
+                                    <div key={index} className="flex-layout with-whitespace">
+                                        <div className="owner-name tag"
+                                            onMouseEnter={()=>this.cardShow(index)}
+                                            onMouseLeave={()=>this.cardHide(index)}>
+                                            {value.tag.username}
+                                            {this.state.showCard[index] &&
+                                                <ProfileCard id={value.tag.id}
+                                                        username={value.tag.username}
+                                                        moto={value.tag.moto}
+                                                        photo={value.tag.photo}
+                                                        position={"top-close"}/>
+                                            }
+                                        </div>
+                                        { value.dump==='\n' &&
+                                            <div className="break"></div>
+                                        
+                                        }
+                                        { value.dump!=='\n' &&
+                                            <div>
+                                                {value.dump}
+                                            </div>
+                                        }
+                                            
+                                    </div>
                                 )
                             }
                             else {
-                                return(
-                                    <div key={index}>
-                                        {value.dump}
-                                    </div>
-                                )    
+                                let text = value.dump;
+                                if (text.endsWith('\n')) {
+                                    text = text.split('\n');
+                                    console.log("text to be shown:")
+                                    console.log(text);
+                                    return(
+                                        text.map((value, index)=> {
+                                            console.log("text value:")
+                                            console.log(value);
+                                            if (value==="") {
+                                                return(
+                                                    <div key={String(index)+String(value)}
+                                                        className="break">
+                                                    </div>
+                                                )
+                                            }
+                                            else {
+                                                if (this.isUrl(value)) {
+                                                    console.log("i am a url with tags")
+                                                    return(
+                                                        <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace"
+                                                        href={(value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0,value.length-1) : value}>{value+" "}</a>
+                                                    )
+                                                }
+                                                else {
+                                                    return(
+                                                        <div key={String(index)+String(value)}>
+                                                            {value+" "}
+                                                        </div>
+                                                    )   
+                                                }
+                                            }
+                                        })
+                                    )
+                                }
+                                else if (text.includes('\n')) {
+                                    text = text.split('\n');
+                                    return(
+                                        <div key={index}>
+                                            {value.dump+" "}
+                                        </div>
+                                    )
+                                }
+                                else {
+                                    if (this.isUrl(value.dump)) {
+                                        console.log("I am a url with tags")
+                                        return(
+                                            <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" 
+                                            href={(value.dump.endsWith(' ') || value.dump.endsWith('\n')) ? value.dump.slice(0,value.dump.length-1) : value.dump}>{value.dump+" "}</a>
+                                        )
+                                    }
+                                    else {
+                                        return(
+                                            <div key={index}>
+                                                {value.dump}
+                                            </div>
+                                        )    
+                                    }
+                                }
                             }
-                        }
-                    }
-                })
+                        })}
+                    </div>
+                    <div className="player-wrapper margin-top-small">
+                        {this.state.iframes.map((value, index) => {
+                            return(
+                                <ReactPlayer url={value} key={index} className="react-player"/>
+                            )
+                        })}
+                    </div>
+                </div>
             )
         }
         else {
