@@ -1,6 +1,6 @@
 import React from "react";
 import "./Posts.css";
-import {getUsers, isLogged, getUsersPosts, PostPostText, PostPostPhoto, deletePost} from './api';
+import {getUsers, isLogged, getUsersPosts, PostPostText, PostPostPhoto, deletePost, PostPostTag} from './api';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 import add_icon from './images/add.png'
@@ -22,6 +22,8 @@ class UserPosts extends React.Component {
             newText: "",
             usersList: [],
             firstFocus: true,
+            tagsToPost: [],
+            newId: null,
         }
         this.previousPage = this.previousPage.bind(this);
         this.nextPage = this.nextPage.bind(this);
@@ -32,6 +34,8 @@ class UserPosts extends React.Component {
         this.cancelAdd = this.cancelAdd.bind(this);
         this.handleInput = this.handleInput.bind(this);
         this.askTags = this.askTags.bind(this);
+        this.filterPost = this.filterPost.bind(this);
+        this.addTags = this.addTags.bind(this);
     }
     askTags = () => {
         if (this.state.firstFocus) {
@@ -57,6 +61,107 @@ class UserPosts extends React.Component {
             })
         }
     }
+    addTags = (text) => {
+        // gets post id from: this.state.newId
+        // gets tagsList from: this.state.tagsToPost
+        this.filterPost(text);
+        setTimeout(()=> {
+            this.state.tagsToPost.forEach(obj => {
+                let id = obj.tag.id;
+                let object = {
+                    "mentioned": {
+                        "id": id,
+                    }
+                }
+                PostPostTag(this.state.newId, object)
+                .then(response => {
+                    console.log(response);
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+            })
+        }, 200)
+    }
+    filterPost = (text) => {
+        console.log("users i see")
+        console.log(this.state.usersList)
+        console.log("i am filter post");
+        let post_text = text;
+        console.log("initial text")
+        let final_post_object = [];
+        let s3 = [];
+        post_text = post_text.replaceAll(")@", ") @");
+        console.log(post_text);
+        //let s2 = post_text.trim().split(/\s+/);
+        let s2 = post_text.split(' ');
+        for (let i=0; i<s2.length; i++) {
+            s2[i]+=' ';
+        }
+        console.log("after fixing spaces")
+        console.log(s2)
+        for (let i=0; i<s2.length; i++) {
+            if (s2[i]!==[' ']) {
+                console.log("sublist")
+                console.log(s2[i])
+                let subList = s2[i].split('\n');
+                console.log(subList)
+                if (subList.length>1) {
+                    for (let j=0; j<subList.length-1; j++) {
+                        if (!subList[j].endsWith('\n')) {
+                            subList[j]+='\n';
+                        }    
+                        s3.push(subList[j]);
+                    }
+                    s3.push(subList[subList.length-1])
+                }
+                else {
+                    s3.push(subList);
+                }
+            }
+        }
+        console.log("BROKEN LIST")
+        //console.log(s2);
+        s3 = s3.flat();
+        console.log(s3);
+        let index=0;
+        s3.forEach(el => {
+            console.log(el)
+            if (el.startsWith('@')) {    
+                let matched = false;
+                this.state.usersList.forEach(suggest => {
+                    let sugg=suggest.display;
+                    if (el.startsWith(`@[${sugg}]`)) {
+                        matched = true;
+                        console.log(`el: ${el}`)
+                        let el2 = el.split(')')
+                        //console.log(`el parts: ${el2}`)
+                        let first = el2[0]
+                        let dump = el2[1]
+                        //console.log(`first: ${first}`)
+                        //let username = first.split(']')[0].slice(2)
+                        //let id = first.split(']')[1].slice(1)
+                        console.log(`username: ${suggest.display}`)
+                        console.log(`id: ${suggest.id}`)
+                        console.log(`dump: ${dump}`)
+                        final_post_object.push({
+                            "tag": {
+                                "username": suggest.display,
+                                "id": suggest.id,
+                            },
+                            "dump": dump,
+                        })
+                        index++;
+                    }
+                })
+            }
+        })
+        console.log("Tags to post:")
+        console.log(final_post_object)
+        this.setState({
+            tagsToPost: final_post_object,
+        })
+    }
     createNotification = (type, title="aaa", message="aaa") => {
         console.log("creating notification");
         console.log(type);
@@ -79,6 +184,7 @@ class UserPosts extends React.Component {
         this.setState({
             newText: value,
         })
+        console.log(`new text: ${this.state.newText}`);
     }
     cancelAdd = () => {
         this.setState({
@@ -117,10 +223,13 @@ class UserPosts extends React.Component {
                     // if photo posted successfully
                     .then(response => {
                         console.log(response);
+                        let prevText = this.state.newText;
                         this.setState({
                             newText: "",
                             add : false,
+                            newId: postId,
                         })
+                        setTimeout(()=>{this.addTags(prevText);}, 1000)
                         this.askPosts();
                         this.createNotification('success', 'Hello,', 'Post published successfully.');
                     })
@@ -158,10 +267,13 @@ class UserPosts extends React.Component {
                         // if photo posted successfully
                         .then(response => {
                             console.log(response);
+                            let prevText = this.state.newText;
                             this.setState({
                                 newText: "",
                                 add : false,
+                                newId: postId,
                             })
+                            setTimeout(()=>{this.addTags(prevText);}, 1000)
                             this.askPosts();
                             this.createNotification('success', 'Hello,', 'Post published successfully.');
                         })
@@ -182,10 +294,13 @@ class UserPosts extends React.Component {
                         })
                     }
                     else {
+                        let prevText = this.state.newText;
                         this.setState({
                             newText: "",
                             add : false,
+                            newId: response.data.id,
                         })
+                        setTimeout(()=>{this.addTags(prevText);}, 1000)
                         this.askPosts();
                         this.createNotification('success', 'Hello,', 'Post published successfully.');
                     }
