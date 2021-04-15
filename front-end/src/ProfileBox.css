@@ -8,6 +8,5 @@
     padding: 1%;
     width: min-content !important;
     flex-grow: 1;
-    max-width: 300px;
-    min-width: min-content;
+    width: 15vw !important;
 }

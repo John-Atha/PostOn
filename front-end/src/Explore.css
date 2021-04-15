@@ -1,5 +1,5 @@
 .explore-container {
-    width: 250px;
+    width: 20 vw !important;
     background-color: var(--color2);
     border-radius: 7px;
     margin-left: 1%;

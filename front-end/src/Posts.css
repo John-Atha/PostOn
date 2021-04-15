@@ -82,6 +82,10 @@
     .profile-box {
         display: none;
     }
+    .posts-container {
+        width: auto !important;
+        position: relative;
+    }    
 }
 @media only screen and (min-width: 950px) {
     .explore-container {
@@ -90,14 +94,14 @@
     .profile-box {
         display: block;
     }
+    .posts-container {
+        width: 65vw !important;
+        position: relative;
+    }    
 }
 
 .all-comments-container {
     width: 100%;
-}
-.posts-container {
-    width: auto !important;
-    position: relative;
 }
 .post-container {
     border-radius: 7px;
@@ -133,6 +137,7 @@
     border-radius: 50%;
     padding: 0%;
     margin-right: 0.5%;
+    background-color: var(--userphotoback);
 }
 .user-photo {
     height: 100%;
