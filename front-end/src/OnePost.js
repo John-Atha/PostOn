@@ -1126,6 +1126,7 @@ class OnePost extends React.Component {
                             logged={this.state.logged}
                             how={"sample"}
                             sample={this.state.commentSample}
+                            comments_error={this.state.comments_error}
                             updateParent={this.commentsSample}
                             updateHome={this.props.updateHome}
                             followsUpd={this.state.followsUpd}

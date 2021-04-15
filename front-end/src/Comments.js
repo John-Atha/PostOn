@@ -1100,8 +1100,8 @@ class Comments extends React.Component {
             commentsList: [],
             how: this.props.how,
             commentSample: this.props.sample,
+            comments_error: this.props.comments_error,
             commentsSize: 1,
-            comments_err: null,
             nomore: false,
         }
         this.seeMore = this.seeMore.bind(this);
@@ -1113,11 +1113,15 @@ class Comments extends React.Component {
         setTimeout(()=>{
             this.setState({
                 commentsList: [],
+                start: 1,
+                end: 5,
             })
-            this.askComments();
             this.props.reTakeSample();
             if(this.state.how==="sample") {
                 this.seeMore();
+            }
+            else {
+                setTimeout(()=>{this.askComments();}, 200);
             }
         }, 1000);
     }
@@ -1133,20 +1137,25 @@ class Comments extends React.Component {
         if (this.state.how!=="sample") {
             setTimeout(()=>{}, 2000);
             console.log(`I am asking comments from ${this.state.start} to ${this.state.end}`)
+            if (this.state.start===1) {
+                this.setState({
+                    commentsList: [],
+                })
+            }
             getPostsComments(this.state.start, this.state.end, this.state.postId)
             .then(response => {
                 console.log(response);
                 this.setState({
-                    error: null,
                     commentsList: this.state.commentsList.concat(response.data),
                     nomore: response.data.length<5,
+                    comments_error: null,
                 })
                 console.log(this.state.commentsList.concat(response.data))
             })
             .catch(err => {
                 console.log(err);
                 this.setState({
-                    comments_err: "No more comments found",
+                    comments_error: "No more comments found",
                 })
             })
         }
@@ -1166,13 +1175,22 @@ class Comments extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.userId!==this.props.userId ||
             prevProps.logged!==this.props.logged ||
-            prevProps.postId!==this.props.postId) {
+            prevProps.postId!==this.props.postId ||
+            prevProps.comments_error!==this.props.comments_error) {
                 this.setState({
                     userId: this.props.userId,
                     logged: this.props.logged,
                     postId: this.props.postId,
+                    comments_error: this.props.comments_error,
                 })
             }
+        if (prevProps.sample!==this.props.sample) {
+            this.setState({
+                start: 1,
+                end: 5,
+            })
+            //this.askComments();
+        }
     }
 
     render() {
@@ -1192,7 +1210,7 @@ class Comments extends React.Component {
                                         followsUpd={this.state.followsUpd}
                                         />        
                     }
-                    {this.state.commentSample &&
+                    {!this.state.comments_error &&
                         <button className="button-as-link center-text" onClick={this.seeMore}>Show more comments</button>
                     }
                 </div>
@@ -1220,7 +1238,7 @@ class Comments extends React.Component {
                             )
                         })
                     }
-                    {(!this.state.nomore && !this.state.comments_err) &&
+                    {(!this.state.nomore && !this.state.comments_error) &&
                         <button className="button-as-link" onClick={this.seeMore}>Show more comments</button>                    
                     }
                 </div>
