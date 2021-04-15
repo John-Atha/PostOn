@@ -14,6 +14,149 @@ import { store } from 'react-notifications-component';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { MentionsInput, Mention } from 'react-mentions'
 
+class PostTextNoTags extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            text: this.props.text,
+            parts: [],
+        }
+        this.filter = this.filter.bind(this);
+        this.filter1 = this.filter1.bind(this);
+        this.filter2 = this.filter2.bind(this);
+        this.isUrl = this.isUrl.bind(this);
+    }
+    filter1 = () => {
+        let s3 = [];
+        let s2 = this.state.text.split(' ');
+        for (let i=0; i<s2.length; i++) {
+            s2[i]+=' ';
+        }
+        console.log("after fixing spaces")
+        console.log(s2)
+        for (let i=0; i<s2.length; i++) {
+            if (s2[i]!==[' ']) {
+                console.log("sublist")
+                console.log(s2[i])
+                let subList = s2[i].split('\n');
+                console.log(subList)
+                if (subList.length>1) {
+                    for (let j=0; j<subList.length-1; j++) {
+                        if (!subList[j].endsWith('\n')) {
+                            subList[j]+='\n';
+                        }    
+                        s3.push(subList[j]);
+                    }
+                    s3.push(subList[subList.length-1])
+                }
+                else {
+                    s3.push(subList);
+                }
+            }
+        }
+        console.log("BROKEN LIST")
+        //console.log(s2);
+        s3 = s3.flat();
+        console.log(s3);
+        this.setState({
+            parts: s3,
+        })    
+        setTimeout(()=>{this.filter2();}, 500);
+    }
+    filter2 = () => {
+        let copy = this.state.parts.slice()
+        copy.forEach(el => {
+            if (el!=='\n' && el!==' ') {
+                if (el.endsWith('\n')) {
+                    let index = copy.indexOf(el);
+                    copy[index] = [el.slice(0, el.length-1), '\n']                
+                }
+                else if (el.endsWith(' ')) {
+                    let index = copy.indexOf(el);
+                    copy[index] = [el.slice(0, el.length-1), ' ']                 
+                }    
+            }
+        })
+        this.setState({
+            parts: copy.flat(),
+        })
+        console.log("final filtered:")
+        console.log(copy.flat())
+    }
+    filter = () => {
+        this.filter1();
+    }
+    componentDidMount() {
+        this.filter();
+        console.log("mou hrthe text:")
+        console.log(this.state.text)
+    }
+    componentDidUpdate(prevProps) {
+        if (prevProps.text!==this.props.text) {
+            this.setState({
+                text: this.props.text,
+            })
+            this.filter();
+        }
+    }
+    isUrl = (str) => {
+        return str.startsWith("https://") || str.startsWith("http://");
+    }
+    render() {
+        console.log("I am a post with no tags and parts:")
+        console.log(this.state.parts);
+        if (!(this.state.parts.length===1 && this.state.parts[0]===" ") && this.state.parts.length) {
+            console.log("I have length")
+            return(
+                this.state.parts.map((value, index) => {
+                    console.log(`part: ${value}`)
+                        if (this.isUrl(value)) {
+                            console.log("I am a url")
+                                return(
+                                    <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" 
+                                       href={(value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0, value.length-1) : value}>{value+ " "}</a>
+                                )
+                        }
+                        else if (value===' ') {
+                            console.log("I am a space")
+                            return(
+                                <div key={index}>&nbsp;</div>
+                            )
+                        }
+                        else if (value==='\n') {
+                            console.log("I am a new line")
+                            return(
+                                <div key={index} className="break"></div>
+                            )
+                        }
+                        else if (value==='') {
+                            console.log("I am nothing")
+                            return(
+                                <div key={index}>NOTHING</div>
+                            )
+                        }
+                        else {
+                            console.log("I am a real string")
+                            return(
+                                <div key={index}>{value}</div>
+                            )
+                        }
+                })
+            )
+        }
+        /*if (false) {
+            return(
+                <div>oo</div>
+            )
+        }*/
+        else {
+            return(
+                <div>aaa</div>
+            )
+        }
+    }
+}
+
 class PostText extends React.Component {
     constructor(props) {
         super(props);
@@ -24,6 +167,10 @@ class PostText extends React.Component {
         this.cardShow = this.cardShow.bind(this);
         this.cardHide = this.cardHide.bind(this);
         this.updateList = this.updateList.bind(this);
+        this.isUrl = this.isUrl.bind(this);
+    }
+    isUrl = (str) => {
+        return str.startsWith("https://") || str.startsWith("http://");
     }
     cardShow = (i) => {
         let temp = this.state.showCard.slice()
@@ -161,11 +308,20 @@ class PostText extends React.Component {
                                         )
                                     }
                                     else {
-                                        return(
-                                            <div key={String(index)+String(value)}>
-                                                {value+" "}
-                                            </div>
-                                        )
+                                        if (this.isUrl(value)) {
+                                            console.log("I am a url")
+                                            return(
+                                                <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace"
+                                                   href={(value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0,value.length-1) : value}>{value+" "}</a>
+                                            )
+                                        }
+                                        else {
+                                            return(
+                                                <div key={String(index)+String(value)}>
+                                                    {value+" "}
+                                                </div>
+                                            )   
+                                        }
                                     }
                                 })
                             )
@@ -179,11 +335,20 @@ class PostText extends React.Component {
                             )
                         }
                         else {
-                            return(
-                                <div key={index}>
-                                    {value.dump}
-                                </div>
-                            )
+                            if (this.isUrl(value.dump)) {
+                                console.log("I am a url")
+                                return(
+                                    <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" 
+                                       href={(value.dump.endsWith(' ') || value.dump.endsWith('\n')) ? value.dump.slice(0,value.dump.length-1) : value.dump}>{value.dump+" "}</a>
+                                )
+                            }
+                            else {
+                                return(
+                                    <div key={index}>
+                                        {value.dump}
+                                    </div>
+                                )    
+                            }
                         }
                     }
                 })
@@ -300,7 +465,6 @@ class OnePost extends React.Component {
             }
         })
     }
-
     askTags = () => {
         if (this.state.firstFocus) {
             this.setState({
@@ -742,6 +906,8 @@ class OnePost extends React.Component {
         let datetime = this.state.date!==null ? this.state.date.replace('T', ' ').replace('Z', '').split(' ') : null;
         let date = datetime!==null ? datetime[0] : null;
         let time = datetime!==null ? datetime[1] : null;
+        console.log("POST WITH TEXT")
+        console.log(this.state.text)
         return(
             <div className="post-container">
                 <div className="flex-layout">
@@ -785,12 +951,15 @@ class OnePost extends React.Component {
                                 <img className="post-media" src={this.state.media} alt="media"/>
                             </div>
                         }
-                        <div className="post-text flex-layout">
-                            {this.state.hasTag &&
+                        <div className="post-text flex-layout with-whitespace">
+                            {this.state.text.includes('@[') && this.state.textParts.length!==0 &&
                                 <PostText parts={this.state.textParts} />
                             }
-                            {!this.state.hasTag &&
-                                this.state.text
+                            {!this.state.text.includes('@[') && this.state.text.length!==0 &&
+                                <PostTextNoTags text={this.state.text} />
+                            }
+                            {!this.state.text.length &&
+                                <div></div>
                             }
                         </div>
                     </div>       
