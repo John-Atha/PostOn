@@ -18,6 +18,18 @@ class Register extends React.Component {
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInput = this.handleInput.bind(this);
+        this.validateUsername = this.validateUsername.bind(this);
+    }
+    validateUsername = (str) => {
+        let allowed = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 
+                       'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B',
+                       'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+                       'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_', '.', '1', '2',
+                       '3', '4', '5', '6', '7', '8', '9']
+        if (!allowed.includes(str.charAt(str.length-1))) {
+            return false;
+        }
+        return true;
     }
     componentDidMount() {
         isLogged()
@@ -38,16 +50,27 @@ class Register extends React.Component {
     handleInput = (event) => {
         const name = event.target.name;
         const value = event.target.value;
-        if (name==="username" && this.state.username.length>13 && value.length>13) {
+        if (name==="username" && !this.validateUsername(value) && value!=='') {
+                this.setState({
+                    error: "Username can contain only letters, '.' and '_'." 
+                })
+                const username = document.getElementById('username');
+                username.style.borderColor = "red";
+        }
+        else if (name==="username" && this.state.username.length>13 && value.length>13) {
             this.setState({
                 error: "Username should be less than 15 characters"
             })
+            const username = document.getElementById('username');
+            username.style.borderColor = "red";
         }
         else {
             this.setState({
                 [name]: value,
                 error: null,
-            })    
+            })
+            const username = document.getElementById('username');
+            username.style.borderColor = "grey";
         } 
 
         console.log(name+": "+value)
@@ -135,7 +158,7 @@ class Register extends React.Component {
                             )}
                             <form className="login-form center-content margin-top-smaller" onSubmit={this.handleSubmit}>
                                 <div>
-                                    <input className="login-input margin-top-smaller" type="text" name="username" value={this.state.username} placeholder="Username..."     onChange={this.handleInput}/>
+                                    <input id="username" className="login-input margin-top-smaller" type="text" name="username" value={this.state.username} placeholder="Username..."     onChange={this.handleInput}/>
                                     <input className="login-input margin-top-smaller" type="email" name="email" value={this.state.email} placeholder="Email..."     onChange={this.handleInput}/>
                                     <input className="login-input margin-top-smaller" type="password" name="password" value={this.state.password} placeholder="Password..." onChange={this.handleInput}/>
                                     <input className="login-input margin-top-smaller" type="password" name="passwordConfirm" value={this.state.passwordConfirm} placeholder="Confirm Password..." onChange={this.handleInput}/>
