@@ -373,6 +373,7 @@ class Profile extends React.Component {
             photoEdit: false,
             deleteAcc: false,
             error: null,
+            username_error: null,
         }
         this.countFollows = this.countFollows.bind(this);
         this.countFollowers = this.countFollowers.bind(this);
@@ -394,6 +395,18 @@ class Profile extends React.Component {
         this.delete = this.delete.bind(this);
         this.hideModal = this.hideModal.bind(this);
         this.logout = this.logout.bind(this);
+        this.validateUsername = this.validateUsername.bind(this);
+    }
+    validateUsername = (str) => {
+        let allowed = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 
+                       'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B',
+                       'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
+                       'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '_', '.', '1', '2',
+                       '3', '4', '5', '6', '7', '8', '9']
+        if (!allowed.includes(str.charAt(str.length-1))) {
+            return false;
+        }
+        return true;
     }
     hideModal = () => {
         this.setState({
@@ -511,10 +524,31 @@ class Profile extends React.Component {
     handleInput = (event) => {
         const name = event.target.name;
         const value = event.target.value;
-        this.setState({
-            [name]: value,
-        })
+        if (name==="username" && !this.validateUsername(value) && value!=='') {
+            this.setState({
+                username_error: "Username can contain only letters, '.' and '_'." 
+            })
+            const username = document.getElementById('username');
+            username.style.borderColor = "red";
+        }
+        else if (name==="username" && this.state.username.length>13 && value.length>13) {
+            this.setState({
+                username_error: "Username should be less than 15 characters"
+            })
+            const username = document.getElementById('username');
+            username.style.borderColor = "red";
+        }
+        else {
+            this.setState({
+                [name]: value,
+                username_error: null,
+            })
+            const username = document.getElementById('username');
+            username.style.borderColor = "grey";
+        } 
+        console.log(name+": "+value)
     }
+
     editProf = () => {
         this.setState({
             edit: true,
@@ -760,9 +794,12 @@ class Profile extends React.Component {
                 {this.state.edit &&
                     <div className="profile-info">
                         <div>
+                            {this.state.username_error!==null &&
+                                <div className="error-message">{this.state.username_error}</div>
+                            }
                             <div>Username</div>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
-                            <input type="text" name="username" className="clean-style" style={{width: '50%'}} value={this.state.username} onChange={this.handleInput} />
+                            <input id="username" type="text" name="username" className="clean-style" style={{width: '50%'}} value={this.state.username} onChange={this.handleInput} />
                             <div >Bio</div>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <textarea name="moto" className="clean-style" style={{width: '90%'}} value={this.state.moto} onChange={this.handleInput} />

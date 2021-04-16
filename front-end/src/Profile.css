@@ -92,7 +92,7 @@
 }
 .save-moto-button {
     height: min-content;
-    background-color: var(--color2);
+    background-color: var(--color3);
     color: var(--lettersColor);
     padding: 0% 1% !important;
 }
