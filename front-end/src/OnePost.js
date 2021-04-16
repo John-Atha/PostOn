@@ -69,7 +69,7 @@ class PostTextNoTags extends React.Component {
         let iframesTemp = [];
         copy.forEach(el => {
             console.log(`checking ${el} from iframing`)
-            if (el.includes("https://www.youtube.com") || el.includes("https://youtu.be")) {
+            if (el.includes("https") && (el.includes("youtu.be") || el.includes("youtube"))) {
                 console.log("is is an iframe")    
                 /*if (el.endsWith(' ') || el.endsWith('\n')) {
                         iframesTemp.push(el.slice(el.length-12, el.length-2));
@@ -259,7 +259,7 @@ class PostText extends React.Component {
         let copy=this.state.parts.slice();
         copy.forEach(el => {
             console.log(`checking ${el} from iframing`)
-            if (el.dump.includes("https://www.youtube.com") || el.dump.includes("https://youtu.be")) {
+            if (el.dump.includes("https") && (el.dump.includes("youtu.be") || el.dump.includes("youtube"))) {
                 console.log("is is an iframe")    
                 /*if (el.endsWith(' ') || el.endsWith('\n')) {
                         iframesTemp.push(el.slice(el.length-12, el.length-2));
