@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db import models
 from datetime import datetime
 from django.db.models.query_utils import PathInfo
+from cloudinary_storage.storage import VideoMediaCloudinaryStorage
 
 class Country(models.Model):
     title = models.CharField(max_length=128, null=False)
@@ -42,18 +43,24 @@ class User(AbstractUser):
 class Post(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts", null=False)
     media = models.ImageField(default="", null=True, blank=True)
+    video = models.FileField(default="", null=True, blank=True, storage=VideoMediaCloudinaryStorage(), upload_to='videos/')
     text = models.TextField()
     date = models.DateTimeField(default=datetime.now)
     def __str__(self):
         return f"{self.owner}, {self.text}, {self.date}"
     def serialize(self, path=""):
         if self.media:
-            photoVal = path+self.media.url
+            photoVal = self.media.url
         else:
             photoVal = None
+        if self.video:
+            videoVal = self.video.url
+        else:
+            videoVal = None
         return {
             "id": self.id,
             "owner": self.owner.serialize(path),
+            "video": videoVal,
             "media": photoVal,
             "text": self.text,
             "date": self.date,

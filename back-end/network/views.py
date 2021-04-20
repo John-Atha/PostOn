@@ -7,8 +7,8 @@ from django.http import JsonResponse, HttpResponse, FileResponse
 from rest_framework.decorators import api_view
 from .models import *
 from datetime import datetime
-import imghdr
 import string
+import magic
 
 def filterUsername(name):
     allowed = list(string.ascii_letters)
@@ -1474,11 +1474,29 @@ def PostPostPhoto(request, id):
         except Post.DoesNotExist:
             return JsonResponse({"error": "Invalid post id."}, status=400)
         if post.owner==request.user:
-            post.media = request.FILES['image']
-            post.save()
+            if request.FILES['image']:
+                file = request.FILES['image']
+                initial_pos = file.tell()
+                file.seek(0)
+                mime_type = magic.from_buffer(file.read(1024), mime=True)
+                file.seek(initial_pos)
+                print(mime_type, end='\n\n\n\n')
+                #f = magic.Magic()
+                #mimestart = f.from_file(request.FILES['image']).split('/')[0]
+                hasImage = False
+                hasVideo = False
+                if 'image' in mime_type:
+                    post.media = request.FILES['image']
+                    post.save()
+                    hasImage = True
+                else:
+                    post.video = request.FILES['image']
+                    post.save()
+                    hasVideo = True
             return JsonResponse({
                 "id": post.id,
-                "media": request.build_absolute_uri('/')[:-1]+post.media.url,
+                "media": request.build_absolute_uri('/')[:-1]+post.media.url if hasImage else None,
+                "video": request.build_absolute_uri('/')[:-1]+post.video.url if hasVideo else None,
             }, status=200)
         else:
             return JsonResponse({"error": "You have to be the owner of a post to update it."}, status=400)
