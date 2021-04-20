@@ -13,6 +13,7 @@ class OnePostPage extends React.Component {
             logged: false,
             owner: null,
             media: null,
+            video: null,
             text: null,
             text_init: null,
             date: null,
@@ -67,6 +68,7 @@ class OnePostPage extends React.Component {
             this.setState({
                 owner: response.data.owner,
                 media: response.data.media,
+                video: response.data.video,
                 text: response.data.text,
                 text_init: response.data.text,
                 date: response.data.date,
@@ -94,6 +96,7 @@ class OnePostPage extends React.Component {
                          id={this.state.id}
                          owner={this.state.owner}
                          media={this.state.media}
+                         video={this.state.video}
                          text={this.state.text}
                          date={this.state.date}
                          updateHome={()=>{}}

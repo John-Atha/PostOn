@@ -33,14 +33,14 @@ class PostTextNoTags extends React.Component {
         for (let i=0; i<s2.length; i++) {
             s2[i]+=' ';
         }
-        console.log("after fixing spaces")
+        //console.log("after fixing spaces")
         console.log(s2)
         for (let i=0; i<s2.length; i++) {
             if (s2[i]!==[' ']) {
-                console.log("sublist")
-                console.log(s2[i])
+                //console.log("sublist")
+                //console.log(s2[i])
                 let subList = s2[i].split('\n');
-                console.log(subList)
+                //console.log(subList)
                 if (subList.length>1) {
                     for (let j=0; j<subList.length-1; j++) {
                         if (!subList[j].endsWith('\n')) {
@@ -55,10 +55,10 @@ class PostTextNoTags extends React.Component {
                 }
             }
         }
-        console.log("BROKEN LIST")
+        //console.log("BROKEN LIST")
         //console.log(s2);
         s3 = s3.flat();
-        console.log(s3);
+        //console.log(s3);
         this.setState({
             parts: s3,
         })    
@@ -70,7 +70,7 @@ class PostTextNoTags extends React.Component {
         copy.forEach(el => {
             console.log(`checking ${el} from iframing`)
             if (el.includes("https") && (el.includes("youtu.be") || el.includes("youtube"))) {
-                console.log("is is an iframe")    
+                //console.log("is is an iframe")    
                 /*if (el.endsWith(' ') || el.endsWith('\n')) {
                         iframesTemp.push(el.slice(el.length-12, el.length-2));
                 }
@@ -93,20 +93,20 @@ class PostTextNoTags extends React.Component {
             parts: copy.flat(),
             iframes: [],
         })
-        console.log("final filtered:")
-        console.log(copy.flat())
+        //console.log("final filtered:")
+        //console.log(copy.flat())
         this.setState({
             iframes: iframesTemp,
         })
-        console.log("iframes found:")
-        console.log(this.state.iframes)
-        console.log(iframesTemp)
+        //console.log("iframes found:")
+        //console.log(this.state.iframes)
+        //console.log(iframesTemp)
     }
 
     componentDidMount() {
         this.filter1();
-        console.log("mou hrthe text:")
-        console.log(this.state.text)
+        //console.log("mou hrthe text:")
+        //console.log(this.state.text)
 
     }
     componentDidUpdate(prevProps) {
@@ -121,42 +121,42 @@ class PostTextNoTags extends React.Component {
         return str.startsWith("https://") || str.startsWith("http://");
     }
     render() {
-        console.log("I am a post with no tags and parts:")
+        //console.log("I am a post with no tags and parts:")
         console.log(this.state.parts);
         if (!(this.state.parts.length===1 && this.state.parts[0]===" ") && this.state.parts.length) {
-            console.log("I have length")
+            //console.log("I have length")
             return(
                 <div>
                     <div className="flex-layout with-whitespace">
                         {this.state.parts.map((value, index) => {
                         console.log(`part: ${value}`)
                             if (this.isUrl(value)) {
-                                console.log("I am a url")
+                                //console.log("I am a url")
                                     return(
                                         <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" 
                                         href={(value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0, value.length-1) : value}>{value+ " "}</a>
                                     )
                             }
                             else if (value===' ') {
-                                console.log("I am a space")
+                                //console.log("I am a space")
                                 return(
                                     <div key={index}>&nbsp;</div>
                                 )
                             }
                             else if (value==='\n') {
-                                console.log("I am a new line")
+                                //console.log("I am a new line")
                                 return(
                                     <div key={index} className="break"></div>
                                 )
                             }
                             else if (value==='') {
-                                console.log("I am nothing")
+                                //console.log("I am nothing")
                                 return(
                                     <div key={index}>NOTHING</div>
                                 )
                             }
                             else {
-                                console.log("I am a real string")
+                                //console.log("I am a real string")
                                 return(
                                     <div key={index}>{value}</div>
                                 )
@@ -218,7 +218,7 @@ class PostText extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (prevProps.parts!==this.props.parts) {
-            console.log("my props where updated to:")
+            //console.log("my props where updated to:")
             console.log(this.props.parts);
             this.setState({
                 parts: [],
@@ -260,7 +260,7 @@ class PostText extends React.Component {
         copy.forEach(el => {
             console.log(`checking ${el} from iframing`)
             if (el.dump.includes("https") && (el.dump.includes("youtu.be") || el.dump.includes("youtube"))) {
-                console.log("is is an iframe")    
+                //console.log("is is an iframe")    
                 /*if (el.endsWith(' ') || el.endsWith('\n')) {
                         iframesTemp.push(el.slice(el.length-12, el.length-2));
                 }
@@ -277,12 +277,12 @@ class PostText extends React.Component {
             parts: copy,
             iframes: [],
         })
-        console.log("NEW PARTS")
+        //console.log("NEW PARTS")
         console.log(copy);
         this.setState({
             iframes: iframesTemp,
         })
-        console.log("iframes found:")
+        //console.log("iframes found:")
         console.log(this.state.iframes)
         console.log(iframesTemp)
     }
@@ -347,11 +347,11 @@ class PostText extends React.Component {
                                 let text = value.dump;
                                 if (text.endsWith('\n')) {
                                     text = text.split('\n');
-                                    console.log("text to be shown:")
+                                    //console.log("text to be shown:")
                                     console.log(text);
                                     return(
                                         text.map((value, index)=> {
-                                            console.log("text value:")
+                                            //console.log("text value:")
                                             console.log(value);
                                             if (value==="") {
                                                 return(
@@ -362,7 +362,7 @@ class PostText extends React.Component {
                                             }
                                             else {
                                                 if (this.isUrl(value)) {
-                                                    console.log("i am a url with tags")
+                                                    //console.log("i am a url with tags")
                                                     return(
                                                         <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace"
                                                         href={(value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0,value.length-1) : value}>{value+" "}</a>
@@ -389,7 +389,7 @@ class PostText extends React.Component {
                                 }
                                 else {
                                     if (this.isUrl(value.dump)) {
-                                        console.log("I am a url with tags")
+                                        //console.log("I am a url with tags")
                                         return(
                                             <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" 
                                             href={(value.dump.endsWith(' ') || value.dump.endsWith('\n')) ? value.dump.slice(0,value.dump.length-1) : value.dump}>{value.dump+" "}</a>
@@ -417,7 +417,7 @@ class PostText extends React.Component {
             )
         }
         else {
-            console.log("No parts")
+            //console.log("No parts")
             return(
                 <div></div>
             )
@@ -435,6 +435,7 @@ class OnePost extends React.Component {
             id: this.props.id,
             owner: this.props.owner,
             media: this.props.media,
+            video: this.props.video,
             text: this.props.text,
             text_init :this.props.text,
             date: this.props.date,
@@ -494,12 +495,12 @@ class OnePost extends React.Component {
     }
 
     updateTags = () => {
-        console.log("I am updating the tags");
+        //console.log("I am updating the tags");
         this.removeTags();
         setTimeout(()=>{this.addTags();}, 1000);
     }
     removeTags = () => {
-        console.log("I am removing the old tags")
+        //console.log("I am removing the old tags")
         DelPostTags(this.state.id)
         .then(response=> {
             console.log(response);
@@ -509,7 +510,7 @@ class OnePost extends React.Component {
         })
     }
     addTags = () => {
-        console.log("I am adding the new tags")
+        //console.log("I am adding the new tags")
         this.state.textParts.forEach(obj => {
             if (obj.tag.id) {
                 let object = {
@@ -579,11 +580,11 @@ class OnePost extends React.Component {
         }
     }
     filterPost = () => {
-        console.log("users i see")
+        //console.log("users i see")
         console.log(this.state.usersList)
-        console.log("i am filter post");
+        //console.log("i am filter post");
         let post_text = this.state.text;
-        console.log("initial text")
+        //console.log("initial text")
         let final_post_object = [];
         let s3 = [];
         post_text = post_text.replaceAll(")@", ") @");
@@ -593,11 +594,11 @@ class OnePost extends React.Component {
         for (let i=0; i<s2.length; i++) {
             s2[i]+=' ';
         }
-        console.log("after fixing spaces")
+        //console.log("after fixing spaces")
         console.log(s2)
         for (let i=0; i<s2.length; i++) {
             if (s2[i]!==[' ']) {
-                console.log("sublist")
+                //console.log("sublist")
                 console.log(s2[i])
                 let subList = s2[i].split('\n');
                 console.log(subList)
@@ -615,7 +616,7 @@ class OnePost extends React.Component {
                 }
             }
         }
-        console.log("BROKEN LIST")
+        //console.log("BROKEN LIST")
         //console.log(s2);
         s3 = s3.flat();
         console.log(s3);
@@ -666,7 +667,7 @@ class OnePost extends React.Component {
                 })
             }
         })
-        console.log("FINAL COMMENT:")
+        //console.log("FINAL COMMENT:")
         console.log(final_post_object)
         this.setState({
             textParts: final_post_object,
@@ -712,7 +713,7 @@ class OnePost extends React.Component {
         }
     }
     createNotification = (type, title="aaa", message="aaa") => {
-        console.log("creating notification");
+        //console.log("creating notification");
         console.log(type);
         store.addNotification({
             title: title,
@@ -729,7 +730,7 @@ class OnePost extends React.Component {
           });
     };
     preDelete = () => {
-        console.log("Chose to delete")
+        //console.log("Chose to delete")
         this.setState({
             showModal: true,
         })
@@ -890,9 +891,9 @@ class OnePost extends React.Component {
         })
     }
     commentsSample = () => {
-        console.log("I am one-post class, I was called by my child")
+        //console.log("I am one-post class, I was called by my child")
         setTimeout(()=> {}, 5000);
-        console.log("I am taking comments sample.");
+        //console.log("I am taking comments sample.");
         getPostsCommentsSample(this.props.id)
         .then(response => {
             console.log(response);
@@ -943,9 +944,10 @@ class OnePost extends React.Component {
             prevProps.userId!==this.props.userId || 
             prevProps.owner!==this.props.owner||
             prevProps.media!==this.props.media ||
+            prevProps.video!==this.props.video ||
             prevProps.text!==this.props.text ||
             prevProps.date!==this.props.date) {
-            console.log("NEW POST!!")
+            //console.log("NEW POST!!")
             this.checkLogged();
             this.setState({
                 id: this.props.id,
@@ -953,6 +955,7 @@ class OnePost extends React.Component {
                 //userId: this.props.userId,
                 owner: this.props.owner,
                 media: this.props.media,
+                video: this.props.video,
                 text: this.props.text,
                 text_init: this.props.text,
                 date: this.props.date,
@@ -968,8 +971,9 @@ class OnePost extends React.Component {
         let datetime = this.state.date!==null ? this.state.date.replace('T', ' ').replace('Z', '').split(' ') : null;
         let date = datetime!==null ? datetime[0] : null;
         let time = datetime!==null ? datetime[1] : null;
-        console.log("POST WITH TEXT")
+        //console.log("POST WITH TEXT")
         console.log(this.state.text)
+        console.log(this.state.media)
         return(
             <div className="post-container">
                 <div className="flex-layout">
@@ -1010,8 +1014,14 @@ class OnePost extends React.Component {
                     <div className="post-body">
                         {this.state.media &&
                             <div className="center-content">
-                                <img className="post-media" src={this.state.media} alt="media"/>
+                                    <img className="post-media" src={this.state.media} alt="media"/>
                             </div>
+                        }
+                        {this.state.video && 
+                            <video className="post-media" controls>
+                                <source src={this.state.video} />
+                                Sorry, we couldn't display this video.
+                            </video>
                         }
                         <div className="post-text flex-layout with-whitespace">
                             {this.state.text.includes('@[') && this.state.textParts.length!==0 &&
@@ -1030,8 +1040,14 @@ class OnePost extends React.Component {
                     <div className="post-body">
                         {this.state.media &&
                             <div className="center-content">
-                                <img className="post-media" src={this.state.media} alt="media" />
+                                    <img className="post-media" src={this.state.media} alt="media"/>
                             </div>
+                        }
+                        {this.state.video && 
+                            <video className="post-media" controls>
+                                <source src={this.state.video} />
+                                Sorry, we couldn't display this video.
+                            </video>
                         }
                         <MentionsInput className="post-textarea-edit margin-top-smaller" name="text" value={this.state.text} onChange={this.handleInput} onFocus={this.askTags}>
                         <Mention

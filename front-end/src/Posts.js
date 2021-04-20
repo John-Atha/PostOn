@@ -87,28 +87,28 @@ class Posts extends React.Component {
         }, 200)
     }
     filterPost = (text) => {
-        console.log("users i see")
-        console.log(this.state.usersList)
-        console.log("i am filter post");
+        //console.log("users i see")
+        //console.log(this.state.usersList)
+        //console.log("i am filter post");
         let post_text = text;
-        console.log("initial text")
+        //console.log("initial text")
         let final_post_object = [];
         let s3 = [];
         post_text = post_text.replaceAll(")@", ") @");
-        console.log(post_text);
+        //console.log(post_text);
         //let s2 = post_text.trim().split(/\s+/);
         let s2 = post_text.split(' ');
         for (let i=0; i<s2.length; i++) {
             s2[i]+=' ';
         }
-        console.log("after fixing spaces")
-        console.log(s2)
+        //console.log("after fixing spaces")
+        //console.log(s2)
         for (let i=0; i<s2.length; i++) {
             if (s2[i]!==[' ']) {
-                console.log("sublist")
-                console.log(s2[i])
+                //console.log("sublist")
+                //console.log(s2[i])
                 let subList = s2[i].split('\n');
-                console.log(subList)
+                //console.log(subList)
                 if (subList.length>1) {
                     for (let j=0; j<subList.length-1; j++) {
                         if (!subList[j].endsWith('\n')) {
@@ -123,20 +123,20 @@ class Posts extends React.Component {
                 }
             }
         }
-        console.log("BROKEN LIST")
+        //console.log("BROKEN LIST")
         //console.log(s2);
         s3 = s3.flat();
-        console.log(s3);
+        //console.log(s3);
         let index=0;
         s3.forEach(el => {
-            console.log(el)
+            //console.log(el)
             if (el.startsWith('@')) {    
                 let matched = false;
                 this.state.usersList.forEach(suggest => {
                     let sugg=suggest.display;
                     if (el.startsWith(`@[${sugg}]`)) {
                         matched = true;
-                        console.log(`el: ${el}`)
+                        //console.log(`el: ${el}`)
                         let el2 = el.split(')')
                         //console.log(`el parts: ${el2}`)
                         let first = el2[0]
@@ -144,9 +144,9 @@ class Posts extends React.Component {
                         //console.log(`first: ${first}`)
                         //let username = first.split(']')[0].slice(2)
                         //let id = first.split(']')[1].slice(1)
-                        console.log(`username: ${suggest.display}`)
-                        console.log(`id: ${suggest.id}`)
-                        console.log(`dump: ${dump}`)
+                        //console.log(`username: ${suggest.display}`)
+                        //console.log(`id: ${suggest.id}`)
+                        //console.log(`dump: ${dump}`)
                         final_post_object.push({
                             "tag": {
                                 "username": suggest.display,
@@ -159,15 +159,15 @@ class Posts extends React.Component {
                 })
             }
         })
-        console.log("Tags to post:")
-        console.log(final_post_object)
+        //console.log("Tags to post:")
+        //console.log(final_post_object)
         this.setState({
             tagsToPost: final_post_object,
         })
     }
     createNotification = (type, title="aaa", message="aaa") => {
-        console.log("creating notification");
-        console.log(type);
+        //console.log("creating notification");
+        //console.log(type);
         store.addNotification({
             title: title,
             message: message,
@@ -207,7 +207,7 @@ class Posts extends React.Component {
         }
     }
     addPost = () => {
-        console.log("I am add post")
+        //console.log("I am add post")
         const input = document.getElementById('new-post-photo');
         let img = null;
         if (input.files.length) {
@@ -411,7 +411,7 @@ class Posts extends React.Component {
                     <div className="new-post-container">
                             <div>Photo</div>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
-                            <input id="new-post-photo" type="file" accept="image/*"/>
+                            <input id="new-post-photo" type="file" accept="image/*, video/*"/>
                             <div >Text</div>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <MentionsInput name="newText" className="post-textarea-edit clean-style new-post" style={{width: '90%'}} value={this.state.newText} onChange={this.handleInput} onFocus={this.askTags}>
@@ -434,6 +434,7 @@ class Posts extends React.Component {
                                     owner={value.owner}
                                     text={value.text}
                                     media={value.media}
+                                    video={value.video}
                                     date={value.date}
                                     userId={this.state.userId}
                                     logged={this.state.logged}

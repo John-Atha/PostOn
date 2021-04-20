@@ -397,7 +397,7 @@ class UserPosts extends React.Component {
                     <div className="new-post-container">
                             <div>Photo</div>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
-                            <input id="new-post-photo" type="file" accept="image/*"/>
+                            <input id="new-post-photo" type="file" accept="image/*, video/*"/>
                             <div >Text</div>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <MentionsInput name="newText" className="post-textarea-edit clean-style new-post" style={{width: '90%'}} value={this.state.newText} onChange={this.handleInput} onFocus={this.askTags}>
@@ -420,6 +420,7 @@ class UserPosts extends React.Component {
                                     owner={value.owner}
                                     text={value.text}
                                     media={value.media}
+                                    video={value.video}
                                     date={value.date}
                                     userId={this.state.userId}
                                     logged={this.state.logged}
