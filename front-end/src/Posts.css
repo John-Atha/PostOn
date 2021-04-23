@@ -279,7 +279,14 @@
     width: auto; 
     height: auto; 
 }
-
 .react-player > div {
     position: absolute; 
+}
+.up-button {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    border: none;   
+    width: 50px;
+    height: 70px;
 }

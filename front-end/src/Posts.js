@@ -3,6 +3,7 @@ import "./Posts.css";
 import {getUsers, isLogged, getPosts, getUsersPosts, PostPostText, PostPostPhoto, deletePost, PostPostTag} from './api';
 import OnePost from './OnePost';
 import add_icon from './images/add.png';
+import arrow_icon from './images/arrow-up.png';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 import { MentionsInput, Mention } from 'react-mentions'
@@ -26,8 +27,9 @@ class Posts extends React.Component {
             firstFocus: true,
             tagsToPost: [],
             newId: null,
+            nomore: false,
         }
-        this.likesIncr = 10;
+        this.asked = [];
         this.previousPage = this.previousPage.bind(this);
         this.nextPage = this.nextPage.bind(this);
         this.moveOn = this.moveOn.bind(this);
@@ -39,7 +41,28 @@ class Posts extends React.Component {
         this.askTags = this.askTags.bind(this);
         this.filterPost = this.filterPost.bind(this);
         this.addTags = this.addTags.bind(this);
+        this.checkScroll = this.checkScroll.bind(this);
     }
+
+    checkScroll = () => {
+        //const container = document.getElementById('posts-cont');
+        ////console.log("I am checking scroll");
+        ////console.log(`${container.scrollHeight} - ${container.scrollTop} == ${container.clientHeight}`)
+            console.log(`${window.scrollY>=0.7*document.body.offsetHeight}`);
+            if (window.scrollY>=0.7*document.body.offsetHeight && !this.state.nomore) {
+                ////console.log(`${container.scrollHeight} - ${container.scrollTop} == ${container.clientHeight}`);
+                    if (!this.asked.includes(this.state.start)) {
+                        window.removeEventListener('scroll', this.checkScroll);
+                        setTimeout(()=>{window.addEventListener('scroll', this.checkScroll);}, 2000)                    
+                        this.asked.push(this.state.start);
+                        setTimeout(()=>{this.nextPage();}, 0);
+                    }       
+                    console.log(`asked:`);
+                    console.log(this.asked);            
+                //console.log("reached bottom")
+            }
+    }
+
     askTags = () => {
         if (this.state.firstFocus) {
             this.setState({
@@ -47,7 +70,7 @@ class Posts extends React.Component {
             })
             getUsers()
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 let tempL = [];
                 response.data.forEach(el => {
                     tempL.push({
@@ -60,7 +83,7 @@ class Posts extends React.Component {
                 })
             })
             .catch(err => {
-                console.log(err);
+                //console.log(err);
             })
         }
     }
@@ -78,37 +101,37 @@ class Posts extends React.Component {
                 }
                 PostPostTag(this.state.newId, object)
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                 })
                 .catch(err => {
-                    console.log(err);
+                    //console.log(err);
                 })
             })
         }, 200)
     }
     filterPost = (text) => {
-        //console.log("users i see")
-        //console.log(this.state.usersList)
-        //console.log("i am filter post");
+        ////console.log("users i see")
+        ////console.log(this.state.usersList)
+        ////console.log("i am filter post");
         let post_text = text;
-        //console.log("initial text")
+        ////console.log("initial text")
         let final_post_object = [];
         let s3 = [];
         post_text = post_text.replaceAll(")@", ") @");
-        //console.log(post_text);
+        ////console.log(post_text);
         //let s2 = post_text.trim().split(/\s+/);
         let s2 = post_text.split(' ');
         for (let i=0; i<s2.length; i++) {
             s2[i]+=' ';
         }
-        //console.log("after fixing spaces")
-        //console.log(s2)
+        ////console.log("after fixing spaces")
+        ////console.log(s2)
         for (let i=0; i<s2.length; i++) {
             if (s2[i]!==[' ']) {
-                //console.log("sublist")
-                //console.log(s2[i])
+                ////console.log("sublist")
+                ////console.log(s2[i])
                 let subList = s2[i].split('\n');
-                //console.log(subList)
+                ////console.log(subList)
                 if (subList.length>1) {
                     for (let j=0; j<subList.length-1; j++) {
                         if (!subList[j].endsWith('\n')) {
@@ -123,30 +146,30 @@ class Posts extends React.Component {
                 }
             }
         }
-        //console.log("BROKEN LIST")
-        //console.log(s2);
+        ////console.log("BROKEN LIST")
+        ////console.log(s2);
         s3 = s3.flat();
-        //console.log(s3);
+        ////console.log(s3);
         let index=0;
         s3.forEach(el => {
-            //console.log(el)
+            ////console.log(el)
             if (el.startsWith('@')) {    
                 let matched = false;
                 this.state.usersList.forEach(suggest => {
                     let sugg=suggest.display;
                     if (el.startsWith(`@[${sugg}]`)) {
                         matched = true;
-                        //console.log(`el: ${el}`)
+                        ////console.log(`el: ${el}`)
                         let el2 = el.split(')')
-                        //console.log(`el parts: ${el2}`)
+                        ////console.log(`el parts: ${el2}`)
                         let first = el2[0]
                         let dump = el2[1]
-                        //console.log(`first: ${first}`)
+                        ////console.log(`first: ${first}`)
                         //let username = first.split(']')[0].slice(2)
                         //let id = first.split(']')[1].slice(1)
-                        //console.log(`username: ${suggest.display}`)
-                        //console.log(`id: ${suggest.id}`)
-                        //console.log(`dump: ${dump}`)
+                        ////console.log(`username: ${suggest.display}`)
+                        ////console.log(`id: ${suggest.id}`)
+                        ////console.log(`dump: ${dump}`)
                         final_post_object.push({
                             "tag": {
                                 "username": suggest.display,
@@ -159,15 +182,15 @@ class Posts extends React.Component {
                 })
             }
         })
-        //console.log("Tags to post:")
-        //console.log(final_post_object)
+        ////console.log("Tags to post:")
+        ////console.log(final_post_object)
         this.setState({
             tagsToPost: final_post_object,
         })
     }
     createNotification = (type, title="aaa", message="aaa") => {
-        //console.log("creating notification");
-        //console.log(type);
+        ////console.log("creating notification");
+        ////console.log(type);
         store.addNotification({
             title: title,
             message: message,
@@ -187,7 +210,7 @@ class Posts extends React.Component {
         this.setState({
             newText: value,
         })
-        console.log(`new text: ${this.state.newText}`);
+        //console.log(`new text: ${this.state.newText}`);
     }
     cancelAdd = () => {
         this.setState({
@@ -207,12 +230,12 @@ class Posts extends React.Component {
         }
     }
     addPost = () => {
-        //console.log("I am add post")
+        ////console.log("I am add post")
         const input = document.getElementById('new-post-photo');
         let img = null;
         if (input.files.length) {
             img = input.files[0];
-            console.log(img);
+            //console.log(img);
         }
         if (!this.state.newText.length && !input.files.length) {
             this.createNotification('danger', 'Sorry,', 'You cannot create an empty post.')
@@ -224,7 +247,7 @@ class Posts extends React.Component {
                 // just create the post with empty text
                 PostPostText(this.state.newText)
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                     // then post the photo (has to be there, else the first "if" would have stopped the process)
                     let postId = response.data.id;
                     var bodyFormData = new FormData();
@@ -232,7 +255,7 @@ class Posts extends React.Component {
                     PostPostPhoto(postId, bodyFormData)
                     // if photo posted successfully
                     .then(response => {
-                        console.log(response);
+                        //console.log(response);
                         let prevText = this.state.newText;
                         this.setState({
                             newText: "",
@@ -240,36 +263,36 @@ class Posts extends React.Component {
                             newId: postId,
                         })
                         setTimeout(()=>{this.addTags(prevText);}, 1000)
-                        this.askPosts();
+                        this.askPosts("restart");
                         this.createNotification('success', 'Hello,', 'Post published successfully.');
 
                     })
                     // else post has to be deleted (it only has an empty text)
                     .catch(err => {
-                        console.log(err);
+                        //console.log(err);
                         this.setState({
                             newText: "",
                         })
                         deletePost(postId)
                         .then(response => {
-                            console.log(response);
+                            //console.log(response);
                         })
                         .catch(err => {
-                            console.log(err);
+                            //console.log(err);
                         })
                         this.createNotification('danger', 'Sorry,', "We couldn't publish your post")
                     })
                 })
                 // could not create post => return err
                 .catch(err => {
-                    console.log(err);
+                    //console.log(err);
                     this.createNotification('danger', 'Sorry,', "We couldn't publish your post")
                 })
             }
             else {
                 PostPostText(this.state.newText)
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                     if(input.files.length) {
                         let postId = response.data.id;
                         var bodyFormData = new FormData();
@@ -277,7 +300,7 @@ class Posts extends React.Component {
                         PostPostPhoto(postId, bodyFormData)
                         // if photo posted successfully
                         .then(response => {
-                            console.log(response);
+                            //console.log(response);
                             let prevText = this.state.newText;
                             this.setState({
                                 newText: "",
@@ -285,21 +308,21 @@ class Posts extends React.Component {
                                 newId: postId,
                             })
                             setTimeout(()=>{this.addTags(prevText);}, 1000)
-                            this.askPosts();
+                            this.askPosts("restart");
                             this.createNotification('success', 'Hello,', 'Post published successfully.');
                         })
                         // else post has to be deleted
                         .catch(err => {
-                            console.log(err);
+                            //console.log(err);
                             this.setState({
                                 newText: "",
                             })
                             deletePost(postId)
                             .then(response => {
-                                console.log(response);
+                                //console.log(response);
                             })
                             .catch(err => {
-                                console.log(err);
+                                //console.log(err);
                             })
                             this.createNotification('danger', 'Sorry,', "We couldn't publish your post")
                         })
@@ -312,24 +335,19 @@ class Posts extends React.Component {
                             newId: response.data.id,
                         })
                         setTimeout(()=>{this.addTags(prevText);}, 1000)
-                        this.askPosts();
+                        this.askPosts("restart");
                         this.createNotification('success', 'Hello,', 'Post published successfully.');
                     }
                 })
                 // could not create post => return err
                 .catch(err => {
-                    console.log(err);
+                    //console.log(err);
                     this.createNotification('danger', 'Sorry,', "We couldn't publish your post")
                 })
             }
         }
     }
     moveOn = () => {
-        window.scrollTo({
-            top:0,
-            left:0,
-            behavior:'smooth'
-        });
         setTimeout(() => this.askPosts(), 500);
     }
     previousPage = () => {
@@ -347,49 +365,59 @@ class Posts extends React.Component {
         this.moveOn();
         //setTimeout(()=>this.askLikes(), 750);
     }
-    askPosts = () => {
-        this.setState({
-            postsList: [],
-        })
-        setTimeout(()=> {}, 3000)
-        console.log(`I am asking posts from ${this.state.start} to ${this.state.end}`)
+    askPosts = ( how="" ) => {
+        if (how==="restart") {
+            this.asked=[];
+            this.setState({
+                start: 1,
+                end: 10,
+                postsList: [],
+                nomore: false,
+            })
+        }
+        setTimeout(()=> {
+        console.log(`I asm ask posts with: start=${this.state.start} and asked=${this.asked}`)
+        //console.log(`I am asking posts from ${this.state.start} to ${this.state.end}`)
         if (this.state.whose) {
             getUsersPosts(this.state.whose, this.state.start, this.state.end)
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 this.setState({
-                    postsList: response.data,
+                    postsList: this.state.postsList.concat(response.data),
+                    nomore: false,
                 })
-                console.log(this.state.postsList)
+                //console.log(this.state.postsList)
             })
             .catch(err => {
                 console.log(err);
                 this.setState({
-                    postsList: [],
+                    nomore: true,
                 })
             })
         }
         else {
             getPosts(this.state.start, this.state.end, this.state.case)
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 this.setState({
-                    postsList: response.data,
+                    postsList: this.state.postsList.concat(response.data),
+                    nomore: false,
                 })
-                console.log(this.state.postsList)
+                //console.log(this.state.postsList)
             })
             .catch(err => {
                 console.log(err);
                 this.setState({
-                    postsList: [],
+                    nomore: true,
                 })
             })
-        }
+        }}, 1000)
     }
     componentDidMount() {
+        window.addEventListener('scroll', this.checkScroll);
         isLogged()
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 logged: response.data.authenticated,
                 userId: response.data.id,
@@ -397,13 +425,18 @@ class Posts extends React.Component {
             //this.askLikes();
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.setState({
                 error: err,
             })
         })
         setTimeout(()=>this.askPosts(), 200);
     }
+
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.checkScroll);
+    }
+
     render() {
         return(
             <div className="posts-container padding-bottom flex-item" style={{paddingTop: '50px'}}>
@@ -443,12 +476,6 @@ class Posts extends React.Component {
                         />
                     )
                 })}
-                {this.state.postsList.length!==0 &&
-                    <div className="pagi-buttons-container flex-layout center-content">
-                        <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
-                        <button disabled={this.state.postsList.length<10} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
-                    </div>
-                }
                 {!this.state.postsList.length &&
                     <div className="error-message margin-top center-text">Oops, no posts found..</div>
                 }
@@ -456,6 +483,18 @@ class Posts extends React.Component {
                     <img className="small-icon" src={add_icon} alt="add" />
                     New post
                 </button>
+                <input type="image" 
+                    onClick={ ()=>{      
+                        window.scrollTo({
+                            top:0,
+                            left:0,
+                            behavior:'smooth'
+                        })}
+                    }
+                    className="up-button"
+                    src={arrow_icon}
+                    alt="top-page">
+                </input>
             </div>
         )
     }

@@ -4,6 +4,7 @@ import {getUsers, isLogged, getUsersPosts, PostPostText, PostPostPhoto, deletePo
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 import add_icon from './images/add.png'
+import arrow_icon from './images/arrow-up.png';
 import OnePost from './OnePost';
 import { MentionsInput, Mention } from 'react-mentions'
 
@@ -24,7 +25,9 @@ class UserPosts extends React.Component {
             firstFocus: true,
             tagsToPost: [],
             newId: null,
+            nomore: false,
         }
+        this.asked = [];
         this.previousPage = this.previousPage.bind(this);
         this.nextPage = this.nextPage.bind(this);
         this.moveOn = this.moveOn.bind(this);
@@ -36,7 +39,29 @@ class UserPosts extends React.Component {
         this.askTags = this.askTags.bind(this);
         this.filterPost = this.filterPost.bind(this);
         this.addTags = this.addTags.bind(this);
+        this.checkScroll = this.checkScroll.bind(this);
     }
+
+    checkScroll = () => {
+        //const container = document.getElementById('posts-cont');
+        ////console.log("I am checking scroll");
+        ////console.log(`${container.scrollHeight} - ${container.scrollTop} == ${container.clientHeight}`)
+        console.log(`${window.scrollY}, ${0.7*document.body.offsetHeight}`);
+        if (window.scrollY>=0.7*document.body.offsetHeight) {
+            ////console.log(`${container.scrollHeight} - ${container.scrollTop} == ${container.clientHeight}`);
+            console.log("add more")    
+            if (!this.asked.includes(this.state.start) && !this.state.nomore) {
+                window.removeEventListener('scroll', this.checkScroll);
+                setTimeout(()=>{window.addEventListener('scroll', this.checkScroll);}, 2000)            
+                this.asked.push(this.state.start);
+                setTimeout(()=>{this.nextPage();}, 200);
+            }       
+                console.log(`asked:`);
+                console.log(this.asked);            
+            //console.log("reached bottom")
+        }
+    }
+
     askTags = () => {
         if (this.state.firstFocus) {
             this.setState({
@@ -231,7 +256,7 @@ class UserPosts extends React.Component {
                             newId: postId,
                         })
                         setTimeout(()=>{this.addTags(prevText);}, 1000)
-                        this.askPosts();
+                        this.askPosts("restart");
                         this.createNotification('success', 'Hello,', 'Post published successfully.');
                     })
                     // else post has to be deleted (it only has an empty text)
@@ -275,7 +300,7 @@ class UserPosts extends React.Component {
                                 newId: postId,
                             })
                             setTimeout(()=>{this.addTags(prevText);}, 1000)
-                            this.askPosts();
+                            this.askPosts("restart");
                             this.createNotification('success', 'Hello,', 'Post published successfully.');
                         })
                         // else post has to be deleted
@@ -302,7 +327,7 @@ class UserPosts extends React.Component {
                             newId: response.data.id,
                         })
                         setTimeout(()=>{this.addTags(prevText);}, 1000)
-                        this.askPosts();
+                        this.askPosts("restart");
                         this.createNotification('success', 'Hello,', 'Post published successfully.');
                     }
                 })
@@ -315,11 +340,6 @@ class UserPosts extends React.Component {
         }
     }
     moveOn = () => {
-        window.scrollTo({
-            top:0,
-            left:0,
-            behavior:'smooth'
-        });
         setTimeout(() => this.askPosts(), 500);
     }
     previousPage = () => {
@@ -336,28 +356,37 @@ class UserPosts extends React.Component {
         }), 0)
         this.moveOn();
     }
-    askPosts = () => {
-        this.setState({
-            postsList: [],
-        })
-        setTimeout(()=> {}, 3000)
-        console.log(`I am asking posts from ${this.state.start} to ${this.state.end}`)
+    askPosts = (how="") => {
+        if (how==="restart") {
+            this.asked=[];
+            this.setState({
+                start: 1,
+                end: 10,
+                postsList: [],
+                nomore: false,
+            })
+        }
+        setTimeout(()=> {
+        console.log(`I asm ask posts with: start=${this.state.start} and asked=${this.asked}`)
+        //console.log(`I am asking posts from ${this.state.start} to ${this.state.end}`)
         getUsersPosts(this.state.whose, this.state.start, this.state.end)
         .then(response => {
             console.log(response);
             this.setState({
-                postsList: response.data,
+                postsList: this.state.postsList.concat(response.data),
+                nomore: false,
             })
             console.log(this.state.postsList)
         })
         .catch(err => {
             console.log(err);
             this.setState({
-                postsList: [],
+                nomore: true,
             })
-        })
+        })}, 1000)
     }
     componentDidMount() {
+        window.addEventListener('scroll', this.checkScroll);
         isLogged()
         .then(response => {
             console.log(response);
@@ -376,7 +405,7 @@ class UserPosts extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (prevProps.updateMe!==this.props.updateMe) {
-            this.askPosts();
+            this.askPosts("restart");
         }
         if (prevProps.me!==this.props.me) {
             this.setState({
@@ -384,6 +413,10 @@ class UserPosts extends React.Component {
             })
         }
     }
+    componentWillUnmount() {
+        window.removeEventListener('scroll', this.checkScroll);
+    }
+
     render() {
         return(
             <div className="posts-container padding-bottom flex-item" style={{paddingTop: '50px', marginTop: '1%'}} >
@@ -429,15 +462,21 @@ class UserPosts extends React.Component {
                         />
                     )
                 })}
-                {this.state.postsList.length!==0 &&
-                    <div className="pagi-buttons-container flex-layout center-content">
-                        <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
-                        <button disabled={this.state.postsList.length<10} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
-                    </div>
-                }
                 {!this.state.postsList.length &&
                     <div className="error-message margin-top center-text">Oops, no posts found..</div>
                 }
+                <input type="image" 
+                    onClick={ ()=>{      
+                        window.scrollTo({
+                            top:0,
+                            left:0,
+                            behavior:'smooth'
+                        })}
+                    }
+                    className="up-button"
+                    src={arrow_icon}
+                    alt="top-page">
+                </input>
             </div>
         )
     }

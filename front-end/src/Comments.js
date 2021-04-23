@@ -36,8 +36,8 @@ class NewComment extends React.Component {
         this.addTags = this.addTags.bind(this);
     }
     createNotification = (type, title="aaa", message="aaa") => {
-        console.log("creating notification");
-        console.log(type);
+        //console.log("creating notification");
+        //console.log(type);
         store.addNotification({
             title: title,
             message: message,
@@ -59,7 +59,7 @@ class NewComment extends React.Component {
             })
             getUsers()
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 let tempL = [];
                 response.data.forEach(el => {
                     tempL.push({
@@ -72,33 +72,33 @@ class NewComment extends React.Component {
                 })
             })
             .catch(err => {
-                console.log(err);
+                //console.log(err);
             })
         }
     }
     filterComment = (text) => {
-        console.log("users i see")
-        console.log(this.state.usersList)
-        console.log("i am filter comment");
+        //console.log("users i see")
+        //console.log(this.state.usersList)
+        //console.log("i am filter comment");
         let post_text = text;
-        console.log("initial text")
+        //console.log("initial text")
         let final_post_object = [];
         let s3 = [];
         post_text = post_text.replaceAll(")@", ") @");
-        console.log(post_text);
+        //console.log(post_text);
         //let s2 = post_text.trim().split(/\s+/);
         let s2 = post_text.split(' ');
         for (let i=0; i<s2.length; i++) {
             s2[i]+=' ';
         }
-        console.log("after fixing spaces")
-        console.log(s2)
+        //console.log("after fixing spaces")
+        //console.log(s2)
         for (let i=0; i<s2.length; i++) {
             if (s2[i]!==[' ']) {
-                console.log("sublist")
-                console.log(s2[i])
+                //console.log("sublist")
+                //console.log(s2[i])
                 let subList = s2[i].split('\n');
-                console.log(subList)
+                //console.log(subList)
                 if (subList.length>1) {
                     for (let j=0; j<subList.length-1; j++) {
                         if (!subList[j].endsWith('\n')) {
@@ -113,30 +113,30 @@ class NewComment extends React.Component {
                 }
             }
         }
-        console.log("BROKEN LIST")
-        //console.log(s2);
+        //console.log("BROKEN LIST")
+        ////console.log(s2);
         s3 = s3.flat();
-        console.log(s3);
+        //console.log(s3);
         let index=0;
         s3.forEach(el => {
-            console.log(el)
+            //console.log(el)
             if (el.startsWith('@')) {    
                 let matched = false;
                 this.state.usersList.forEach(suggest => {
                     let sugg=suggest.display;
                     if (el.startsWith(`@[${sugg}]`)) {
                         matched = true;
-                        console.log(`el: ${el}`)
+                        //console.log(`el: ${el}`)
                         let el2 = el.split(')')
-                        //console.log(`el parts: ${el2}`)
+                        ////console.log(`el parts: ${el2}`)
                         let first = el2[0]
                         let dump = el2[1]
-                        //console.log(`first: ${first}`)
+                        ////console.log(`first: ${first}`)
                         //let username = first.split(']')[0].slice(2)
                         //let id = first.split(']')[1].slice(1)
-                        console.log(`username: ${suggest.display}`)
-                        console.log(`id: ${suggest.id}`)
-                        console.log(`dump: ${dump}`)
+                        //console.log(`username: ${suggest.display}`)
+                        //console.log(`id: ${suggest.id}`)
+                        //console.log(`dump: ${dump}`)
                         final_post_object.push({
                             "tag": {
                                 "username": suggest.display,
@@ -149,8 +149,8 @@ class NewComment extends React.Component {
                 })
             }
         })
-        console.log("Tags to post:")
-        console.log(final_post_object)
+        //console.log("Tags to post:")
+        //console.log(final_post_object)
         this.setState({
             tagsToPost: final_post_object,
         })
@@ -170,10 +170,10 @@ class NewComment extends React.Component {
                 }
                 PostCommentTag(this.state.newId, object)
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                 })
                 .catch(err => {
-                    console.log(err);
+                    //console.log(err);
                 })
             })
         }, 200)
@@ -184,14 +184,14 @@ class NewComment extends React.Component {
         this.setState({
             text: value,
         })
-        console.log(`text: ${value}`)
+        //console.log(`text: ${value}`)
     }
     submit = (event) => {
         event.preventDefault();
         if (this.state.text.length) {
             AddComment(this.state.userId, this.state.postId, this.state.text)
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 this.props.updateComments();
                 let prevText = this.state.text;
                 this.setState({
@@ -202,7 +202,7 @@ class NewComment extends React.Component {
                 this.createNotification('success', 'Hello,', 'Comment posted succesffully');
             })
             .catch(err => {
-                console.log(err);
+                //console.log(err);
                 this.createNotification('danger', 'Sorry,', 'Comment could not be posted');
             })
         }
@@ -216,14 +216,14 @@ class NewComment extends React.Component {
         if (this.props.userId) {
             getUser(this.props.userId)
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 this.setState({
                     username: response.data.username,
                     photo: response.data.photo,
                 })
             })
             .catch(err => {
-                console.log(err);
+                //console.log(err);
                 this.setState({
                     error: "Not logged in."
                 })
@@ -301,14 +301,14 @@ class CommentTextNoTags extends React.Component {
         for (let i=0; i<s2.length; i++) {
             s2[i]+=' ';
         }
-        console.log("after fixing spaces")
-        console.log(s2)
+        ////console.log("after fixing spaces")
+        ////console.log(s2)
         for (let i=0; i<s2.length; i++) {
             if (s2[i]!==[' ']) {
-                console.log("sublist")
-                console.log(s2[i])
+                ////console.log("sublist")
+                ////console.log(s2[i])
                 let subList = s2[i].split('\n');
-                console.log(subList)
+                ////console.log(subList)
                 if (subList.length>1) {
                     for (let j=0; j<subList.length-1; j++) {
                         if (!subList[j].endsWith('\n')) {
@@ -323,10 +323,10 @@ class CommentTextNoTags extends React.Component {
                 }
             }
         }
-        console.log("BROKEN LIST")
-        //console.log(s2);
+        ////console.log("BROKEN LIST")
+        ////console.log(s2);
         s3 = s3.flat();
-        console.log(s3);
+        ////console.log(s3);
         this.setState({
             parts: s3,
         })    
@@ -349,16 +349,16 @@ class CommentTextNoTags extends React.Component {
         this.setState({
             parts: copy.flat(),
         })
-        console.log("final filtered:")
-        console.log(copy.flat())
+        ////console.log("final filtered:")
+        ////console.log(copy.flat())
     }
     filter = () => {
         this.filter1();
     }
     componentDidMount() {
         this.filter();
-        console.log("mou hrthe text:")
-        console.log(this.state.text)
+        ////console.log("mou hrthe text:")
+        ////console.log(this.state.text)
     }
     componentDidUpdate(prevProps) {
         if (prevProps.text!==this.props.text) {
@@ -372,40 +372,40 @@ class CommentTextNoTags extends React.Component {
         return str.startsWith("https://") || str.startsWith("http://");
     }
     render() {
-        console.log("I am a comment with no tags and parts:")
-        console.log(this.state.parts);
+        ////console.log("I am a comment with no tags and parts:")
+        ////console.log(this.state.parts);
         if (!(this.state.parts.length===1 && this.state.parts[0]===" ") && this.state.parts.length) {
-            console.log("I have length")
+            ////console.log("I have length")
             return(
                 this.state.parts.map((value, index) => {
-                    console.log(`part: ${value}`)
+                    ////console.log(`part: ${value}`)
                         if (this.isUrl(value)) {
-                            console.log("I am a url")
+                            ////console.log("I am a url")
                                 return(
                                     <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" 
                                        href={(value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0, value.length-1) : value}>{value+ " "}</a>
                                 )
                         }
                         else if (value===' ') {
-                            console.log("I am a space")
+                            ////console.log("I am a space")
                             return(
                                 <div key={index}>&nbsp;</div>
                             )
                         }
                         else if (value==='\n') {
-                            console.log("I am a new line")
+                            ////console.log("I am a new line")
                             return(
                                 <div key={index} className="break"></div>
                             )
                         }
                         else if (value==='') {
-                            console.log("I am nothing")
+                            ////console.log("I am nothing")
                             return(
                                 <div key={index}>NOTHING</div>
                             )
                         }
                         else {
-                            console.log("I am a real string")
+                            ////console.log("I am a real string")
                             return(
                                 <div key={index}>{value}</div>
                             )
@@ -488,8 +488,8 @@ class CommentText extends React.Component {
         let counter = 0
         for (let i=0; i<this.state.parts.length; i++) {
             if (this.state.parts[i].tag.id && this.state.parts[i].dump==='\n') {
-                console.log(`found one at index ${i}:`)
-                console.log(this.state.parts[i]);
+                //console.log(`found one at index ${i}:`)
+                //console.log(this.state.parts[i]);
                 additions.push(i+counter+1);
                 counter++;
             }
@@ -501,8 +501,8 @@ class CommentText extends React.Component {
         this.setState({
             parts: copy,
         })
-        console.log("NEW PARTS")
-        console.log(copy);
+        //console.log("NEW PARTS")
+        //console.log(copy);
     }
 
 
@@ -561,12 +561,12 @@ class CommentText extends React.Component {
                         let text = value.dump;
                         if (text.endsWith('\n')) {
                             text = text.split('\n');
-                            console.log("text to be shown:")
-                            console.log(text);
+                            //console.log("text to be shown:")
+                            //console.log(text);
                             return(
                                 text.map((value, index)=> {
-                                    console.log("text value:")
-                                    console.log(value);
+                                    //console.log("text value:")
+                                    //console.log(value);
                                     if (value==="") {
                                         return(
                                             <div key={String(index)+String(value)}
@@ -576,7 +576,7 @@ class CommentText extends React.Component {
                                     }
                                     else {
                                         if (this.isUrl(value)) {
-                                            console.log("I am a url")
+                                            //console.log("I am a url")
                                             return(
                                                 <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace"
                                                    href={(value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0,value.length-1) : value}>{value+" "}</a>
@@ -603,7 +603,7 @@ class CommentText extends React.Component {
                         }
                         else {
                             if (this.isUrl(value.dump)) {
-                                console.log("I am a url")
+                                //console.log("I am a url")
                                 return(
                                     <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" 
                                        href={(value.dump.endsWith(' ') || value.dump.endsWith('\n')) ? value.dump.slice(0,value.dump.length-1) : value.dump}>{value.dump+" "}</a>
@@ -679,7 +679,7 @@ class OneComment extends React.Component {
                     })
                     getUsers()
                     .then(response => {
-                        console.log(response);
+                        //console.log(response);
                         let tempUsersList = [];
                         response.data.forEach(el => {
                             tempUsersList.push({
@@ -695,7 +695,7 @@ class OneComment extends React.Component {
                         setTimeout(()=>{this.filterComment();}, 500)
                     })
                     .catch(err => {
-                        console.log(err);
+                        //console.log(err);
                     })    
                 }        
             }
@@ -703,26 +703,26 @@ class OneComment extends React.Component {
     }
 
     filterComment = () => {
-        console.log("i am filter post");
+        //console.log("i am filter post");
         let comment_text = this.state.comment.text;
-        console.log("initial text")
+        //console.log("initial text")
         let final_post_object = [];
         let s3 = [];
         comment_text = comment_text.replaceAll(")@", ") @");
-        console.log(comment_text);
+        //console.log(comment_text);
         //let s2 = comment_text.trim().split(/\s+/);
         let s2 = comment_text.split(' ');
         for (let i=0; i<s2.length; i++) {
             s2[i]+=' ';
         }
-        console.log("after fixing spaces")
-        console.log(s2)
+        //console.log("after fixing spaces")
+        //console.log(s2)
         for (let i=0; i<s2.length; i++) {
             if (s2[i]!==[' ']) {
-                console.log("sublist")
-                console.log(s2[i])
+                //console.log("sublist")
+                //console.log(s2[i])
                 let subList = s2[i].split('\n');
-                console.log(subList)
+                //console.log(subList)
                 if (subList.length>1) {
                     for (let j=0; j<subList.length-1; j++) {
                         if (!subList[j].endsWith('\n')) {
@@ -737,30 +737,30 @@ class OneComment extends React.Component {
                 }
             }
         }
-        console.log("BROKEN LIST")
-        //console.log(s2);
+        //console.log("BROKEN LIST")
+        ////console.log(s2);
         s3 = s3.flat();
-        console.log(s3);
+        //console.log(s3);
         let index=0;
         s3.forEach(el => {
-            console.log(el)
+            //console.log(el)
             if (el.startsWith('@')) {    
                 let matched = false;
                 this.state.usersList.forEach(suggest => {
                     let sugg=suggest.username;
                     if (el.startsWith(`@[${sugg}]`)) {
                         matched = true;
-                        console.log(`el: ${el}`)
+                        //console.log(`el: ${el}`)
                         let el2 = el.split(')')
-                        //console.log(`el parts: ${el2}`)
+                        ////console.log(`el parts: ${el2}`)
                         let first = el2[0]
                         let dump = el2[1]
-                        //console.log(`first: ${first}`)
+                        ////console.log(`first: ${first}`)
                         //let username = first.split(']')[0].slice(2)
                         //let id = first.split(']')[1].slice(1)
-                        console.log(`username: ${suggest.username}`)
-                        console.log(`id: ${suggest.id}`)
-                        console.log(`dump: ${dump}`)
+                        //console.log(`username: ${suggest.username}`)
+                        //console.log(`id: ${suggest.id}`)
+                        //console.log(`dump: ${dump}`)
                         final_post_object.push({
                             "tag": {
                                 "username": suggest.username,
@@ -788,8 +788,8 @@ class OneComment extends React.Component {
                 })
             }
         })
-        console.log("FINAL COMMENT:")
-        console.log(final_post_object)
+        //console.log("FINAL COMMENT:")
+        //console.log(final_post_object)
         this.setState({
             textParts: final_post_object,
         })
@@ -797,8 +797,8 @@ class OneComment extends React.Component {
 
 
     createNotification = (type, title="aaa", message="aaa") => {
-        console.log("creating notification");
-        console.log(type);
+        //console.log("creating notification");
+        //console.log(type);
         store.addNotification({
             title: title,
             message: message,
@@ -846,7 +846,7 @@ class OneComment extends React.Component {
     commentDelete = () => {
         DeleteComment(this.state.comment.id)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 delete: true,
             })
@@ -855,7 +855,7 @@ class OneComment extends React.Component {
             this.props.updateParent(this.state.comment.id);
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.hideModal();
             this.createNotification("danger", "Sorry,", "We couldn't delete your comment")
         })
@@ -867,39 +867,39 @@ class OneComment extends React.Component {
         else {
             LikeComment(this.state.userId, this.state.comment.id)
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 this.setState({
                     liked: true,
                 })
                 this.likesSample();
             })
             .catch(err => {
-                console.log(err);
+                //console.log(err);
             })
         }
     }
     commentUnLike = () => {
         getAllLikes(1, this.state.comment.id, "comment")
         .then(response => {
-            console.log(response);
+            //console.log(response);
             response.data.forEach(like => {
                 if (like.owner.id===this.state.userId) {
                     UnLikeComment(like.id)
                     .then(response => {
-                        console.log(response);
+                        //console.log(response);
                         this.setState({
                             liked: false,
                         })
                         this.likesSample();            
                     })
                     .catch(err => {
-                        console.log(err);
+                        //console.log(err);
                     })
                 }
             })
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
         })
     }
     showLikes = (event) => {
@@ -913,14 +913,14 @@ class OneComment extends React.Component {
         if (this.state.comment.id) {
             getLikesSample(this.state.comment.id, "comment")
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 this.setState({
                     likesNum: response.data.likes,
                     likerSample: response.data["one-liker"],
                 })
             })
             .catch(err => {
-                console.log(err);
+                //console.log(err);
                 this.setState({
                     likes_error: "No likes found",
                     likesNum: 0,
@@ -939,13 +939,13 @@ class OneComment extends React.Component {
             setTimeout(()=> {}, 2000);
             UserLikesComment(this.state.userId, this.state.comment.id)
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 this.setState({
                     liked: response.data.likes,
                 })
             })
             .catch(err => {
-                console.log(err);
+                //console.log(err);
                 this.setState({
                     liked: false,
                 })
@@ -953,7 +953,7 @@ class OneComment extends React.Component {
         }
     }
     componentDidMount() {
-        console.log("I am one comment")
+        //console.log("I am one comment")
         this.likesSample();
         this.checkLiked();
         this.getUsernames();
@@ -1136,7 +1136,7 @@ class Comments extends React.Component {
     askComments = () => {
         if (this.state.how!=="sample") {
             setTimeout(()=>{}, 2000);
-            console.log(`I am asking comments from ${this.state.start} to ${this.state.end}`)
+            //console.log(`I am asking comments from ${this.state.start} to ${this.state.end}`)
             if (this.state.start===1) {
                 this.setState({
                     commentsList: [],
@@ -1144,16 +1144,16 @@ class Comments extends React.Component {
             }
             getPostsComments(this.state.start, this.state.end, this.state.postId)
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 this.setState({
                     commentsList: this.state.commentsList.concat(response.data),
                     nomore: response.data.length<5,
                     comments_error: null,
                 })
-                console.log(this.state.commentsList.concat(response.data))
+                //console.log(this.state.commentsList.concat(response.data))
             })
             .catch(err => {
-                console.log(err);
+                //console.log(err);
                 this.setState({
                     comments_error: "No more comments found",
                 })
@@ -1225,7 +1225,7 @@ class Comments extends React.Component {
                                 updateComments={this.updateMe}/>
                     {
                         this.state.commentsList.map((value, index) => {
-                            //console.log(value);
+                            ////console.log(value);
                             return (
                                 <OneComment userId={this.state.userId}
                                             logged={this.state.logged}
