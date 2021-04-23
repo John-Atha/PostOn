@@ -1012,17 +1012,6 @@ class OnePost extends React.Component {
                 <hr className="no-margin"></hr>
                 {!this.state.edit &&
                     <div className="post-body">
-                        {this.state.media &&
-                            <div className="center-content">
-                                    <img className="post-media" src={this.state.media} alt="media"/>
-                            </div>
-                        }
-                        {this.state.video && 
-                            <video className="post-media" controls>
-                                <source src={this.state.video} />
-                                Sorry, we couldn't display this video.
-                            </video>
-                        }
                         <div className="post-text flex-layout with-whitespace">
                             {this.state.text.includes('@[') && this.state.textParts.length!==0 &&
                                 <PostText parts={this.state.textParts} />
@@ -1034,10 +1023,7 @@ class OnePost extends React.Component {
                                 <div></div>
                             }
                         </div>
-                    </div>       
-                }
-                {this.state.edit &&
-                    <div className="post-body">
+
                         {this.state.media &&
                             <div className="center-content">
                                     <img className="post-media" src={this.state.media} alt="media"/>
@@ -1049,17 +1035,32 @@ class OnePost extends React.Component {
                                 Sorry, we couldn't display this video.
                             </video>
                         }
+                    </div>       
+                }
+                {this.state.edit &&
+                    <div className="post-body">
                         <MentionsInput className="post-textarea-edit margin-top-smaller" name="text" value={this.state.text} onChange={this.handleInput} onFocus={this.askTags}>
-                        <Mention
-                                trigger="@"
-                                data={this.state.usersList2}
-                                className="mention-suggestions"
-                            />
+                            <Mention
+                                    trigger="@"
+                                    data={this.state.usersList2}
+                                    className="mention-suggestions"
+                                />
                         </MentionsInput>
                         <div className="flex-layout center-content">
                             <button className="my-button pagi-button flex-item-small" onClick={this.saveText}>Save change</button>
                             <button className="my-button pagi-button flex-item-small" onClick={this.discardText}>Discard change</button>
                         </div>                       
+                        {this.state.media &&
+                            <div className="center-content">
+                                    <img className="post-media" src={this.state.media} alt="media"/>
+                            </div>
+                        }
+                        {this.state.video && 
+                            <video className="post-media" controls>
+                                <source src={this.state.video} />
+                                Sorry, we couldn't display this video.
+                            </video>
+                        }
                     </div>
                 }
                 <hr className="no-margin"></hr>

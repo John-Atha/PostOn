@@ -785,7 +785,7 @@ class Profile extends React.Component {
                         </div>
                 </div>
                 {!this.state.edit && this.state.moto &&
-                    <div className="profile-info">
+                    <div className="profile-info with-whitespace">
                         <div>
                             {this.state.moto}
                         </div>
