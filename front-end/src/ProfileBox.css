@@ -9,4 +9,8 @@
     width: min-content !important;
     flex-grow: 1;
     width: 15vw !important;
+    max-width: 200px !important;
+    position: sticky;
+    right: 0;
+    top: 170px;
 }

@@ -29,6 +29,9 @@ hr {
 .main-home-container, .profile-main, .all-page {
     background-color: var(--colorback);
 }
+.main-home-container {
+    width: 100vw;
+}
 
 #root {
     --color2: #cadfed;
@@ -56,7 +59,7 @@ hr {
 #root.dark {
     --color2: #4d4b4b;
     --colorback: rgba(0, 0, 0, 0.989);
-    --boxback: black;
+    --boxback: rgb(4, 4, 4);
     --color3: rgb(14, 14, 14);
     --blue: rgb(0, 94, 255);
     --blue2: rgb(0, 94, 255);
@@ -66,16 +69,16 @@ hr {
     --unfollowgrey: rgb(250, 249, 249);
     --white: white;
     --notifseen: rgb(247, 244, 244);
-    --postActionColor: black;
-    --statsSampleColor: black;
+    --postActionColor: rgb(4, 4, 4);
+    --statsSampleColor: rgb(4, 4, 4);
     --lettersColor: white;
     --lettersColor2: rgb(229, 226, 226);
     --greyOnDarkOnly: rgb(214, 211, 211);
     --hrcolor: rgb(21, 20, 20);
-    --commentback: #040404;
+    --commentback: #0b0a0a;
     --profInfoColor: black;
     --notifcolor2: white;
-    --postsContainerColorBack: rgb(4, 4, 4);
+    --postsContainerColorBack: inherit;
     --userphotoback: grey;
 }
 
@@ -190,7 +193,7 @@ input {
     color: var(--lettersColor);
 }
 .no-margin {
-    margin: 1%;
+    margin: 2px;
 }
 .blue-color {
     color: var(--blue);

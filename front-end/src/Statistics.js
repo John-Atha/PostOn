@@ -4,6 +4,7 @@ import MyNavbar from './MyNavbar';
 import CanvasJSReact from './canvasjs.react.js';
 import {getMonthlyStatsGen, getDailyStatsGen, isLogged} from './api';
 import Searchbar from './Searchbar';
+
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class Diagram extends React.Component {

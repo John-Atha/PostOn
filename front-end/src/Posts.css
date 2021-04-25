@@ -70,8 +70,8 @@
     }
     .react-player {
         position: relative !important;
-        width: 60vw !important;
-        height: 50vh !important; 
+        width: 90% !important;
+        height: auto; 
     }
 
 }
@@ -95,8 +95,24 @@
         display: block;
     }
     .posts-container {
+        width: 55vw !important;
+        position: relative;
+        max-width: 800px !important;
+        padding: 50px;
+    } 
+    .post-container {
+        width: 55vw !important;
+    }   
+}
+@media only screen and (min-width: 1700px) {
+    .main-home-container {
+        width: 80vw;
+        margin-left: 10vw;
+    }
+    .posts-container {
         width: 65vw !important;
         position: relative;
+        max-width: 800px !important;
     }    
 }
 
@@ -111,7 +127,7 @@
     position: relative;
     width: 98%;
     margin: 0% 1%;
-    margin-bottom: 1%;
+    margin-bottom: 10px;
 }
 .pagi-button {
     margin-right: 2%;

@@ -4,7 +4,6 @@ import MyNavbar from './MyNavbar'
 import {isLogged} from './api';
 import Posts from "./Posts";
 import Explore from './Explore';
-import ProfileBox from './ProfileBox';
 import Searchbar from './Searchbar';
 
 class HomeFollowing extends React.Component {
@@ -55,7 +54,6 @@ class HomeFollowing extends React.Component {
                     <div className="main-home-container flex-layout">
                         <Explore userId={this.state.userId} logged={this.state.logged} update1={this.state.update1} updateMyPar={this.updateProfBox} />
                         <Posts case="following" updateHome={this.updateHome}/>
-                        <ProfileBox userId={this.state.userId} logged={this.state.logged} update1={this.state.update1} update2={this.state.update2} />
                     </div>
                 </div>
             )

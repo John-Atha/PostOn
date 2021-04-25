@@ -4,7 +4,6 @@ import MyNavbar from './MyNavbar'
 import {isLogged} from './api';
 import Posts from "./Posts";
 import Explore from './Explore';
-import ProfileBox from './ProfileBox';
 import Searchbar from './Searchbar';
 
 class Home extends React.Component {
@@ -50,13 +49,10 @@ class Home extends React.Component {
         return (
             <div className="all-page">
                 <MyNavbar />
+                <Searchbar />
                 <div className="main-home-container flex-layout">
                     <Explore userId={this.state.userId} logged={this.state.logged} update1={this.state.update1} updateMyPar={this.updateProfBox} />
                     <Posts case="all" updateHome={this.updateHome} />
-                    {this.state.logged &&
-                        <ProfileBox userId={this.state.userId} logged={this.state.logged} update1={this.state.update1} update2={this.state.update2} />
-                    }
-                    <Searchbar />
                 </div>
             </div>
         )

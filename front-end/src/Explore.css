@@ -1,5 +1,6 @@
 .explore-container {
-    width: 20 vw !important;
+    width: 25vw !important;
+    max-width: 300px !important;
     background-color: var(--color2);
     border-radius: 7px;
     margin-left: 1%;
@@ -7,6 +8,8 @@
     height: min-content;
     padding: 1%;
     font-size: 0.8rem;
+    position: sticky !important;
+    top: 65px;
 }
 .one-user-line {
     margin:4% 0%;

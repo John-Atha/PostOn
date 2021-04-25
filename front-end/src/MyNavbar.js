@@ -8,7 +8,7 @@ import notif_icon from './images/notif.png';
 import stats_icon from './images/stats.png';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
-import { Button } from "bootstrap";
+import Searchbar from './Searchbar';
 
 class MyNavbar extends React.Component {
     constructor(props) {
@@ -288,93 +288,93 @@ class MyNavbar extends React.Component {
     }
     render(){
         return(
-            <div>
-                <Navbar bg="light" expand="sm">
+                <Navbar bg="light" expand="sm" sticky="top">
                 <Navbar.Brand href="/">Jwitter</Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
-                    {this.state.logged &&
-                        <Nav.Link href={`/users/${this.state.userId}`}>{this.state.username}</Nav.Link>
-                    }
-                    {!this.state.logged && 
-                        <div className="error-message" style={{'marginTop': '8px', 'marginRight': '5px'}}>Not logged in</div>
-                    }
-                    {!this.state.logged &&
-                        <Nav.Link href="/">Posts</Nav.Link>
-                    }
-                    {this.state.logged &&
-                        <NavDropdown title="Posts" id="basic-nav-dropdown">
-                            <NavDropdown.Item href="/">All Posts</NavDropdown.Item>
-                            <NavDropdown.Item href="/following">Following's Posts</NavDropdown.Item>
-                        </NavDropdown>        
-                    }   
-                    {this.state.logged && 
-                        <NavDropdown title={<img className="navbar-icon2" src={stats_icon} alt="statistics" />} id="basic-nav-dropdown">
-                            <NavDropdown.Item href="/stats/personal">My statistics</NavDropdown.Item>
-                            <NavDropdown.Item href="/stats/general">General statistics</NavDropdown.Item>
-                            <NavDropdown.Item href="/activity">Activity</NavDropdown.Item>
-                        </NavDropdown>
-                    }
-                    {this.state.logged && 
-                        <NavDropdown title={<img className="navbar-icon" src={notif_icon} alt="notifications" />} id="basic-nav-dropdown">
-                            {this.state.notifList.length!==0 && 
-                                <div className="center-content">
-                                    <button className="my-button margin-left read-button" onClick={this.markAllRead}>Mark all as read</button>
-                                </div>
-                            }
-                            <div className="notif-container">
-                                {this.state.notifList.map((value, index) => {
-                                    if (value.seen) {
-                                        return(
-                                            <NavDropdown.Item className="notif with-whitespace seen" 
-                                                              key={index} 
-                                                              href={this.linkGen(value)}>
-                                                    {this.textGen(value)}
-                                            </NavDropdown.Item>
-                                        )
-                                    }
-                                    else {
-                                        return(
-                                            <NavDropdown.Item className="notif with-whitespace not-seen" 
-                                                              key={index}>
-                                                    <div onClick={()=>this.markOneAsRead(value)}>
+                        {this.state.logged &&
+                            <Nav.Link href={`/users/${this.state.userId}`}>{this.state.username}</Nav.Link>
+                        }
+                        {!this.state.logged && 
+                            <div className="error-message" style={{'marginTop': '8px', 'marginRight': '5px'}}>Not logged in</div>
+                        }
+                        {!this.state.logged &&
+                            <Nav.Link href="/">Posts</Nav.Link>
+                        }
+                        {this.state.logged &&
+                            <NavDropdown title="Posts" id="basic-nav-dropdown">
+                                <NavDropdown.Item href="/">All Posts</NavDropdown.Item>
+                                <NavDropdown.Item href="/following">Following's Posts</NavDropdown.Item>
+                            </NavDropdown>        
+                        }   
+                        {this.state.logged && 
+                            <NavDropdown title={<img className="navbar-icon2" src={stats_icon} alt="statistics" />} id="basic-nav-dropdown">
+                                <NavDropdown.Item href="/stats/personal">My statistics</NavDropdown.Item>
+                                <NavDropdown.Item href="/stats/general">General statistics</NavDropdown.Item>
+                                <NavDropdown.Item href="/activity">Activity</NavDropdown.Item>
+                            </NavDropdown>
+                        }
+                        {this.state.logged && 
+                            <NavDropdown title={<img className="navbar-icon" src={notif_icon} alt="notifications" />} id="basic-nav-dropdown">
+                                {this.state.notifList.length!==0 && 
+                                    <div className="center-content">
+                                        <button className="my-button margin-left read-button" onClick={this.markAllRead}>Mark all as read</button>
+                                    </div>
+                                }
+                                <div className="notif-container">
+                                    {this.state.notifList.map((value, index) => {
+                                        if (value.seen) {
+                                            return(
+                                                <NavDropdown.Item className="notif with-whitespace seen" 
+                                                                key={index} 
+                                                                href={this.linkGen(value)}>
                                                         {this.textGen(value)}
-                                                    </div>
-                                            </NavDropdown.Item>
-                                        )
-                                    }
-                                })}
-                            </div>
-                            {!this.state.notifList.length && 
-                                <div style={{padding: '1% 4%'}} className="error-message">No notifications found</div>
-                            }
-                            {this.state.notifList.length>0 &&
-                                <div className="pagi-buttons-container flex-layout center-content">
-                                    <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
-                                    <button disabled={this.state.notifList.length<5} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
+                                                </NavDropdown.Item>
+                                            )
+                                        }
+                                        else {
+                                            return(
+                                                <NavDropdown.Item className="notif with-whitespace not-seen" 
+                                                                key={index}>
+                                                        <div onClick={()=>this.markOneAsRead(value)}>
+                                                            {this.textGen(value)}
+                                                        </div>
+                                                </NavDropdown.Item>
+                                            )
+                                        }
+                                    })}
                                 </div>
-                            }
-                        </NavDropdown>
-                    }
-                    {this.state.logged && 
-                        <Nav.Link href="#" onClick={this.logout}>Logout</Nav.Link>
-                    }
-                    {!this.state.logged &&
-                        <Nav.Link href="/stats/general">General statistics</Nav.Link>
-                    }
-                    {!this.state.logged &&
-                        <Nav.Link href="/login">Login</Nav.Link>
-                    }
-                    {!this.state.logged &&
-                        <Nav.Link href="/register">Register</Nav.Link>
-                    }
-                    <Nav.Link href="#" style={this.state.theme==="light" ? {'border': '1px solid black','borderRadius': '6px', 'padding-left':'1%','width':'100px', 'height': 'min-content'} : {'border': '1px solid white','borderRadius': '6px', 'padding-left':'1%','width':'100px', 'height': 'min-content'} }onClick={this.goDark}>Go dark</Nav.Link>
-                    <Nav.Link href="#" style={this.state.theme==="light" ? {'border': '1px solid black','borderRadius': '6px', 'padding-left':'1%','width':'100px', 'height': 'min-content'} : {'border': '1px solid white','borderRadius': '6px', 'padding-left':'1%','width':'100px', 'height': 'min-content'} }onClick={this.goLight}>Go light</Nav.Link>
-                </Nav>
+                                {!this.state.notifList.length && 
+                                    <div style={{padding: '1% 4%'}} className="error-message">No notifications found</div>
+                                }
+                                {this.state.notifList.length>0 &&
+                                    <div className="pagi-buttons-container flex-layout center-content">
+                                        <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
+                                        <button disabled={this.state.notifList.length<5} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
+                                    </div>
+                                }
+                            </NavDropdown>
+                        }
+                        {!this.state.logged &&
+                            <Nav.Link href="/stats/general">General statistics</Nav.Link>
+                        }
+                        <Nav.Link href="#" className="theme-buttons" style={this.state.theme==="light" ? {'border': '1px solid black','borderRadius': '6px', 'padding-left':'2px','width':'100px', 'height': 'min-content'} : {'border': '1px solid white','borderRadius': '6px', 'padding-left':'2px','width':'100px', 'height': 'min-content'} }onClick={this.goDark}>Go dark</Nav.Link>
+                        <Nav.Link href="#" className="theme-buttons" style={this.state.theme==="light" ? {'border': '1px solid black','borderRadius': '6px', 'padding-left':'2px','width':'100px', 'height': 'min-content'} : {'border': '1px solid white','borderRadius': '6px', 'padding-left':'2px','width':'100px', 'height': 'min-content'} }onClick={this.goLight}>Go light</Nav.Link>        
+                    </Nav>
+                    <Nav>
+                        {!this.state.logged &&
+                            <Nav.Link href="/login">Login</Nav.Link>
+                        }
+                        {!this.state.logged &&
+                            <Nav.Link href="/register">Register</Nav.Link>
+                        }
+                        {this.state.logged && 
+                            <Nav.Link href="#" onClick={this.logout}>Logout</Nav.Link>
+                        }
+                    </Nav>
                 </Navbar.Collapse>
             </Navbar>
-            </div>
         )
     }
 }

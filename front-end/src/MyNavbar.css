@@ -1,12 +1,6 @@
 .navbar {
     background-color: var(--color2) !important;
     color: var(--lettersColor) !important;
-    position: sticky !important;
-    top: 0;
-    z-index: 3 !important;
-}
-#basic-navbar-nav {
-    max-width: 93vw;
 }
 .navbar-icon {
     height: 20px;

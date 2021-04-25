@@ -107,7 +107,7 @@ class Explore extends React.Component {
             logged: this.props.logged,
             error: null,
             start:1,
-            end:15,
+            end:10,
             usersList: [],
             followsList: [],
             followsObjIdList: [],
@@ -284,7 +284,7 @@ class Explore extends React.Component {
                 {this.state.usersList.length!==0 && 
                     <div className="pagi-buttons-container flex-layout center-content">
                         <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
-                        <button disabled={this.state.usersList.length<14} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
+                        <button disabled={this.state.usersList.length<10} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
                     </div>            
                 }
                 {!this.state.usersList.length!==0 &&
