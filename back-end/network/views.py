@@ -10,6 +10,8 @@ from datetime import datetime
 import string
 import magic
 
+reactions = ["like", "dislike", "haha", "love", "liquid", "sad"]
+
 def filterUsername(name):
     allowed = list(string.ascii_letters)
     allowed.append('_')
@@ -528,11 +530,20 @@ def AllLikesMod(request):
                                     postId = int(data["post"]["id"])
                                     try:
                                         post = Post.objects.get(id=postId)
-                                        like = Like(owner=owner, post=post)
-                                        like.save()
-                                        return JsonResponse(like.serialize(request.build_absolute_uri('/')[:-1]), status=200)
+                                        previousLike = Like.objects.filter(owner=owner).filter(post=post)
+                                        if previousLike:
+                                                JsonResponse({'error': 'You have already liked this post'}, status=400)
                                     except Post.DoesNotExist:
                                         return JsonResponse({"error": "Invalid post id."}, status=400)                                
+                                    kind = "like"
+                                    if data.get("kind") is not None:
+                                        if data["kind"] in reactions:
+                                            kind = data["kind"]
+                                        else:
+                                            return JsonResponse({"error": "Invalid kind field."}, status=400) 
+                                    like = Like(owner=owner, post=post, kind=kind)
+                                    like.save()
+                                    return JsonResponse(like.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                                 except ValueError:
                                     return JsonResponse({"error": "Invalid post id."}, status=400)
                             else:
@@ -581,13 +592,29 @@ def OneLikeMod(request, id):
                 if data.get("seen") is not None:
                     if data["seen"]==True or data["seen"]==False:
                         like.seen=data["seen"]
+                    else:
+                        return JsonResponse({"error": "'seen' field can have only True/False value"}, status=400)
+                if request.user==like.owner:
+                    if data.get("kind"):
+                        if data["kind"] in reactions:
+                            like.kind = data["kind"]
+                            like.date = datetime.now()
+                            like.seen = False
+                like.save()
+                return JsonResponse(like.serialize(request.build_absolute_uri('/')[:-1]), status=200)
+            elif request.user==like.owner:
+                data = json.loads(request.body)
+                if data.get("kind"):
+                    if data["kind"] in reactions:
+                        like.kind = data["kind"]
+                        like.date = datetime.now()
+                        like.seen = False
                         like.save()
                         return JsonResponse(like.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                     else:
-                        return JsonResponse({"error": "'seen' field can have only True/False value"}, status=400)
+                        return JsonResponse({"error": "Invalid reaction kind given"}, status=400)
                 else:
-                    print(data.get("seen"))
-                    return JsonResponse({"error": "Only updatable field is the 'seen' field"}, status=400)
+                    return JsonResponse({"error": "No reaction kind given"}, status=400)
             else:
                 return JsonResponse({"error": "You cannot mark a like us seen/unseen on behalf of another user"}, status=400)
 
@@ -644,7 +671,7 @@ def UserLikesPost(request, id, id2):
             like = Like.objects.get(owner=user, post=post)
         except Like.DoesNotExist:
             return JsonResponse({"likes": False}, status=200)
-        return JsonResponse({"likes": True}, status=200)
+        return JsonResponse({"likes": True, "kind": like.kind, "id": like.id}, status=200)
     else:
         return JsonResponse({"error": "Only GET method is allowed."}, status=400)
 
@@ -1150,7 +1177,7 @@ def DailyLikeCommentsStats(request):
         likeCommentsCount = dailyStatsExport(likeComments)
         return JsonResponse(likeCommentsCount, safe=False, status=200)
 
-def OnePostLikes(request, id):
+def OnePostLikes(request, id, kind="like"):
     if request.method!="GET":
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
@@ -1158,7 +1185,7 @@ def OnePostLikes(request, id):
             post = Post.objects.get(id=id)
         except Post.DoesNotExist:
             return JsonResponse({"error": "Invalid post id."}, status=400)
-        likes = Like.objects.filter(post=post).order_by('-date')
+        likes = Like.objects.filter(post=post).filter(kind=kind).order_by('-date')
         result = paginate(request.GET.get("start"), request.GET.get("end"), likes)
         try:
             likes = result
@@ -1178,13 +1205,46 @@ def OnePostLikesSample(request, id):
         except Post.DoesNotExist:
             return JsonResponse({"error": "Invalid post id."}, status=400)
         if request.method=="GET":
-            likes = Like.objects.filter(post=post).order_by('-date')       
+            likes = Like.objects.filter(post=post).order_by('-date')   
+            hahasNum = 0
+            likesNum = 0
+            dislikesNum = 0
+            sadsNum = 0
+            liquidsNum = 0
+            lovesNum = 0
             if len(likes)==0:
                 return JsonResponse({"error": "No likes found for this post"}, status=402)
             else:
+                for like in likes:
+                    if like.kind=='like':
+                        likesNum+=1
+                    elif like.kind=='haha':
+                        hahasNum+=1
+                    elif like.kind=='dislike':
+                        dislikesNum+=1
+                    elif like.kind=='liquid':
+                        liquidsNum+=1
+                    elif like.kind=='sad':
+                        sadsNum+=1
+                    elif like.kind=='love':
+                        lovesNum+=1
+                kinds = []
+                if hahasNum:
+                    kinds.append('haha')
+                if likesNum:
+                    kinds.append('like')
+                if dislikesNum:
+                    kinds.append('dislike')
+                if sadsNum:
+                    kinds.append('sad')
+                if liquidsNum:
+                    kinds.append('liquid')
+                if lovesNum:
+                    kinds.append('love')
                 answer = {
                     "likes": len(likes),
-                    "one-liker": likes[0].owner.serialize(request.build_absolute_uri('/')[:-1])
+                    "one-liker": likes[0].owner.serialize(request.build_absolute_uri('/')[:-1]),
+                    "kinds": kinds,
                 }
                 return JsonResponse(answer, status=200)
 

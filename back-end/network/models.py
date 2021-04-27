@@ -4,6 +4,8 @@ from datetime import datetime
 from django.db.models.query_utils import PathInfo
 from cloudinary_storage.storage import VideoMediaCloudinaryStorage
 
+from django.utils.translation import gettext as _
+
 class Country(models.Model):
     title = models.CharField(max_length=128, null=False)
     code = models.CharField(max_length=10, null=False)
@@ -85,15 +87,31 @@ class Comment(models.Model):
         } 
 
 class Like(models.Model):
+    LIKE = 'like'
+    SAD = 'sad'
+    DISLIKE = 'dislike'
+    HAHA = 'haha'
+    LIQUID = 'liquid'
+    LOVE = 'love'
+    REACTION = [
+        (LIKE, _('like')),
+        (SAD, _('sad')),
+        (DISLIKE, _('dislike')),
+        (HAHA, _('haha')),
+        (LIQUID, _('liquid')),
+        (LOVE, _('love'))
+    ]
+    kind = models.CharField(max_length=15, choices=REACTION, default=LIKE, null=False)
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="likes", null=False)
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="likes", null=False)
     date = models.DateTimeField(default=datetime.now)
     seen = models.BooleanField(default=False)
     def __str__(self):
-        return f"{self.owner}, {self.post}, {self.date}"
+        return f"{self.kind}, {self.owner}, {self.post}, {self.date}"
     def serialize(self, path=""):
         return {
             "id": self.id,
+            "kind": self.kind,
             "owner": self.owner.serialize(path),
             "post": self.post.serialize(path),
             "date": self.date,
