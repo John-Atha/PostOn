@@ -131,7 +131,7 @@ class PostLikeAction extends React.Component {
                 {this.state.post && this.state.owner && this.state.date &&
                     <div className="description flex-layout">
                         <div className="with-whitespace">
-                            On {dateShow(this.state.date)}, you liked a
+                            On {dateShow(this.state.date)}, you reacted on a
                         </div>
                         <a href={`/posts/${this.state.post.id}`} className="with-whitespace">
                             {" post "}

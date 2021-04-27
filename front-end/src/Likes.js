@@ -116,6 +116,8 @@ class Likes extends React.Component {
             followsObjIdList: [],
             followersList: [],
             showMe: this.props.showMe,
+            kind: this.props.kinds[0],
+            kinds: this.props.kinds,
         }
         this.hide = this.hide.bind(this);
         this.previousPage = this.previousPage.bind(this);
@@ -125,6 +127,24 @@ class Likes extends React.Component {
         this.disappear = this.disappear.bind(this);
         this.askFollows = this.askFollows.bind(this);
         this.updateFollows = this.updateFollows.bind(this);
+        this.changeKind = this.changeKind.bind(this);
+    }
+    changeKind = (event) => {
+        this.setState({
+            kind: event.target.innerHTML,
+            start: 1,
+            end: 5,
+            likesList: [],
+            error: null,
+        })
+        setTimeout(()=> {console.log(this.state.kind)}, 0);
+        Array.from(document.getElementsByClassName('likes-kinds-buttons')).forEach(el => {
+            el.style.color = localStorage.getItem('theme')==='light' ? 'black' : 'white';
+            el.style.borderBottomColor = localStorage.getItem('theme')==='light' ? 'black' : 'white';
+        })
+        event.target.style.color='green';
+        event.target.style.borderBottomColor='green';
+        this.askLikes();
     }
     disappear = (event) => {
         event.target.parentElement.style.display = "none";
@@ -149,9 +169,9 @@ class Likes extends React.Component {
         this.moveOn();
     }
     askLikes = () => {
-        setTimeout(()=> {}, 2000);
+        setTimeout(()=> {
         console.log(`I am asking likes from ${this.state.start} to ${this.state.end}.`);
-        getLikes(this.state.start, this.state.end, this.state.id, this.state.on)
+        getLikes(this.state.start, this.state.end, this.state.id, this.state.on, this.state.kind)
         .then(response => {
             console.log(response);
             this.setState({
@@ -163,9 +183,9 @@ class Likes extends React.Component {
         .catch(err => {
             console.log(err);
             this.setState({
-                error: "No likes found."
+                error: `No ${this.state.kind} reactions found.`
             })
-        })
+        })}, 200);
     }
     hide = (event) => {
         event.preventDefault();
@@ -175,13 +195,24 @@ class Likes extends React.Component {
     }
     componentDidMount() {
         this.askLikes();
+        Array.from(document.getElementsByClassName('likes-kinds-buttons')).forEach(el => {
+            if (el.innerHTML===this.state.kind) {
+                el.style.color = 'green';
+                el.style.borderBottomColor = 'green';    
+            }
+        })
     }
     componentDidUpdate(prevProps) {
-        if (prevProps.userId!==this.props.userId || prevProps.followsUpd!==this.props.followsUpd || prevProps.showMe!==this.props.showMe) {
+        if (prevProps.userId!==this.props.userId || prevProps.followsUpd!==this.props.followsUpd) {
             console.log("I updated the follows list")
             this.askLikes();
             this.setState({
                 showMe: this.props.showMe,
+            })
+        }
+        if (prevProps.kinds!==this.props.kinds) {
+            this.setState({
+                kinds: this.props.kinds,
             })
         }
     }
@@ -238,7 +269,6 @@ class Likes extends React.Component {
     }
     render() {
         if (this.state.showMe) {
-            console.log(`On: ${this.state.on}`);
             let classN = "likes-pop-up center-content";
             if (this.state.on==="comment") {
                 classN = "likes-comments-pop-up center-content";
@@ -247,7 +277,22 @@ class Likes extends React.Component {
                 <OutsideClickHandler onOutsideClick={this.hide}>
                     <div className={classN} >
                         <button className="close-button" onClick={this.disappear}>X</button>
-                        <h5>Likes</h5>
+                        {this.state.on==='comment' &&
+                            <h5>Likes</h5>
+                        }
+                        {this.state.on==='post' &&
+                            <div className="flex-layout center-content">
+                                {this.state.kinds.map((value, index) => {
+                                    return(
+                                        <button className="likes-kinds-buttons" 
+                                                key={index}
+                                                onClick={this.changeKind}>                                        
+                                            {value}
+                                        </button>
+                                    )
+                                })}
+                            </div>
+                        }
                         {(this.state.error) && 
                             <div className="error-message">
                                 No likes found...
@@ -277,7 +322,6 @@ class Likes extends React.Component {
                                                 updatePar={this.updateFollows} />
                                     )
                                 }
-
                                 else {
                                     return (
                                         <OneLike key={index}

@@ -198,7 +198,7 @@ class MyNavbar extends React.Component {
             text=`On ${this.dateShow(notif.date)},\n${notif.following.username} asked to follow you.`;
         }
         else if (this.categorize(notif)==="postlike") {
-            text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} liked one of your posts`;
+            text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} reacted on one of your posts`;
         }
         else if (this.categorize(notif)==="postMention") {
             text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} mentioned you in a post`;
