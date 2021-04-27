@@ -180,21 +180,31 @@
 }
 .like-icon {
     width: 30px;
-    height: 100%;
+    height: 25px;
+}
+.comment-icon {
+    width: 27px;
+    height: 27px;
+}
+.like-emoji-icon {
+    width: 15px;
+    height:18px;
+    margin-top: 5px;
 }
 .like-icon-small {
     width: 20px;
-    height:80%;
+    height:20px;
 }
 .likes-sample {
     margin-right: 20px;
-    width: 200px;
+    max-width: 300px;
     position: relative;
     color: var(--lettersColor);
 }
 .comments-sample {
-    width: 200px;
+    max-width: 300px;
     color: var(--lettersColor);
+    margin-top: 3px;
 }
 .post-actions {
     width: 100%;
@@ -214,6 +224,8 @@
 .liker-sample, .likes-sample-num {
     font-size: small !important;
     color: var(--grey);
+    margin-top: 2px;
+    margin-left: 1px;
 } 
 .edit-action-container {
     position: absolute;
@@ -305,4 +317,34 @@
     border: none;   
     width: 50px;
     height: 70px;
+}
+.likes-kinds-buttons {
+    color: var(--lettersColor);
+    background-color: inherit;
+    border: none;
+    border-bottom: 1px solid var(--lettersColor);
+    margin: 0px 5px;
+}
+.reactions-box {
+    font-size: 30px;
+    position: absolute;
+    z-index: 3;
+    background-color: var(--color3);
+    border-radius: 10px;
+    width: 250px;
+    height: min-content;
+    padding: 5px;
+    top: -55px;
+    left: -100px;
+}
+.react-choice {
+    background-color: inherit;
+    border: none;
+    padding: 1px;
+}
+.react-cancel-button {
+    background-color: grey;
+    border-radius: 50%;
+    padding: 1px 7px;
+    height: 30px;
 }

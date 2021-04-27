@@ -1,6 +1,6 @@
 import React from "react";
 import "./Posts.css";
-import {getUsers, getPostsCommentsSample, getAllLikes, getLikesSample, LikePost, UnLikePost, editPost, deletePost, UserLikesPost, isLogged, DelPostTags, PostPostTag} from './api';
+import {getUsers, getPostsCommentsSample, UpdatePostLike, getLikesSample, LikePost, UnLikePost, editPost, deletePost, UserLikesPost, isLogged, DelPostTags, PostPostTag} from './api';
 import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
 import comment_icon from './images/comment.png';
@@ -440,7 +440,10 @@ class OnePost extends React.Component {
             text_init :this.props.text,
             date: this.props.date,
             liked: false,
+            likeId: null,
             likesNum: 0,
+            likeKind: null,
+            likesKinds: [],
             commentsNum: 0,
             followsUpd: 0,
             likerSample: {
@@ -465,6 +468,7 @@ class OnePost extends React.Component {
             usersList2: [],
             hasTag: false,
             firstFocus: true,
+            showReactions: false,
         }
         this.likesSample = this.likesSample.bind(this);
         this.commentsSample = this.commentsSample.bind(this);
@@ -492,8 +496,21 @@ class OnePost extends React.Component {
         this.updateTags = this.updateTags.bind(this);
         this.removeTags = this.removeTags.bind(this);
         this.addTags = this.addTags.bind(this);
+        this.preLike = this.preLike.bind(this);
     }
 
+    preLike = (kind) => {
+        if (this.state.likeKind===kind) {
+            this.postUnLike();
+        }
+        else {
+            console.log(`I am reacting with ${kind}.`)
+            this.postLike(kind);
+        }
+        this.setState({
+            showReactions: false,
+        })
+    }
     updateTags = () => {
         ////console.log("I am updating the tags");
         this.removeTags();
@@ -694,21 +711,27 @@ class OnePost extends React.Component {
         if (this.state.userId) {
             UserLikesPost(this.state.userId, this.state.id)
             .then(response => {
-                //console.log(response);
+                console.log(response);
                 this.setState({
                     liked: response.data.likes,
+                    likeId: response.data.id,
+                    likeKind: response.data.kind,
                 })
             })
             .catch(err => {
                 //console.log(err);
                 this.setState({
                     liked: false,
+                    likeId: null,
+                    likeKind: null,
                 })
             })
         }
         else {
             this.setState({
                 liked: false,
+                likeId: null,
+                likeKind: null,
             })
         }
     }
@@ -828,7 +851,7 @@ class OnePost extends React.Component {
         //console.log(`text: ${value}`)
     }
     postUnLike = () => {
-        getAllLikes(1, this.state.id, "post")
+        /*getAllLikes(1, this.state.id, "post")
         .then(response => {
             //console.log(response);
             response.data.forEach(like => {
@@ -853,30 +876,55 @@ class OnePost extends React.Component {
                 liked: false,
             })    
             this.likesSample();
+        })*/
+        UnLikePost(this.state.likeId)
+        .then(response => {
+            console.log(response);
+            this.setState({
+                liked: false,
+                likeId: null,
+                likeKind: null,
+            });
+            this.likesSample();
         })
-        
+        .catch(err => {
+            console.log(err);
+        })        
     }
-    postLike = () => {
+    postLike = (kind) => {
         if (!this.state.logged) {
             this.createNotification('danger', 'Sorry', 'You have to create an account to like a post')
         }
         else {
-            this.checkLiked();
-            setTimeout(()=> {
-                if (!this.state.liked) {
-                    LikePost(this.state.userId, this.state.id)
-                    .then(response => {
-                        //console.log(response);
-                        this.setState({
-                            liked: true,
-                        })
-                        this.likesSample();
+            if (this.state.liked) {
+                UpdatePostLike(this.state.likeId, kind)
+                .then(response=> {
+                    console.log(response);
+                    this.setState({
+                        liked: true,
+                        likeKind: response.data.kind,
                     })
-                    .catch(err => {
-                        //console.log(err);
-                    })  
-                }
-            },500)    
+                    this.likesSample();
+                })
+                .catch(err => {
+                    console.log(err);
+                })
+            }
+            else {
+                LikePost(this.state.userId, this.state.id, kind)
+                .then(response => {
+                    //console.log(response);
+                    this.setState({
+                        liked: true,
+                        likeId: response.data.id,
+                        likeKind: response.data.kind,
+                    })
+                    this.likesSample();
+                })
+                .catch(err => {
+                    console.log(err);
+                })      
+            }
         }
     }
     showLikes = (event) => {
@@ -915,10 +963,11 @@ class OnePost extends React.Component {
         setTimeout(()=> {}, 1000);
         getLikesSample(this.props.id, "post")
         .then(response => {
-            //console.log(response);
+            console.log(response);
             this.setState({
                 likesNum: response.data.likes,
                 likerSample: response.data["one-liker"],
+                likesKinds: response.data.kinds,
             })
         })
         .catch(err => {
@@ -926,6 +975,7 @@ class OnePost extends React.Component {
             this.setState({
                 likesNum: 0,
                 likes_error: "No likes found",
+                likesKinds: [],
             })
         })
     }
@@ -1066,12 +1116,33 @@ class OnePost extends React.Component {
                 <hr className="no-margin"></hr>
                 <div className="stats-sample flex-layout">
                     <div className="likes-sample flex-layout">
-                        <img className="like-icon" src={like_icon} alt="like-icon"/>
+                        {this.state.likesNum===0 &&
+                            <div style={{'marginTop': '5px'}}>&#128077;</div>
+                        }
+                        {this.state.likesKinds.includes('like') &&
+                            <div style={{'marginTop': '5px'}}>&#128077;</div>
+                        }
+                        {this.state.likesKinds.includes('haha') &&
+                            <div style={{'marginTop': '5px'}}>&#128514;</div>
+                        }
+                        {this.state.likesKinds.includes('love') &&
+                            <div style={{'marginTop': '5px'}}>&#10084;&#65039;</div>
+                        }
+                        {this.state.likesKinds.includes('liquid') &&
+                            <div style={{'marginTop': '5px'}}>💦</div>
+                        }
+                        {this.state.likesKinds.includes('sad') &&
+                            <div style={{'marginTop': '5px'}}>&#128546;</div>
+                        }
+                        {this.state.likesKinds.includes('dislike') &&
+                            <div style={{'marginTop': '5px'}}>&#128078;</div>
+                        }
                         {this.state.likesNum>1 &&
                             <button className="liker-sample button-as-link-grey" onClick={this.showLikes}>{this.state.likerSample.username} and {this.state.likesNum-1} more</button>
                         }
                         {this.state.likesNum===1 &&
                             <div className="liker-sample button-as-link-grey"
+                                style={{'marginTop': '7px'}}
                                 onMouseEnter={this.cardShow2}
                                 onMouseLeave={this.cardHide2}>
 
@@ -1089,8 +1160,8 @@ class OnePost extends React.Component {
                             <button disabled={true} className="liker-sample button-as-link-grey">0</button>
                         }
                     </div>
-                    <div className="comments-sample">
-                        <img className="like-icon" src={comment_icon} alt="comment-icon"/>
+                    <div className="comments-sample flex-layout">
+                        <div>&#9997;</div>
                         {this.state.commentsNum>1 &&
                             <button className="likes-sample-num button-as-link-grey" onClick={this.showHideComments}>{this.state.commentSample.owner.username} and {this.state.commentsNum-1} more</button>
                         }
@@ -1104,23 +1175,78 @@ class OnePost extends React.Component {
                 </div>
                 <hr className="no-margin"></hr>
                 <div className="post-actions center-content flex-layout">
-                    <div className="center-content margin-side">
+                    <div className="center-content margin-side" 
+                         style={{'position': 'relative'}}
+                         onMouseEnter={()=>{this.setState({showReactions: true})}}
+                         onMouseLeave={()=>{this.setState({showReactions: false})}} >
                         {!this.state.liked &&
-                            <button className="likes-action flex-layout button-as-link" onClick={this.postLike}>
-                                <img className="like-icon" src={like_icon} alt="like-icon"/>
-                                <div>Like</div>
-                            </button>
+                                <button className="likes-action flex-layout button-as-link">
+                                    <img className="like-icon" src={like_icon} alt="like-icon"/>
+                                    <div>Like</div>
+                                </button>
                         }
-                        {this.state.liked &&
-                            <button className="likes-action flex-layout button-as-link" onClick={this.postUnLike}>
+                        {this.state.liked && this.state.likeKind==="like" &&
+                            <button className="likes-action flex-layout button-as-link">
                                 <img className="like-icon" src={liked_icon} alt="liked-icon"/>
                                 <div className="blue-color">Liked</div>
                             </button>
-                        }                        
+                        }  
+                        {this.state.liked && this.state.likeKind==="haha" &&
+                            <button className="likes-action flex-layout button-as-link">
+                                <div>&#128514;</div>
+                                <div style={{'color': '#edaf11'}}>Haha</div>
+                            </button>
+                        }         
+                        {this.state.liked && this.state.likeKind==="love" &&
+                            <button className="likes-action flex-layout button-as-link">
+                                <div>&#10084;&#65039;</div>
+                                <div style={{'color': 'red'}}>Love</div>
+                            </button>
+                        }
+                        {this.state.liked && this.state.likeKind==="liquid" &&
+                            <button className="likes-action flex-layout button-as-link">
+                                <div>💦</div>
+                                <div style={{'color': '#05b4ff'}}>Liquid</div>
+                            </button>
+                        }  
+                        {this.state.liked && this.state.likeKind==="sad" &&
+                            <button className="likes-action flex-layout button-as-link">
+                                <div>&#128546;</div>
+                                <div style={{'color': '#065a96'}}>Sad</div>
+                            </button>
+                        }
+                        {this.state.liked && this.state.likeKind==="dislike" &&
+                            <button className="likes-action flex-layout button-as-link">
+                                <div>&#128078;</div>
+                                <div style={{'color': '#b08415'}}>Disliked</div>
+                            </button>
+                        }
+                        {this.state.showReactions && 
+                            <div className="reactions-box flex-layout center-content">
+                                <button className="react-choice likes-action" onClick={()=>{this.preLike('like')}}>
+                                <div>&#128077;</div>
+                                </button>
+                                <button className="react-choice likes-action" onClick={()=>{this.preLike('haha')}}>
+                                    <div>&#128514;</div>
+                                </button>   
+                                <button className="react-choice likes-action" onClick={()=>{this.preLike('love')}}>
+                                    <div>&#10084;&#65039;</div>
+                                </button>   
+                                <button className="react-choice likes-action" onClick={()=>{this.preLike('liquid')}}>
+                                    <div>💦</div>
+                                </button>   
+                                <button className="react-choice likes-action" onClick={()=>{this.preLike('sad')}}>
+                                    <div>&#128546;</div>
+                                </button>   
+                                <button className="react-choice likes-action" onClick={()=>{this.preLike('dislike')}}>
+                                    <div>&#128078;</div>
+                                </button>   
+                            </div>
+                        }                                
                     </div>
                     <div className="center-content margin-side">
                         <button className="comments-action flex-layout button-as-link" onClick={this.showHideComments}>
-                                <img className="like-icon" src={comment_icon} alt="comment-icon"/>
+                                <img className="comment-icon" src={comment_icon} alt="comment-icon"/>
                                 <div>Comment</div>
                         </button>
                     </div>
@@ -1134,6 +1260,7 @@ class OnePost extends React.Component {
                         updateHome={this.props.updateHome}
                         followsUpd={this.state.followsUpd}
                         showMe={true}
+                        kinds={this.state.likesKinds}
                     />
                 }
                 <hr className="no-margin"></hr>

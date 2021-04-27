@@ -73,7 +73,7 @@ export const getAllLikes = (start, id, on) => {
     }
     let requestUrl = "";
     if (on==="post") {
-        requestUrl = `/posts/${id}/likes`;
+        requestUrl = `/posts/${id}/likes-like`;
     }
     else {
         requestUrl = `/comments/${id}/likes`;
@@ -82,14 +82,14 @@ export const getAllLikes = (start, id, on) => {
         params: params,
     })
 }
-export const getLikes = (start, end="", id, on) => {
+export const getLikes = (start, end="", id, on, kind='like') => {
     const params = {
         "start": start,
         "end": end,
     }
     let requestUrl = "";
     if (on==="post") {
-        requestUrl = `/posts/${id}/likes`;
+        requestUrl = `/posts/${id}/likes-${kind}`;
     }
     else {
         requestUrl = `/comments/${id}/likes`;
@@ -160,7 +160,7 @@ export const getFollowersCount = (id) => {
         headers: headers,
     });
 }
-export const LikePost = (userId, postId) => {
+export const LikePost = (userId, postId, kind="like") => {
     const requestUrl = `/likes/mod`;
     const body = {
         "owner": {
@@ -169,6 +169,7 @@ export const LikePost = (userId, postId) => {
         "post": {
             "id": postId,
         },
+        "kind": kind,
     }
     const headers = buildAuthHeader();
     return axios.post(requestUrl, body, {
@@ -179,6 +180,16 @@ export const UnLikePost = (id) => {
     const requestUrl = `/likes/${id}/mod`;
     const headers = buildAuthHeader();
     return axios.delete(requestUrl, {
+        headers: headers
+    })
+}
+export const UpdatePostLike = (likeId, kind="like") => {
+    const requestUrl = `/likes/${likeId}/mod`;
+    const body = {
+        "kind": kind,
+    }
+    const headers = buildAuthHeader();
+    return axios.put(requestUrl, body, {
         headers: headers
     })
 }
