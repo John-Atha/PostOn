@@ -96,6 +96,14 @@ def isLogged(request):
         return JsonResponse({"error": "Only GET method is allowed"}, status=400)
     else:
         if request.user.is_authenticated:
+            print(f"current user: {request.user}")
+            if request.user is not None:
+                try:
+                    user = request.user
+                    user.last_time = datetime.now()
+                    user.save()
+                except:
+                    pass                
             return JsonResponse({"authenticated": True, "id": request.user.id}, status=200)
         else:
             return JsonResponse({"authenticated": False}, status=401)

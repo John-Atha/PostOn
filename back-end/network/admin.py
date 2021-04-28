@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import *
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ("id", "username", "email", "followers", "follows")
+    list_display = ("id", "username", "email", "last_time", "followers", "follows")
     def followers(self, obj:User):
         return f"{obj.followers.count()}"
     def follows(self, obj:User):

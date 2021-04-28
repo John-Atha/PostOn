@@ -22,6 +22,7 @@ class User(AbstractUser):
     photo = models.ImageField(default="", null=True, blank=True)
     country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True)
     moto = models.TextField(null = True, blank=True)
+    last_time = models.DateTimeField(default=datetime.now)
     def __str__(self):
         return f"{self.username}, {self.email}, {self.moto}, {self.country}"
     def serialize(self, path=""):
