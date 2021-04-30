@@ -10,6 +10,6 @@ notif.png: https://www.pngitem.com/download/mmJiwT_blueberry-tab-bar-notificatio
 stats.png: https://www.pinterest.ch/pin/680606562431382965/
 user-icon.png: https://www.iconfinder.com/icons/1608727/user_icon
 arrow-up.png: https://www.iconfinder.com/icons/186407/arrow_up_icon
-
+verified.png: as an svg from https://worldvectorlogo.com/downloaded/twitter-verified-badge and turned into png with https://svgtopng.com/
 logo.png : https://www.freelogodesign.org/
 favicon produced by: https://favicon.io/favicon-generator/

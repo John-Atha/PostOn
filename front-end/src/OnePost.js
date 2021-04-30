@@ -6,6 +6,7 @@ import liked_icon from './images/liked.png';
 import comment_icon from './images/comment.png';
 import edit_icon from './images/edit.png';
 import delete_icon from './images/delete-icon.png';
+import verified from './images/verified.png';
 import Likes from './Likes';
 import Comments from './Comments';
 import ProfileCard from './ProfileCard';
@@ -308,7 +309,9 @@ class PostText extends React.Component {
                                                         username={value.tag.username}
                                                         moto={value.tag.moto}
                                                         photo={value.tag.photo}
-                                                        position={"top-close"}/>
+                                                        position={"top-close"}
+                                                        verified={value.tag.verified}
+                                                        />
                                             }
                                         </div>
                                         <div>&nbsp;</div>
@@ -327,7 +330,8 @@ class PostText extends React.Component {
                                                         username={value.tag.username}
                                                         moto={value.tag.moto}
                                                         photo={value.tag.photo}
-                                                        position={"top-close"}/>
+                                                        position={"top-close"}
+                                                        verified={value.tag.verified} />
                                             }
                                         </div>
                                         { value.dump==='\n' &&
@@ -558,6 +562,7 @@ class OnePost extends React.Component {
                     tempL.push({
                         "id": el.id,
                         "display": el.username,
+                        "verified": el.verified,
                     })
                 })
                 this.setState({
@@ -664,6 +669,7 @@ class OnePost extends React.Component {
                                 "index": index,
                                 "photo": suggest.photo,
                                 "moto": suggest.moto,
+                                "verified": suggest.verified,
                             },
                             "dump": dump,
                         })
@@ -1036,11 +1042,15 @@ class OnePost extends React.Component {
                              onMouseLeave={this.cardHide}>
                         <div className="owner-name">
                             {this.state.owner.username}
+                            {this.state.owner.verified===true &&
+                                <img className="verified-icon" src={verified} alt="verified" />
+                            }
                             {this.state.showCard &&
                                 <ProfileCard id={this.state.owner.id}
                                      username={this.state.owner.username}
                                      moto={this.state.owner.moto}
                                      photo={this.state.owner.photo}
+                                     verified={this.state.owner.verified}
                                      position={"right"} />
                             }
                         </div>
@@ -1152,6 +1162,7 @@ class OnePost extends React.Component {
                                             username={this.state.likerSample.username}
                                             moto={this.state.likerSample.moto}
                                             photo={this.state.likerSample.photo}
+                                            verified={this.state.likerSample.verified}
                                             position={"bottom"}/>
                                 }
                             </div>

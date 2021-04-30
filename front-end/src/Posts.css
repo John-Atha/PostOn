@@ -348,3 +348,13 @@
     padding: 1px 7px;
     height: 30px;
 }
+.verified-icon {
+    margin-left:3px;
+    height: 15px;
+    width: 15px;
+}
+.verified-icon-bigger {
+    margin-left:5px;
+    height: 18px;
+    width: 18px;
+}

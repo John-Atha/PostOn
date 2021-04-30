@@ -1,5 +1,6 @@
 import React from 'react';
 import './ProfileCard.css';
+import verified from './images/verified.png';
 import {getFollowsCount, getFollowersCount} from './api';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
@@ -12,6 +13,7 @@ class ProfileCard extends React.Component {
             username: this.props.username,
             moto: this.props.moto,
             photo: this.props.photo,
+            verified: this.props.verified,
             position: this.props.position,
             followsNum: 0,
             followersNum: 0,
@@ -56,7 +58,12 @@ class ProfileCard extends React.Component {
             <Card style={{ width: '170px', height:'min-content', padding: '1%'}} className={`profile-card pos-${this.state.position} center-content`}>
                 <Card.Img variant="top" src={this.state.photo} className="user-photo-container"/>
                 <Card.Body style={{padding:'0%'}}>
-                    <Card.Title style={{marginBottom: '3%', paddingBottom: '0%'}}>{this.state.username}</Card.Title>
+                    <Card.Title style={{marginBottom: '3%', paddingBottom: '0%'}}>
+                        {this.state.username}
+                        {this.state.verified===true &&
+                                <img className="verified-icon" src={verified} alt="verified" />
+                        }
+                    </Card.Title>
                     <Card.Text>
                         {this.setState.moto &&
                             <br></br>

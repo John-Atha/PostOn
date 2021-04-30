@@ -4,6 +4,7 @@ import OutsideClickHandler from 'react-outside-click-handler';
 import ProfileCard from  './ProfileCard';
 import MyNavbar from './MyNavbar';
 import UserPosts from './UserPosts';
+import verified from './images/verified.png';
 import {getUser, updateUser, updateUserPhoto, getFollowersCount, getFollowsCount, getFollows, getFollowers, getFollowsPagi, getFollowersPagi, followUser, unfollowUser, isLogged, UserDelete} from './api';
 import Searchbar from './Searchbar';
 import 'react-notifications-component/dist/theme.css'
@@ -79,12 +80,16 @@ class OneUser extends React.Component {
                     </div>
                     <div className="owner-name">
                             {this.state.user.username}
+                            {this.state.user.verified===true &&
+                                <img className="verified-icon" src={verified} alt="verified" />
+                            }
                     </div>
                     {this.state.showCard &&
                         <ProfileCard id={this.state.user.id}
                                 username={this.state.user.username}
                                 moto={this.state.user.moto}
                                 photo={this.state.user.photo}
+                                verified={this.state.user.verified}
                                 position={"bottom"} />
                     }
                 </div>
@@ -353,6 +358,7 @@ class Profile extends React.Component {
             me: null,
             logged: false,
             username: null,
+            verified: false,
             username_init: null,
             moto: null,
             moto_init: null,
@@ -674,6 +680,7 @@ class Profile extends React.Component {
                 moto_init: response.data.moto,
                 //country: response.data.country.title,
                 photo: response.data.photo,
+                verified: response.data.verified,
             })
             setTimeout(()=>{
                 this.countFollowers();
@@ -734,10 +741,13 @@ class Profile extends React.Component {
                 <MyNavbar />
                 <Searchbar />
                 {!this.state.error &&
-                    <div className="profile-main center-content">
+                    <div className="profile-main center-content flex-layout">
                         <h3 className="profile-username margin-top-smaller">
                             {this.state.username}
                         </h3>
+                        {this.state.verified===true &&
+                                <img className="verified-icon-bigger" src={verified} alt="verified" />
+                        }
                     </div>        
                 }
                 {this.state.deleteAcc && !this.state.error &&

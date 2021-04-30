@@ -2,6 +2,7 @@ import React from 'react';
 import './Explore.css'
 import ProfileCard from './ProfileCard';
 import {getUsers, getFollows, getFollowers, followUser, unfollowUser} from './api';
+import verified from './images/verified.png';
 
 class OneUser extends React.Component {
     constructor(props) {
@@ -71,12 +72,16 @@ class OneUser extends React.Component {
                         onMouseEnter={this.cardShow}
                         onMouseLeave={this.cardHide}>
                         {this.state.user.username}
+                        {this.state.user.verified===true &&
+                                <img className="verified-icon" src={verified} alt="verified" />
+                        }
                         {this.state.showCard &&
                             <ProfileCard id={this.state.user.id}
                                     username={this.state.user.username}
                                     moto={this.state.user.moto}
                                     photo={this.state.user.photo}
-                                    position={"right-more"} />
+                                    position={"right-more"} 
+                                    verified={this.state.user.verified}/>
                         }
                     </div>
                 </div>

@@ -3,6 +3,7 @@ import './Comments.css';
 import like_icon from './images/like.png';
 import liked_icon from './images/liked.png';
 import delete_icon from './images/delete-icon.png';
+import verified from './images/verified.png';
 import Likes from './Likes';
 import {getUsers, getPostsComments, getLikesSample, getAllLikes, LikeComment, UnLikeComment, DeleteComment, AddComment, getUser, UserLikesComment, PostCommentTag} from './api';
 import ProfileCard from  './ProfileCard';
@@ -17,6 +18,7 @@ class NewComment extends React.Component {
         this.state = {
             userId: this.props.userId,
             username: null,
+            verified: false,
             photo: null,
             logged: this.props.logged,
             text: "",
@@ -65,6 +67,7 @@ class NewComment extends React.Component {
                     tempL.push({
                         "id": el.id,
                         "display": el.username,
+                        "verified": el.verified,
                     })
                 })
                 this.setState({
@@ -141,6 +144,7 @@ class NewComment extends React.Component {
                             "tag": {
                                 "username": suggest.display,
                                 "id": suggest.id,
+                                "verified": suggest.verified,
                             },
                             "dump": dump,
                         })
@@ -220,6 +224,7 @@ class NewComment extends React.Component {
                 this.setState({
                     username: response.data.username,
                     photo: response.data.photo,
+                    verified: response.data.verified,
                 })
             })
             .catch(err => {
@@ -258,7 +263,12 @@ class NewComment extends React.Component {
                         <div className="user-photo-container-small">
                                 <img className="user-photo" src={this.state.photo} alt="user profile" />
                         </div>
-                        <div className="owner-name">{this.state.username}</div>
+                        <div className="owner-name">
+                            {this.state.username}
+                            {this.state.verified===true &&
+                                <img className="verified-icon" src={verified} alt="verified" />
+                            }
+                        </div>
                     </div>
                     <div className="text-comment flex-layout">
                         <MentionsInput className="comment-textarea" name="text" placeholder="Add your comment here..." value={this.state.text} onChange={this.handleInput} onFocus={this.askTags}>
@@ -522,6 +532,7 @@ class CommentText extends React.Component {
                                                 username={value.tag.username}
                                                 moto={value.tag.moto}
                                                 photo={value.tag.photo}
+                                                verified={value.tag.verified}
                                                 position={"top-close"}/>
                                     }
                                 </div>
@@ -540,6 +551,7 @@ class CommentText extends React.Component {
                                         <ProfileCard id={value.tag.id}
                                                 username={value.tag.username}
                                                 moto={value.tag.moto}
+                                                verified={value.tag.verified}
                                                 photo={value.tag.photo}
                                                 position={"top-close"}/>
                                     }
@@ -994,11 +1006,15 @@ class OneComment extends React.Component {
                             onMouseEnter={this.cardShow}
                             onMouseLeave={this.cardHide}>
                             {this.state.comment.owner.username}
+                            {this.state.comment.owner.verified===true &&
+                                <img className="verified-icon" src={verified} alt="verified" />
+                            }
                             {this.state.showCard &&
                                 <ProfileCard id={this.state.comment.owner.id}
                                         username={this.state.comment.owner.username}
                                         moto={this.state.comment.owner.moto}
                                         photo={this.state.comment.owner.photo}
+                                        verified={this.state.comment.owner.verified}
                                         position={"top-close"}/>
                             }
                         </div>
@@ -1031,6 +1047,7 @@ class OneComment extends React.Component {
                                         username={this.state.likerSample.username}
                                         moto={this.state.likerSample.moto}
                                         photo={this.state.likerSample.photo}
+                                        verified={this.state.likerSample.verified}
                                         position={"bottom"}/>
                             }
                             </div>

@@ -79,6 +79,7 @@ class CommentAction extends React.Component {
                                         username={this.state.post.owner.username}
                                         moto={this.state.post.owner.moto}
                                         photo={this.state.post.owner.photo}
+                                        verified={this.state.post.owner.verified}
                                         position={"right"} />
                             }
                         </div>.
@@ -148,6 +149,7 @@ class PostLikeAction extends React.Component {
                                         username={this.state.post.owner.username}
                                         moto={this.state.post.owner.moto}
                                         photo={this.state.post.owner.photo}
+                                        verified={this.state.post.owner.verified}
                                         position={"right"} />
                             }
                         </div>
@@ -214,6 +216,7 @@ class CommentLikeAction extends React.Component {
                                             username={this.state.comment.owner.username}
                                             moto={this.state.comment.owner.moto}
                                             photo={this.state.comment.owner.photo}
+                                            verified={this.state.comment.owner.verified}
                                             position={"right"} />
                             }
                         </div>.
@@ -320,6 +323,7 @@ class FollowAction extends React.Component {
                                             username={this.state.followed.username}
                                             moto={this.state.followed.moto}
                                             photo={this.state.followed.photo}
+                                            verified={this.state.followed.verified}
                                             position={"right"} />
                             }
                         </div>.

@@ -1,6 +1,7 @@
 import React from "react";
 import "./Likes.css";
 import ProfileCard from  './ProfileCard';
+import verified from './images/verified.png';
 import {getLikes, getFollowers, getFollows, followUser, unfollowUser} from './api';
 import OutsideClickHandler from 'react-outside-click-handler';
 
@@ -75,6 +76,9 @@ class OneLike extends React.Component {
                     </div>
                     <div className="owner-name">
                             {this.state.owner.username}
+                            {this.state.owner.verified===true &&
+                                <img className="verified-icon" src={verified} alt="verified" />
+                            }
                     </div>
 
                     {this.state.showCard &&
@@ -82,6 +86,7 @@ class OneLike extends React.Component {
                                 username={this.state.owner.username}
                                 moto={this.state.owner.moto}
                                 photo={this.state.owner.photo}
+                                verified={this.state.owner.verified}
                                 position={"bottom"} />
                     }
                 </div>
