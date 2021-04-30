@@ -23,6 +23,7 @@ class User(AbstractUser):
     country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True)
     moto = models.TextField(null = True, blank=True)
     last_time = models.DateTimeField(default=datetime.now)
+    verified = models.BooleanField(default=False)
     def __str__(self):
         return f"{self.username}, {self.email}, {self.moto}, {self.country}"
     def serialize(self, path=""):
@@ -41,6 +42,7 @@ class User(AbstractUser):
             "moto": self.moto,
             "photo": photoVal,
             "country": country1,
+            "verified": self.verified
         }
 
 class Post(models.Model):
