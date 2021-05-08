@@ -1089,11 +1089,13 @@ class OnePost extends React.Component {
                                     <img className="post-media" src={this.state.media} alt="media"/>
                             </div>
                         }
-                        {this.state.video && 
-                            <video className="post-media" controls>
-                                <source src={this.state.video} />
-                                Sorry, we couldn't display this video.
-                            </video>
+                        {this.state.video &&
+                            <div className="center-content">
+                                <video className="post-media" controls>
+                                    <source src={this.state.video} />
+                                    Sorry, we couldn't display this video.
+                                </video>
+                            </div>
                         }
                     </div>       
                 }
@@ -1116,10 +1118,12 @@ class OnePost extends React.Component {
                             </div>
                         }
                         {this.state.video && 
-                            <video className="post-media" controls>
-                                <source src={this.state.video} />
-                                Sorry, we couldn't display this video.
-                            </video>
+                            <div className="center-content">
+                                <video className="post-media" controls>
+                                    <source src={this.state.video} />
+                                    Sorry, we couldn't display this video.
+                                </video>
+                            </div>
                         }
                     </div>
                 }
