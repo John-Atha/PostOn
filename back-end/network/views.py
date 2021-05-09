@@ -9,6 +9,55 @@ from .models import *
 from datetime import datetime
 import string
 import magic
+import random 
+
+from decouple import config
+from instagram_private_api import Client, ClientCompatPatch
+import threading
+
+accounts = [
+    ('poston_notifications'),
+    ('poston_notifications_2'),
+    ('poston_notifications_3')
+]
+posts= ['2569814140957024030', '2569814140957024030', '2569957021173812723']
+
+def notifyCore(receiver, text):
+    try:
+        x=random.randrange(0,3)
+        acc = accounts[x]
+        if x==0:
+            passw = config('INSTA_PASS1', default="")
+        elif x==1:
+            passw = config('INSTA_PASS2', default="")
+        else:
+            passw = config('INSTA_PASS3', default="")
+        post = posts[x]
+        api = Client(acc, passw)
+        api.post_comment(post, '@'+receiver.instagram+'\n'+text)
+        print(x)
+        print(passw)
+        print(f"Sent notif to {receiver.instagram}")
+    except Exception as e:
+        print(e)
+
+
+def notify(receiver, text):
+    if receiver.instagram:
+        print(f"Sending notif to {receiver.instagram}")
+        t = threading.Thread(target=notifyCore,args=[receiver, text])
+        t.setDaemon(True)
+        t.start()
+
+
+def notifyAdm(text):
+    try:
+        adm = User.objects.get(username='atha')
+        if adm.instagram:
+            notify(adm, text)
+    except User.DoesNotExist:
+        print('adm does not exist')
+    
 
 reactions = ["like", "dislike", "haha", "love", "liquid", "sad"]
 
@@ -355,6 +404,7 @@ def AllPostsMod(request):
                             #if len(str(data["text"])):
                             post = Post(owner=owner, text=str(data["text"]))
                             post.save()
+                            notifyAdm(owner.username+' published a post')
                             return JsonResponse(post.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                             #else:
                             #    return JsonResponse({"error": "No text given."}, status=400)   
@@ -404,6 +454,7 @@ def AllFollowsMod(request):
                                     if followed!=following:
                                         follow = Follow(following=following, followed=followed)
                                         follow.save()
+                                        notify(followed, following.username+' started following you.')
                                         return JsonResponse(follow.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                                     else:
                                         return JsonResponse({"error": "A user cannot follow his/her self"}, status=400)
@@ -551,6 +602,7 @@ def AllLikesMod(request):
                                             return JsonResponse({"error": "Invalid kind field."}, status=400) 
                                     like = Like(owner=owner, post=post, kind=kind)
                                     like.save()
+                                    notify(post.owner, like.owner.username+' reacted on one of your posts')
                                     return JsonResponse(like.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                                 except ValueError:
                                     return JsonResponse({"error": "Invalid post id."}, status=400)
@@ -740,6 +792,7 @@ def AllCommentsMod(request):
                                             if len(text)>0:
                                                 comment = Comment(owner=owner, post=post, text=text)
                                                 comment.save()
+                                                notify(post.owner, comment.owner.username+' commented on one of your posts.')
                                                 return JsonResponse(comment.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                                             else:
                                                 return JsonResponse({"error": "Invalid text given"}, status=400)
@@ -880,6 +933,7 @@ def AllLikeCommentsMod(request):
                                         comment = Comment.objects.get(id=commentId)
                                         likeComment = LikeComment(owner=owner, comment=comment)
                                         likeComment.save()
+                                        notify(comment.owner, owner.username+' liked your comment:\n'+comment.text)
                                         return JsonResponse(likeComment.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                                     except Comment.DoesNotExist:
                                         return JsonResponse({"error": "Invalid comment id."}, status=400)                                
@@ -1589,6 +1643,7 @@ def PostPostMentions(request, id):
                         return JsonResponse({"error": "Invalid mentioned user id."}, status=400)
                     mention = PostMention(owner=request.user, mentioned=mentioned, post=post)
                     mention.save()
+                    notify(mentioned, request.user.username+' mentioned you in a post')
                     return JsonResponse(mention.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                 else:
                     return JsonResponse({"error": "No mentioned user id given."})
@@ -1617,6 +1672,7 @@ def PostCommentMentions(request, id):
                         return JsonResponse({"error": "Invalid mentioned user id."}, status=400)
                     mention = CommentMention(owner=request.user, mentioned=mentioned, comment=comment)
                     mention.save()
+                    notify(mentioned, request.user.username+' mentioned you in a comment')
                     return JsonResponse(mention.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                 else:
                     return JsonResponse({"error": "No mentioned user id given."})

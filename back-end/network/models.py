@@ -24,6 +24,7 @@ class User(AbstractUser):
     moto = models.TextField(null = True, blank=True)
     last_time = models.DateTimeField(default=datetime.now)
     verified = models.BooleanField(default=False)
+    instagram = models.CharField(null=True, blank=True, max_length=100)
     def __str__(self):
         return f"{self.username}, {self.email}, {self.moto}, {self.country}"
     def serialize(self, path=""):
