@@ -226,7 +226,7 @@ class ExploreScroll extends React.Component {
             this.setState({
                 error: "No more users found",
             })
-        })        
+        })
     }
     updateFollows = () => {
         this.setState({
@@ -244,6 +244,11 @@ class ExploreScroll extends React.Component {
     componentDidUpdate(prevProps) {
         if (prevProps.userId !==this.props.userId) {
             //console.log(`Updated to user ${this.props.userId}`);
+            this.setState({
+                start: 1,
+                end: 20,
+                usersList: [],
+            })
             this.askUsers();
             this.updateFollows();
         }

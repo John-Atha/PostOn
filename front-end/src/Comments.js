@@ -680,6 +680,7 @@ class OneComment extends React.Component {
         this.cardHide2 = this.cardHide2.bind(this);
         this.filterComment = this.filterComment.bind(this);
         this.getUsernames = this.getUsernames.bind(this);
+        this.dateCalc = this.dateCalc.bind(this);
     }
 
     getUsernames = () => {
@@ -713,7 +714,6 @@ class OneComment extends React.Component {
             }
         }
     }
-
     filterComment = () => {
         //console.log("i am filter post");
         let comment_text = this.state.comment.text;
@@ -806,8 +806,6 @@ class OneComment extends React.Component {
             textParts: final_post_object,
         })
     }
-
-
     createNotification = (type, title="aaa", message="aaa") => {
         //console.log("creating notification");
         //console.log(type);
@@ -984,7 +982,60 @@ class OneComment extends React.Component {
                 }
             }
     }
-
+    dateCalc = (str) => {
+        const d = new Date(str);
+        const now = new Date();
+        const diff = new Date(now.getTime()-d.getTime())
+        const years = diff.getFullYear()-1970
+        const months = diff.getMonth()
+        if (years>1) {
+            return `${years*12+months} months ago`;
+        }
+        else if (years===1) {
+            return 'last year';
+        }
+        else /* if (years===0) */ {
+            if (months>1) {
+                return `${months} months ago`;
+            }
+            else if (months===1) {
+                return 'last month';
+            }
+            else /* if (months===0) */ {
+                const days = diff.getDate()-1
+                if (days>1) {
+                    return `${days} days ago`;
+                }
+                else if (days===1) {
+                    const hours = d.getHours()<10 ? `0${d.getHours()}` : d.getHours();
+                    const minutes = d.getMinutes()<10 ? `0${d.getMinutes()}` : d.getMinutes();
+                    const seconds = d.getSeconds()<10 ? `0${d.getSeconds()}` : d.getSeconds();
+                    return `yesterday at ${hours}:${minutes}:${seconds}`;
+                }
+                else /* if (days===0) */ {
+                    const hours = diff.getHours()-2;
+                    if (hours>1) {
+                        return `${hours} hours ago`;
+                    }
+                    else if (hours===1) {
+                        return '1 hour ago';
+                    }
+                    else /* (if hours===0) */ {
+                        const minutes = diff.getMinutes();
+                        if (minutes>1) {
+                            return `${minutes} minutes ago`;
+                        }
+                        else if (minutes===1) {
+                            return '1 minute ago';
+                        }
+                        else {
+                            return 'right now';
+                        }
+                    }
+                }
+            }        
+        }
+    }
     render() {
         if (this.state.delete || !this.state.comment.text || !this.state.comment) {
             return(
@@ -994,7 +1045,7 @@ class OneComment extends React.Component {
         else {
             let commentDatetime = null;
             if (this.state.comment.owner.username!=="Loading...") {
-                commentDatetime = this.state.comment.date.replace('T', ' ').replace('Z', '')
+                commentDatetime = this.dateCalc(this.state.comment.date);
             }
             return (
                 <div className="comment-box flex-item-expand">
@@ -1018,7 +1069,7 @@ class OneComment extends React.Component {
                                         position={"top-close"}/>
                             }
                         </div>
-                        <div className="post-date comment-date">at {commentDatetime}</div>
+                        <div className="post-date comment-date">{commentDatetime}</div>
                     </div>
                     <div className="text-comment flex-layout with-whitespace">
                         {this.state.comment.text.includes('@[') && this.state.textParts.length!==0 &&

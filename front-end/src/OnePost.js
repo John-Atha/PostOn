@@ -501,6 +501,7 @@ class OnePost extends React.Component {
         this.removeTags = this.removeTags.bind(this);
         this.addTags = this.addTags.bind(this);
         this.preLike = this.preLike.bind(this);
+        this.dateCalc = this.dateCalc.bind(this);
     }
 
     preLike = (kind) => {
@@ -1023,10 +1024,61 @@ class OnePost extends React.Component {
             }
         }
     }
+    dateCalc = () => {
+        const d = new Date(this.state.date);
+        const now = new Date();
+        const diff = new Date(now.getTime()-d.getTime())
+        const years = diff.getFullYear()-1970
+        const months = diff.getMonth()
+        if (years>1) {
+            return `${years*12+months} months ago`;
+        }
+        else if (years===1) {
+            return 'last year';
+        }
+        else /* if (years===0) */ {
+            if (months>1) {
+                return `${months} months ago`;
+            }
+            else if (months===1) {
+                return 'last month';
+            }
+            else /* if (months===0) */ {
+                const days = diff.getDate()-1
+                if (days>1) {
+                    return `${days} days ago`;
+                }
+                else if (days===1) {
+                    const hours = d.getHours()<10 ? `0${d.getHours()}` : d.getHours();
+                    const minutes = d.getMinutes()<10 ? `0${d.getMinutes()}` : d.getMinutes();
+                    const seconds = d.getSeconds()<10 ? `0${d.getSeconds()}` : d.getSeconds();
+                    return `yesterday at ${hours}:${minutes}:${seconds}`;
+                }
+                else /* if (days===0) */ {
+                    const hours = diff.getHours()-2;
+                    if (hours>1) {
+                        return `${hours} hours ago`;
+                    }
+                    else if (hours===1) {
+                        return '1 hour ago';
+                    }
+                    else /* (if hours===0) */ {
+                        const minutes = diff.getMinutes();
+                        if (minutes>1) {
+                            return `${minutes} minutes ago`;
+                        }
+                        else if (minutes===1) {
+                            return '1 minute ago';
+                        }
+                        else {
+                            return 'right now';
+                        }
+                    }
+                }
+            }        
+        }
+    }
     render() {
-        let datetime = this.state.date!==null ? this.state.date.replace('T', ' ').replace('Z', '').split(' ') : null;
-        let date = datetime!==null ? datetime[0] : null;
-        let time = datetime!==null ? datetime[1] : null;
         ////console.log("POST WITH TEXT")
         ////console.log(this.state.text)
         ////console.log(this.state.media)
@@ -1054,7 +1106,7 @@ class OnePost extends React.Component {
                                      position={"right"} />
                             }
                         </div>
-                        <div className="post-date">{time}<br></br>{date}</div>
+                        <div className="post-date">{this.dateCalc(this.state.date)}</div>
                     </div>
                     {this.state.userId===this.state.owner.id &&
                         <div className="center-content flex-layout edit-action-container">
