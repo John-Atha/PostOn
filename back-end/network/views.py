@@ -20,7 +20,7 @@ accounts = [
     ('poston_notifications_2'),
     ('poston_notifications_3')
 ]
-posts= ['2569814140957024030', '2569814140957024030', '2569957021173812723']
+posts= ['2569814140957024030', '2569814140957024030', '2569957021173812723', '2571103831372197883', '2571103636839442380']
 
 def notifyCore(receiver, text):
     try:
@@ -32,7 +32,7 @@ def notifyCore(receiver, text):
             passw = config('INSTA_PASS2', default="")
         else:
             passw = config('INSTA_PASS3', default="")
-        post = posts[x]
+        post = random.choice(posts)
         api = Client(acc, passw)
         api.post_comment(post, '@'+receiver.instagram+'\n'+text)
         print(x)
