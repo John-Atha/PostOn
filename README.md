@@ -3,7 +3,7 @@
 * Project no4 for the CS50 Web Programming Course with Python and Javascript 2020.
 * Technologies used:
     * Backend: Python (Django framework)
-    * Front-end: HTML, CSS, JS (React framework) with create-react-app
+    * Front-end: HTML, CSS, JS (React framework) with npx create-react-app
 * A social media website (like Twitter, Facebook etc), where users can:
     * create an account (or login)
     * create their profile (with image and bio)
