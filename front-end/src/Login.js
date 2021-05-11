@@ -1,6 +1,7 @@
 import React from "react";
 import "./Login.css"; 
 import MyNavbar from './MyNavbar';
+import MobileNavbar from './MobileNavbar';
 import logo from './images/logo.png' 
 import {login, isLogged} from './api';
 
@@ -84,7 +85,12 @@ class Login extends React.Component {
         else {
             return(
                 <div className="login-page">
-                    <MyNavbar />
+                    { window.innerWidth<500 &&
+                        <MobileNavbar />
+                    }
+                    {window.innerWidth>=500 &&
+                        <MyNavbar />                    
+                    }
                     <div className="login-main-page flex-layout center-content">
                         <div className="logo-container flex-item">
                             <img src={logo} className="logo" alt="Jwitter logo"/>

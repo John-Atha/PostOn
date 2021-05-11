@@ -3,6 +3,7 @@ import './Profile.css';
 import OutsideClickHandler from 'react-outside-click-handler';
 import ProfileCard from  './ProfileCard';
 import MyNavbar from './MyNavbar';
+import MobileNavbar from './MobileNavbar';
 import UserPosts from './UserPosts';
 import verified from './images/verified.png';
 import {getUser, updateUser, updateUserPhoto, getFollowersCount, getFollowsCount, getFollows, getFollowers, getFollowsPagi, getFollowersPagi, followUser, unfollowUser, isLogged, UserDelete} from './api';
@@ -738,6 +739,9 @@ class Profile extends React.Component {
     render() {
         return(
             <div className="all-page">
+                { window.innerWidth<500 &&
+                    <MobileNavbar />
+                }
                 <MyNavbar />
                 <Searchbar />
                 {!this.state.error &&

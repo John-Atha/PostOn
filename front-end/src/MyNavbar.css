@@ -1,12 +1,12 @@
+.pull-up .dropdown-menu {
+    top: 45px;
+}
+.pull-left .dropdown-menu {
+    left: -200px;
+}
 .navbar {
     background-color: var(--color2) !important;
     color: var(--lettersColor) !important;
-}
-.navbar-icon {
-    height: 20px;
-}
-.navbar-icon2 {
-    height: 23px;
 }
 .seen {
     background-color: var(--notifseen);
@@ -43,4 +43,30 @@
 }
 .nav-link, .navbar-brand {
     color: var(--lettersColor) !important;
+}
+.navbar-photo {
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+}
+.navbar-photo2 {
+    height: 30px;
+    width: 30px;
+}
+.navbar-icon {
+    height: 20px;
+}
+.navbar-icon2 {
+    height: 23px;
+    width: auto;
+}
+.notif-counter {
+    font-size: 13px;
+    background-color: red;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    height: min-content;
+    width: min-content;
+    padding: 1px 7px;
 }

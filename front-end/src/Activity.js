@@ -3,6 +3,7 @@ import ProfileCard from './ProfileCard';
 import {isLogged, getActivity} from './api';
 import './Activity.css';
 import MyNavbar from './MyNavbar';
+import MobileNavbar from './MobileNavbar';
 import Searchbar from './Searchbar';
 
 const dateShow = (date) => {
@@ -406,7 +407,10 @@ class Activity extends React.Component {
     }
     render() {
         return (
-        <div className="all-page padding-bottom">
+        <div className="all-page" style={{'paddingBottom': '55px'}}>
+            {window.innerWidth<500 &&
+                <MobileNavbar />
+            }
             <MyNavbar />
             <Searchbar />
             <div className="main-activity-container flex-layout">

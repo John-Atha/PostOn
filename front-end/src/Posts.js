@@ -483,18 +483,20 @@ class Posts extends React.Component {
                     <img className="small-icon" src={add_icon} alt="add" />
                     New post
                 </button>
-                <input type="image" 
-                    onClick={ ()=>{      
-                        window.scrollTo({
-                            top:0,
-                            left:0,
-                            behavior:'smooth'
-                        })}
-                    }
-                    className="up-button"
-                    src={arrow_icon}
-                    alt="top-page">
-                </input>
+                {window.innerWidth>=500 &&
+                    <input type="image" 
+                        onClick={ ()=>{      
+                            window.scrollTo({
+                                top:0,
+                                left:0,
+                                behavior:'smooth'
+                            })}
+                        }
+                        className="up-button"
+                        src={arrow_icon}
+                        alt="top-page">
+                    </input>
+                }
             </div>
         )
     }

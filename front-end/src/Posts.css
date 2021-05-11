@@ -239,7 +239,7 @@
 .post-textarea-edit {
     width: 100%;
     margin-left: 2%;
-    height: 150px !important;
+    min-height: 150px !important;
 }
 .post-textarea-edit__input {
     color: var(--lettersColor);

@@ -1,6 +1,7 @@
 import React from 'react';
 import MyNavbar from './MyNavbar';
 import OnePost from './OnePost';
+import MobileNavbar from './MobileNavbar';
 
 import {isLogged, getOnePost} from './api';
 
@@ -89,7 +90,11 @@ class OnePostPage extends React.Component {
     render() {
         return(
             <div className="all-page">
+                { window.innerWidth<500 &&
+                    <MobileNavbar />
+                }
                 <MyNavbar />
+                <div className="margin-top-small"></div>
                 { this.state.owner!==null &&
                     <OnePost userId={this.state.userId} 
                          logged={this.state.logged}

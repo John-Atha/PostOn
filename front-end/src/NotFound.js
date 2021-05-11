@@ -1,12 +1,16 @@
 import React from 'react';
 import './Home.css';
 import MyNavbar from './MyNavbar';
+import MobileNavbar from './MobileNavbar';
 import Searchbar from './Searchbar';
 
 class NotFound extends React.Component {
     render() {
         return(
             <div className="all-page">
+                { window.innerWidth<500 &&
+                    <MobileNavbar />
+                }
                 <MyNavbar />
                 <Searchbar />
                 <div className="center-content margin-top">

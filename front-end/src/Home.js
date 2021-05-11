@@ -1,6 +1,7 @@
 import React from 'react';
 import './Home.css';
-import MyNavbar from './MyNavbar'
+import MyNavbar from './MyNavbar';
+import MobileNavbar from './MobileNavbar';
 import {isLogged} from './api';
 import Posts from "./Posts";
 import Explore from './Explore';
@@ -48,6 +49,9 @@ class Home extends React.Component {
     render() {
         return (
             <div className="all-page">
+                { window.innerWidth<500 &&
+                    <MobileNavbar />
+                }
                 <MyNavbar />
                 <Searchbar />
                 <div className="main-home-container flex-layout">

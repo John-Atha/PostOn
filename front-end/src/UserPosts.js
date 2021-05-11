@@ -465,18 +465,20 @@ class UserPosts extends React.Component {
                 {!this.state.postsList.length &&
                     <div className="error-message margin-top center-text">Oops, no posts found..</div>
                 }
-                <input type="image" 
-                    onClick={ ()=>{      
-                        window.scrollTo({
-                            top:0,
-                            left:0,
-                            behavior:'smooth'
-                        })}
-                    }
-                    className="up-button"
-                    src={arrow_icon}
-                    alt="top-page">
-                </input>
+                {window.innerWidht>=500 &&
+                    <input type="image" 
+                        onClick={ ()=>{      
+                            window.scrollTo({
+                                top:0,
+                                left:0,
+                                behavior:'smooth'
+                            })}
+                        }
+                        className="up-button"
+                        src={arrow_icon}
+                        alt="top-page">
+                    </input>
+                }
             </div>
         )
     }

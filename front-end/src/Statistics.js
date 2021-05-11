@@ -1,6 +1,7 @@
 import React from 'react';
 import './Statistics.css';
 import MyNavbar from './MyNavbar';
+import MobileNavbar from './MobileNavbar';
 import CanvasJSReact from './canvasjs.react.js';
 import {getMonthlyStatsGen, getDailyStatsGen, isLogged} from './api';
 import Searchbar from './Searchbar';
@@ -245,6 +246,9 @@ class Statistics extends React.Component {
         if(this.state.case==="personal" && !this.state.logged) {
             return(
                 <div className="all-page">
+                    { window.innerWidth<500 &&
+                        <MobileNavbar />
+                    }
                     <MyNavbar />
                     <div className="main-page center-content">
                         <div className="error-message">
@@ -256,7 +260,10 @@ class Statistics extends React.Component {
         }
         else {
             return(
-                <div className="all-page">
+                <div className="all-page" style={{'paddingBottom': '50px'}}>
+                    { window.innerWidth<500 &&
+                        <MobileNavbar />
+                    }
                     <MyNavbar />
                     <Searchbar />
                     <div className="main-page center-content">

@@ -1,6 +1,7 @@
 import React from 'react';
 import './Home.css';
-import MyNavbar from './MyNavbar'
+import MyNavbar from './MyNavbar';
+import MobileNavbar from './MobileNavbar';
 import {isLogged} from './api';
 import Posts from "./Posts";
 import Explore from './Explore';
@@ -49,6 +50,9 @@ class HomeFollowing extends React.Component {
         if (this.state.logged===true) {
             return (
                 <div className="all-page">
+                    { window.innerWidth<500 &&
+                        <MobileNavbar />
+                    }
                     <MyNavbar />
                     <Searchbar />
                     <div className="main-home-container flex-layout">
@@ -64,6 +68,9 @@ class HomeFollowing extends React.Component {
         else {
             return (
                 <div className="all-page">
+                    { window.innerWidth<500 &&
+                        <MobileNavbar />
+                    }
                     <MyNavbar />
                     <div className="error-message center-text margin-top">Loading, please wait...</div>
                 </div>
