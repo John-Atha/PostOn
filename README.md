@@ -1,14 +1,14 @@
-## Jwitter
+## PostOn
 
 * Project no4 for the CS50 Web Programming Course with Python and Javascript 2020.
 * Technologies used:
     * Backend: Python (Django framework)
     * Front-end: HTML, CSS, JS (React framework) with create-react-app
-* A social media website (Twitter-like), where users can:
+* A social media website (like Twitter, Facebook etc), where users can:
     * create an account (or login)
     * create their profile (with image and bio)
-    * upload/edit/delete posts (with image and/or text)
-    * like/unlike posts
+    * upload/edit/delete posts (with image, video and/or text)
+    * react to posts (6 available reactions)
     * upload/delete comments on posts
     * like/unlike comments on posts
     * follow/unfollow other users
