@@ -13,3 +13,6 @@ arrow-up.png: https://www.iconfinder.com/icons/186407/arrow_up_icon
 verified.png: as an svg from https://worldvectorlogo.com/downloaded/twitter-verified-badge and turned into png with https://svgtopng.com/
 logo.png : https://www.freelogodesign.org/
 favicon produced by: https://favicon.io/favicon-generator/
+dark.png : https://www.iconfinder.com/
+light.png: https://www.iconfinder.com/
+logout.png: https://www.iconfinder.com/
