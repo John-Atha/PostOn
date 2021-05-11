@@ -127,7 +127,7 @@ class PostTextNoTags extends React.Component {
         if (!(this.state.parts.length===1 && this.state.parts[0]===" ") && this.state.parts.length) {
             ////console.log("I have length")
             return(
-                <div>
+                <div style={{'width': '100%'}}>
                     <div className="flex-layout with-whitespace">
                         {this.state.parts.map((value, index) => {
                         ////console.log(`part: ${value}`)
@@ -164,7 +164,7 @@ class PostTextNoTags extends React.Component {
                             }
                         })}
                     </div>
-                    <div className="player-wrapper margin-top-small">
+                    <div className="player-wrapper margin-top-small center-content">
                         {this.state.iframes.map((value, index) => {
                             return(
                                 <ReactPlayer url={value} key={index} className="react-player"/>
@@ -294,7 +294,7 @@ class PostText extends React.Component {
             ////console.log(`I am a post with parts:`)
             ////console.log(this.state.parts)
             return (
-                <div>
+                <div style={{'width': '100%'}}>
                     <div className="flex-layout with-whitespace">
                         {this.state.parts.map((value, index) => {
                             if (value.tag.id && !value.dump) {
@@ -410,7 +410,7 @@ class PostText extends React.Component {
                             }
                         })}
                     </div>
-                    <div className="player-wrapper margin-top-small">
+                    <div className="player-wrapper margin-top-small center-content">
                         {this.state.iframes.map((value, index) => {
                             return(
                                 <ReactPlayer url={value} key={index} className="react-player"/>

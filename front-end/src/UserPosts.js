@@ -46,8 +46,8 @@ class UserPosts extends React.Component {
         //const container = document.getElementById('posts-cont');
         ////console.log("I am checking scroll");
         ////console.log(`${container.scrollHeight} - ${container.scrollTop} == ${container.clientHeight}`)
-        console.log(`${window.scrollY}, ${0.7*document.body.offsetHeight}`);
-        if (window.scrollY>=0.7*document.body.offsetHeight) {
+        console.log(`${window.scrollY}, ${0.5*document.body.offsetHeight}`);
+        if (window.scrollY>=0.5*document.body.offsetHeight) {
             ////console.log(`${container.scrollHeight} - ${container.scrollTop} == ${container.clientHeight}`);
             console.log("add more")    
             if (!this.asked.includes(this.state.start) && !this.state.nomore) {
