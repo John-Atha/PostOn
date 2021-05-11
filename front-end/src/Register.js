@@ -17,10 +17,12 @@ class Register extends React.Component {
             email: "",
             passwordConfirm: "",
             error: null,
+            updateColorsBetweenNavbars: 1,
         }
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleInput = this.handleInput.bind(this);
         this.validateUsername = this.validateUsername.bind(this);
+        this.updateNavbarsColors = this.updateNavbarsColors.bind(this);
     }
     validateUsername = (str) => {
         let allowed = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 
@@ -139,6 +141,11 @@ class Register extends React.Component {
         }
         event.preventDefault();
     }
+    updateNavbarsColors = () => {
+        this.setState({
+            updateColorsBetweenNavbars: this.state.updateColorsBetweenNavbars+1,
+        })
+    }
     render() {
         if (this.state.logged) {
             window.location.href = "/";
@@ -147,10 +154,10 @@ class Register extends React.Component {
             return(
                 <div className="login-page">
                     { window.innerWidth<500 &&
-                        <MobileNavbar />
+                        <MobileNavbar updateColors={()=>{this.updateNavbarsColors();}} />
                     }
                     {window.innerWidth>=500 &&
-                        <MyNavbar />                    
+                        <MyNavbar updateMyColors = {this.state.updateColorsBetweenNavbars} />
                     }
                     <div className="login-main-page flex-layout center-content">
                         <div className="logo-container flex-item">

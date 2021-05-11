@@ -1190,50 +1190,64 @@ class OnePost extends React.Component {
                 </div>
                 <hr className="no-margin"></hr>
                 <div className="post-actions center-content flex-layout">
+                <OutsideClickHandler 
+                    onOutsideClick={()=>{this.setState({showReactions: false})}}>
                     <div className="center-content margin-side" 
-                         style={{'position': 'relative'}}
-                         onMouseEnter={()=>{this.setState({showReactions: true})}}
-                         onMouseLeave={()=>{this.setState({showReactions: false})}} >
+                         style={{'position': 'relative', 'minWidth': '100px'}}>
                         {!this.state.liked &&
-                                <button className="likes-action flex-layout button-as-link">
-                                    <img className="like-icon" src={like_icon} alt="like-icon"/>
-                                    <div>Like</div>
+                                <button 
+                                    onClick={()=>{this.setState({showReactions: true})}}
+                                    className="likes-action flex-layout button-as-link">
+                                        <img className="like-icon" src={like_icon} alt="like-icon"/>
+                                        <div>Like</div>
                                 </button>
                         }
                         {this.state.liked && this.state.likeKind==="like" &&
-                            <button className="likes-action flex-layout button-as-link">
-                                <img className="like-icon" src={liked_icon} alt="liked-icon"/>
-                                <div className="blue-color">Liked</div>
+                            <button 
+                                onClick={()=>{this.setState({showReactions: true})}}
+                                className="likes-action flex-layout button-as-link">
+                                    <img className="like-icon" src={liked_icon} alt="liked-icon"/>
+                                    <div className="blue-color">Liked</div>
                             </button>
                         }  
                         {this.state.liked && this.state.likeKind==="haha" &&
-                            <button className="likes-action flex-layout button-as-link">
-                                <div>&#128514;</div>
-                                <div style={{'color': '#edaf11'}}>Haha</div>
+                            <button 
+                                onClick={()=>{this.setState({showReactions: true})}}
+                                className="likes-action flex-layout button-as-link">
+                                    <div>&#128514;</div>
+                                    <div style={{'color': '#edaf11'}}>Haha</div>
                             </button>
                         }         
                         {this.state.liked && this.state.likeKind==="love" &&
-                            <button className="likes-action flex-layout button-as-link">
-                                <div>&#10084;&#65039;</div>
-                                <div style={{'color': 'red'}}>Love</div>
+                            <button 
+                                onClick={()=>{this.setState({showReactions: true})}}
+                                className="likes-action flex-layout button-as-link">
+                                    <div>&#10084;&#65039;</div>
+                                    <div style={{'color': 'red'}}>Love</div>
                             </button>
                         }
                         {this.state.liked && this.state.likeKind==="liquid" &&
-                            <button className="likes-action flex-layout button-as-link">
-                                <div>💦</div>
-                                <div style={{'color': '#05b4ff'}}>Liquid</div>
+                            <button 
+                                onClick={()=>{this.setState({showReactions: true})}}
+                                className="likes-action flex-layout button-as-link">
+                                    <div>💦</div>
+                                    <div style={{'color': '#05b4ff'}}>Liquid</div>
                             </button>
                         }  
                         {this.state.liked && this.state.likeKind==="sad" &&
-                            <button className="likes-action flex-layout button-as-link">
-                                <div>&#128546;</div>
-                                <div style={{'color': '#065a96'}}>Sad</div>
+                            <button 
+                                onClick={()=>{this.setState({showReactions: true})}}
+                                className="likes-action flex-layout button-as-link">
+                                    <div>&#128546;</div>
+                                    <div style={{'color': '#065a96'}}>Sad</div>
                             </button>
                         }
                         {this.state.liked && this.state.likeKind==="dislike" &&
-                            <button className="likes-action flex-layout button-as-link">
-                                <div>&#128078;</div>
-                                <div style={{'color': '#b08415'}}>Disliked</div>
+                            <button 
+                                onClick={()=>{this.setState({showReactions: true})}}
+                                className="likes-action flex-layout button-as-link">
+                                    <div>&#128078;</div>
+                                    <div style={{'color': '#b08415'}}>Disliked</div>
                             </button>
                         }
                         {this.state.showReactions && 
@@ -1259,6 +1273,7 @@ class OnePost extends React.Component {
                             </div>
                         }                                
                     </div>
+                </OutsideClickHandler>
                     <div className="center-content margin-side">
                         <button className="comments-action flex-layout button-as-link" onClick={this.showHideComments}>
                                 <img className="comment-icon" src={comment_icon} alt="comment-icon"/>

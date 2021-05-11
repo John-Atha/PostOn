@@ -381,6 +381,7 @@ class Profile extends React.Component {
             deleteAcc: false,
             error: null,
             username_error: null,
+            updateColorsBetweenNavbars: 1,
         }
         this.countFollows = this.countFollows.bind(this);
         this.countFollowers = this.countFollowers.bind(this);
@@ -403,6 +404,7 @@ class Profile extends React.Component {
         this.hideModal = this.hideModal.bind(this);
         this.logout = this.logout.bind(this);
         this.validateUsername = this.validateUsername.bind(this);
+        this.updateNavbarsColors = this.updateNavbarsColors.bind(this);
     }
     validateUsername = (str) => {
         let allowed = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 
@@ -736,13 +738,18 @@ class Profile extends React.Component {
             followsShow: false,
         })
     }
+    updateNavbarsColors = () => {
+        this.setState({
+            updateColorsBetweenNavbars: this.state.updateColorsBetweenNavbars+1,
+        })
+    }
     render() {
         return(
             <div className="all-page">
                 { window.innerWidth<500 &&
-                    <MobileNavbar />
+                    <MobileNavbar updateColors={()=>{this.updateNavbarsColors();}} />
                 }
-                <MyNavbar />
+                <MyNavbar updateMyColors = {this.state.updateColorsBetweenNavbars} />
                 <Searchbar />
                 {!this.state.error &&
                     <div className="profile-main center-content flex-layout">
@@ -862,8 +869,8 @@ class Profile extends React.Component {
                                 updateMyFollows={this.updateMyFollows} />
                 }
                 {this.state.error!==null &&
-                    <div className="center-content">
-                        <div className="error-message margin-top">
+                    <div className="center-content" style={{'marginTop': '160px'}}>
+                        <div className="error-message">
                             {this.state.error}
                         </div>
                     </div>

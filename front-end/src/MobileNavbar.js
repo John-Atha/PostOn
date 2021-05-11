@@ -5,10 +5,11 @@ import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import {isLogged, getOneUser, getNotifications, readAllNotifications, markAsRead} from './api'
 import notif_icon from './images/notif.png';
+import notif_icon_white from './images/notif_white.png';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 import logout from './images/logout.png';
-
+import logout_white from './images/logout_white.png';
 import DarkModeToggle from "react-dark-mode-toggle";
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -61,6 +62,7 @@ class MobileNavbar extends React.Component {
         setTimeout(()=>{this.colorsUpdate();}, 200);
     }
     colorsUpdate = () => {
+        this.props.updateColors();
         const root = document.getElementById('root');
         if (this.state.theme==="light") {
             root.classList.remove('dark');
@@ -323,11 +325,15 @@ class MobileNavbar extends React.Component {
                                 title={
                                     this.state.unread>0 ?
                                         <div style={{'height': '15px'}} className="flex-layout">
-                                            <img className="navbar-icon2" src={notif_icon} alt="notifications" />
+                                            <img className="navbar-icon2" 
+                                                 src={this.state.theme==='light' ? notif_icon : notif_icon_white}
+                                                 alt="notifications" />
                                             <div className="notif-counter">{this.state.unread===5?`${this.state.unread}+` : this.state.unread}</div>
                                         </div>
                                     :
-                                    <img className="navbar-icon2" src={notif_icon} alt="notifications" />
+                                    <img className="navbar-icon2"
+                                        src={this.state.theme==='light' ? notif_icon : notif_icon_white}
+                                        alt="notifications" />
                                 }
                         
                                 id="basic-nav-dropdown">
@@ -384,7 +390,10 @@ class MobileNavbar extends React.Component {
                             <Nav.Link href="#"
                                       onClick={this.logoutModalShow}
                                       style={{'marginTop': '5px'}}>
-                                <input type='image' className="navbar-icon2" src={logout} alt="logout" />
+                                <input type='image'
+                                       className="navbar-icon2"
+                                       src={this.state.theme==='light' ? logout : logout_white}
+                                       alt="logout" />
                             </Nav.Link>
                         }
                     </Nav>

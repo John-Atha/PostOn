@@ -5,15 +5,27 @@ import MobileNavbar from './MobileNavbar';
 import Searchbar from './Searchbar';
 
 class NotFound extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            updateColorsBetweenNavbars: 1,
+        }
+        this.updateNavbarsColors = this.updateNavbarsColors.bind(this);
+    }
+    updateNavbarsColors = () => {
+        this.setState({
+            updateColorsBetweenNavbars: this.state.updateColorsBetweenNavbars+1,
+        })
+    }
     render() {
         return(
             <div className="all-page">
                 { window.innerWidth<500 &&
-                    <MobileNavbar />
+                    <MobileNavbar updateColors={()=>{this.updateNavbarsColors();}} />
                 }
-                <MyNavbar />
+                <MyNavbar updateMyColors = {this.state.updateColorsBetweenNavbars} />
                 <Searchbar />
-                <div className="center-content margin-top">
+                <div className="center-content" style={{'marginTop': '160px'}}>
                     <div className="error-message">
                         Sorry, page not found!
                     </div>

@@ -13,7 +13,9 @@ class ExplorePage extends React.Component {
         this.state = {
             userId: null,
             logged: false,
+            updateColorsBetweenNavbars: 1,
         }
+        this.updateNavbarsColors = this.updateNavbarsColors.bind(this);
     }
 
     componentDidMount() {
@@ -33,14 +35,18 @@ class ExplorePage extends React.Component {
             })
         })
     }
-
+    updateNavbarsColors = () => {
+        this.setState({
+            updateColorsBetweenNavbars: this.state.updateColorsBetweenNavbars+1,
+        })
+    }
     render() {
         return(
             <div className="all-page">
                 { window.innerWidth<500 &&
-                    <MobileNavbar />
+                    <MobileNavbar updateColors={()=>{this.updateNavbarsColors();}} />
                 }
-                <MyNavbar />
+                <MyNavbar updateMyColors = {this.state.updateColorsBetweenNavbars} />
                 <Searchbar />
                 <div className="main-home-container flex-layout" style={{'paddingBottom': '50px'}}>
                     <ExploreScroll userId={this.state.userId} logged={this.state.logged} updateMyPar={()=>{}} case='single-page'/>

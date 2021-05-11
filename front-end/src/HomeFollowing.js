@@ -16,9 +16,11 @@ class HomeFollowing extends React.Component {
             error: null,
             update1: 1,
             update2: 1,
+            updateColorsBetweenNavbars: 1,
         }
         this.updateHome = this.updateHome.bind(this);
         this.updateProfBox = this.updateProfBox.bind(this);
+        this.updateNavbarsColors = this.updateNavbarsColors.bind(this);
     }
     componentDidMount() {
         isLogged()
@@ -46,14 +48,19 @@ class HomeFollowing extends React.Component {
             update1: this.state.update1+1,
         })
     }
+    updateNavbarsColors = () => {
+        this.setState({
+            updateColorsBetweenNavbars: this.state.updateColorsBetweenNavbars+1,
+        })
+    }
     render() {
         if (this.state.logged===true) {
             return (
                 <div className="all-page">
                     { window.innerWidth<500 &&
-                        <MobileNavbar />
+                        <MobileNavbar updateColors={()=>{this.updateNavbarsColors();}} />
                     }
-                    <MyNavbar />
+                    <MyNavbar updateMyColors = {this.state.updateColorsBetweenNavbars} />
                     <Searchbar />
                     <div className="main-home-container flex-layout">
                         <Explore userId={this.state.userId} logged={this.state.logged} update1={this.state.update1} updateMyPar={this.updateProfBox} />
@@ -69,9 +76,9 @@ class HomeFollowing extends React.Component {
             return (
                 <div className="all-page">
                     { window.innerWidth<500 &&
-                        <MobileNavbar />
+                        <MobileNavbar updateColors={()=>{this.updateNavbarsColors();}} />
                     }
-                    <MyNavbar />
+                    <MyNavbar updateMyColors = {this.state.updateColorsBetweenNavbars} />
                     <div className="error-message center-text margin-top">Loading, please wait...</div>
                 </div>
             )

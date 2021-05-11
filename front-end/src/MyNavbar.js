@@ -5,15 +5,19 @@ import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown'
 import {isLogged, getOneUser, getNotifications, readAllNotifications, markAsRead} from './api'
 import notif_icon from './images/notif.png';
+import notif_icon_white from './images/notif_white.png';
 import stats_icon from './images/stats.png';
+import stats_icon_white from './images/stats_white.png';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 import logo from './images/logo192.png';
 import logout from './images/logout.png';
+import logout_white from './images/logout_white.png';
 import DarkModeToggle from "react-dark-mode-toggle";
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import explore from './images/follow_posts.png';
+import explore_white from './images/follow_posts_white.png';
 
 class MyNavbar extends React.Component {
     constructor(props) {
@@ -48,6 +52,10 @@ class MyNavbar extends React.Component {
         this.goLight = this.goLight.bind(this);
         this.reloadAll = this.reloadAll.bind(this);
         this.logoutModalShow = this.logoutModalShow.bind(this);
+        this.updateColorsFromMobileNav = this.updateColorsFromMobileNav.bind(this);
+    }
+    updateColorsFromMobileNav = () => {
+        if (localStorage.getItem('theme')==='light') this.goLight(); else this.goDark();
     }
     logoutModalShow = () => {
         this.setState({
@@ -265,14 +273,14 @@ class MyNavbar extends React.Component {
     goDark = () => {
         localStorage.setItem('theme', 'dark');
         this.setState({
-            'theme': 'dark',
+            theme: 'dark',
         })
         setTimeout(()=>{this.colorsUpdate();}, 200);
     }
     goLight = () => {
         localStorage.setItem('theme', 'light');
         this.setState({
-            'theme': 'light',
+            theme: 'light',
         })
         setTimeout(()=>{this.colorsUpdate();}, 200);
     }
@@ -313,6 +321,12 @@ class MyNavbar extends React.Component {
             })
         })
     }
+    componentDidUpdate(prevProps) {
+        if (prevProps.updateMyColors !== this.props.updateMyColors) {
+            console.log('I am changing colors')
+            this.updateColorsFromMobileNav();
+        }
+    }
     render(){
         if (window.innerWidth >= 500) {
             return(
@@ -337,7 +351,12 @@ class MyNavbar extends React.Component {
                                 </NavDropdown>        
                             }   
                             {this.state.logged && 
-                                <NavDropdown title={<img className="navbar-icon2" src={stats_icon} alt="statistics" />} id="basic-nav-dropdown">
+                                <NavDropdown title={
+                                    <img className="navbar-icon2"
+                                        src={this.state.theme==='light'?stats_icon:stats_icon_white}
+                                        alt="statistics" />
+                                    }
+                                    id="basic-nav-dropdown">
                                     <NavDropdown.Item href="/stats/personal">My statistics</NavDropdown.Item>
                                     <NavDropdown.Item href="/stats/general">General statistics</NavDropdown.Item>
                                     <NavDropdown.Item href="/activity">Activity</NavDropdown.Item>
@@ -356,11 +375,15 @@ class MyNavbar extends React.Component {
                                 title={
                                     this.state.unread>0 ?
                                         <div style={{'height': '15px'}} className="flex-layout">
-                                            <img className="navbar-icon2" src={notif_icon} alt="notifications" />
+                                            <img className="navbar-icon2"
+                                                 src={this.state.theme==='light' ? notif_icon : notif_icon_white}
+                                                 alt="notifications" />
                                             <div className="notif-counter">{this.state.unread===5?`${this.state.unread}+` : this.state.unread}</div>
                                         </div>
                                     :
-                                    <img className="navbar-icon2" src={notif_icon} alt="notifications" />
+                                    <img className="navbar-icon2"
+                                         src={this.state.theme==='light' ? notif_icon : notif_icon_white}
+                                         alt="notifications" />
                                 }
                                     id="basic-nav-dropdown">
                                     {this.state.notifList.length!==0 && 
@@ -415,7 +438,11 @@ class MyNavbar extends React.Component {
                             {this.state.logged && 
                                 <Nav.Link href="#"
                                           onClick={this.logoutModalShow}>
-                                    <input type='image' style={{'marginTop': '5px'}} className="navbar-icon2" src={logout} alt="logout" />
+                                    <input type='image'
+                                           style={{'marginTop': '5px'}}
+                                           className="navbar-icon2"
+                                           src={this.state.theme==='light' ? logout : logout_white}
+                                           alt="logout" />
                                 </Nav.Link>
                             }
                         </Nav>
@@ -443,16 +470,28 @@ class MyNavbar extends React.Component {
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
                         <Nav.Link href="#" onClick={this.reloadAll} style={{'width': '25vw'}}><img className="navbar-photo2" src={logo} alt="logo" /></Nav.Link>
-                        <Nav.Link href='/explore' style={{'width': '25vw'}}><img className="navbar-photo2" src={explore} alt='explore' /></Nav.Link>
+                        <Nav.Link href='/explore' style={{'width': '25vw'}}>
+                            <img className="navbar-photo2"
+                                 src={this.state.theme==='light' ? explore : explore_white}
+                                 alt='explore' />
+                        </Nav.Link>
                         {this.state.logged && 
-                            <NavDropdown drop='up' className="center-content" style={{'width': '25vw'}} title={<img className="navbar-photo2" src={stats_icon} alt="statistics" />} id="basic-nav-dropdown">
+                            <NavDropdown drop='up' className="center-content" style={{'width': '25vw'}} title={
+                                <img className="navbar-photo2"
+                                     src={this.state.theme==='light'?stats_icon:stats_icon_white}
+                                     alt="statistics" />}
+                                id="basic-nav-dropdown">
                                 <NavDropdown.Item href="/stats/personal">My statistics</NavDropdown.Item>
                                 <NavDropdown.Item href="/stats/general">General statistics</NavDropdown.Item>
                                 <NavDropdown.Item href="/activity">Activity</NavDropdown.Item>
                             </NavDropdown>
                         }
                         {!this.state.logged &&
-                            <Nav.Link href="/stats/general" className="center-content" style={{'width': '25vw'}}><img className="navbar-photo2" src={stats_icon} alt="statistics" /></Nav.Link>
+                            <Nav.Link href="/stats/general" className="center-content" style={{'width': '25vw'}}>
+                                <img className="navbar-photo2"
+                                     src={this.state.theme==='light'?stats_icon:stats_icon_white}
+                                     alt="statistics" />
+                            </Nav.Link>
                         }
                         {this.state.logged &&
                             <Nav.Link href={`/users/${this.state.userId}`} className="center-content" style={{'width': '25vw'}}><img className="navbar-photo" src={this.state.photo} alt="profile" /></Nav.Link>

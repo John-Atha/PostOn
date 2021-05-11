@@ -38,10 +38,12 @@ class OnePostPage extends React.Component {
             showCard: false,
             showCard2: false,
             error: null,
+            updateColorsBetweenNavbars: 1,
         }
         this.checkLogged = this.checkLogged.bind(this);
         this.getPostInfo = this.getPostInfo.bind(this);
         this.deleteMe = this.deleteMe.bind(this);
+        this.updateNavbarsColors = this.updateNavbarsColors.bind(this);
     }
     deleteMe = () => {
         window.location.href="/";
@@ -87,13 +89,18 @@ class OnePostPage extends React.Component {
         this.checkLogged();
         this.getPostInfo();
     }
+    updateNavbarsColors = () => {
+        this.setState({
+            updateColorsBetweenNavbars: this.state.updateColorsBetweenNavbars+1,
+        })
+    }
     render() {
         return(
             <div className="all-page">
                 { window.innerWidth<500 &&
-                    <MobileNavbar />
+                    <MobileNavbar updateColors={()=>{this.updateNavbarsColors();}} />
                 }
-                <MyNavbar />
+                <MyNavbar updateMyColors = {this.state.updateColorsBetweenNavbars} />
                 <div className="margin-top-small"></div>
                 { this.state.owner!==null &&
                     <OnePost userId={this.state.userId} 

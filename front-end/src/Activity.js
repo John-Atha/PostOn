@@ -344,11 +344,13 @@ class Activity extends React.Component {
             start: 1,
             end: 10,
             error: null,
+            updateColorsBetweenNavbars: 1,
         }
         this.askActivity = this.askActivity.bind(this);
         this.previousPage = this.previousPage.bind(this);
         this.nextPage = this.nextPage.bind(this);
         this.moveOn = this.moveOn.bind(this);
+        this.updateNavbarsColors = this.updateNavbarsColors.bind(this);
     }
     moveOn = () => {
         window.scrollTo({
@@ -405,13 +407,18 @@ class Activity extends React.Component {
             })
         })
     }
+    updateNavbarsColors = () => {
+        this.setState({
+            updateColorsBetweenNavbars: this.state.updateColorsBetweenNavbars+1,
+        })
+    }
     render() {
         return (
         <div className="all-page" style={{'paddingBottom': '55px'}}>
             {window.innerWidth<500 &&
-                <MobileNavbar />
+                <MobileNavbar updateColors={()=>{this.updateNavbarsColors();}} />
             }
-            <MyNavbar />
+            <MyNavbar updateMyColors = {this.state.updateColorsBetweenNavbars} />
             <Searchbar />
             <div className="main-activity-container flex-layout">
                 {this.state.actList.map((value, index) => {

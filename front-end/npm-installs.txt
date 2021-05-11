@@ -8,3 +8,4 @@ npm i react-notifications-component
 npm i jquery popper.js
 npm i react-mentions
 npm i react-player
+npm i react-dark-mode-toggle

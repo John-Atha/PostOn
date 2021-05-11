@@ -203,9 +203,11 @@ class Statistics extends React.Component {
             case: this.props.case,
             logged: null,
             userId: null,
+            updateColorsBetweenNavbars: 1,
         }
         this.pick = this.pick.bind(this);
         this.updateColors = this.updateColors.bind(this);
+        this.updateNavbarsColors = this.updateNavbarsColors.bind(this);
     }
     updateColors = (pressed) => {
         pressed.style.backgroundColor="green"
@@ -242,14 +244,19 @@ class Statistics extends React.Component {
             this.updateColors(document.getElementById('stats-posts-button'));
         }
     }
+    updateNavbarsColors = () => {
+        this.setState({
+            updateColorsBetweenNavbars: this.state.updateColorsBetweenNavbars+1,
+        })
+    }
     render() {
         if(this.state.case==="personal" && !this.state.logged) {
             return(
                 <div className="all-page">
                     { window.innerWidth<500 &&
-                        <MobileNavbar />
+                        <MobileNavbar updateColors={()=>{this.updateNavbarsColors();}} />
                     }
-                    <MyNavbar />
+                    <MyNavbar updateMyColors = {this.state.updateColorsBetweenNavbars} />
                     <div className="main-page center-content">
                         <div className="error-message">
                             You have to create an account to have your personal statistics page
@@ -262,9 +269,9 @@ class Statistics extends React.Component {
             return(
                 <div className="all-page" style={{'paddingBottom': '50px'}}>
                     { window.innerWidth<500 &&
-                        <MobileNavbar />
+                        <MobileNavbar updateColors={()=>{this.updateNavbarsColors();}} />
                     }
-                    <MyNavbar />
+                    <MyNavbar updateMyColors = {this.state.updateColorsBetweenNavbars} />
                     <Searchbar />
                     <div className="main-page center-content">
                         <h4 className="margin-top-smaller">Pick a statistics category</h4>
