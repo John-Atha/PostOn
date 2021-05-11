@@ -17,6 +17,7 @@ import NotFound from './NotFound';
 import $ from 'jquery';
 import Popper from 'popper.js';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
+import ExplorePage from './ExplorePage';
 
 function FindProfile() {
   let {id} = useParams();
@@ -61,6 +62,9 @@ ReactDOM.render(
         </Route>
         <Route path="/search" exact>
           <Searchbar />
+        </Route>
+        <Route path="/explore" exact>
+          <ExplorePage />
         </Route>
         <Route path="*">
           <NotFound />
