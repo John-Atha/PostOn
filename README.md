@@ -1,6 +1,10 @@
 ## PostOn
 
 * Project no4 for the CS50 Web Programming Course with Python and Javascript 2020.
+
+* Short presentation at: https://www.youtube.com/watch?v=5E_QWRB6VD8
+* Try it at: https://poston.herokuapp.com
+
 * Technologies used:
     * Backend: Python (Django framework)
     * Front-end: HTML, CSS, JS (React framework) with npx create-react-app
