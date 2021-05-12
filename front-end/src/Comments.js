@@ -1115,6 +1115,7 @@ class OneComment extends React.Component {
                             updateHome={this.props.updateHome}
                             showMe={true} 
                             followsUpd={this.state.followsUpd}
+                            kinds={['like']}
                         />
                         }
                         <hr className="no-margin"></hr>

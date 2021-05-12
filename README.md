@@ -18,6 +18,7 @@
     * have access to a statitics page (personal and/or general)
 * Users can connect their poston account to their instagram account and receive via instagram real time notifications with bots mentioning them in comments.
 * The bots operate using the python wrapper: [Instagram Private Api](https://github.com/ping/instagram_private_api)
+* Users' media files are hosted at [Cloudinary](https://cloudinary.com)
 * More implementation details in `backend/api_specs` and `front-end/README.md`
 
 - - -
