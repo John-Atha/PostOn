@@ -41,7 +41,6 @@ class UserPosts extends React.Component {
         this.addTags = this.addTags.bind(this);
         this.checkScroll = this.checkScroll.bind(this);
     }
-
     checkScroll = () => {
         //const container = document.getElementById('posts-cont');
         ////console.log("I am checking scroll");
@@ -61,7 +60,6 @@ class UserPosts extends React.Component {
             //console.log("reached bottom")
         }
     }
-
     askTags = () => {
         if (this.state.firstFocus) {
             this.setState({
@@ -416,10 +414,9 @@ class UserPosts extends React.Component {
     componentWillUnmount() {
         window.removeEventListener('scroll', this.checkScroll);
     }
-
     render() {
         return(
-            <div className="posts-container padding-bottom flex-item" style={{paddingTop: '50px', marginTop: '1%'}} >
+            <div className="user-posts-container padding-bottom" style={{paddingTop: '50px', marginTop: '5px'}} >
                 { this.state.userId===this.state.whose &&
                     <button className="add-post-button" onClick={this.preAddPost}>
                         <img className="small-icon" src={add_icon} alt="add" />
@@ -446,22 +443,25 @@ class UserPosts extends React.Component {
                             </div>
                     </div>
                 }
-                {this.state.postsList.map((value, index) => {
-                    return(
-                        <OnePost key={index}
-                                    id={value.id}
-                                    owner={value.owner}
-                                    text={value.text}
-                                    media={value.media}
-                                    video={value.video}
-                                    date={value.date}
-                                    userId={this.state.userId}
-                                    logged={this.state.logged}
-                                    updateHome={this.props.updateHome}
-                                    updateParent={this.askPosts}
-                        />
-                    )
-                })}
+                <div style={{'width': '100%'}}>
+                    {this.state.postsList.map((value, index) => {
+                        return(
+                            <OnePost key={index}
+                                        id={value.id}
+                                        owner={value.owner}
+                                        text={value.text}
+                                        media={value.media}
+                                        video={value.video}
+                                        date={value.date}
+                                        userId={this.state.userId}
+                                        logged={this.state.logged}
+                                        updateHome={this.props.updateHome}
+                                        updateParent={this.askPosts}
+                                        user={true}
+                            />
+                        )
+                    })}
+                </div>
                 {!this.state.postsList.length &&
                     <div className="error-message margin-top center-text">Oops, no posts found..</div>
                 }

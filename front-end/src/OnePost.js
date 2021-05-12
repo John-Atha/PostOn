@@ -1083,7 +1083,7 @@ class OnePost extends React.Component {
         ////console.log(this.state.text)
         ////console.log(this.state.media)
         return(
-            <div className="post-container">
+            <div className={this.props.user ? "user-post-container" : "post-container"}>
                 <div className="flex-layout">
                     <div className="user-photo-container"
                                     onMouseEnter={this.cardShow}

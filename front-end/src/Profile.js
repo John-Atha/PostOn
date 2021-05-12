@@ -753,11 +753,11 @@ class Profile extends React.Component {
                 <Searchbar />
                 {!this.state.error &&
                     <div className="profile-main center-content flex-layout">
-                        <h3 className="profile-username margin-top-smaller">
+                        <h3 className="profile-username" style={{'marginTop': '9px'}}>
                             {this.state.username}
                         </h3>
                         {this.state.verified===true &&
-                                <img className="verified-icon-bigger" src={verified} alt="verified" />
+                                <img className="verified-icon-bigger" style={{'marginTop': '4px'}} src={verified} alt="verified" />
                         }
                     </div>        
                 }
@@ -776,11 +776,11 @@ class Profile extends React.Component {
                     </OutsideClickHandler>
                 }
                 {!this.state.error &&
-                <div className="flex-layout" style={{position: 'relative'}}>
+                <div className="flex-layout profile-header-container" style={{position: 'relative'}}>
                         <div className="user-photo-profile-container">
                             <img className="user-photo" src={this.state.photo} alt="user profile" />
                         </div>
-                        <div className="margin-top-small margin-left center-content">
+                        <div className="center-content" style={{'width': '150px', 'marginTop': '20px'}}>
                             <button className="foll-button" style={{width: '80%'}} onClick={this.showFollowers}>
                                 {this.state.followersNum} followers
                             </button>
