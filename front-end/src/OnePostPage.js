@@ -96,12 +96,12 @@ class OnePostPage extends React.Component {
     }
     render() {
         return(
-            <div className="all-page">
+            <div className="all-page" style={{'paddingBottom': '100px'}}>
                 { window.innerWidth<500 &&
                     <MobileNavbar updateColors={()=>{this.updateNavbarsColors();}} />
                 }
                 <MyNavbar updateMyColors = {this.state.updateColorsBetweenNavbars} />
-                <div className="margin-top-small"></div>
+                <div className="margin-top-smaller"></div>
                 { this.state.owner!==null &&
                     <OnePost userId={this.state.userId} 
                          logged={this.state.logged}

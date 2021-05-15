@@ -35,7 +35,6 @@
 }
 .likes-pop-up, .likes-comments-pop-up {
     z-index: 1;
-    top: 10%;
     position: absolute;
     background-color: var(--color3);
     min-height: min-content;
@@ -43,6 +42,12 @@
     padding: 2% 1%;
     animation:
         pop-up-appearing 1s;
+}
+.likes-pop-up {
+    top: 50%;
+}
+.likes-comments-pop-up {
+    bottom: 50px;
 }
 .close-button {
     position: absolute;
