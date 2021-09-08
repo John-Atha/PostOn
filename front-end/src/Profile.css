@@ -83,14 +83,6 @@
 .foll-button {
     background-color: var(--color2);
     color: var(--lettersColor);
-    border-radius: 8px;
-    border: none;
-    width: 80px;
-    height: min-content;
-}
-.foll-button:hover {
-    transform: scale(1.1);
-    -webkit-transform: scale(1.1);
 }
 .save-moto-button {
     height: min-content;

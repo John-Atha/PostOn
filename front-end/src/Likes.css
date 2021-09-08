@@ -30,6 +30,7 @@
     width: 100%;
     max-width: 175px;
     background-color: var(--unfollowgrey);
+    color: black;
     animation:
         pop-up-appearing-slow 1s;
 }

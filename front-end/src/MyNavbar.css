@@ -33,11 +33,6 @@
     overflow-y: scroll;
     background-color: var(--colorback);
 }
-.read-button {
-    background-color: var(--color2);
-    height: min-content;
-    width: 150px;
-}
 .dropdown-item {
     color: var(--lettersColor);
 }

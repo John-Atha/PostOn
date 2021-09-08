@@ -9,6 +9,7 @@ import verified from './images/verified.png';
 import {getUser, updateUser, updateUserPhoto, getFollowersCount, getFollowsCount, getFollows, getFollowers, getFollowsPagi, getFollowersPagi, followUser, unfollowUser, isLogged, UserDelete} from './api';
 import Searchbar from './Searchbar';
 import { createNotification } from './createNotification';
+import Button from 'react-bootstrap/esm/Button';
 
 class OneUser extends React.Component {
     constructor(props) {
@@ -763,27 +764,27 @@ class Profile extends React.Component {
                             <img className="user-photo" src={this.state.photo} alt="user profile" />
                         </div>
                         <div className="center-content" style={{'width': '150px', 'marginTop': '20px'}}>
-                            <button className="foll-button" style={{width: '80%'}} onClick={this.showFollowers}>
+                            <Button variant='outline-primary' style={{width: '80%'}} onClick={this.showFollowers}>
                                 {this.state.followersNum} followers
-                            </button>
-                            <button className="foll-button margin-top-small" style={{width: '80%'}} onClick={this.showFollows}>
+                            </Button>
+                            <Button variant='outline-primary' className="margin-top-small" style={{width: '80%'}} onClick={this.showFollows}>
                                 {this.state.followsNum} follows
-                            </button>
+                            </Button>
                             <div>
                             {this.state.logged && !this.state.isFollowed && !this.state.isFollowing && this.state.me!==this.state.userId &&
-                                <button className="foll-button margin-top-small" style={{width: '90%', backgroundColor: 'white', color: 'black'}} onClick={this.follow}>Follow</button>
+                                <Button variant='primary' className="margin-top-small" style={{width: '90%'}} onClick={this.follow}>Follow</Button>
                             }
                             {this.state.logged && !this.state.isFollowed && this.state.isFollowing && this.state.me!==this.state.userId &&
-                                <button className="foll-button margin-top" style={{width: '90%', backgroundColor: 'white', color: 'black'}} onClick={this.follow}>Follow Back</button>
+                                <Button variant='primary' className="margin-top" style={{width: '90%'}} onClick={this.follow}>Follow Back</Button>
                             }
                             {this.state.logged && this.state.isFollowed && this.state.me!==this.state.userId &&
-                                <button className="foll-button margin-top-small" style={{width: '90%', backgroundColor: 'white', color: 'black'}} onClick={this.unfollow}>Unfollow</button>
+                                <Button variant='primary' className="margin-top-small" style={{width: '90%'}} onClick={this.unfollow}>Unfollow</Button>
                             }
                             {this.state.logged && this.state.me===this.state.userId &&
-                                <button className="foll-button margin-top-small" style={{width: '90%', backgroundColor: 'white', color: 'black'}} onClick={this.editProf}>Edit info</button>               
+                                <Button variant='outline-warning' className="margin-top-small" style={{width: '90%'}} onClick={this.editProf}>Edit info</Button>               
                             }
                             {this.state.logged && this.state.me===this.state.userId &&
-                                <button className="foll-button margin-top-small delete-account-button" style={{width: '90%', backgroundColor: 'white', color: 'black'}} onClick={this.preDelete}>Delete account</button>               
+                                <Button variant='danger' className="margin-top-small delete-account-button" style={{width: '90%', 'fontSize': '0.8rem'}} onClick={this.preDelete}>Delete account</Button>               
                             }
                         </div>
                 </div>

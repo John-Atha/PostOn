@@ -3,6 +3,7 @@ import './Explore.css'
 import ProfileCard from './ProfileCard';
 import {getUsers, getFollows, getFollowers, followUser, unfollowUser} from './api';
 import verified from './images/verified.png';
+import Button from 'react-bootstrap/esm/Button';
 
 class OneUser extends React.Component {
     constructor(props) {
@@ -85,21 +86,17 @@ class OneUser extends React.Component {
                         }
                     </div>
                 </div>
-                {this.state.logged && !this.props.followed && !this.props.following && this.props.me!==this.props.user.id &&
-                    <div className="flex-item-smaller">
-                        <button className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow</button>
-                    </div>
-                }
-                {this.state.logged && !this.props.followed && this.props.following && this.props.me!==this.props.user.id &&
-                    <div className="flex-item-smaller">
-                        <button className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow Back</button>
-                    </div>
-                }
-                {this.state.logged && this.props.followed && this.props.me!==this.props.user.id &&
-                    <div className="flex-item-smaller">
-                        <button className="my-button un-follow-button" onClick={this.unfollow}>UnFollow</button>
-                    </div>
-                }
+                <div className="flex-item-smaller">
+                    {this.state.logged && !this.props.followed && !this.props.following && this.props.me!==this.props.user.id &&
+                        <Button style={{'width': '130px', 'position': 'absolute', 'right': '15px'}} className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow</Button>
+                    }
+                    {this.state.logged && !this.props.followed && this.props.following && this.props.me!==this.props.user.id &&
+                        <Button style={{'width': '130px', 'position': 'absolute', 'right': '15px'}} className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow Back</Button>
+                    }
+                    {this.state.logged && this.props.followed && this.props.me!==this.props.user.id &&
+                        <Button style={{'width': '130px', 'position': 'absolute', 'right': '15px'}} className="my-button un-follow-button" onClick={this.unfollow}>UnFollow</Button>
+                    }
+                </div>
             </div>
         )
     }

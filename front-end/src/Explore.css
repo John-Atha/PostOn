@@ -14,7 +14,7 @@
 .explore-container {
     width: 25vw !important;
     max-width: 300px !important;
-    background-color: var(--color2);
+    background-color: var(--boxback);
     border-radius: 7px;
     margin-left: 1%;
     margin-top: 50px;
@@ -25,13 +25,13 @@
     top: 65px;
 }
 .one-user-line {
-    margin:4% 0%;
+    margin: 4px 0px;
 }
 .explore-container .pagi-buttons-container .pagi-button {
     background-color: var(--colorback);
 }
 .pale-blue {
-    background-color: var(--paleblue);
+    background-color: var(--paleblue) !important;
 }
 .explore-page {
     margin-top: 65px;

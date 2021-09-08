@@ -3,7 +3,7 @@ import './Explore.css'
 import ProfileCard from './ProfileCard';
 import {getUsers, getFollows, getFollowers, followUser, unfollowUser} from './api';
 import verified from './images/verified.png';
-
+import Button from 'react-bootstrap/esm/Button';
 class OneUser extends React.Component {
     constructor(props) {
         super(props);
@@ -85,21 +85,17 @@ class OneUser extends React.Component {
                         }
                     </div>
                 </div>
-                {this.state.logged && !this.props.followed && !this.props.following && this.props.me!==this.props.user.id &&
-                    <div className="flex-item-smaller">
-                        <button className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow</button>
-                    </div>
-                }
-                {this.state.logged && !this.props.followed && this.props.following && this.props.me!==this.props.user.id &&
-                    <div className="flex-item-smaller">
-                        <button className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow Back</button>
-                    </div>
-                }
-                {this.state.logged && this.props.followed && this.props.me!==this.props.user.id &&
-                    <div className="flex-item-smaller">
-                        <button className="my-button un-follow-button" onClick={this.unfollow}>UnFollow</button>
-                    </div>
-                }
+                <div className="flex-item-smaller">
+                    {this.state.logged && !this.props.followed && !this.props.following && this.props.me!==this.props.user.id &&
+                        <Button variant='primary' style={{'width': '100px'}} onClick={this.follow}>Follow</Button>
+                    }
+                    {this.state.logged && !this.props.followed && this.props.following && this.props.me!==this.props.user.id &&
+                        <Button variant='primary' style={{'width': '100px', 'fontSize':'0.5rem'}} onClick={this.follow}>Follow Back</Button>
+                    }
+                    {this.state.logged && this.props.followed && this.props.me!==this.props.user.id &&
+                        <Button variant='outline-primary' style={{'width': '100px'}} onClick={this.unfollow}>UnFollow</Button>
+                    }
+                </div>
             </div>
         )
     }
@@ -288,8 +284,8 @@ class Explore extends React.Component {
                 }
                 {this.state.usersList.length!==0 && 
                     <div className="pagi-buttons-container flex-layout center-content">
-                        <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
-                        <button disabled={this.state.usersList.length<10} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
+                        <Button variant='dark' disabled={this.state.start===1} className="flex-item-small margin" onClick={this.previousPage}>Previous</Button>
+                        <Button variant='dark' disabled={this.state.usersList.length<10} className="flex-item-small margin" onClick={this.nextPage}>Next</Button>
                     </div>            
                 }
                 {!this.state.usersList.length!==0 &&

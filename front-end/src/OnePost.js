@@ -14,6 +14,7 @@ import OutsideClickHandler from 'react-outside-click-handler';
 import { MentionsInput, Mention } from 'react-mentions';
 import ReactPlayer from 'react-player';
 import { createNotification } from './createNotification';
+import Button from "react-bootstrap/esm/Button";
 
 class PostTextNoTags extends React.Component {
     constructor(props) {
@@ -1343,9 +1344,9 @@ class OnePost extends React.Component {
                             <div className="message center-content">
                                 Are you sure you want delete this post?<br></br>
                             </div>
-                            <div className="modal-buttons-container center-content flex-layout margin-top-small">
-                                <button className="my-button flex-item-small margin-top-small margin" onClick={this.hideModal}>No, I changed my mind</button>
-                                <button className="my-button flex-item-small margin-top-small margin" onClick={this.postDelete}>Yes, delete anyway</button>                                        
+                            <div className="modal-buttons-container center-content margin-top-small">
+                                <Button variant="primary" className="margin" onClick={this.hideModal}>No, I changed my mind</Button>
+                                <Button variant="danger" className="margin" onClick={this.postDelete}>Yes, delete anyway</Button>                                        
                             </div>
                         </div>
                     </OutsideClickHandler>

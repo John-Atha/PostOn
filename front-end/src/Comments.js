@@ -10,6 +10,7 @@ import ProfileCard from  './ProfileCard';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { MentionsInput, Mention } from 'react-mentions';
 import { createNotification } from './createNotification';
+import Button from "react-bootstrap/esm/Button";
 
 class NewComment extends React.Component {
     constructor(props) {
@@ -260,7 +261,7 @@ class NewComment extends React.Component {
                                 className="mention-suggestions"
                             />
                         </MentionsInput>
-                        <button className="my-button pagi-button" onClick={this.submit}>Add</button>
+                        <Button variant='outline-primary' style={{'marginLeft': '3px'}} onClick={this.submit}>Add</Button>
                     </div>
                 </div>
             )   
@@ -1110,9 +1111,9 @@ class OneComment extends React.Component {
                                     <div className="message center-content">
                                         Are you sure you want delete this comment?<br></br>
                                     </div>
-                                    <div className="modal-buttons-container center-content flex-layout margin-top-small">
-                                        <button className="my-button flex-item-small margin-top-small margin" onClick={this.hideModal}>No, I changed my mind</button>
-                                        <button className="my-button flex-item-small margin-top-small margin" onClick={this.commentDelete}>Yes, delete anyway</button>                                        
+                                    <div className="modal-buttons-container center-content margin-top-small">
+                                        <Button variant="primary" className="margin" onClick={this.hideModal}>No, I changed my mind</Button>
+                                        <Button variant="danger" className="margin" onClick={this.commentDelete}>Yes, delete anyway</Button>                                        
                                     </div>
                                 </div>
                         </OutsideClickHandler>

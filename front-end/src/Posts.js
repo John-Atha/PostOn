@@ -6,6 +6,8 @@ import add_icon from './images/add.png';
 import arrow_icon from './images/arrow-up.png';
 import { MentionsInput, Mention } from 'react-mentions'
 import { createNotification } from './createNotification';
+import Button from "react-bootstrap/esm/Button";
+import Spinner from 'react-bootstrap/esm/Spinner';
 
 class Posts extends React.Component {
     constructor(props){
@@ -34,8 +36,7 @@ class Posts extends React.Component {
         this.moveOn = this.moveOn.bind(this);
         this.askPosts = this.askPosts.bind(this);
         this.addPost = this.addPost.bind(this);
-        this.preAddPost = this.preAddPost.bind(this);
-        this.cancelAdd = this.cancelAdd.bind(this);
+        this.clearAdd = this.clearAdd.bind(this);
         this.handleInput = this.handleInput.bind(this);
         this.askTags = this.askTags.bind(this);
         this.filterPost = this.filterPost.bind(this);
@@ -197,22 +198,14 @@ class Posts extends React.Component {
         })
         //console.log(`new text: ${this.state.newText}`);
     }
-    cancelAdd = () => {
+    clearAdd = () => {
         this.setState({
             newText: "",
-            add: false,
         })
+        const input = document.getElementById('new-post-photo');
+        input.type=''
+        input.type='file'             
         createNotification('warning', 'Hello,', 'Publsh was cancelled');
-    }
-    preAddPost = () => {
-        if(!this.state.logged) {
-            createNotification('danger', 'Sorry,', 'You have to create an account to upload a new post');
-        }
-        else {
-            this.setState({
-                add : true,
-            })    
-        }
     }
     addPost = () => {
         //console.log("I am add post")
@@ -244,9 +237,11 @@ class Posts extends React.Component {
                         let prevText = this.state.newText;
                         this.setState({
                             newText: "",
-                            add : false,
                             newId: postId,
                         })
+                        const input = document.getElementById('new-post-photo');
+                        input.type=''
+                        input.type='file'             
                         setTimeout(()=>{this.addTags(prevText);}, 1000)
                         this.askPosts("restart");
                         createNotification('success', 'Hello,', 'Post published successfully.');
@@ -289,7 +284,6 @@ class Posts extends React.Component {
                             let prevText = this.state.newText;
                             this.setState({
                                 newText: "",
-                                add : false,
                                 newId: postId,
                             })
                             setTimeout(()=>{this.addTags(prevText);}, 1000)
@@ -316,7 +310,6 @@ class Posts extends React.Component {
                         let prevText = this.state.newText;
                         this.setState({
                             newText: "",
-                            add : false,
                             newId: response.data.id,
                         })
                         setTimeout(()=>{this.addTags(prevText);}, 1000)
@@ -405,6 +398,7 @@ class Posts extends React.Component {
             this.setState({
                 logged: response.data.authenticated,
                 userId: response.data.id,
+                add: true,
             });
             //this.askLikes();
         })
@@ -421,9 +415,10 @@ class Posts extends React.Component {
     }
     render() {
         return(
-            <div className="posts-container padding-bottom flex-item" style={{paddingTop: '50px'}}>
+            <div className="posts-container padding-bottom flex-item">
                 {this.state.add && 
                     <div className="new-post-container">
+                        <h4>Hello, what are you thinking?</h4>
                             <div>Photo</div>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <input id="new-post-photo" type="file" accept="image/*, video/*"/>
@@ -437,8 +432,8 @@ class Posts extends React.Component {
                                 />
                             </MentionsInput>
                             <div className="flex-layout margin-top-smaller">
-                                <button className="my-button save-moto-button" style={{margin: '1%'}} onClick={this.addPost}>Publish</button>
-                                <button className="my-button save-moto-button" style={{margin: '1%'}} onClick={this.cancelAdd}>Cancel</button>
+                                <Button variant='primary' className="margin" onClick={this.addPost}>Publish</Button>
+                                <Button variant='warning' className="margin" onClick={this.clearAdd}>Clear</Button>
                             </div>
                     </div>
                 }
@@ -458,13 +453,14 @@ class Posts extends React.Component {
                         />
                     )
                 })}
-                {!this.state.postsList.length &&
+                {!this.state.postsList.length && this.state.nomore &&
                     <div className="error-message margin-top center-text">Oops, no posts found..</div>
                 }
-                <button className="add-post-button" onClick={this.preAddPost} >
-                    <img className="small-icon" src={add_icon} alt="add" />
-                    New post
-                </button>
+                {!this.state.postsList.length && !this.state.nomore &&
+                    <div className='center-content margin-top'>
+                        <Spinner animation="border" role="status" variant='primary' />
+                    </div>
+                }
                 {window.innerWidth>=500 &&
                     <input type="image" 
                         onClick={ ()=>{      

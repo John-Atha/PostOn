@@ -4,6 +4,7 @@ import ProfileCard from  './ProfileCard';
 import verified from './images/verified.png';
 import {getLikes, getFollowers, getFollows, followUser, unfollowUser} from './api';
 import OutsideClickHandler from 'react-outside-click-handler';
+import Button from "react-bootstrap/esm/Button";
 
 class OneLike extends React.Component {
     constructor(props) {
@@ -92,13 +93,13 @@ class OneLike extends React.Component {
                 </div>
                 <div className="un-follow-button-container flex-item-small">
                 {this.state.logged && !this.props.followed && !this.props.following && this.props.me!==this.props.owner.id &&
-                    <button className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow</button>
+                    <Button variant='primary' style={{'maxWidth': '100px'}} onClick={this.follow}>Follow</Button>
                 }
                 {this.state.logged && !this.props.followed && this.props.following && this.props.me!==this.props.owner.id &&
-                    <button className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow Back</button>
+                    <Button variant='primary' style={{'maxWidth': '100px'}} onClick={this.follow}>Follow Back</Button>
                 }
                 {this.state.logged && this.props.followed && this.props.me!==this.props.owner.id &&
-                    <button className="my-button un-follow-button" onClick={this.unfollow}>Unfollow</button>
+                    <Button variant='outline-primary' style={{'maxWidth': '100px'}} onClick={this.unfollow}>Unfollow</Button>
                 }
                 </div>
             </div>
@@ -143,12 +144,12 @@ class Likes extends React.Component {
             error: null,
         })
         setTimeout(()=> {console.log(this.state.kind)}, 0);
-        Array.from(document.getElementsByClassName('likes-kinds-buttons')).forEach(el => {
+        /*Array.from(document.getElementsByClassName('likes-kinds-buttons')).forEach(el => {
             el.style.color = localStorage.getItem('theme')==='light' ? 'black' : 'white';
             el.style.borderBottomColor = localStorage.getItem('theme')==='light' ? 'black' : 'white';
         })
         event.target.style.color='green';
-        event.target.style.borderBottomColor='green';
+        event.target.style.borderBottomColor='green';*/
         this.askLikes();
     }
     disappear = (event) => {
@@ -200,12 +201,6 @@ class Likes extends React.Component {
     }
     componentDidMount() {
         this.askLikes();
-        Array.from(document.getElementsByClassName('likes-kinds-buttons')).forEach(el => {
-            if (el.innerHTML===this.state.kind) {
-                el.style.color = 'green';
-                el.style.borderBottomColor = 'green';    
-            }
-        })
     }
     componentDidUpdate(prevProps) {
         if (prevProps.userId!==this.props.userId || prevProps.followsUpd!==this.props.followsUpd) {
@@ -289,11 +284,12 @@ class Likes extends React.Component {
                             <div className="flex-layout center-content">
                                 {this.state.kinds.map((value, index) => {
                                     return(
-                                        <button className="likes-kinds-buttons" 
+                                        <Button variant={value===this.state.kind ? "success" : "outline-success"}
+                                                className="likes-kinds-buttons" 
                                                 key={index}
                                                 onClick={this.changeKind}>                                        
                                             {value}
-                                        </button>
+                                        </Button>
                                     )
                                 })}
                             </div>
@@ -343,8 +339,8 @@ class Likes extends React.Component {
                         }
                         {this.state.likesList.length>0 &&
                             <div className="pagi-buttons-container flex-layout center-content">
-                                <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
-                                <button disabled={this.state.likesList.length<5} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
+                                <Button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</Button>
+                                <Button disabled={this.state.likesList.length<5} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</Button>
                             </div>
                         }
                     </div>

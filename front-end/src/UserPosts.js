@@ -6,7 +6,8 @@ import arrow_icon from './images/arrow-up.png';
 import OnePost from './OnePost';
 import { MentionsInput, Mention } from 'react-mentions';
 import { createNotification } from './createNotification';
-
+import Button from "react-bootstrap/esm/Button";
+import Spinner from "react-bootstrap/esm/Spinner";
 class UserPosts extends React.Component {
     constructor(props){
         super(props);
@@ -18,7 +19,6 @@ class UserPosts extends React.Component {
             start: 1,
             end: 10,
             whose: this.props.whose,
-            add: false,
             newText: "",
             usersList: [],
             firstFocus: true,
@@ -32,8 +32,7 @@ class UserPosts extends React.Component {
         this.moveOn = this.moveOn.bind(this);
         this.askPosts = this.askPosts.bind(this);
         this.addPost = this.addPost.bind(this);
-        this.preAddPost = this.preAddPost.bind(this);
-        this.cancelAdd = this.cancelAdd.bind(this);
+        this.clearAdd = this.clearAdd.bind(this);
         this.handleInput = this.handleInput.bind(this);
         this.askTags = this.askTags.bind(this);
         this.filterPost = this.filterPost.bind(this);
@@ -191,17 +190,14 @@ class UserPosts extends React.Component {
         })
         //console.log(`new text: ${this.state.newText}`);
     }
-    cancelAdd = () => {
+    clearAdd = () => {
         this.setState({
             newText: "",
-            add: false,
         })
+        const input = document.getElementById('new-post-photo');
+        input.type=''
+        input.type='file'             
         createNotification('warning', 'Hello,', 'Publsh was cancelled');
-    }
-    preAddPost = () => {
-        this.setState({
-            add : true,
-        })
     }
     addPost = () => {
         const input = document.getElementById('new-post-photo');
@@ -232,9 +228,11 @@ class UserPosts extends React.Component {
                         let prevText = this.state.newText;
                         this.setState({
                             newText: "",
-                            add : false,
                             newId: postId,
                         })
+                        const input = document.getElementById('new-post-photo');
+                        input.type=''
+                        input.type='file'             
                         setTimeout(()=>{this.addTags(prevText);}, 1000)
                         this.askPosts("restart");
                         createNotification('success', 'Hello,', 'Post published successfully.');
@@ -397,15 +395,10 @@ class UserPosts extends React.Component {
     }
     render() {
         return(
-            <div className="user-posts-container padding-bottom" style={{paddingTop: '50px', marginTop: '5px'}} >
-                { this.state.userId===this.state.whose &&
-                    <button className="add-post-button" onClick={this.preAddPost}>
-                        <img className="small-icon" src={add_icon} alt="add" />
-                        New post
-                    </button>
-                }
-                {this.state.add && 
+            <div className="user-posts-container padding-bottom" style={{marginTop: '5px'}} >
+                { this.state.userId===this.state.whose && 
                     <div className="new-post-container">
+                            <h4>Hello, what are you thinking?</h4>
                             <div>Photo</div>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <input id="new-post-photo" type="file" accept="image/*, video/*"/>
@@ -419,8 +412,8 @@ class UserPosts extends React.Component {
                                 />
                             </MentionsInput>
                             <div className="flex-layout margin-top-smaller">
-                                <button className="my-button save-moto-button" style={{margin: '1%'}} onClick={this.addPost}>Publish</button>
-                                <button className="my-button save-moto-button" style={{margin: '1%'}} onClick={this.cancelAdd}>Cancel</button>
+                                <Button variant='primary' className="margin" onClick={this.addPost}>Publish</Button>
+                                <Button variant='warning' className="margin" onClick={this.clearAdd}>Clear</Button>
                             </div>
                     </div>
                 }
@@ -443,8 +436,13 @@ class UserPosts extends React.Component {
                         )
                     })}
                 </div>
-                {!this.state.postsList.length &&
+                {!this.state.postsList.length && this.state.nomore &&
                     <div className="error-message margin-top center-text">Oops, no posts found..</div>
+                }
+                {!this.state.postsList.length && !this.state.nomore &&
+                    <div className='center-content margin-top'>
+                        <Spinner animation="border" role="status" variant='primary' />
+                    </div>
                 }
                 {window.innerWidht>=500 &&
                     <input type="image" 

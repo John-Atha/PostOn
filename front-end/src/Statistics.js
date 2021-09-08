@@ -5,6 +5,7 @@ import MobileNavbar from './MobileNavbar';
 import CanvasJSReact from './canvasjs.react.js';
 import {getMonthlyStatsGen, getDailyStatsGen, isLogged} from './api';
 import Searchbar from './Searchbar';
+import Button from 'react-bootstrap/esm/Button';
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class Diagram extends React.Component {
@@ -205,22 +206,13 @@ class Statistics extends React.Component {
             updateColorsBetweenNavbars: 1,
         }
         this.pick = this.pick.bind(this);
-        this.updateColors = this.updateColors.bind(this);
         this.updateNavbarsColors = this.updateNavbarsColors.bind(this);
     }
-    updateColors = (pressed) => {
-        pressed.style.backgroundColor="green"
-        document.querySelectorAll('.stats-choice-button').forEach(el => {
-            if (el!==pressed) {
-                el.style.backgroundColor="grey";
-            }
-        })
-    }
+
     pick = (event) => {
         this.setState({
             choice: event.target.innerHTML,
         })
-        this.updateColors(event.target);
         setTimeout(()=>{console.log(this.state.choice);}, 1000);
     }
     componentDidMount() {
@@ -231,7 +223,6 @@ class Statistics extends React.Component {
                 logged: response.data.authenticated,
                 userId: response.data.id,
             })
-            this.updateColors(document.getElementById('stats-posts-button'));
         })
         .catch(err => {
             //console.log(err)
@@ -239,9 +230,6 @@ class Statistics extends React.Component {
                 error: "Not logged in"
             })
         })
-        if(this.props.case==="general") {
-            this.updateColors(document.getElementById('stats-posts-button'));
-        }
     }
     updateNavbarsColors = () => {
         this.setState({
@@ -275,10 +263,10 @@ class Statistics extends React.Component {
                     <div className="main-page center-content">
                         <h4 className="margin-top-smaller">Pick a statistics category</h4>
                         <div className="flex-layout center-content margin-top-smaller">
-                            <button className="flex-item my-button pagi-button stats-choice-button margin" onClick={this.pick}>Likes</button>
-                            <button className="flex-item my-button pagi-button stats-choice-button margin" onClick={this.pick}>Comments</button>
-                            <button className="flex-item my-button pagi-button stats-choice-button margin" id="stats-posts-button" onClick={this.pick}>Posts</button>
-                            <button className="flex-item my-button pagi-button stats-choice-button margin" onClick={this.pick}>Follows</button>
+                            <Button variant={this.state.choice==="Likes" ? "primary" : "outline-primary"}     style={{'maxWidth': '100px'}} className="flex-item stats-choice-button margin" onClick={this.pick}>Likes</Button>
+                            <Button variant={this.state.choice==="Comments" ? "primary" : "outline-primary"} style={{'maxWidth': '100px'}} className="flex-item stats-choice-button margin" onClick={this.pick}>Comments</Button>
+                            <Button variant={this.state.choice==="Posts" ? "primary" : "outline-primary"}    style={{'maxWidth': '100px'}} className="flex-item stats-choice-button margin" id="stats-posts-button" onClick={this.pick}>Posts</Button>
+                            <Button variant={this.state.choice==="Follows" ? "primary" : "outline-primary"}  style={{'maxWidth': '100px'}} className="flex-item stats-choice-button margin" onClick={this.pick}>Follows</Button>
                         </div>
                         {this.state.choice==="Likes" &&
                             <OneStats choice={this.state.choice} case={this.state.case} userId={this.state.userId}/>
