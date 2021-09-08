@@ -20,7 +20,7 @@ class Country(models.Model):
 
 class User(AbstractUser):
     photo = models.ImageField(default="", null=True, blank=True)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True)
+    country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True, blank=True)
     moto = models.TextField(null = True, blank=True)
     last_time = models.DateTimeField(default=datetime.now)
     verified = models.BooleanField(default=False)
@@ -29,9 +29,9 @@ class User(AbstractUser):
         return f"{self.username}, {self.email}, {self.moto}, {self.country}"
     def serialize(self, path=""):
         if self.photo:
-            photoVal = path+self.photo.url
+            photoVal = self.photo.url
         else:
-            photoVal = path+'/media/user-icon.png'
+            photoVal = 'https://res.cloudinary.com/da7mbf3bi/image/upload/v1617748381/media/user-icon_aforvi.png'
         if self.country:
             country1 = self.country.serialize()
         else:
@@ -48,7 +48,7 @@ class User(AbstractUser):
 
 class Post(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts", null=False)
-    media = models.ImageField(default="", null=True, blank=True)
+    media = models.FileField(default="", null=True, blank=True)
     video = models.FileField(default="", null=True, blank=True, storage=VideoMediaCloudinaryStorage(), upload_to='videos/')
     text = models.TextField()
     date = models.DateTimeField(default=datetime.now)

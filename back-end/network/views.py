@@ -35,16 +35,12 @@ def notifyCore(receiver, text):
         post = random.choice(posts)
         api = Client(acc, passw)
         api.post_comment(post, '@'+receiver.instagram+'\n'+text)
-        print(x)
-        print(passw)
-        print(f"Sent notif to {receiver.instagram}")
     except Exception as e:
         print(e)
 
 
 def notify(receiver, text):
     if receiver.instagram:
-        print(f"Sending notif to {receiver.instagram}")
         t = threading.Thread(target=notifyCore,args=[receiver, text])
         t.setDaemon(True)
         t.start()
@@ -602,7 +598,8 @@ def AllLikesMod(request):
                                             return JsonResponse({"error": "Invalid kind field."}, status=400) 
                                     like = Like(owner=owner, post=post, kind=kind)
                                     like.save()
-                                    notify(post.owner, like.owner.username+' reacted on one of your posts')
+                                    if post.owner!=like.owner:
+                                        notify(post.owner, like.owner.username+' reacted on one of your posts')
                                     return JsonResponse(like.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                                 except ValueError:
                                     return JsonResponse({"error": "Invalid post id."}, status=400)
@@ -792,7 +789,8 @@ def AllCommentsMod(request):
                                             if len(text)>0:
                                                 comment = Comment(owner=owner, post=post, text=text)
                                                 comment.save()
-                                                notify(post.owner, comment.owner.username+' commented on one of your posts.')
+                                                if post.owner!=comment.owner:
+                                                    notify(post.owner, comment.owner.username+' commented on one of your posts.')
                                                 return JsonResponse(comment.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                                             else:
                                                 return JsonResponse({"error": "Invalid text given"}, status=400)
@@ -933,7 +931,8 @@ def AllLikeCommentsMod(request):
                                         comment = Comment.objects.get(id=commentId)
                                         likeComment = LikeComment(owner=owner, comment=comment)
                                         likeComment.save()
-                                        notify(comment.owner, owner.username+' liked your comment:\n'+comment.text)
+                                        if comment.owner!=owner:
+                                            notify(comment.owner, owner.username+' liked your comment:\n'+comment.text)
                                         return JsonResponse(likeComment.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                                     except Comment.DoesNotExist:
                                         return JsonResponse({"error": "Invalid comment id."}, status=400)                                
@@ -1602,9 +1601,7 @@ def PostPostPhoto(request, id):
                 file.seek(0)
                 mime_type = magic.from_buffer(file.read(1024), mime=True)
                 file.seek(initial_pos)
-                print(mime_type, end='\n\n\n\n')
-                #f = magic.Magic()
-                #mimestart = f.from_file(request.FILES['image']).split('/')[0]
+                #print(mime_type, end='\n\n\n\n')
                 hasImage = False
                 hasVideo = False
                 if 'image' in mime_type:
@@ -1643,7 +1640,8 @@ def PostPostMentions(request, id):
                         return JsonResponse({"error": "Invalid mentioned user id."}, status=400)
                     mention = PostMention(owner=request.user, mentioned=mentioned, post=post)
                     mention.save()
-                    notify(mentioned, request.user.username+' mentioned you in a post')
+                    if mentioned!=request.user:
+                        notify(mentioned, request.user.username+' mentioned you in a post')
                     return JsonResponse(mention.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                 else:
                     return JsonResponse({"error": "No mentioned user id given."})
@@ -1672,7 +1670,8 @@ def PostCommentMentions(request, id):
                         return JsonResponse({"error": "Invalid mentioned user id."}, status=400)
                     mention = CommentMention(owner=request.user, mentioned=mentioned, comment=comment)
                     mention.save()
-                    notify(mentioned, request.user.username+' mentioned you in a comment')
+                    if mentioned!=request.user:
+                        notify(mentioned, request.user.username+' mentioned you in a comment')
                     return JsonResponse(mention.serialize(request.build_absolute_uri('/')[:-1]), status=200)
                 else:
                     return JsonResponse({"error": "No mentioned user id given."})
