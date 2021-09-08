@@ -7,10 +7,9 @@ import verified from './images/verified.png';
 import Likes from './Likes';
 import {getUsers, getPostsComments, getLikesSample, getAllLikes, LikeComment, UnLikeComment, DeleteComment, AddComment, getUser, UserLikesComment, PostCommentTag} from './api';
 import ProfileCard from  './ProfileCard';
-import 'react-notifications-component/dist/theme.css'
-import { store } from 'react-notifications-component';
 import OutsideClickHandler from 'react-outside-click-handler';
-import { MentionsInput, Mention } from 'react-mentions'
+import { MentionsInput, Mention } from 'react-mentions';
+import { createNotification } from './createNotification';
 
 class NewComment extends React.Component {
     constructor(props) {
@@ -37,23 +36,6 @@ class NewComment extends React.Component {
         this.filterComment = this.filterComment.bind(this);
         this.addTags = this.addTags.bind(this);
     }
-    createNotification = (type, title="aaa", message="aaa") => {
-        //console.log("creating notification");
-        //console.log(type);
-        store.addNotification({
-            title: title,
-            message: message,
-            type: type,
-            insert: "top",
-            container: "bottom-right",
-            animationIn: ["animate__animated", "animate__fadeIn"],
-            animationOut: ["animate__animated", "animate__fadeOut"],
-            dismiss: {
-              duration: 3000,
-              onScreen: true
-            }
-          });
-    };
     askTags = () => {
         if (this.state.firstFocus) {
             this.setState({
@@ -203,15 +185,15 @@ class NewComment extends React.Component {
                     newId: response.data.id,
                 })
                 setTimeout(()=>{this.addTags(prevText);}, 1000);
-                this.createNotification('success', 'Hello,', 'Comment posted succesffully');
+                createNotification('success', 'Hello,', 'Comment posted succesffully');
             })
             .catch(err => {
                 //console.log(err);
-                this.createNotification('danger', 'Sorry,', 'Comment could not be posted');
+                createNotification('danger', 'Sorry,', 'Comment could not be posted');
             })
         }
         else {
-            this.createNotification('danger', 'Sorry,', "A comment can't be empty");
+            createNotification('danger', 'Sorry,', "A comment can't be empty");
         }
         
     }
@@ -806,23 +788,6 @@ class OneComment extends React.Component {
             textParts: final_post_object,
         })
     }
-    createNotification = (type, title="aaa", message="aaa") => {
-        //console.log("creating notification");
-        //console.log(type);
-        store.addNotification({
-            title: title,
-            message: message,
-            type: type,
-            insert: "top",
-            container: "bottom-right",
-            animationIn: ["animate__animated", "animate__fadeIn"],
-            animationOut: ["animate__animated", "animate__fadeOut"],
-            dismiss: {
-              duration: 3000,
-              onScreen: true
-            }
-          });
-    };
     cardShow = () => {
             this.setState({
                 showCard: true,
@@ -860,19 +825,19 @@ class OneComment extends React.Component {
             this.setState({
                 delete: true,
             })
-            this.createNotification("success", "Hello,", "Comment deleted successfully")
+            createNotification("success", "Hello,", "Comment deleted successfully")
             this.hideModal();
             this.props.updateParent(this.state.comment.id);
         })
         .catch(err => {
             //console.log(err);
             this.hideModal();
-            this.createNotification("danger", "Sorry,", "We couldn't delete your comment")
+            createNotification("danger", "Sorry,", "We couldn't delete your comment")
         })
     }
     commentLike = () => {
         if (!this.state.logged) {
-            this.createNotification('danger', 'Sorry', 'You have to create an account to like a comment')
+            createNotification('danger', 'Sorry', 'You have to create an account to like a comment')
         }
         else {
             LikeComment(this.state.userId, this.state.comment.id)

@@ -10,11 +10,10 @@ import verified from './images/verified.png';
 import Likes from './Likes';
 import Comments from './Comments';
 import ProfileCard from './ProfileCard';
-import 'react-notifications-component/dist/theme.css'
-import { store } from 'react-notifications-component';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { MentionsInput, Mention } from 'react-mentions';
 import ReactPlayer from 'react-player';
+import { createNotification } from './createNotification';
 
 class PostTextNoTags extends React.Component {
     constructor(props) {
@@ -740,23 +739,6 @@ class OnePost extends React.Component {
             })
         }
     }
-    createNotification = (type, title="aaa", message="aaa") => {
-        //console.log("creating notification");
-        //console.log(type);
-        store.addNotification({
-            title: title,
-            message: message,
-            type: type,
-            insert: "top",
-            container: "bottom-right",
-            animationIn: ["animate__animated", "animate__fadeIn"],
-            animationOut: ["animate__animated", "animate__fadeOut"],
-            dismiss: {
-              duration: 3000,
-              onScreen: true
-            }
-          });
-    };
     preDelete = () => {
         //console.log("Chose to delete")
         this.setState({
@@ -775,14 +757,14 @@ class OnePost extends React.Component {
             this.setState({
                 delete: true,
             })
-            this.createNotification("success", "Hello,", "Post deleted successfully")
+            createNotification("success", "Hello,", "Post deleted successfully")
             this.hideModal();
             this.props.updateParent("restart");
         })
         .catch(err => {
             //console.log(err);
             this.hideModal();
-            this.createNotification("danger", "Sorry,", "We couldn't delete your post")
+            createNotification("danger", "Sorry,", "We couldn't delete your post")
         })
     }
     cardShow2 = () => {
@@ -812,11 +794,11 @@ class OnePost extends React.Component {
             edit: false,
             text: this.state.text_init,
         })
-        this.createNotification('warning', 'Hello,', 'Changes discarded successfully');
+        createNotification('warning', 'Hello,', 'Changes discarded successfully');
     }
     saveText = () => {
         if (!this.state.text.length) {
-            this.createNotification('warning', 'Sorry', 'You can\'t have an empty post' )
+            createNotification('warning', 'Sorry', 'You can\'t have an empty post' )
         }
         else {
             editPost(this.state.id, this.state.text)
@@ -827,7 +809,7 @@ class OnePost extends React.Component {
                     text_init: this.state.text,
                 })
                 //console.log(`new text: ${this.state.text}`)
-                this.createNotification('success', 'Hello,', 'Post changed succesffully');
+                createNotification('success', 'Hello,', 'Post changed succesffully');
                 if (this.state.text.includes("@[")) {
                     this.filterPost()
                     setTimeout(()=>{this.updateTags();}, 1000);
@@ -839,7 +821,7 @@ class OnePost extends React.Component {
             })
             .catch(err => {
                 //console.log(err);
-                this.createNotification('danger', 'Sorry,', 'Post could not be updated');
+                createNotification('danger', 'Sorry,', 'Post could not be updated');
             })
         }
     }
@@ -898,7 +880,7 @@ class OnePost extends React.Component {
     }
     postLike = (kind) => {
         if (!this.state.logged) {
-            this.createNotification('danger', 'Sorry', 'You have to create an account to like a post')
+            createNotification('danger', 'Sorry', 'You have to create an account to like a post')
         }
         else {
             if (this.state.liked) {

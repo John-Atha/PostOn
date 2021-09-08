@@ -5,9 +5,7 @@ import Form from 'react-bootstrap/Form'
 import FormControl from 'react-bootstrap/FormControl'
 import Button from 'react-bootstrap/Button'
 import OutsideClickHandler from 'react-outside-click-handler';
-import 'react-notifications-component/dist/theme.css'
-import { store } from 'react-notifications-component';
-
+import { createNotification } from './createNotification';
 
 class Searchbar extends React.Component {
     constructor(props) {
@@ -21,23 +19,6 @@ class Searchbar extends React.Component {
         this.showSuggestions = this.showSuggestions.bind(this);
         this.hideSuggestions = this.hideSuggestions.bind(this);
     }
-    createNotification = (type, title="aaa", message="aaa") => {
-        //console.log("creating notification");
-        //console.log(type);
-        store.addNotification({
-            title: title,
-            message: message,
-            type: type,
-            insert: "top",
-            container: "bottom-right",
-            animationIn: ["animate__animated", "animate__fadeIn"],
-            animationOut: ["animate__animated", "animate__fadeOut"],
-            dismiss: {
-              duration: 3000,
-              onScreen: true
-            }
-          });
-    };
     handleInput = (event) => {
         this.suggNum=0;
         const name=event.target.name;
@@ -66,14 +47,14 @@ class Searchbar extends React.Component {
             }
         })
         if (final) {
-            this.createNotification('success', 'Hello,', `We are taking you to ${final.username}'s profile`);
+            createNotification('success', 'Hello,', `We are taking you to ${final.username}'s profile`);
             //console.log(final);
             setTimeout(()=>{
                 window.location.href = `/users/${final.id}`;
             }, 1000)
         }
         else {
-            this.createNotification('danger', 'Sorry,', `User ${this.state.input} not found`);
+            createNotification('danger', 'Sorry,', `User ${this.state.input} not found`);
         }
     }
     componentDidMount() {

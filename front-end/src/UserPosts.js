@@ -1,12 +1,11 @@
 import React from "react";
 import "./Posts.css";
 import {getUsers, isLogged, getUsersPosts, PostPostText, PostPostPhoto, deletePost, PostPostTag} from './api';
-import 'react-notifications-component/dist/theme.css'
-import { store } from 'react-notifications-component';
 import add_icon from './images/add.png';
 import arrow_icon from './images/arrow-up.png';
 import OnePost from './OnePost';
-import { MentionsInput, Mention } from 'react-mentions'
+import { MentionsInput, Mention } from 'react-mentions';
+import { createNotification } from './createNotification';
 
 class UserPosts extends React.Component {
     constructor(props){
@@ -185,23 +184,6 @@ class UserPosts extends React.Component {
             tagsToPost: final_post_object,
         })
     }
-    createNotification = (type, title="aaa", message="aaa") => {
-        //console.log("creating notification");
-        //console.log(type);
-        store.addNotification({
-            title: title,
-            message: message,
-            type: type,
-            insert: "top",
-            container: "bottom-right",
-            animationIn: ["animate__animated", "animate__fadeIn"],
-            animationOut: ["animate__animated", "animate__fadeOut"],
-            dismiss: {
-              duration: 3000,
-              onScreen: true
-            }
-          });
-    };
     handleInput = (event) => {
         const value = event.target.value;
         this.setState({
@@ -214,7 +196,7 @@ class UserPosts extends React.Component {
             newText: "",
             add: false,
         })
-        this.createNotification('warning', 'Hello,', 'Publsh was cancelled');
+        createNotification('warning', 'Hello,', 'Publsh was cancelled');
     }
     preAddPost = () => {
         this.setState({
@@ -229,10 +211,10 @@ class UserPosts extends React.Component {
             //console.log(img);
         }
         if (!this.state.newText.length && !input.files.length) {
-            this.createNotification('danger', 'Sorry,', 'You cannot create an empty post.')
+            createNotification('danger', 'Sorry,', 'You cannot create an empty post.')
         }
         else {
-            this.createNotification('success', 'Please wait,', 'We are uploading your post.')
+            createNotification('success', 'Please wait,', 'We are uploading your post.')
             // if no text is given
             if (!this.state.newText.length) {
                 // just create the post with empty text
@@ -255,7 +237,7 @@ class UserPosts extends React.Component {
                         })
                         setTimeout(()=>{this.addTags(prevText);}, 1000)
                         this.askPosts("restart");
-                        this.createNotification('success', 'Hello,', 'Post published successfully.');
+                        createNotification('success', 'Hello,', 'Post published successfully.');
                     })
                     // else post has to be deleted (it only has an empty text)
                     .catch(err => {
@@ -270,13 +252,13 @@ class UserPosts extends React.Component {
                         .catch(err => {
                             //console.log(err);
                         })
-                        this.createNotification('danger', 'Sorry,', "We couldn't publish your post")
+                        createNotification('danger', 'Sorry,', "We couldn't publish your post")
                     })
                 })
                 // could not create post => return err
                 .catch(err => {
                     //console.log(err);
-                    this.createNotification('danger', 'Sorry,', "We couldn't publish your post")
+                    createNotification('danger', 'Sorry,', "We couldn't publish your post")
                 })
             }
             else {
@@ -299,7 +281,7 @@ class UserPosts extends React.Component {
                             })
                             setTimeout(()=>{this.addTags(prevText);}, 1000)
                             this.askPosts("restart");
-                            this.createNotification('success', 'Hello,', 'Post published successfully.');
+                            createNotification('success', 'Hello,', 'Post published successfully.');
                         })
                         // else post has to be deleted
                         .catch(err => {
@@ -314,7 +296,7 @@ class UserPosts extends React.Component {
                             .catch(err => {
                                 //console.log(err);
                             })
-                            this.createNotification('danger', 'Sorry,', "We couldn't publish your post")
+                            createNotification('danger', 'Sorry,', "We couldn't publish your post")
                         })
                     }
                     else {
@@ -326,13 +308,13 @@ class UserPosts extends React.Component {
                         })
                         setTimeout(()=>{this.addTags(prevText);}, 1000)
                         this.askPosts("restart");
-                        this.createNotification('success', 'Hello,', 'Post published successfully.');
+                        createNotification('success', 'Hello,', 'Post published successfully.');
                     }
                 })
                 // could not create post => return err
                 .catch(err => {
                     //console.log(err);
-                    this.createNotification('danger', 'Sorry,', "We couldn't publish your post")
+                    createNotification('danger', 'Sorry,', "We couldn't publish your post")
                 })
             }
         }

@@ -6,13 +6,12 @@ import NavDropdown from 'react-bootstrap/NavDropdown'
 import {isLogged, getOneUser, getNotifications, readAllNotifications, markAsRead} from './api'
 import notif_icon from './images/notif.png';
 import notif_icon_white from './images/notif_white.png';
-import 'react-notifications-component/dist/theme.css'
-import { store } from 'react-notifications-component';
 import logout from './images/logout.png';
 import logout_white from './images/logout_white.png';
 import DarkModeToggle from "react-dark-mode-toggle";
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import { createNotification } from './createNotification';
 
 class MobileNavbar extends React.Component {
     constructor(props) {
@@ -113,45 +112,28 @@ class MobileNavbar extends React.Component {
         markAsRead(notif.id, category)
         .then(response=>{
             console.log(response);
-            this.createNotification("success", "OK", "Notification marked as read");
+            createNotification("success", "OK", "Notification marked as read");
         })
         .catch(err => {
             console.log(err);
-            this.createNotification("danger", "Sorry", "Could not mark notification as read");
+            createNotification("danger", "Sorry", "Could not mark notification as read");
         })
         setTimeout(()=>{
             window.location.href=this.linkGen(notif)
         }, 1000)
     }
-    createNotification = (type, title="aaa", message="aaa") => {
-        console.log("creating notification");
-        console.log(type);
-        store.addNotification({
-            title: title,
-            message: message,
-            type: type,
-            insert: "top",
-            container: "bottom-right",
-            animationIn: ["animate__animated", "animate__fadeIn"],
-            animationOut: ["animate__animated", "animate__fadeOut"],
-            dismiss: {
-                duration: 3000,
-                onScreen: true
-            }
-        });
-    }
     markAllRead = () => {
         console.log(this.state.userId)
-        this.createNotification('warning', 'Hello,', 'Wait for us to mark them all as read');
+        createNotification('warning', 'Hello,', 'Wait for us to mark them all as read');
         readAllNotifications(this.state.userId)
         .then(response => {
             console.log(response);
             this.getNotif("mark");
-            this.createNotification('success', 'Hello,', 'Notifications marked succesffully');
+            createNotification('success', 'Hello,', 'Notifications marked succesffully');
         })
         .catch(err => {
             console.log(err);
-            this.createNotification('danger', 'Sorry,', 'Could not mark all as read');
+            createNotification('danger', 'Sorry,', 'Could not mark all as read');
         })
     }
     moveOn = () => {
@@ -268,7 +250,7 @@ class MobileNavbar extends React.Component {
             /*if ((window.location.href.endsWith(".com/") || window.location.href.endsWith(".com") ||
                 window.location.href.endsWith(".com/following") || window.location.href.endsWith(".com/following/")) &&
                 this.state.start===1 && x!=="mark" && unread>0) {
-                    this.createNotification('success', 'Hello,', `You have more than ${unread} new notifications`)
+                    createNotification('success', 'Hello,', `You have more than ${unread} new notifications`)
                 }*/
                 this.setState({
                     unread: unread,

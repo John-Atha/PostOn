@@ -7,9 +7,8 @@ import MobileNavbar from './MobileNavbar';
 import UserPosts from './UserPosts';
 import verified from './images/verified.png';
 import {getUser, updateUser, updateUserPhoto, getFollowersCount, getFollowsCount, getFollows, getFollowers, getFollowsPagi, getFollowersPagi, followUser, unfollowUser, isLogged, UserDelete} from './api';
-import 'react-notifications-component/dist/theme.css'
-import { store } from 'react-notifications-component';
 import Searchbar from './Searchbar';
+import { createNotification } from './createNotification';
 
 class OneUser extends React.Component {
     constructor(props) {
@@ -436,42 +435,25 @@ class Profile extends React.Component {
         UserDelete(this.state.userId)
         .then(response => {
             //console.log(response);
-            this.createNotification('success', 'Goodbye,', 'Thank you for choosing us.')
+            createNotification('success', 'Goodbye,', 'Thank you for choosing us.')
             setTimeout(()=> {this.logout()}, 2000)
         })
         .catch(err => {
             //console.log(err);
-            this.createNotification('success', 'Goodbye,', 'Thank you for choosing us.')
+            createNotification('success', 'Goodbye,', 'Thank you for choosing us.')
             setTimeout(()=> {this.logout()}, 2000)
         })
     }
-    createNotification = (type, title="aaa", message="aaa") => {
-        //console.log("creating notification");
-        //console.log(type);
-        store.addNotification({
-            title: title,
-            message: message,
-            type: type,
-            insert: "top",
-            container: "bottom-right",
-            animationIn: ["animate__animated", "animate__fadeIn"],
-            animationOut: ["animate__animated", "animate__fadeOut"],
-            dismiss: {
-              duration: 3000,
-              onScreen: true
-            }
-          });
-    };
     saveChanges = () => {
         if (!this.state.username.length) {
-            this.createNotification('danger', 'Sorry,', "You can't have an empty username");
+            createNotification('danger', 'Sorry,', "You can't have an empty username");
         }
         else {
             
             updateUser(this.state.userId, this.state.username, this.state.moto||"")
             .then(response => {
                 //console.log(response);
-                this.createNotification('success', 'Hello,', "Profile updated successfully");
+                createNotification('success', 'Hello,', "Profile updated successfully");
                 this.setState({
                     username_init: this.state.username,
                     moto_init: this.state.moto,
@@ -481,7 +463,7 @@ class Profile extends React.Component {
             })
             .catch(err => {
                 //console.log(err);
-                this.createNotification('danger', 'Sorry,', "Username probably already exists");
+                createNotification('danger', 'Sorry,', "Username probably already exists");
                 this.setState({
                     username: this.state.username_init,
                     moto: this.state.moto_init,
@@ -500,12 +482,12 @@ class Profile extends React.Component {
                         updateFlag: this.state.updateFlag+1,
                     })
                     input.value = "";
-                    this.createNotification('success', 'Hello,', "Profile photo updated successfully");
+                    createNotification('success', 'Hello,', "Profile photo updated successfully");
                 })
                 .catch(err => {
                     //console.log(err);
                     input.value = "";
-                    this.createNotification('danger', 'Sorry,', "Could not update profile picture.");
+                    createNotification('danger', 'Sorry,', "Could not update profile picture.");
                 })
             }
         }
@@ -528,7 +510,7 @@ class Profile extends React.Component {
             left:0,
             behavior:'smooth'
         });
-        this.createNotification('warning', 'Hello,', 'Changes cancelled');
+        createNotification('warning', 'Hello,', 'Changes cancelled');
     }
     handleInput = (event) => {
         const name = event.target.name;
