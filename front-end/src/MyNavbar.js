@@ -74,36 +74,36 @@ class MyNavbar extends React.Component {
         let category = "";
         switch(this.categorize(notif)) {
             case "comment":
-                console.log("marking the comment as read")
+                //console.log("marking the comment as read")
                 category="comments"
                 break;
             case "commentlike":
-                console.log("marking the like on comment as read")
+                //console.log("marking the like on comment as read")
                 category="likecomments"
                 break;
             case "follow":
-                console.log("marking the follow as read")
+                //console.log("marking the follow as read")
                 category="follows"
                 break;
             case "postMention":
-                console.log("marking the post mention as read")
+                //console.log("marking the post mention as read")
                 category="posts_mentions"
                 break;
             case "commentMention":
-                console.log("marking the comment mention as read")
+                //console.log("marking the comment mention as read")
                 category="comments_mentions"
                 break;
             default:
-                console.log("marking the like on the post as read")
+                //console.log("marking the like on the post as read")
                 category="likes"   
         }
         markAsRead(notif.id, category)
         .then(response=>{
-            console.log(response);
+            //console.log(response);
             this.createNotification("success", "OK", "Notification marked as read");
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.createNotification("danger", "Sorry", "Could not mark notification as read");
         })
         setTimeout(()=>{
@@ -111,8 +111,8 @@ class MyNavbar extends React.Component {
         }, 1000)
     }
     createNotification = (type, title="aaa", message="aaa") => {
-        console.log("creating notification");
-        console.log(type);
+        //console.log("creating notification");
+        //console.log(type);
         store.addNotification({
             title: title,
             message: message,
@@ -128,16 +128,16 @@ class MyNavbar extends React.Component {
         });
     }
     markAllRead = () => {
-        console.log(this.state.userId)
+        //console.log(this.state.userId)
         this.createNotification('warning', 'Hello,', 'Wait for us to mark them all as read');
         readAllNotifications(this.state.userId)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.getNotif("mark");
             this.createNotification('success', 'Hello,', 'Notifications marked succesffully');
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.createNotification('danger', 'Sorry,', 'Could not mark all as read');
         })
     }
@@ -242,7 +242,7 @@ class MyNavbar extends React.Component {
     getNotif = (x="") => {
         getNotifications(this.state.userId, this.state.start, this.state.end)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 notifList: response.data,
             })
@@ -262,7 +262,7 @@ class MyNavbar extends React.Component {
             })
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
         })
     }
     logout = () => {
@@ -299,7 +299,7 @@ class MyNavbar extends React.Component {
         this.colorsUpdate();
         isLogged()
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 logged: response.data.authenticated,
                 userId: response.data.id, 
@@ -307,7 +307,7 @@ class MyNavbar extends React.Component {
             this.getNotif();
             getOneUser(response.data.id)
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 this.setState({
                     username: response.data.username,
                     photo: response.data.photo,
@@ -315,7 +315,7 @@ class MyNavbar extends React.Component {
             })
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.setState({
                 error: err,
             })
@@ -330,7 +330,7 @@ class MyNavbar extends React.Component {
     render(){
         if (window.innerWidth >= 500) {
             return(
-                    <Navbar bg="light" expand="sm" sticky="top">
+                <Navbar bg="light" expand="sm" sticky="top">
                     <Navbar.Brand href="/">PostOn</Navbar.Brand>
                     <Navbar.Toggle aria-controls="basic-navbar-nav" />
                     <Navbar.Collapse id="basic-navbar-nav">
@@ -351,40 +351,38 @@ class MyNavbar extends React.Component {
                                 </NavDropdown>        
                             }   
                             {this.state.logged && 
-                                <NavDropdown title={
-                                    <img className="navbar-icon2"
-                                        src={this.state.theme==='light'?stats_icon:stats_icon_white}
-                                        alt="statistics" />
-                                    }
-                                    id="basic-nav-dropdown">
+                                <NavDropdown title={<img className="navbar-icon2"
+                                             src={this.state.theme==='light' ? stats_icon : stats_icon_white}
+                                             alt="statistics" />
+                                             }
+                                             id="basic-nav-dropdown">
                                     <NavDropdown.Item href="/stats/personal">My statistics</NavDropdown.Item>
                                     <NavDropdown.Item href="/stats/general">General statistics</NavDropdown.Item>
                                     <NavDropdown.Item href="/activity">Activity</NavDropdown.Item>
                                 </NavDropdown>
                             }
-
                             {!this.state.logged &&
                                 <Nav.Link href="/stats/general">General statistics</Nav.Link>
-                            }                    
+                            }
                         </Nav>
                         <Nav>
                         {this.state.logged && 
                                 <NavDropdown 
-                                className="pull-left pull-up"
-                                style={{'height': this.state.unread>0 ? '10px' : 'auto'}}
-                                title={
-                                    this.state.unread>0 ?
-                                        <div style={{'height': '15px'}} className="flex-layout">
+                                    className="pull-left pull-up"
+                                    style={{'height': this.state.unread>0 ? '10px' : 'auto'}}
+                                    title={
+                                        this.state.unread>0 ?
+                                            <div style={{'height': '15px'}} className="flex-layout">
                                             <img className="navbar-icon2"
                                                  src={this.state.theme==='light' ? notif_icon : notif_icon_white}
                                                  alt="notifications" />
-                                            <div className="notif-counter">{this.state.unread===5?`${this.state.unread}+` : this.state.unread}</div>
-                                        </div>
-                                    :
-                                    <img className="navbar-icon2"
-                                         src={this.state.theme==='light' ? notif_icon : notif_icon_white}
-                                         alt="notifications" />
-                                }
+                                                <div className="notif-counter">{this.state.unread===5?`${this.state.unread}+` : this.state.unread}</div>
+                                            </div>
+                                        :
+                                        <img className="navbar-icon2"
+                                            src={this.state.theme==='light' ? notif_icon : notif_icon_white}
+                                            alt="notifications" />
+                                   }
                                     id="basic-nav-dropdown">
                                     {this.state.notifList.length!==0 && 
                                         <div className="center-content">
@@ -469,7 +467,7 @@ class MyNavbar extends React.Component {
                 <Navbar bg="light" fixed="bottom" className="center-content" style={{'height': '50px'}}>
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
-                        <Nav.Link href="#" onClick={this.reloadAll} style={{'width': '25vw'}}><img className="navbar-photo2" src={logo} alt="logo" /></Nav.Link>
+                        <Nav.Link href="#" onClick={this.reloadAll} style={{'width': '25vw'}}><img className="navbar-photo" src={logo} alt="logo" /></Nav.Link>
                         <Nav.Link href='/explore' style={{'width': '25vw'}}>
                             <img className="navbar-photo2"
                                  src={this.state.theme==='light' ? explore : explore_white}
@@ -489,8 +487,8 @@ class MyNavbar extends React.Component {
                         {!this.state.logged &&
                             <Nav.Link href="/stats/general" className="center-content" style={{'width': '25vw'}}>
                                 <img className="navbar-photo2"
-                                     src={this.state.theme==='light'?stats_icon:stats_icon_white}
-                                     alt="statistics" />
+                                    src={this.state.theme==='light' ? stats_icon : stats_icon_white}
+                                    alt="statistics" />
                             </Nav.Link>
                         }
                         {this.state.logged &&

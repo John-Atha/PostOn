@@ -48,7 +48,7 @@ class Posts extends React.Component {
         //const container = document.getElementById('posts-cont');
         ////console.log("I am checking scroll");
         ////console.log(`${container.scrollHeight} - ${container.scrollTop} == ${container.clientHeight}`)
-            console.log(`${window.scrollY>=0.5*document.body.offsetHeight}`);
+            //console.log(`${window.scrollY>=0.7*document.body.offsetHeight}`);
             if (window.scrollY>=0.5*document.body.offsetHeight && !this.state.nomore) {
                 ////console.log(`${container.scrollHeight} - ${container.scrollTop} == ${container.clientHeight}`);
                     if (!this.asked.includes(this.state.start)) {
@@ -57,8 +57,8 @@ class Posts extends React.Component {
                         this.asked.push(this.state.start);
                         setTimeout(()=>{this.nextPage();}, 0);
                     }       
-                    console.log(`asked:`);
-                    console.log(this.asked);            
+                    //console.log(`asked:`);
+                    //console.log(this.asked);            
                 //console.log("reached bottom")
             }
     }
@@ -87,6 +87,7 @@ class Posts extends React.Component {
             })
         }
     }
+
     addTags = (text) => {
         // gets post id from: this.state.newId
         // gets tagsList from: this.state.tagsToPost
@@ -109,29 +110,31 @@ class Posts extends React.Component {
             })
         }, 200)
     }
+
+
     filterPost = (text) => {
-        ////console.log("users i see")
-        ////console.log(this.state.usersList)
-        ////console.log("i am filter post");
+        //console.log("users i see")
+        //console.log(this.state.usersList)
+        //console.log("i am filter post");
         let post_text = text;
-        ////console.log("initial text")
+        //console.log("initial text")
         let final_post_object = [];
         let s3 = [];
         post_text = post_text.replaceAll(")@", ") @");
-        ////console.log(post_text);
+        //console.log(post_text);
         //let s2 = post_text.trim().split(/\s+/);
         let s2 = post_text.split(' ');
         for (let i=0; i<s2.length; i++) {
             s2[i]+=' ';
         }
-        ////console.log("after fixing spaces")
-        ////console.log(s2)
+        //console.log("after fixing spaces")
+        //console.log(s2)
         for (let i=0; i<s2.length; i++) {
             if (s2[i]!==[' ']) {
-                ////console.log("sublist")
-                ////console.log(s2[i])
+                //console.log("sublist")
+                //console.log(s2[i])
                 let subList = s2[i].split('\n');
-                ////console.log(subList)
+                //console.log(subList)
                 if (subList.length>1) {
                     for (let j=0; j<subList.length-1; j++) {
                         if (!subList[j].endsWith('\n')) {
@@ -146,30 +149,30 @@ class Posts extends React.Component {
                 }
             }
         }
-        ////console.log("BROKEN LIST")
-        ////console.log(s2);
+        //console.log("BROKEN LIST")
+        //console.log(s2);
         s3 = s3.flat();
-        ////console.log(s3);
+        //console.log(s3);
         let index=0;
         s3.forEach(el => {
-            ////console.log(el)
+            //console.log(el)
             if (el.startsWith('@')) {    
                 let matched = false;
                 this.state.usersList.forEach(suggest => {
                     let sugg=suggest.display;
                     if (el.startsWith(`@[${sugg}]`)) {
                         matched = true;
-                        ////console.log(`el: ${el}`)
+                        //console.log(`el: ${el}`)
                         let el2 = el.split(')')
-                        ////console.log(`el parts: ${el2}`)
+                        //console.log(`el parts: ${el2}`)
                         let first = el2[0]
                         let dump = el2[1]
-                        ////console.log(`first: ${first}`)
+                        //console.log(`first: ${first}`)
                         //let username = first.split(']')[0].slice(2)
                         //let id = first.split(']')[1].slice(1)
-                        ////console.log(`username: ${suggest.display}`)
-                        ////console.log(`id: ${suggest.id}`)
-                        ////console.log(`dump: ${dump}`)
+                        //console.log(`username: ${suggest.display}`)
+                        //console.log(`id: ${suggest.id}`)
+                        //console.log(`dump: ${dump}`)
                         final_post_object.push({
                             "tag": {
                                 "username": suggest.display,
@@ -182,15 +185,15 @@ class Posts extends React.Component {
                 })
             }
         })
-        ////console.log("Tags to post:")
-        ////console.log(final_post_object)
+        //console.log("Tags to post:")
+        //console.log(final_post_object)
         this.setState({
             tagsToPost: final_post_object,
         })
     }
     createNotification = (type, title="aaa", message="aaa") => {
-        ////console.log("creating notification");
-        ////console.log(type);
+        //console.log("creating notification");
+        //console.log(type);
         store.addNotification({
             title: title,
             message: message,
@@ -230,7 +233,7 @@ class Posts extends React.Component {
         }
     }
     addPost = () => {
-        ////console.log("I am add post")
+        //console.log("I am add post")
         const input = document.getElementById('new-post-photo');
         let img = null;
         if (input.files.length) {
@@ -365,7 +368,7 @@ class Posts extends React.Component {
         this.moveOn();
         //setTimeout(()=>this.askLikes(), 750);
     }
-    askPosts = ( how="" ) => {
+    askPosts = (how="") => {
         if (how==="restart") {
             this.asked=[];
             this.setState({
@@ -374,10 +377,9 @@ class Posts extends React.Component {
                 postsList: [],
                 nomore: false,
             })
-        }
+        }        
         setTimeout(()=> {
-        console.log(`I asm ask posts with: start=${this.state.start} and asked=${this.asked}`)
-        //console.log(`I am asking posts from ${this.state.start} to ${this.state.end}`)
+        //console.log(`I asm ask posts with: start=${this.state.start} and asked=${this.asked}`)
         if (this.state.whose) {
             getUsersPosts(this.state.whose, this.state.start, this.state.end)
             .then(response => {
@@ -389,7 +391,7 @@ class Posts extends React.Component {
                 //console.log(this.state.postsList)
             })
             .catch(err => {
-                console.log(err);
+                //console.log(err);
                 this.setState({
                     nomore: true,
                 })
@@ -406,7 +408,7 @@ class Posts extends React.Component {
                 //console.log(this.state.postsList)
             })
             .catch(err => {
-                console.log(err);
+                //console.log(err);
                 this.setState({
                     nomore: true,
                 })
@@ -432,11 +434,9 @@ class Posts extends React.Component {
         })
         setTimeout(()=>this.askPosts(), 200);
     }
-
     componentWillUnmount() {
         window.removeEventListener('scroll', this.checkScroll);
     }
-
     render() {
         return(
             <div className="posts-container padding-bottom flex-item" style={{paddingTop: '50px'}}>

@@ -54,8 +54,8 @@ export const getPosts = (start, end, how) => {
     const headers = buildAuthHeader();
     const userId = buildUserId();
     const requestUrl = how==="all" ? '/posts': `users/${userId}/follows/posts`;
-    console.log(start);
-    console.log(end);
+    //console.log(start);
+    //console.log(end);
     const params = {
         "start": start, 
         "end": end,

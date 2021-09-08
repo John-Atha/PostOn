@@ -25,14 +25,14 @@ class HomeFollowing extends React.Component {
     componentDidMount() {
         isLogged()
         .then(response => {
-            console.log(response)
+            //console.log(response)
             this.setState({
                 logged: response.data.authenticated,
                 userId: response.data.id,
             })
         })
         .catch(err => {
-            console.log(err)
+            //console.log(err)
             this.setState({
                 error: "Not logged in"
             })

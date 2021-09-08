@@ -30,26 +30,26 @@ class OneUser extends React.Component {
         })
     }
     follow = () => {
-        console.log(`follower id: ${this.props.me}`)
-        console.log(`followed id: ${this.state.user.id}`)
+        //console.log(`follower id: ${this.props.me}`)
+        //console.log(`followed id: ${this.state.user.id}`)
         followUser(this.props.me, this.state.user.id)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.props.updatePar();
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.props.updatePar();
         })
     }
     unfollow = () => {
         unfollowUser(this.props.followId)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.props.updatePar();
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.props.updatePar();
         })
     }
@@ -153,7 +153,7 @@ class Explore extends React.Component {
             if (this.props.userId) {
                 getFollows(this.props.userId)
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                     let tempFollowsList = this.state.followsList;
                     let tempFollowsObjIdList = this.state.followsObjIdList;
                     response.data.forEach(el=> {
@@ -166,16 +166,16 @@ class Explore extends React.Component {
                         followsList: tempFollowsList,
                         followsObjIdList: tempFollowsObjIdList,
                     })
-                    console.log("followsList: ");
-                    console.log(tempFollowsList);
+                    //console.log("followsList: ");
+                    //console.log(tempFollowsList);
                 })
                 .catch(err => {
-                    console.log(err);
-                    console.log("No more follows found for this user (as a follower).");
+                    //console.log(err);
+                    //console.log("No more follows found for this user (as a follower).");
                 });
                 getFollowers(this.props.userId)
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                     let tempFollowersList = this.state.followersList;
                     response.data.forEach(el=> {
                         if (!this.state.followersList.includes(el.following.id)) {
@@ -185,12 +185,12 @@ class Explore extends React.Component {
                     this.setState({
                         followersList: tempFollowersList,
                     })
-                    console.log("followersList: ");
-                    console.log(tempFollowersList);
+                    //console.log("followersList: ");
+                    //console.log(tempFollowersList);
                 })
                 .catch(err => {
-                    console.log(err);
-                    console.log("No more follows found for this user (as a follower).");
+                    //console.log(err);
+                    //console.log("No more follows found for this user (as a follower).");
                 });
             }
         }, 100)
@@ -198,7 +198,7 @@ class Explore extends React.Component {
     askUsers = () => {
         getUsers(this.state.start, this.state.end)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 usersList: response.data,
             })
@@ -208,7 +208,7 @@ class Explore extends React.Component {
             }
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.setState({
                 error: "No more users found",
             })
@@ -228,12 +228,12 @@ class Explore extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (prevProps.userId !==this.props.userId) {
-            console.log(`Updated to user ${this.props.userId}`);
+            //console.log(`Updated to user ${this.props.userId}`);
             this.askUsers();
             this.updateFollows();
         }
         if (prevProps.update1!==this.props.update1) {
-            console.log("UPDATED");
+            //console.log("UPDATED");
             this.updateFollows();
         }
     }

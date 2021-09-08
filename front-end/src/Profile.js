@@ -7,9 +7,9 @@ import MobileNavbar from './MobileNavbar';
 import UserPosts from './UserPosts';
 import verified from './images/verified.png';
 import {getUser, updateUser, updateUserPhoto, getFollowersCount, getFollowsCount, getFollows, getFollowers, getFollowsPagi, getFollowersPagi, followUser, unfollowUser, isLogged, UserDelete} from './api';
-import Searchbar from './Searchbar';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
+import Searchbar from './Searchbar';
 
 class OneUser extends React.Component {
     constructor(props) {
@@ -37,26 +37,26 @@ class OneUser extends React.Component {
         })
     }
     follow = () => {
-        console.log(`follower id: ${this.props.me}`)
-        console.log(`followed id: ${this.state.user.id}`)
+        //console.log(`follower id: ${this.props.me}`)
+        //console.log(`followed id: ${this.state.user.id}`)
         followUser(this.props.me, this.state.user.id)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.props.updatePar();
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.props.updatePar();
         })
     }
     unfollow = () => {
         unfollowUser(this.props.followId)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.props.updatePar();
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.props.updatePar();
         })
     }
@@ -164,20 +164,20 @@ class FollowBox extends React.Component {
     askHisFollows = () => {
         if (this.state.case==="follows") {
             setTimeout(()=>{
-                console.log(`I am asking follows for user ${this.props.userId}`)
+                //console.log(`I am asking follows for user ${this.props.userId}`)
                 getFollowsPagi(this.props.userId, this.state.start, this.state.end)
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                     this.setState({
                         hisFollowsList: response.data,
                         followsError: null,
                     })
-                    console.log("followsList: ");
-                    console.log(response.data);
+                    //console.log("followsList: ");
+                    //console.log(response.data);
                 })
                 .catch(err => {
-                    console.log(err);
-                    console.log("No more follows found for this user (as a follower).");
+                    //console.log(err);
+                    //console.log("No more follows found for this user (as a follower).");
                     this.setState({
                         followsError: "No more follows found from this user.",
                     })
@@ -186,19 +186,19 @@ class FollowBox extends React.Component {
         }
         else if (this.state.case==="followers") {
             setTimeout(()=>{
-                console.log(`I am asking follows for user ${this.props.userId}`)
+                //console.log(`I am asking follows for user ${this.props.userId}`)
                 getFollowersPagi(this.props.userId, this.state.start, this.state.end)
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                     this.setState({
                         hisFollowersList: response.data,
                     })
-                    console.log("followersList: ");
-                    console.log(response.data);
+                    //console.log("followersList: ");
+                    //console.log(response.data);
                 })
                 .catch(err => {
-                    console.log(err);
-                    console.log("No more follows found for this user (as followed).");
+                    //console.log(err);
+                    //console.log("No more follows found for this user (as followed).");
                     this.setState({
                         followersError: "No more followers found for this user.",
                     })
@@ -208,12 +208,12 @@ class FollowBox extends React.Component {
     }
     componentDidMount() {
         this.askHisFollows();
-        console.log(this.props.case)
+        //console.log(this.props.case)
     }
     render() {
         if (this.state.case==="follows" && this.state.hisFollowsList.length) {
-                console.log("results:")
-                console.log(this.state.hisFollowsList);
+                //console.log("results:")
+                //console.log(this.state.hisFollowsList);
                 return(
                     <OutsideClickHandler onOutsideClick={this.hide} >
                         <div className="follows-pop-up center-content">
@@ -226,11 +226,11 @@ class FollowBox extends React.Component {
 
                             this.state.hisFollowsList.map((value, index) => {
                                 if(this.props.myFollowsList.includes(value.followed.id)) {
-                                    console.log("my follows list:")
-                                    console.log(this.props.myFollowsList)
-                                    console.log(this.props.myFollowsObjIdList);
-                                    console.log(value.followed.username);
-                                    console.log(this.props.myFollowsObjIdList[this.props.myFollowsList.indexOf(value.followed.id)])
+                                    //console.log("my follows list:")
+                                    //console.log(this.props.myFollowsList)
+                                    //console.log(this.props.myFollowsObjIdList);
+                                    //console.log(value.followed.username);
+                                    //console.log(this.props.myFollowsObjIdList[this.props.myFollowsList.indexOf(value.followed.id)])
                                     return (
                                         <OneUser key={index}
                                                  user={value.followed}
@@ -277,8 +277,8 @@ class FollowBox extends React.Component {
                 )
         }
         else if (this.state.case==="followers" && this.state.hisFollowersList.length) {
-                console.log("results:")
-                console.log(this.state.hisFollowersList);
+                //console.log("results:")
+                //console.log(this.state.hisFollowersList);
                 return(
                     <OutsideClickHandler onOutsideClick={this.hide}>
                         <div className="follows-pop-up center-content">
@@ -290,13 +290,13 @@ class FollowBox extends React.Component {
                             {!this.state.followsError &&
 
                             this.state.hisFollowersList.map((value, index) => {
-                                console.log(value);
+                                //console.log(value);
                                 if(this.props.myFollowsList.includes(value.following.id)) {
-                                    console.log("my follows list:")
-                                    console.log(this.props.myFollowsList)
-                                    console.log(this.props.myFollowsObjIdList);
-                                    console.log(value.following.username);
-                                    console.log(this.props.myFollowsObjIdList[this.props.myFollowsList.indexOf(value.following.id)])
+                                    //console.log("my follows list:")
+                                    //console.log(this.props.myFollowsList)
+                                    //console.log(this.props.myFollowsObjIdList);
+                                    //console.log(value.following.username);
+                                    //console.log(this.props.myFollowsObjIdList[this.props.myFollowsList.indexOf(value.following.id)])
 
                                     return (
                                         <OneUser key={index}
@@ -435,19 +435,19 @@ class Profile extends React.Component {
     delete = () => {
         UserDelete(this.state.userId)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.createNotification('success', 'Goodbye,', 'Thank you for choosing us.')
             setTimeout(()=> {this.logout()}, 2000)
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.createNotification('success', 'Goodbye,', 'Thank you for choosing us.')
             setTimeout(()=> {this.logout()}, 2000)
         })
     }
     createNotification = (type, title="aaa", message="aaa") => {
-        console.log("creating notification");
-        console.log(type);
+        //console.log("creating notification");
+        //console.log(type);
         store.addNotification({
             title: title,
             message: message,
@@ -470,7 +470,7 @@ class Profile extends React.Component {
             
             updateUser(this.state.userId, this.state.username, this.state.moto||"")
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 this.createNotification('success', 'Hello,', "Profile updated successfully");
                 this.setState({
                     username_init: this.state.username,
@@ -480,7 +480,7 @@ class Profile extends React.Component {
                 })
             })
             .catch(err => {
-                console.log(err);
+                //console.log(err);
                 this.createNotification('danger', 'Sorry,', "Username probably already exists");
                 this.setState({
                     username: this.state.username_init,
@@ -493,7 +493,7 @@ class Profile extends React.Component {
                 bodyFormData.append('image', input.files[0]);
                 updateUserPhoto(this.state.userId, bodyFormData)
                 .then(response=> {
-                    console.log(response);
+                    //console.log(response);
                     this.setState({
                         photo: response.data.photo,
                         edit: false,
@@ -503,7 +503,7 @@ class Profile extends React.Component {
                     this.createNotification('success', 'Hello,', "Profile photo updated successfully");
                 })
                 .catch(err => {
-                    console.log(err);
+                    //console.log(err);
                     input.value = "";
                     this.createNotification('danger', 'Sorry,', "Could not update profile picture.");
                 })
@@ -555,7 +555,7 @@ class Profile extends React.Component {
             const username = document.getElementById('username');
             username.style.borderColor = "grey";
         } 
-        console.log(name+": "+value)
+        //console.log(name+": "+value)
     }
 
     editProf = () => {
@@ -564,15 +564,15 @@ class Profile extends React.Component {
         })
     }
     follow = () => {
-        console.log(`follower id: ${this.state.me}`)
-        console.log(`followed id: ${this.state.userId}`)
+        //console.log(`follower id: ${this.state.me}`)
+        //console.log(`followed id: ${this.state.userId}`)
         followUser(this.state.me, this.state.userId)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.updateMyFollows();
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
         })
     }
     unfollow = () => {
@@ -585,44 +585,44 @@ class Profile extends React.Component {
         let followId = this.state.myFollowsObjIdList[index];
         unfollowUser(followId)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.updateMyFollows();
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
         })
     }
     countFollowers = () => {
         getFollowersCount(this.state.userId)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 followersNum: response.data.followers,
             })
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
         })
     }
     countFollows = () => {
         getFollowsCount(this.state.userId)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 followsNum: response.data.follows,
             })
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
         })
     }
     askMyFollows = () => {
         setTimeout(()=>{
-            console.log("I am askMyFollows")
-            console.log(`I am asking follows for user ${this.state.userId}`)
+            //console.log("I am askMyFollows")
+            //console.log(`I am asking follows for user ${this.state.userId}`)
             getFollows(this.state.me)
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 let tempFollowsList = this.state.myFollowsList;
                 let tempFollowsObjIdList = this.state.myFollowsObjIdList;
                 response.data.forEach(el=> {
@@ -638,12 +638,12 @@ class Profile extends React.Component {
                 })
             })
             .catch(err => {
-                console.log(err);
-                console.log("No more follows found for this user (as a follower).");
+                //console.log(err);
+                //console.log("No more follows found for this user (as a follower).");
             });
             getFollowers(this.state.me)
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 let tempFollowersList = this.state.myFollowersList;
                 response.data.forEach(el=> {
                     if (!this.state.myFollowersList.includes(el.following.id)) {
@@ -654,13 +654,13 @@ class Profile extends React.Component {
                     myFollowersList: tempFollowersList,
                     isFollowing: tempFollowersList.includes(this.state.userId),
                 })
-                console.log("FollowersList:");
-                console.log(this.state.myFollowersList);
-                console.log(this.state.isFollowing);
+                //console.log("FollowersList:");
+                //console.log(this.state.myFollowersList);
+                //console.log(this.state.isFollowing);
             })
             .catch(err => {
-                console.log(err);
-                console.log("No more follows found for this user (as a follower).");
+                //console.log(err);
+                //console.log("No more follows found for this user (as a follower).");
             });
         }, 100)
     }
@@ -675,7 +675,7 @@ class Profile extends React.Component {
     getUserInfo = () => {
         getUser(this.state.userId)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 username: response.data.username,
                 username_init: response.data.username,
@@ -691,7 +691,7 @@ class Profile extends React.Component {
             }, 1000);
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.setState({
                 error: "Sorry, we could not find this user's profile."
             })
@@ -700,16 +700,16 @@ class Profile extends React.Component {
     checkLogged = () => {
         isLogged()
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 logged: response.data.authenticated,
                 me: response.data.id,
             })
-            console.log(`I am user ${response.data.id}`)
+            //console.log(`I am user ${response.data.id}`)
             this.askMyFollows();
         })
         .catch(err => {
-            console.log(err)
+            //console.log(err)
         })
     }
     componentDidMount() {
@@ -717,13 +717,13 @@ class Profile extends React.Component {
         this.getUserInfo();
     }
     showFollowers = () => {
-        console.log("chose to see followers")
+        //console.log("chose to see followers")
         this.setState({
             followersShow: true,
         })
     }
     showFollows = () => {
-        console.log("chose to see follows")
+        //console.log("chose to see follows")
         this.setState({
             followsShow: true,
         })
@@ -758,7 +758,7 @@ class Profile extends React.Component {
                         </h3>
                         {this.state.verified===true &&
                                 <img className="verified-icon-bigger" style={{'marginTop': '4px'}} src={verified} alt="verified" />
-                        }
+                            }
                     </div>        
                 }
                 {this.state.deleteAcc && !this.state.error &&

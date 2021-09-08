@@ -40,6 +40,7 @@ class ExplorePage extends React.Component {
             updateColorsBetweenNavbars: this.state.updateColorsBetweenNavbars+1,
         })
     }
+
     render() {
         return(
             <div className="all-page">

@@ -5,7 +5,6 @@ import MobileNavbar from './MobileNavbar';
 import CanvasJSReact from './canvasjs.react.js';
 import {getMonthlyStatsGen, getDailyStatsGen, isLogged} from './api';
 import Searchbar from './Searchbar';
-
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class Diagram extends React.Component {
@@ -22,13 +21,13 @@ class Diagram extends React.Component {
     }
     compute = () => {
         if (this.state.type==="pie") {
-            console.log("I am pie and i am computing")
+            //console.log("I am pie and i am computing")
             let tempData = [];
             let sum = 0;
             Object.entries(this.props.stats).forEach(el => {
                 sum+=el[1];
             })
-            console.log(`sum= ${sum}`);
+            //console.log(`sum= ${sum}`);
             for (const [key, value] of Object.entries(this.props.stats)) {
                 tempData.push({
                     "y": Math.round((value/sum)*100*100)/100,
@@ -93,7 +92,7 @@ class Diagram extends React.Component {
         }
     }
     componentDidMount() {
-        console.log(this.props.stats)
+        //console.log(this.props.stats)
         this.compute()
     }
     componentDidUpdate(prevProps) {
@@ -136,13 +135,13 @@ class OneStats extends React.Component {
     askMonthly = () => {
         getMonthlyStatsGen(this.state.choice.charAt(0).toLowerCase()+this.state.choice.slice(1), this.props.case==="general" ? null : this.state.userId)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 monthlyStats: response.data,
             })
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.setState({
                 monthlyErr: err,
                 monthlyStats: [],
@@ -152,13 +151,13 @@ class OneStats extends React.Component {
     askDaily = () => {
         getDailyStatsGen(this.state.choice.charAt(0).toLowerCase()+this.state.choice.slice(1), this.props.case==="general" ? null : this.state.userId)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 dailyStats: response.data,
             })
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.setState({
                 dailyErr: err,
                 dailyStats: [],
@@ -227,7 +226,7 @@ class Statistics extends React.Component {
     componentDidMount() {
         isLogged()
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 logged: response.data.authenticated,
                 userId: response.data.id,
@@ -235,7 +234,7 @@ class Statistics extends React.Component {
             this.updateColors(document.getElementById('stats-posts-button'));
         })
         .catch(err => {
-            console.log(err)
+            //console.log(err)
             this.setState({
                 error: "Not logged in"
             })

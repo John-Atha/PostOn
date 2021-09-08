@@ -8,6 +8,7 @@ import OutsideClickHandler from 'react-outside-click-handler';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
 
+
 class Searchbar extends React.Component {
     constructor(props) {
         super(props);
@@ -21,8 +22,8 @@ class Searchbar extends React.Component {
         this.hideSuggestions = this.hideSuggestions.bind(this);
     }
     createNotification = (type, title="aaa", message="aaa") => {
-        console.log("creating notification");
-        console.log(type);
+        //console.log("creating notification");
+        //console.log(type);
         store.addNotification({
             title: title,
             message: message,
@@ -66,7 +67,7 @@ class Searchbar extends React.Component {
         })
         if (final) {
             this.createNotification('success', 'Hello,', `We are taking you to ${final.username}'s profile`);
-            console.log(final);
+            //console.log(final);
             setTimeout(()=>{
                 window.location.href = `/users/${final.id}`;
             }, 1000)
@@ -83,19 +84,19 @@ class Searchbar extends React.Component {
             })
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
         })
         this.hideSuggestions();
     }
     showSuggestions = () => {
-        console.log("showing suggestions:");
+        //console.log("showing suggestions:");
         const box = document.getElementById('suggestions-box');
         box.style.display="block";
         const button = document.getElementById('search-button');
         button.disabled = false;
     }
     hideSuggestions = () => {
-        console.log("hiding suggestions");
+        //console.log("hiding suggestions");
         const box = document.getElementById('suggestions-box');
         box.style.display="none";
         const button = document.getElementById('search-button');

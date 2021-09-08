@@ -21,13 +21,13 @@ class ProfileBox extends React.Component {
     countFollows = () => {
         getFollowsCount(this.state.userId)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 follows: response.data.follows,
             })
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.setState({
                 follows: "-",
             })
@@ -36,13 +36,13 @@ class ProfileBox extends React.Component {
     countFollowers = () => {
         getFollowersCount(this.state.userId)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 followers: response.data.followers,
             })
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.setState({
                 followers: "-",
             })
@@ -51,7 +51,7 @@ class ProfileBox extends React.Component {
     getUserInfo = () => {
         getUser(this.state.userId)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 username: response.data.username,
                 photo: response.data.photo,
@@ -59,7 +59,7 @@ class ProfileBox extends React.Component {
             })
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.setState({
                 error: "Sorry, we could not find info for your account.",
             })

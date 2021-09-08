@@ -226,7 +226,7 @@ class ExploreScroll extends React.Component {
             this.setState({
                 error: "No more users found",
             })
-        })
+        })        
     }
     updateFollows = () => {
         this.setState({

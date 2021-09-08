@@ -243,7 +243,7 @@ class PostAction extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (prevProps.action!==this.props.action) {
-                console.log("post updated")
+                //console.log("post updated")
                 this.setState({
                     owner: this.props.action.owner,
                     post: this.props.action.post,
@@ -375,16 +375,16 @@ class Activity extends React.Component {
         this.moveOn();
     }
     askActivity = () => {
-        console.log(`I am asking activity from ${this.state.start} to ${this.state.end}`)
+        //console.log(`I am asking activity from ${this.state.start} to ${this.state.end}`)
         getActivity(this.state.userId, this.state.start, this.state.end)
         .then(response=> {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 actList: response.data,
             })
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.setState({
                 error: "No more activity found",
             })
@@ -393,7 +393,7 @@ class Activity extends React.Component {
     componentDidMount() {
         isLogged()
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 logged: response.data.authenticated,
                 userId: response.data.id,
@@ -401,7 +401,7 @@ class Activity extends React.Component {
             setTimeout(()=>{this.askActivity();}, 0);
         })
         .catch(err => {
-            console.log(err)
+            //console.log(err)
             this.setState({
                 error: "Not logged in"
             })
@@ -423,31 +423,31 @@ class Activity extends React.Component {
             <div className="main-activity-container flex-layout">
                 {this.state.actList.map((value, index) => {
                     if (value.post && value.text) {
-                        console.log("comment-action")
+                        //console.log("comment-action")
                         return(
                             <CommentAction key={index} action={value} />
                         )
                     }
                     else if (value.comment) {
-                        console.log("comment-like-action")
+                        //console.log("comment-like-action")
                         return(
                             <CommentLikeAction key={index} action={value} />
                         )
                     }
                     else if (value.text || value.media) {
-                        console.log("post-action")
+                        //console.log("post-action")
                         return(
                             <PostAction key={index} action={value} />
                         ) 
                     }
                     else if (value.following) {
-                        console.log("follow-action")
+                        //console.log("follow-action")
                         return(
                             <FollowAction key={index} action={value} />
                         ) 
                     }
                     else {
-                        console.log("post-like-action")
+                        //console.log("post-like-action")
                         return(
                             <PostLikeAction key={index} action={value} />
                         )

@@ -18,8 +18,8 @@ class NewComment extends React.Component {
         this.state = {
             userId: this.props.userId,
             username: null,
-            verified: false,
             photo: null,
+            verified: false,
             logged: this.props.logged,
             text: "",
             firstFocus: true,
@@ -117,7 +117,7 @@ class NewComment extends React.Component {
             }
         }
         //console.log("BROKEN LIST")
-        ////console.log(s2);
+        //console.log(s2);
         s3 = s3.flat();
         //console.log(s3);
         let index=0;
@@ -131,10 +131,10 @@ class NewComment extends React.Component {
                         matched = true;
                         //console.log(`el: ${el}`)
                         let el2 = el.split(')')
-                        ////console.log(`el parts: ${el2}`)
+                        //console.log(`el parts: ${el2}`)
                         let first = el2[0]
                         let dump = el2[1]
-                        ////console.log(`first: ${first}`)
+                        //console.log(`first: ${first}`)
                         //let username = first.split(']')[0].slice(2)
                         //let id = first.split(']')[1].slice(1)
                         //console.log(`username: ${suggest.display}`)
@@ -267,7 +267,7 @@ class NewComment extends React.Component {
                             {this.state.username}
                             {this.state.verified===true &&
                                 <img className="verified-icon" src={verified} alt="verified" />
-                            }
+                            }    
                         </div>
                     </div>
                     <div className="text-comment flex-layout">
@@ -311,14 +311,14 @@ class CommentTextNoTags extends React.Component {
         for (let i=0; i<s2.length; i++) {
             s2[i]+=' ';
         }
-        ////console.log("after fixing spaces")
-        ////console.log(s2)
+        //console.log("after fixing spaces")
+        //console.log(s2)
         for (let i=0; i<s2.length; i++) {
             if (s2[i]!==[' ']) {
-                ////console.log("sublist")
-                ////console.log(s2[i])
+                //console.log("sublist")
+                //console.log(s2[i])
                 let subList = s2[i].split('\n');
-                ////console.log(subList)
+                //console.log(subList)
                 if (subList.length>1) {
                     for (let j=0; j<subList.length-1; j++) {
                         if (!subList[j].endsWith('\n')) {
@@ -333,10 +333,10 @@ class CommentTextNoTags extends React.Component {
                 }
             }
         }
-        ////console.log("BROKEN LIST")
-        ////console.log(s2);
+        //console.log("BROKEN LIST")
+        //console.log(s2);
         s3 = s3.flat();
-        ////console.log(s3);
+        //console.log(s3);
         this.setState({
             parts: s3,
         })    
@@ -359,16 +359,16 @@ class CommentTextNoTags extends React.Component {
         this.setState({
             parts: copy.flat(),
         })
-        ////console.log("final filtered:")
-        ////console.log(copy.flat())
+        //console.log("final filtered:")
+        //console.log(copy.flat())
     }
     filter = () => {
         this.filter1();
     }
     componentDidMount() {
         this.filter();
-        ////console.log("mou hrthe text:")
-        ////console.log(this.state.text)
+        //console.log("mou hrthe text:")
+        //console.log(this.state.text)
     }
     componentDidUpdate(prevProps) {
         if (prevProps.text!==this.props.text) {
@@ -382,40 +382,40 @@ class CommentTextNoTags extends React.Component {
         return str.startsWith("https://") || str.startsWith("http://");
     }
     render() {
-        ////console.log("I am a comment with no tags and parts:")
-        ////console.log(this.state.parts);
+        //console.log("I am a comment with no tags and parts:")
+        //console.log(this.state.parts);
         if (!(this.state.parts.length===1 && this.state.parts[0]===" ") && this.state.parts.length) {
-            ////console.log("I have length")
+            //console.log("I have length")
             return(
                 this.state.parts.map((value, index) => {
-                    ////console.log(`part: ${value}`)
+                    //console.log(`part: ${value}`)
                         if (this.isUrl(value)) {
-                            ////console.log("I am a url")
+                            //console.log("I am a url")
                                 return(
                                     <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" 
                                        href={(value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0, value.length-1) : value}>{value+ " "}</a>
                                 )
                         }
                         else if (value===' ') {
-                            ////console.log("I am a space")
+                            //console.log("I am a space")
                             return(
                                 <div key={index}>&nbsp;</div>
                             )
                         }
                         else if (value==='\n') {
-                            ////console.log("I am a new line")
+                            //console.log("I am a new line")
                             return(
                                 <div key={index} className="break"></div>
                             )
                         }
                         else if (value==='') {
-                            ////console.log("I am nothing")
+                            //console.log("I am nothing")
                             return(
                                 <div key={index}>NOTHING</div>
                             )
                         }
                         else {
-                            ////console.log("I am a real string")
+                            //console.log("I am a real string")
                             return(
                                 <div key={index}>{value}</div>
                             )
@@ -551,8 +551,8 @@ class CommentText extends React.Component {
                                         <ProfileCard id={value.tag.id}
                                                 username={value.tag.username}
                                                 moto={value.tag.moto}
-                                                verified={value.tag.verified}
                                                 photo={value.tag.photo}
+                                                verified={value.tag.verified}
                                                 position={"top-close"}/>
                                     }
                                 </div>
@@ -750,7 +750,7 @@ class OneComment extends React.Component {
             }
         }
         //console.log("BROKEN LIST")
-        ////console.log(s2);
+        //console.log(s2);
         s3 = s3.flat();
         //console.log(s3);
         let index=0;
@@ -764,10 +764,10 @@ class OneComment extends React.Component {
                         matched = true;
                         //console.log(`el: ${el}`)
                         let el2 = el.split(')')
-                        ////console.log(`el parts: ${el2}`)
+                        //console.log(`el parts: ${el2}`)
                         let first = el2[0]
                         let dump = el2[1]
-                        ////console.log(`first: ${first}`)
+                        //console.log(`first: ${first}`)
                         //let username = first.split(']')[0].slice(2)
                         //let id = first.split(']')[1].slice(1)
                         //console.log(`username: ${suggest.username}`)
@@ -1294,7 +1294,7 @@ class Comments extends React.Component {
                                 updateComments={this.updateMe}/>
                     {
                         this.state.commentsList.map((value, index) => {
-                            ////console.log(value);
+                            //console.log(value);
                             return (
                                 <OneComment userId={this.state.userId}
                                             logged={this.state.logged}

@@ -25,25 +25,25 @@ class ProfileCard extends React.Component {
     countFollows = () => {
         getFollowsCount(this.state.id)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 followsNum: response.data.follows,
             })
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
         })
     }
     countFollowers = () => {
         getFollowersCount(this.state.id)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 followersNum: response.data.followers,
             })
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
         })
     }
     seeProfile = () => {

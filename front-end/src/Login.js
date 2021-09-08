@@ -24,14 +24,14 @@ class Login extends React.Component {
     componentDidMount() {
         isLogged()
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 userId: response.data.id,
                 logged: true,
             })
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.setState({
                 logged: false,
             })
@@ -44,7 +44,7 @@ class Login extends React.Component {
             [name]: value,
             error: null,
         })
-        console.log(name+": "+value)
+        //console.log(name+": "+value)
     }
     handleSubmit = (event) => {
         if (this.state.username.length && this.state.password.length) {
@@ -54,7 +54,7 @@ class Login extends React.Component {
             //bodyFormData.append('token', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjE2NDEzNzk4LCJqdGkiOiJjMTZhNzgzYWZkMGY0YzM1OTc3ZDk3YWM1NmQ4MzJkMiIsInVzZXJfaWQiOjZ9.o19RoJwXNtk9Aouwbot8Tb5LOk_f1_wCW8pRan1x8oU');
             login(bodyFormData)
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 this.setState({
                     success: "Logged in successfully",
                 })
@@ -67,7 +67,7 @@ class Login extends React.Component {
                 }, 500)
             })
             .catch(err => {
-                console.log(err);
+                //console.log(err);
                 this.setState({
                     error: "Login failed, try again."
                 })

@@ -3,7 +3,7 @@ import "./Posts.css";
 import {getUsers, isLogged, getUsersPosts, PostPostText, PostPostPhoto, deletePost, PostPostTag} from './api';
 import 'react-notifications-component/dist/theme.css'
 import { store } from 'react-notifications-component';
-import add_icon from './images/add.png'
+import add_icon from './images/add.png';
 import arrow_icon from './images/arrow-up.png';
 import OnePost from './OnePost';
 import { MentionsInput, Mention } from 'react-mentions'
@@ -45,18 +45,18 @@ class UserPosts extends React.Component {
         //const container = document.getElementById('posts-cont');
         ////console.log("I am checking scroll");
         ////console.log(`${container.scrollHeight} - ${container.scrollTop} == ${container.clientHeight}`)
-        console.log(`${window.scrollY}, ${0.5*document.body.offsetHeight}`);
+        //console.log(`${window.scrollY}, ${0.7*document.body.offsetHeight}`);
         if (window.scrollY>=0.5*document.body.offsetHeight) {
             ////console.log(`${container.scrollHeight} - ${container.scrollTop} == ${container.clientHeight}`);
-            console.log("add more")    
+            //console.log("add more")    
             if (!this.asked.includes(this.state.start) && !this.state.nomore) {
                 window.removeEventListener('scroll', this.checkScroll);
                 setTimeout(()=>{window.addEventListener('scroll', this.checkScroll);}, 2000)            
                 this.asked.push(this.state.start);
                 setTimeout(()=>{this.nextPage();}, 200);
             }       
-                console.log(`asked:`);
-                console.log(this.asked);            
+                //console.log(`asked:`);
+                //console.log(this.asked);            
             //console.log("reached bottom")
         }
     }
@@ -67,7 +67,7 @@ class UserPosts extends React.Component {
             })
             getUsers()
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 let tempL = [];
                 response.data.forEach(el => {
                     tempL.push({
@@ -80,7 +80,7 @@ class UserPosts extends React.Component {
                 })
             })
             .catch(err => {
-                console.log(err);
+                //console.log(err);
             })
         }
     }
@@ -98,37 +98,37 @@ class UserPosts extends React.Component {
                 }
                 PostPostTag(this.state.newId, object)
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                 })
                 .catch(err => {
-                    console.log(err);
+                    //console.log(err);
                 })
             })
         }, 200)
     }
     filterPost = (text) => {
-        console.log("users i see")
-        console.log(this.state.usersList)
-        console.log("i am filter post");
+        //console.log("users i see")
+        //console.log(this.state.usersList)
+        //console.log("i am filter post");
         let post_text = text;
-        console.log("initial text")
+        //console.log("initial text")
         let final_post_object = [];
         let s3 = [];
         post_text = post_text.replaceAll(")@", ") @");
-        console.log(post_text);
+        //console.log(post_text);
         //let s2 = post_text.trim().split(/\s+/);
         let s2 = post_text.split(' ');
         for (let i=0; i<s2.length; i++) {
             s2[i]+=' ';
         }
-        console.log("after fixing spaces")
-        console.log(s2)
+        //console.log("after fixing spaces")
+        //console.log(s2)
         for (let i=0; i<s2.length; i++) {
             if (s2[i]!==[' ']) {
-                console.log("sublist")
-                console.log(s2[i])
+                //console.log("sublist")
+                //console.log(s2[i])
                 let subList = s2[i].split('\n');
-                console.log(subList)
+                //console.log(subList)
                 if (subList.length>1) {
                     for (let j=0; j<subList.length-1; j++) {
                         if (!subList[j].endsWith('\n')) {
@@ -143,20 +143,20 @@ class UserPosts extends React.Component {
                 }
             }
         }
-        console.log("BROKEN LIST")
+        //console.log("BROKEN LIST")
         //console.log(s2);
         s3 = s3.flat();
-        console.log(s3);
+        //console.log(s3);
         let index=0;
         s3.forEach(el => {
-            console.log(el)
+            //console.log(el)
             if (el.startsWith('@')) {    
                 let matched = false;
                 this.state.usersList.forEach(suggest => {
                     let sugg=suggest.display;
                     if (el.startsWith(`@[${sugg}]`)) {
                         matched = true;
-                        console.log(`el: ${el}`)
+                        //console.log(`el: ${el}`)
                         let el2 = el.split(')')
                         //console.log(`el parts: ${el2}`)
                         let first = el2[0]
@@ -164,9 +164,9 @@ class UserPosts extends React.Component {
                         //console.log(`first: ${first}`)
                         //let username = first.split(']')[0].slice(2)
                         //let id = first.split(']')[1].slice(1)
-                        console.log(`username: ${suggest.display}`)
-                        console.log(`id: ${suggest.id}`)
-                        console.log(`dump: ${dump}`)
+                        //console.log(`username: ${suggest.display}`)
+                        //console.log(`id: ${suggest.id}`)
+                        //console.log(`dump: ${dump}`)
                         final_post_object.push({
                             "tag": {
                                 "username": suggest.display,
@@ -179,15 +179,15 @@ class UserPosts extends React.Component {
                 })
             }
         })
-        console.log("Tags to post:")
-        console.log(final_post_object)
+        //console.log("Tags to post:")
+        //console.log(final_post_object)
         this.setState({
             tagsToPost: final_post_object,
         })
     }
     createNotification = (type, title="aaa", message="aaa") => {
-        console.log("creating notification");
-        console.log(type);
+        //console.log("creating notification");
+        //console.log(type);
         store.addNotification({
             title: title,
             message: message,
@@ -207,7 +207,7 @@ class UserPosts extends React.Component {
         this.setState({
             newText: value,
         })
-        console.log(`new text: ${this.state.newText}`);
+        //console.log(`new text: ${this.state.newText}`);
     }
     cancelAdd = () => {
         this.setState({
@@ -226,7 +226,7 @@ class UserPosts extends React.Component {
         let img = null;
         if (input.files.length) {
             img = input.files[0];
-            console.log(img);
+            //console.log(img);
         }
         if (!this.state.newText.length && !input.files.length) {
             this.createNotification('danger', 'Sorry,', 'You cannot create an empty post.')
@@ -238,7 +238,7 @@ class UserPosts extends React.Component {
                 // just create the post with empty text
                 PostPostText(this.state.newText)
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                     // then post the photo (has to be there, else the first "if" would have stopped the process)
                     let postId = response.data.id;
                     var bodyFormData = new FormData();
@@ -246,7 +246,7 @@ class UserPosts extends React.Component {
                     PostPostPhoto(postId, bodyFormData)
                     // if photo posted successfully
                     .then(response => {
-                        console.log(response);
+                        //console.log(response);
                         let prevText = this.state.newText;
                         this.setState({
                             newText: "",
@@ -259,30 +259,30 @@ class UserPosts extends React.Component {
                     })
                     // else post has to be deleted (it only has an empty text)
                     .catch(err => {
-                        console.log(err);
+                        //console.log(err);
                         this.setState({
                             newText: "",
                         })
                         deletePost(postId)
                         .then(response => {
-                            console.log(response);
+                            //console.log(response);
                         })
                         .catch(err => {
-                            console.log(err);
+                            //console.log(err);
                         })
                         this.createNotification('danger', 'Sorry,', "We couldn't publish your post")
                     })
                 })
                 // could not create post => return err
                 .catch(err => {
-                    console.log(err);
+                    //console.log(err);
                     this.createNotification('danger', 'Sorry,', "We couldn't publish your post")
                 })
             }
             else {
                 PostPostText(this.state.newText)
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                     if(input.files.length) {
                         let postId = response.data.id;
                         var bodyFormData = new FormData();
@@ -290,7 +290,7 @@ class UserPosts extends React.Component {
                         PostPostPhoto(postId, bodyFormData)
                         // if photo posted successfully
                         .then(response => {
-                            console.log(response);
+                            //console.log(response);
                             let prevText = this.state.newText;
                             this.setState({
                                 newText: "",
@@ -303,16 +303,16 @@ class UserPosts extends React.Component {
                         })
                         // else post has to be deleted
                         .catch(err => {
-                            console.log(err);
+                            //console.log(err);
                             this.setState({
                                 newText: "",
                             })
                             deletePost(postId)
                             .then(response => {
-                                console.log(response);
+                                //console.log(response);
                             })
                             .catch(err => {
-                                console.log(err);
+                                //console.log(err);
                             })
                             this.createNotification('danger', 'Sorry,', "We couldn't publish your post")
                         })
@@ -331,7 +331,7 @@ class UserPosts extends React.Component {
                 })
                 // could not create post => return err
                 .catch(err => {
-                    console.log(err);
+                    //console.log(err);
                     this.createNotification('danger', 'Sorry,', "We couldn't publish your post")
                 })
             }
@@ -363,21 +363,20 @@ class UserPosts extends React.Component {
                 postsList: [],
                 nomore: false,
             })
-        }
+        }        
         setTimeout(()=> {
-        console.log(`I asm ask posts with: start=${this.state.start} and asked=${this.asked}`)
-        //console.log(`I am asking posts from ${this.state.start} to ${this.state.end}`)
+        //console.log(`I asm ask posts with: start=${this.state.start} and asked=${this.asked}`)
         getUsersPosts(this.state.whose, this.state.start, this.state.end)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 postsList: this.state.postsList.concat(response.data),
                 nomore: false,
-            })
-            console.log(this.state.postsList)
+        })
+            //console.log(this.state.postsList)
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.setState({
                 nomore: true,
             })
@@ -387,14 +386,14 @@ class UserPosts extends React.Component {
         window.addEventListener('scroll', this.checkScroll);
         isLogged()
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 logged: response.data.authenticated,
                 userId: response.data.id,
             });
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.setState({
                 error: err,
             })
@@ -403,7 +402,7 @@ class UserPosts extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (prevProps.updateMe!==this.props.updateMe) {
-            this.askPosts("restart");
+            this.askPosts();
         }
         if (prevProps.me!==this.props.me) {
             this.setState({

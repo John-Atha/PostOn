@@ -31,26 +31,26 @@ class OneLike extends React.Component {
         })
     }
     follow = () => {
-        console.log(`follower id: ${this.props.me}`)
-        console.log(`followed id: ${this.state.owner.id}`)
+        //console.log(`follower id: ${this.props.me}`)
+        //console.log(`followed id: ${this.state.owner.id}`)
         followUser(this.props.me, this.state.owner.id)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.props.updatePar();
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.props.updatePar();
         })
     }
     unfollow = () => {
         unfollowUser(this.props.followId)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.props.updatePar();
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.props.updatePar();
         })
     }
@@ -175,10 +175,10 @@ class Likes extends React.Component {
     }
     askLikes = () => {
         setTimeout(()=> {
-        console.log(`I am asking likes from ${this.state.start} to ${this.state.end}.`);
+        //console.log(`I am asking likes from ${this.state.start} to ${this.state.end}.`);
         getLikes(this.state.start, this.state.end, this.state.id, this.state.on, this.state.kind)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 likesList: response.data,
                 error: null,
@@ -186,7 +186,7 @@ class Likes extends React.Component {
             this.askFollows();
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.setState({
                 error: `No ${this.state.kind} reactions found.`
             })
@@ -209,7 +209,7 @@ class Likes extends React.Component {
     }
     componentDidUpdate(prevProps) {
         if (prevProps.userId!==this.props.userId || prevProps.followsUpd!==this.props.followsUpd) {
-            console.log("I updated the follows list")
+            //console.log("I updated the follows list")
             this.askLikes();
             this.setState({
                 showMe: this.props.showMe,
@@ -223,10 +223,10 @@ class Likes extends React.Component {
     }
     askFollows = () => {
         setTimeout(()=>{
-            console.log(`I am asking follows for user ${this.props.userId}`)
+            //console.log(`I am asking follows for user ${this.props.userId}`)
             getFollows(this.props.userId)
             .then(response => {
-                console.log(response);
+                //console.log(response);
                 let tempFollowsList = [];
                 let tempFollowsObjIdList = [];
                 response.data.forEach(el=> {
@@ -237,11 +237,11 @@ class Likes extends React.Component {
                     followsList: tempFollowsList,
                     followsObjIdList: tempFollowsObjIdList,
                 })
-                console.log("followsList: ");
-                console.log(tempFollowsList);
+                //console.log("followsList: ");
+                //console.log(tempFollowsList);
                 getFollowers(this.props.userId)
                 .then(response => {
-                    console.log(response);
+                    //console.log(response);
                     let tempFollowersList = [];
                     response.data.forEach(el=> {
                             tempFollowersList.push(el.following.id);
@@ -249,17 +249,17 @@ class Likes extends React.Component {
                     this.setState({
                         followersList: tempFollowersList,
                     })
-                    console.log("followersList: ");
-                    console.log(tempFollowersList);
+                    //console.log("followersList: ");
+                    //console.log(tempFollowersList);
                 })
                 .catch(err => {
-                    console.log(err);
-                    console.log("No more follows found for this user (as a follower).");
+                    //console.log(err);
+                    //console.log("No more follows found for this user (as a follower).");
                 });
             })
             .catch(err => {
-                console.log(err);
-                console.log("No more follows found for this user (as a follower).");
+                //console.log(err);
+                //console.log("No more follows found for this user (as a follower).");
             });
         }, 1000)
     }
@@ -327,6 +327,7 @@ class Likes extends React.Component {
                                                 updatePar={this.updateFollows} />
                                     )
                                 }
+
                                 else {
                                     return (
                                         <OneLike key={index}

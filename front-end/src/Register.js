@@ -38,14 +38,14 @@ class Register extends React.Component {
     componentDidMount() {
         isLogged()
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 userId: response.data.id,
                 logged: true,
             })
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.setState({
                 logged: false,
             })
@@ -77,7 +77,7 @@ class Register extends React.Component {
             username.style.borderColor = "grey";
         } 
 
-        console.log(name+": "+value)
+        //console.log(name+": "+value)
     }
     handleSubmit = (event) => {
         if (this.state.username.length && this.state.password.length && this.state.passwordConfirm.length && this.state.email.length) {
@@ -113,16 +113,16 @@ class Register extends React.Component {
                         }, 500)    
                     })
                     .catch(err => {
-                        console.log(err);
-                        console.log(err.status);
+                        //console.log(err);
+                        //console.log(err.status);
                         this.setState({
                             error: "Registration failed, try again."
                         })
                     })
                 })
                 .catch(err => {
-                    console.log(err);
-                    console.log(err.status);
+                    //console.log(err);
+                    //console.log(err.status);
                     this.setState({
                         error: "Username/email probably already exists."
                     })

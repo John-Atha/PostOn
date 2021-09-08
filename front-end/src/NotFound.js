@@ -4,6 +4,7 @@ import MyNavbar from './MyNavbar';
 import MobileNavbar from './MobileNavbar';
 import Searchbar from './Searchbar';
 
+
 class NotFound extends React.Component {
     constructor(props) {
         super(props);

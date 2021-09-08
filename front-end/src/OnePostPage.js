@@ -51,14 +51,14 @@ class OnePostPage extends React.Component {
     checkLogged = () => {
         isLogged()
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 logged: response.data.authenticated,
                 userId: response.data.id,
             })
         })
         .catch(err => {
-            console.log(err)
+            //console.log(err)
             this.setState({
                 error: "Not logged in"
             })
@@ -67,7 +67,7 @@ class OnePostPage extends React.Component {
     getPostInfo = () => {
         getOnePost(this.state.id)
         .then(response => {
-            console.log(response);
+            //console.log(response);
             this.setState({
                 owner: response.data.owner,
                 media: response.data.media,
@@ -78,14 +78,14 @@ class OnePostPage extends React.Component {
             })
         })
         .catch(err => {
-            console.log(err);
+            //console.log(err);
             this.setState({
                 error: "Sorry, we could not find this post."
             })
         })
     }
     componentDidMount() {
-        console.log(`Page of post ${this.state.id}`)
+        //console.log(`Page of post ${this.state.id}`)
         this.checkLogged();
         this.getPostInfo();
     }
