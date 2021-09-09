@@ -1,130 +1,96 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Login.css"; 
 import MyNavbar from './MyNavbar';
 import MobileNavbar from './MobileNavbar';
 import logo from './images/logo.png' 
 import {login, isLogged} from './api';
+import Button from 'react-bootstrap/esm/Button';
 
-class Login extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            userId: null,
-            logged: false,
-            error: null,
-            success: null,
-            username: "",
-            password: "",
-            updateColorsBetweenNavbars: 1,
-        }
-        this.handleInput = this.handleInput.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.updateNavbarsColors = this.updateNavbarsColors.bind(this);
-    }
-    componentDidMount() {
+function Login() {
+
+    const [logged, setLogged] = useState(false);
+    const [error, setError] = useState(null);
+    const [success, setSuccess] = useState(null);
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const [updateColorsBetweenNavbars, setUpdateColorsBetweenNavbars] = useState(1)
+
+    useEffect(() => {
         isLogged()
         .then(response => {
-            //console.log(response);
-            this.setState({
-                userId: response.data.id,
-                logged: true,
-            })
+            setLogged(true);
         })
-        .catch(err => {
-            //console.log(err);
-            this.setState({
-                logged: false,
-            })
+        .catch(() => {
+            setLogged(false);
         })
-    }
-    handleInput = (event) => {
-        const name = event.target.name;
-        const value = event.target.value;
-        this.setState({
-            [name]: value,
-            error: null,
-        })
-        //console.log(name+": "+value)
-    }
-    handleSubmit = (event) => {
-        if (this.state.username.length && this.state.password.length) {
+    }, [])
+
+    const handleSubmit = (event) => {
+        if (username.length && password.length) {
             var bodyFormData = new FormData();
-            bodyFormData.append('username', this.state.username);
-            bodyFormData.append('password', this.state.password);
-            //bodyFormData.append('token', 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjE2NDEzNzk4LCJqdGkiOiJjMTZhNzgzYWZkMGY0YzM1OTc3ZDk3YWM1NmQ4MzJkMiIsInVzZXJfaWQiOjZ9.o19RoJwXNtk9Aouwbot8Tb5LOk_f1_wCW8pRan1x8oU');
+            bodyFormData.append('username', username);
+            bodyFormData.append('password', password);
             login(bodyFormData)
             .then(response => {
-                //console.log(response);
-                this.setState({
-                    success: "Logged in successfully",
-                })
-                let token = response.data.access
-                let refresh = response.data.refresh
-                localStorage.setItem('token', token)
-                localStorage.setItem('refresh', refresh)
-                setTimeout(() => {
-                    window.location.href="/"
-                }, 500)
+                setSuccess("Logged in successfully");
+                localStorage.setItem('token', response.data.access)
+                localStorage.setItem('refresh', response.data.refresh)
+                setTimeout(() => { window.location.href="/" }, 500)
             })
-            .catch(err => {
-                //console.log(err);
-                this.setState({
-                    error: "Login failed, try again."
-                })
+            .catch(() => {
+                setError("Login failed, try again.");
+                setSuccess(null);
             })
         }
         else {
-            this.setState({
-                error: "Complete both fields"
-            })
+            setError("Complete both fields")
         }
         event.preventDefault();
     }
-    updateNavbarsColors = () => {
-        this.setState({
-            updateColorsBetweenNavbars: this.state.updateColorsBetweenNavbars+1,
-        })
+    
+    const updateNavbarsColors = () => {
+        setUpdateColorsBetweenNavbars(updateColorsBetweenNavbars+1);
     }
-    render() {
-        if (this.state.logged) {
-            window.location.href = "/";
-        }
-        else {
-            return(
-                <div className="login-page">
-                    { window.innerWidth<500 &&
-                        <MobileNavbar updateColors={()=>{this.updateNavbarsColors();}} />
-                    }
-                    {window.innerWidth>=500 &&
-                        <MyNavbar updateMyColors = {this.state.updateColorsBetweenNavbars} />
-                    }
-                    <div className="login-main-page flex-layout center-content">
-                        <div className="logo-container flex-item">
-                            <img src={logo} className="logo" alt="logo"/>
-                        </div>
-                        <div className="login-box-container flex-item blur center-content margin-top-small">
-                            <h3>Welcome</h3>
-                            <h4 className="margin-top-small">Login</h4>
-                            <div className="error-message">{this.state.error}</div>
-                            {!this.state.error && this.state.success && (
-                                <div className="success-message">{this.state.success}</div>
-                            )}
-                            <form className="login-form center-content margin-top-smaller" onSubmit={this.handleSubmit}>
-                                <div>
-                                    <input className="login-input margin-top-smaller" type="text" name="username" value={this.state.username} placeholder="Username..."     onChange={this.handleInput}/>
-                                    <input className="login-input margin-top-smaller" type="password" name="password" value={this.state.password} placeholder="Password..." onChange={this.handleInput}/>
-                                </div>
-                                <button className="my-button submit-button margin-top-smaller" onClick={this.handleSubmit}>Submit</button>
-                            </form>
-                            <div className="register-choice-container margin-top-small">
-                                <div>First time here?</div>
-                                <a href="/register">Create an account</a>
+
+    if (logged) {
+        window.location.href = "/";
+    }
+
+    else {
+        return(
+            <div className="login-page">
+                { window.innerWidth<500 &&
+                    <MobileNavbar updateColors={()=>{updateNavbarsColors();}} />
+                }
+                {window.innerWidth>=500 &&
+                    <MyNavbar updateMyColors = {updateColorsBetweenNavbars} />
+                }
+                <div className="login-main-page flex-layout center-content">
+                    <div className="logo-container flex-item">
+                        <img src={logo} className="logo" alt="logo"/>
+                    </div>
+                    <div className="login-box-container flex-item blur center-content margin-top-small">
+                        <h3>Welcome</h3>
+                        <h4 className="margin-top-small">Login</h4>
+                        <div className="error-message">{error}</div>
+                        {!error && success && (
+                            <div className="success-message">{success}</div>
+                        )}
+                        <form className="login-form center-content margin-top-smaller" onSubmit={handleSubmit}>
+                            <div>
+                                <input className="login-input margin-top-smaller" type="text"     name="username" value={username} placeholder="Username..." onChange={(event)=>{setUsername(event.target.value);setError(null);}}/>
+                                <input className="login-input margin-top-smaller" type="password" name="password" value={password} placeholder="Password..." onChange={(event)=>{setPassword(event.target.value);setError(null);}}/>
                             </div>
+                            <Button variant='primary' type='submit' className="submit-button margin-top-small" onClick={handleSubmit}>Submit</Button>
+                        </form>
+                        <div className="register-choice-container margin-top-small">
+                            <div>First time here?</div>
+                            <a href="/register">Create an account</a>
                         </div>
                     </div>
                 </div>
-            )
-        }
+            </div>
+        )
     }
 }
 
