@@ -438,11 +438,11 @@ class Posts extends React.Component {
                 }
                 {this.state.add && !this.state.isUploading &&
                     <div className="new-post-container">
-                        <h4>Hello, what are you thinking?</h4>
-                            <h5 className='margin-top-smaller'>Media</h5>
+                        <h5>Hello, what are you thinking?</h5>
+                            <h6 className='margin-top-smaller'>Media</h6>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <input id="new-post-photo" type="file" accept="image/*, video/*"/>
-                            <h5 className='margin-top-smaller'>Text</h5>
+                            <h6 className='margin-top-smaller'>Text</h6>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <MentionsInput name="newText" className="post-textarea-edit clean-style new-post" style={{width: '90%'}} value={this.state.newText} onChange={this.handleInput} onFocus={this.askTags}>
                                 <Mention

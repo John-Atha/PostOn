@@ -133,15 +133,9 @@ class PostTextNoTags extends React.Component {
                             if (this.isUrl(value)) {
                                 //console.log("I am a url")
                                     return(
-                                        <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" 
-                                        href={(value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0, value.length-1) : value}>{value+ " "}</a>
+                                        <a style={{'marginRight': '4px'}} key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" 
+                                        href={(value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0, value.length-1) : value}>{value}</a>
                                     )
-                            }
-                            else if (value===' ') {
-                                //console.log("I am a space")
-                                return(
-                                    <div key={index}>&nbsp;</div>
-                                )
                             }
                             else if (value==='\n') {
                                 //console.log("I am a new line")
@@ -149,16 +143,13 @@ class PostTextNoTags extends React.Component {
                                     <div key={index} className="break"></div>
                                 )
                             }
-                            else if (value==='') {
-                                //console.log("I am nothing")
-                                return(
-                                    <div key={index}>NOTHING</div>
-                                )
+                            else if (value === ' ') {
+                                return null
                             }
                             else {
                                 //console.log("I am a real string")
                                 return(
-                                    <div key={index}>{value}</div>
+                                    <div style={{'marginRight': '4px'}} key={index}>{value}</div>
                                 )
                             }
                         })}
@@ -298,29 +289,26 @@ class PostText extends React.Component {
                         {this.state.parts.map((value, index) => {
                             if (value.tag.id && !value.dump) {
                                 return(
-                                    <div key={index} className="flex-layout">
-                                        <div className="owner-name tag"
-                                            onMouseEnter={()=>this.cardShow(index)}
-                                            onMouseLeave={()=>this.cardHide(index)}>
-                                            {value.tag.username}
-                                            {this.state.showCard[index] &&
-                                                <ProfileCard id={value.tag.id}
-                                                        username={value.tag.username}
-                                                        moto={value.tag.moto}
-                                                        photo={value.tag.photo}
-                                                        position={"top-close"}
-                                                        verified={value.tag.verified}
-                                                        />
-                                            }
-                                        </div>
-                                        <div>&nbsp;</div>
+                                    <div key={index} style={{'marginRight': '4px'}} className="owner-name tag"
+                                        onMouseEnter={()=>this.cardShow(index)}
+                                        onMouseLeave={()=>this.cardHide(index)}>
+                                        {value.tag.username}
+                                        {this.state.showCard[index] &&
+                                            <ProfileCard id={value.tag.id}
+                                                    username={value.tag.username}
+                                                    moto={value.tag.moto}
+                                                    photo={value.tag.photo}
+                                                    position={"top-close"}
+                                                    verified={value.tag.verified}
+                                                    />
+                                        }
                                     </div>
                                 )
                             }
                             else if (value.tag.id && value.dump){
                                 return(
                                     <div key={index} className="flex-layout with-whitespace">
-                                        <div className="owner-name tag"
+                                        <div className="owner-name tag" style={{'marginRight': '4px'}}
                                             onMouseEnter={()=>this.cardShow(index)}
                                             onMouseLeave={()=>this.cardHide(index)}>
                                             {value.tag.username}
@@ -335,14 +323,12 @@ class PostText extends React.Component {
                                         </div>
                                         { value.dump==='\n' &&
                                             <div className="break"></div>
-                                        
                                         }
-                                        { value.dump!=='\n' &&
+                                        { value.dump!=='\n' && value.dump!==' ' &&
                                             <div>
                                                 {value.dump}
                                             </div>
-                                        }
-                                            
+                                        }  
                                     </div>
                                 )
                             }
@@ -367,14 +353,14 @@ class PostText extends React.Component {
                                                 if (this.isUrl(value)) {
                                                     //console.log("i am a url with tags")
                                                     return(
-                                                        <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace"
-                                                        href={(value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0,value.length-1) : value}>{value+" "}</a>
+                                                        <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" style={{'marginRight': '4px'}}
+                                                        href={(value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0,value.length-1) : value}>{value}</a>
                                                     )
                                                 }
                                                 else {
                                                     return(
-                                                        <div key={String(index)+String(value)}>
-                                                            {value+" "}
+                                                        <div style={{'marginRight': '4px'}} key={String(index)+String(value)}>
+                                                            {value}
                                                         </div>
                                                     )   
                                                 }
@@ -385,8 +371,8 @@ class PostText extends React.Component {
                                 else if (text.includes('\n')) {
                                     text = text.split('\n');
                                     return(
-                                        <div key={index}>
-                                            {value.dump+" "}
+                                        <div key={index} style={{'marginRight': '4px'}}>
+                                            {value.dump}
                                         </div>
                                     )
                                 }
@@ -394,8 +380,8 @@ class PostText extends React.Component {
                                     if (this.isUrl(value.dump)) {
                                         //console.log("I am a url with tags")
                                         return(
-                                            <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" 
-                                            href={(value.dump.endsWith(' ') || value.dump.endsWith('\n')) ? value.dump.slice(0,value.dump.length-1) : value.dump}>{value.dump+" "}</a>
+                                            <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" style={{'marginRight': '4px'}}
+                                            href={(value.dump.endsWith(' ') || value.dump.endsWith('\n')) ? value.dump.slice(0,value.dump.length-1) : value.dump}>{value.dump}</a>
                                         )
                                     }
                                     else {
