@@ -5,6 +5,7 @@ import './Activity.css';
 import MyNavbar from './MyNavbar';
 import MobileNavbar from './MobileNavbar';
 import Searchbar from './Searchbar';
+import Button from 'react-bootstrap/esm/Button';
 
 const dateShow = (date) => {
     let datetime = date.replace('T', ' ').replace('Z', '').split(' ')
@@ -457,8 +458,8 @@ class Activity extends React.Component {
             </div>
             {this.state.actList.length!==0 &&
                 <div className="pagi-buttons-container flex-layout center-content">
-                    <button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</button>
-                    <button disabled={this.state.actList.length<10} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</button>
+                    <Button variant='outline-primary' disabled={this.state.start===1}         className="margin" onClick={this.previousPage}>Previous</Button>
+                    <Button variant='outline-primary' disabled={this.state.actList.length<10} className="margin" onClick={this.nextPage}>Next</Button>
                 </div>
             }
             {!this.state.actList.length && this.state.logged &&
