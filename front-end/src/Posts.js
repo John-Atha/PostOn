@@ -24,6 +24,7 @@ class Posts extends React.Component {
             whose: this.props.whose,
             add: false,
             newText: "",
+            isUploading: false,
             usersList: [],
             firstFocus: true,
             tagsToPost: [],
@@ -220,6 +221,9 @@ class Posts extends React.Component {
         }
         else {
             createNotification('success', 'Please wait,', 'We are uploading your post.')
+            this.setState({
+                isUploading: true,
+            });
             // if no text is given
             if (!this.state.newText.length) {
                 // just create the post with empty text
@@ -238,6 +242,7 @@ class Posts extends React.Component {
                         this.setState({
                             newText: "",
                             newId: postId,
+                            isUploading: false,
                         })
                         const input = document.getElementById('new-post-photo');
                         input.type=''
@@ -252,6 +257,7 @@ class Posts extends React.Component {
                         //console.log(err);
                         this.setState({
                             newText: "",
+                            isUploading: false,
                         })
                         deletePost(postId)
                         .then(response => {
@@ -267,6 +273,9 @@ class Posts extends React.Component {
                 .catch(err => {
                     //console.log(err);
                     createNotification('danger', 'Sorry,', "We couldn't publish your post")
+                    this.setState({
+                        isUploading: false,
+                    })
                 })
             }
             else {
@@ -285,6 +294,7 @@ class Posts extends React.Component {
                             this.setState({
                                 newText: "",
                                 newId: postId,
+                                isUploading: false,
                             })
                             setTimeout(()=>{this.addTags(prevText);}, 1000)
                             this.askPosts("restart");
@@ -295,6 +305,7 @@ class Posts extends React.Component {
                             //console.log(err);
                             this.setState({
                                 newText: "",
+                                isUploading: false,
                             })
                             deletePost(postId)
                             .then(response => {
@@ -311,6 +322,7 @@ class Posts extends React.Component {
                         this.setState({
                             newText: "",
                             newId: response.data.id,
+                            isUploading: false,
                         })
                         setTimeout(()=>{this.addTags(prevText);}, 1000)
                         this.askPosts("restart");
@@ -320,6 +332,9 @@ class Posts extends React.Component {
                 // could not create post => return err
                 .catch(err => {
                     //console.log(err);
+                    this.setState({
+                        isUploading: false,
+                    })
                     createNotification('danger', 'Sorry,', "We couldn't publish your post")
                 })
             }
@@ -416,13 +431,18 @@ class Posts extends React.Component {
     render() {
         return(
             <div className="posts-container padding-bottom flex-item">
-                {this.state.add && 
+                {this.state.isUploading &&
+                    <div style={{'marginBottom': '15px'}} className='center-content margin-top'>
+                        <Spinner animation="border" role="status" variant='primary' />
+                    </div>
+                }
+                {this.state.add && !this.state.isUploading &&
                     <div className="new-post-container">
                         <h4>Hello, what are you thinking?</h4>
-                            <div>Photo</div>
+                            <h5 className='margin-top-smaller'>Media</h5>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <input id="new-post-photo" type="file" accept="image/*, video/*"/>
-                            <div >Text</div>
+                            <h5 className='margin-top-smaller'>Text</h5>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <MentionsInput name="newText" className="post-textarea-edit clean-style new-post" style={{width: '90%'}} value={this.state.newText} onChange={this.handleInput} onFocus={this.askTags}>
                                 <Mention
