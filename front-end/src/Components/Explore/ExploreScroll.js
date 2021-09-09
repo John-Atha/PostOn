@@ -1,8 +1,8 @@
 import React from 'react';
 import './Explore.css'
-import ProfileCard from './ProfileCard';
-import {getUsers, getFollows, getFollowers, followUser, unfollowUser} from './api';
-import verified from './images/verified.png';
+import ProfileCard from '../Profile/ProfileCard';
+import { getUsers, getFollows, getFollowers, followUser, unfollowUser } from '../../api/api';
+import verified from '../../images/verified.png';
 import Button from 'react-bootstrap/esm/Button';
 
 class OneUser extends React.Component {

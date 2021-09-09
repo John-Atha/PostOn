@@ -3,15 +3,15 @@ import "./MyNavbar.css";
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import NavDropdown from 'react-bootstrap/NavDropdown'
-import {isLogged, getOneUser, getNotifications, readAllNotifications, markAsRead} from './api'
-import notif_icon from './images/notif.png';
-import notif_icon_white from './images/notif_white.png';
-import logout from './images/logout.png';
-import logout_white from './images/logout_white.png';
+import { isLogged, getOneUser, getNotifications, readAllNotifications, markAsRead } from '../../api/api';
+import notif_icon from '../../images/notif.png';
+import notif_icon_white from '../../images/notif_white.png';
+import logout from '../../images/logout.png';
+import logout_white from '../../images/logout_white.png';
 import DarkModeToggle from "react-dark-mode-toggle";
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import { createNotification } from './createNotification';
+import { createNotification } from '../../createNotification';
 
 class MobileNavbar extends React.Component {
     constructor(props) {

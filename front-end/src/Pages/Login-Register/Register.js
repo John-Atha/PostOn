@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./Login.css";
-import MyNavbar from '../MyNavbar';
-import MobileNavbar from '../MobileNavbar';
-import logo from '../images/logo.png'
-import {register, login, isLogged} from '../api';
+import MyNavbar from '../../Components/Navbars/MyNavbar';
+import MobileNavbar from '../../Components/Navbars/MobileNavbar';
+import logo from '../../images/logo.png'
+import {register, login, isLogged} from '../../api/api';
 import Button from 'react-bootstrap/esm/Button';
 
 function Register() {

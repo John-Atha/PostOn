@@ -1,11 +1,12 @@
 import React from 'react';
 import './Statistics.css';
-import MyNavbar from './MyNavbar';
-import MobileNavbar from './MobileNavbar';
-import CanvasJSReact from './canvasjs.react.js';
-import {getMonthlyStatsGen, getDailyStatsGen, isLogged} from './api';
-import Searchbar from './Searchbar';
+import MyNavbar from '../../Components/Navbars/MyNavbar';
+import MobileNavbar from '../../Components/Navbars/MobileNavbar';
+import CanvasJSReact from '../../canvasJS/canvasjs.react';
+import { getMonthlyStatsGen, getDailyStatsGen, isLogged } from '../../api/api';
+import Searchbar from '../../Components/Searchbar/Searchbar';
 import Button from 'react-bootstrap/esm/Button';
+
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 class Diagram extends React.Component {

@@ -1,9 +1,8 @@
 import React from 'react';
-import MyNavbar from './MyNavbar';
-import OnePost from './OnePost';
-import MobileNavbar from './MobileNavbar';
-
-import {isLogged, getOnePost} from './api';
+import MyNavbar from '../Components/Navbars/MyNavbar';
+import OnePost from '../Components/Posts/OnePost';
+import MobileNavbar from '../Components/Navbars/MobileNavbar';
+import { isLogged, getOnePost } from '../api/api';
 
 class OnePostPage extends React.Component {
     constructor(props) {

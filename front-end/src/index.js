@@ -3,19 +3,18 @@ import ReactDOM from 'react-dom';
 import { BrowserRouter, Switch, Route, useParams } from "react-router-dom";
 import './index.css';
 import 'bootstrap/dist/css/bootstrap.css';
-import Home from './Home';
-import HomeFollowing from './HomeFollowing';
-import Login from './Login-Register/Login';
-import Register from './Login-Register/Register';
-import Statistics from './Statistics';
-import Activity from './Activity';
-import Profile from './Profile';
-import OnePostPage from './OnePostPage';
+import Home from './Pages/Home/Home';
+import Login from './Pages/Login-Register/Login';
+import Register from './Pages/Login-Register/Register';
+import Statistics from './Pages/Statistics/Statistics';
+import Activity from './Pages/Activity/Activity';
+import Profile from './Pages/Profile/Profile';
+import OnePostPage from './Pages/OnePostPage';
 import ReactNotifications from "react-notifications-component";
-import Searchbar from './Searchbar';
-import NotFound from './NotFound';
+import Searchbar from './Components/Searchbar/Searchbar';
+import NotFound from './Pages/NotFound';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
-import ExplorePage from './ExplorePage';
+import ExplorePage from './Pages/ExplorePage';
 
 function FindProfile() {
   let {id} = useParams();
@@ -32,10 +31,10 @@ ReactDOM.render(
     <BrowserRouter>
       <Switch>
         <Route path="/" exact>
-          <Home />
+          <Home case='all' />
         </Route>
         <Route path="/following" exact>
-          <HomeFollowing />
+          <Home case='following' />
         </Route>
         <Route path="/login" exact>
           <Login />

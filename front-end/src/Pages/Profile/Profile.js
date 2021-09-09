@@ -1,14 +1,17 @@
 import React from 'react';
 import './Profile.css';
 import OutsideClickHandler from 'react-outside-click-handler';
-import ProfileCard from  './ProfileCard';
-import MyNavbar from './MyNavbar';
-import MobileNavbar from './MobileNavbar';
-import UserPosts from './UserPosts';
-import verified from './images/verified.png';
-import {getUser, updateUser, updateUserPhoto, getFollowersCount, getFollowsCount, getFollows, getFollowers, getFollowsPagi, getFollowersPagi, followUser, unfollowUser, isLogged, UserDelete} from './api';
-import Searchbar from './Searchbar';
-import { createNotification } from './createNotification';
+import ProfileCard from  '../../Components/Profile/ProfileCard';
+import MyNavbar from '../../Components/Navbars/MyNavbar';
+import MobileNavbar from '../../Components/Navbars/MobileNavbar';
+import UserPosts from '../../Components/Posts/UserPosts';
+import verified from '../../images/verified.png';
+import { getUser, updateUser, updateUserPhoto,
+         getFollowersCount, getFollowsCount, getFollows,
+         getFollowers, getFollowsPagi, getFollowersPagi,
+         followUser, unfollowUser, isLogged, UserDelete } from '../../api/api';
+import Searchbar from '../../Components/Searchbar/Searchbar';
+import { createNotification } from '../../createNotification';
 import Button from 'react-bootstrap/esm/Button';
 
 class OneUser extends React.Component {

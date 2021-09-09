@@ -1,8 +1,8 @@
 import React from "react";
 import "./Likes.css";
-import ProfileCard from  './ProfileCard';
-import verified from './images/verified.png';
-import {getLikes, getFollowers, getFollows, followUser, unfollowUser} from './api';
+import ProfileCard from  '../Profile/ProfileCard';
+import verified from '../../images/verified.png';
+import { getLikes, getFollowers, getFollows, followUser, unfollowUser } from '../../api/api';
 import OutsideClickHandler from 'react-outside-click-handler';
 import Button from "react-bootstrap/esm/Button";
 

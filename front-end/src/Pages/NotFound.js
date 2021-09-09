@@ -1,9 +1,8 @@
 import React from 'react';
-import './Home.css';
-import MyNavbar from './MyNavbar';
-import MobileNavbar from './MobileNavbar';
-import Searchbar from './Searchbar';
-
+import './Home/Home.css';
+import MyNavbar from '../Components/Navbars/MyNavbar';
+import MobileNavbar from '../Components/Navbars/MobileNavbar';
+import Searchbar from '../Components/Searchbar/Searchbar';
 
 class NotFound extends React.Component {
     constructor(props) {

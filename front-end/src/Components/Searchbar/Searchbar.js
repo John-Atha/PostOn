@@ -1,11 +1,11 @@
 import React from 'react';
 import './Searchbar.css';
-import {getUsers} from './api';
+import { getUsers } from '../../api/api';
 import Form from 'react-bootstrap/Form'
 import FormControl from 'react-bootstrap/FormControl'
 import Button from 'react-bootstrap/Button'
 import OutsideClickHandler from 'react-outside-click-handler';
-import { createNotification } from './createNotification';
+import { createNotification } from '../../createNotification';
 
 class Searchbar extends React.Component {
     constructor(props) {

@@ -1,11 +1,9 @@
 import React from 'react';
-
-import { isLogged } from './api';
-
-import ExploreScroll from './ExploreScroll';
-import MyNavbar from './MyNavbar';
-import MobileNavbar from './MobileNavbar';
-import Searchbar from './Searchbar';
+import { isLogged } from '../api/api';
+import ExploreScroll from '../Components/Explore/ExploreScroll';
+import MyNavbar from '../Components/Navbars/MyNavbar';
+import MobileNavbar from '../Components/Navbars/MobileNavbar';
+import Searchbar from '../Components/Searchbar/Searchbar';
 
 class ExplorePage extends React.Component {
     constructor(props) {

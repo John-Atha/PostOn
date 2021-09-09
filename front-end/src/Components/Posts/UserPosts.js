@@ -1,28 +1,25 @@
 import React from "react";
 import "./Posts.css";
-import {getUsers, isLogged, getPosts, getUsersPosts, PostPostText, PostPostPhoto, deletePost, PostPostTag} from './api';
-import OnePost from './OnePost';
-import add_icon from './images/add.png';
-import arrow_icon from './images/arrow-up.png';
-import { MentionsInput, Mention } from 'react-mentions'
-import { createNotification } from './createNotification';
+import { getUsers, isLogged, getUsersPosts, PostPostText,
+         PostPostPhoto, deletePost, PostPostTag } from '../../api/api';
+import arrow_icon from '../../images/arrow-up.png';
+import OnePost from '../Posts/OnePost';
+import { MentionsInput, Mention } from 'react-mentions';
+import { createNotification } from '../../createNotification';
 import Button from "react-bootstrap/esm/Button";
-import Spinner from 'react-bootstrap/esm/Spinner';
+import Spinner from "react-bootstrap/esm/Spinner";
 
-class Posts extends React.Component {
+class UserPosts extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            userId: null,
+            userId: this.props.me,
             logged: false,
             error: null,
-            followingPosts: false,
             postsList: [],
             start: 1,
             end: 10,
-            case: this.props.case,
             whose: this.props.whose,
-            add: false,
             newText: "",
             isUploading: false,
             usersList: [],
@@ -44,26 +41,25 @@ class Posts extends React.Component {
         this.addTags = this.addTags.bind(this);
         this.checkScroll = this.checkScroll.bind(this);
     }
-
     checkScroll = () => {
         //const container = document.getElementById('posts-cont');
         ////console.log("I am checking scroll");
         ////console.log(`${container.scrollHeight} - ${container.scrollTop} == ${container.clientHeight}`)
-            //console.log(`${window.scrollY>=0.7*document.body.offsetHeight}`);
-            if (window.scrollY>=0.5*document.body.offsetHeight && !this.state.nomore) {
-                ////console.log(`${container.scrollHeight} - ${container.scrollTop} == ${container.clientHeight}`);
-                    if (!this.asked.includes(this.state.start)) {
-                        window.removeEventListener('scroll', this.checkScroll);
-                        setTimeout(()=>{window.addEventListener('scroll', this.checkScroll);}, 2000)                    
-                        this.asked.push(this.state.start);
-                        setTimeout(()=>{this.nextPage();}, 0);
-                    }       
-                    //console.log(`asked:`);
-                    //console.log(this.asked);            
-                //console.log("reached bottom")
-            }
+        //console.log(`${window.scrollY}, ${0.7*document.body.offsetHeight}`);
+        if (window.scrollY>=0.5*document.body.offsetHeight) {
+            ////console.log(`${container.scrollHeight} - ${container.scrollTop} == ${container.clientHeight}`);
+            //console.log("add more")    
+            if (!this.asked.includes(this.state.start) && !this.state.nomore) {
+                window.removeEventListener('scroll', this.checkScroll);
+                setTimeout(()=>{window.addEventListener('scroll', this.checkScroll);}, 2000)            
+                this.asked.push(this.state.start);
+                setTimeout(()=>{this.nextPage();}, 200);
+            }       
+                //console.log(`asked:`);
+                //console.log(this.asked);            
+            //console.log("reached bottom")
+        }
     }
-
     askTags = () => {
         if (this.state.firstFocus) {
             this.setState({
@@ -88,7 +84,6 @@ class Posts extends React.Component {
             })
         }
     }
-
     addTags = (text) => {
         // gets post id from: this.state.newId
         // gets tagsList from: this.state.tagsToPost
@@ -111,8 +106,6 @@ class Posts extends React.Component {
             })
         }, 200)
     }
-
-
     filterPost = (text) => {
         //console.log("users i see")
         //console.log(this.state.usersList)
@@ -209,7 +202,6 @@ class Posts extends React.Component {
         createNotification('warning', 'Hello,', 'Publsh was cancelled');
     }
     addPost = () => {
-        //console.log("I am add post")
         const input = document.getElementById('new-post-photo');
         let img = null;
         if (input.files.length) {
@@ -223,7 +215,7 @@ class Posts extends React.Component {
             createNotification('success', 'Please wait,', 'We are uploading your post.')
             this.setState({
                 isUploading: true,
-            });
+            })
             // if no text is given
             if (!this.state.newText.length) {
                 // just create the post with empty text
@@ -250,7 +242,6 @@ class Posts extends React.Component {
                         setTimeout(()=>{this.addTags(prevText);}, 1000)
                         this.askPosts("restart");
                         createNotification('success', 'Hello,', 'Post published successfully.');
-
                     })
                     // else post has to be deleted (it only has an empty text)
                     .catch(err => {
@@ -272,10 +263,10 @@ class Posts extends React.Component {
                 // could not create post => return err
                 .catch(err => {
                     //console.log(err);
-                    createNotification('danger', 'Sorry,', "We couldn't publish your post")
                     this.setState({
                         isUploading: false,
                     })
+                    createNotification('danger', 'Sorry,', "We couldn't publish your post")
                 })
             }
             else {
@@ -356,7 +347,6 @@ class Posts extends React.Component {
             end: this.state.end+10,
         }), 0)
         this.moveOn();
-        //setTimeout(()=>this.askLikes(), 750);
     }
     askPosts = (how="") => {
         if (how==="restart") {
@@ -370,40 +360,21 @@ class Posts extends React.Component {
         }        
         setTimeout(()=> {
         //console.log(`I asm ask posts with: start=${this.state.start} and asked=${this.asked}`)
-        if (this.state.whose) {
-            getUsersPosts(this.state.whose, this.state.start, this.state.end)
-            .then(response => {
-                //console.log(response);
-                this.setState({
-                    postsList: this.state.postsList.concat(response.data),
-                    nomore: false,
-                })
-                //console.log(this.state.postsList)
+        getUsersPosts(this.state.whose, this.state.start, this.state.end)
+        .then(response => {
+            //console.log(response);
+            this.setState({
+                postsList: this.state.postsList.concat(response.data),
+                nomore: false,
+        })
+            //console.log(this.state.postsList)
+        })
+        .catch(err => {
+            //console.log(err);
+            this.setState({
+                nomore: true,
             })
-            .catch(err => {
-                //console.log(err);
-                this.setState({
-                    nomore: true,
-                })
-            })
-        }
-        else {
-            getPosts(this.state.start, this.state.end, this.state.case)
-            .then(response => {
-                //console.log(response);
-                this.setState({
-                    postsList: this.state.postsList.concat(response.data),
-                    nomore: false,
-                })
-                //console.log(this.state.postsList)
-            })
-            .catch(err => {
-                //console.log(err);
-                this.setState({
-                    nomore: true,
-                })
-            })
-        }}, 1000)
+        })}, 1000)
     }
     componentDidMount() {
         window.addEventListener('scroll', this.checkScroll);
@@ -413,9 +384,7 @@ class Posts extends React.Component {
             this.setState({
                 logged: response.data.authenticated,
                 userId: response.data.id,
-                add: true,
             });
-            //this.askLikes();
         })
         .catch(err => {
             //console.log(err);
@@ -425,24 +394,34 @@ class Posts extends React.Component {
         })
         setTimeout(()=>this.askPosts(), 200);
     }
+    componentDidUpdate(prevProps) {
+        if (prevProps.updateMe!==this.props.updateMe) {
+            this.askPosts();
+        }
+        if (prevProps.me!==this.props.me) {
+            this.setState({
+                userId: this.props.me,
+            })
+        }
+    }
     componentWillUnmount() {
         window.removeEventListener('scroll', this.checkScroll);
     }
     render() {
         return(
-            <div className="posts-container padding-bottom flex-item">
+            <div className="user-posts-container padding-bottom" style={{marginTop: '5px'}} >
                 {this.state.isUploading &&
                     <div style={{'marginBottom': '15px'}} className='center-content margin-top'>
                         <Spinner animation="border" role="status" variant='primary' />
                     </div>
                 }
-                {this.state.add && !this.state.isUploading &&
+                { this.state.userId===this.state.whose && !this.state.isUploading &&
                     <div className="new-post-container">
-                        <h5>Hello, what are you thinking?</h5>
-                            <h6 className='margin-top-smaller'>Media</h6>
+                            <h5>Hello, what are you thinking?</h5>
+                            <h6>Photo</h6>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <input id="new-post-photo" type="file" accept="image/*, video/*"/>
-                            <h6 className='margin-top-smaller'>Text</h6>
+                            <h6 >Text</h6>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <MentionsInput name="newText" className="post-textarea-edit clean-style new-post" style={{width: '90%'}} value={this.state.newText} onChange={this.handleInput} onFocus={this.askTags}>
                                 <Mention
@@ -457,22 +436,25 @@ class Posts extends React.Component {
                             </div>
                     </div>
                 }
-                {this.state.postsList.map((value, index) => {
-                    return(
-                        <OnePost key={index}
-                                    id={value.id}
-                                    owner={value.owner}
-                                    text={value.text}
-                                    media={value.media}
-                                    video={value.video}
-                                    date={value.date}
-                                    userId={this.state.userId}
-                                    logged={this.state.logged}
-                                    updateHome={this.props.updateHome}
-                                    updateParent={this.askPosts}
-                        />
-                    )
-                })}
+                <div style={{'width': '100%'}}>
+                    {this.state.postsList.map((value, index) => {
+                        return(
+                            <OnePost key={index}
+                                        id={value.id}
+                                        owner={value.owner}
+                                        text={value.text}
+                                        media={value.media}
+                                        video={value.video}
+                                        date={value.date}
+                                        userId={this.state.userId}
+                                        logged={this.state.logged}
+                                        updateHome={this.props.updateHome}
+                                        updateParent={this.askPosts}
+                                        user={true}
+                            />
+                        )
+                    })}
+                </div>
                 {!this.state.postsList.length && this.state.nomore &&
                     <div className="error-message margin-top center-text">Oops, no posts found..</div>
                 }
@@ -481,7 +463,7 @@ class Posts extends React.Component {
                         <Spinner animation="border" role="status" variant='primary' />
                     </div>
                 }
-                {window.innerWidth>=500 &&
+                {window.innerWidht>=500 &&
                     <input type="image" 
                         onClick={ ()=>{      
                             window.scrollTo({
@@ -500,4 +482,4 @@ class Posts extends React.Component {
     }
 }
 
-export default Posts;
+export default UserPosts;

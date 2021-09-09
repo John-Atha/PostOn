@@ -1,15 +1,18 @@
 import React from "react";
 import './Comments.css';
-import like_icon from './images/like.png';
-import liked_icon from './images/liked.png';
-import delete_icon from './images/delete-icon.png';
-import verified from './images/verified.png';
-import Likes from './Likes';
-import {getUsers, getPostsComments, getLikesSample, getAllLikes, LikeComment, UnLikeComment, DeleteComment, AddComment, getUser, UserLikesComment, PostCommentTag} from './api';
-import ProfileCard from  './ProfileCard';
+import like_icon from '../../images/like.png';
+import liked_icon from '../../images/liked.png';
+import delete_icon from '../../images/delete-icon.png';
+import verified from '../../images/verified.png';
+import Likes from '../Likes/Likes';
+import { getUsers, getPostsComments, getLikesSample,
+         getAllLikes, LikeComment, UnLikeComment,
+         DeleteComment, AddComment, getUser,
+         UserLikesComment, PostCommentTag } from '../../api/api';
+import ProfileCard from  '../Profile/ProfileCard';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { MentionsInput, Mention } from 'react-mentions';
-import { createNotification } from './createNotification';
+import { createNotification } from '../../createNotification';
 import Button from "react-bootstrap/esm/Button";
 
 class NewComment extends React.Component {

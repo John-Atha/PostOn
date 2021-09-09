@@ -1,6 +1,6 @@
 import React from 'react';
 import './ProfileBox.css'
-import {getUser, getFollowersCount, getFollowsCount} from './api';
+import { getUser, getFollowersCount, getFollowsCount } from '../../api/api';
 
 class ProfileBox extends React.Component {
     constructor(props) {

@@ -1,10 +1,10 @@
 import React from 'react';
-import ProfileCard from './ProfileCard';
-import {isLogged, getActivity} from './api';
+import ProfileCard from '../../Components/Profile/ProfileCard';
+import {isLogged, getActivity} from '../../api/api';
 import './Activity.css';
-import MyNavbar from './MyNavbar';
-import MobileNavbar from './MobileNavbar';
-import Searchbar from './Searchbar';
+import MyNavbar from '../../Components/Navbars/MyNavbar';
+import MobileNavbar from '../../Components/Navbars/MobileNavbar';
+import Searchbar from '../../Components/Searchbar/Searchbar';
 import Button from 'react-bootstrap/esm/Button';
 
 const dateShow = (date) => {

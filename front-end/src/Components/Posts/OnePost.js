@@ -1,19 +1,21 @@
 import React from "react";
 import "./Posts.css";
-import {getUsers, getPostsCommentsSample, UpdatePostLike, getLikesSample, LikePost, UnLikePost, editPost, deletePost, UserLikesPost, isLogged, DelPostTags, PostPostTag} from './api';
-import like_icon from './images/like.png';
-import liked_icon from './images/liked.png';
-import comment_icon from './images/comment.png';
-import edit_icon from './images/edit.png';
-import delete_icon from './images/delete-icon.png';
-import verified from './images/verified.png';
-import Likes from './Likes';
-import Comments from './Comments';
-import ProfileCard from './ProfileCard';
+import { getUsers, getPostsCommentsSample, UpdatePostLike, getLikesSample,
+         LikePost, UnLikePost, editPost, deletePost, UserLikesPost,
+         isLogged, DelPostTags, PostPostTag } from '../../api/api';
+import like_icon from '../../images/like.png';
+import liked_icon from '../../images/liked.png';
+import comment_icon from '../../images/comment.png';
+import edit_icon from '../../images/edit.png';
+import delete_icon from '../../images/delete-icon.png';
+import verified from '../../images/verified.png';
+import Likes from '../Likes/Likes';
+import Comments from '../Comments/Comments';
+import ProfileCard from '../Profile/ProfileCard';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { MentionsInput, Mention } from 'react-mentions';
 import ReactPlayer from 'react-player';
-import { createNotification } from './createNotification';
+import { createNotification } from '../../createNotification';
 import Button from "react-bootstrap/esm/Button";
 
 class PostTextNoTags extends React.Component {

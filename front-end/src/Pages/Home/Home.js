@@ -1,0 +1,82 @@
+import React, { useState, useEffect } from 'react';
+import './Home.css';
+import MyNavbar from '../../Components/Navbars/MyNavbar';
+import MobileNavbar from '../../Components/Navbars/MobileNavbar';
+import { isLogged } from '../../api/api';
+import Posts from "../../Components/Posts/Posts";
+import Explore from '../../Components/Explore/Explore';
+import Searchbar from '../../Components/Searchbar/Searchbar';
+import Spinner from 'react-bootstrap/esm/Spinner';
+
+function Home(props) {
+    const [userId, setUserId] = useState(null);
+    const [logged, setLogged] = useState(null);
+    const [update1, setUpdate1] = useState(1);
+    const [update2, setUpdate2] = useState(1);
+    const [updateColorsBetweenNavbars, setUpdateColorsBetweenNavbars] = useState(1);
+    
+    useEffect(() => {
+        isLogged()
+        .then(response => {
+            setLogged(response.data.authenticated);
+            setUserId(response.data.id);
+        })
+        .catch(() => {
+            setLogged(false);
+        })
+    }, [])
+
+    const updateProfBox = () => {
+        setUpdate2(update2+1);
+    }
+    
+    const updateHome = () => {
+        setUpdate1(update1+1);
+    }
+
+    const updateNavbarsColors = () => {
+        setUpdateColorsBetweenNavbars(updateColorsBetweenNavbars+1)
+    }
+
+
+    if (props.case==='following' && logged===null) {
+        return (
+            <div className="all-page">
+                { window.innerWidth<500 &&
+                    <MobileNavbar updateColors={()=>{updateNavbarsColors();}} />
+                }
+                <MyNavbar updateMyColors = {updateColorsBetweenNavbars} />
+                <div style={{'marginBottom': '15px'}} className='center-content margin-top'>
+                        <Spinner animation="border" role="status" variant='primary' />
+                </div>
+            </div>
+        )
+    }
+    else if (props.case==='following' && logged===false) {
+        window.location.href = '/';
+    }
+
+    return (
+        <div className="all-page">
+            { window.innerWidth<500 &&
+                <MobileNavbar updateColors={()=>{updateNavbarsColors();}} />
+            }
+            <MyNavbar updateMyColors = {updateColorsBetweenNavbars} />
+            <Searchbar />
+            <div className="main-home-container flex-layout">
+                <Explore 
+                    userId={userId}
+                    logged={logged}
+                    update1={update1}
+                    updateMyPar={updateProfBox}
+                />
+                <Posts
+                    case={props.case}
+                    updateHome={updateHome} 
+                />
+            </div>
+        </div>
+    )
+}
+
+export default Home;

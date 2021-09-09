@@ -1,7 +1,7 @@
 import React from 'react';
 import './ProfileCard.css';
-import verified from './images/verified.png';
-import {getFollowsCount, getFollowersCount} from './api';
+import verified from '../../images/verified.png';
+import { getFollowsCount, getFollowersCount } from '../../api/api';
 import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 
@@ -65,9 +65,6 @@ class ProfileCard extends React.Component {
                         }
                     </Card.Title>
                     <Card.Text>
-                        {this.setState.moto &&
-                            <br></br>
-                        }
                         {this.state.followersNum} followers<br></br>
                         {this.state.followsNum} following<br></br>
                     </Card.Text>
