@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Searchbar.css';
 import { getUsers } from '../../api/api';
 import Form from 'react-bootstrap/Form'
@@ -7,123 +7,104 @@ import Button from 'react-bootstrap/Button'
 import OutsideClickHandler from 'react-outside-click-handler';
 import { createNotification } from '../../createNotification';
 
-class Searchbar extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            input: "",
-            all: [],
-        }
-        this.handleInput = this.handleInput.bind(this);
-        this.matches = this.matches.bind(this);
-        this.showSuggestions = this.showSuggestions.bind(this);
-        this.hideSuggestions = this.hideSuggestions.bind(this);
-    }
-    handleInput = (event) => {
-        this.suggNum=0;
-        const name=event.target.name;
-        const value=event.target.value;
-        this.setState({
-            [name]: value,
-        })
-    }
-    matches = (s) => {
-        if (this.state.input) {
-            return  s.startsWith(this.state.input.charAt(0).toUpperCase()+this.state.input.slice(1)) ||
-                    s.startsWith(this.state.input.charAt(0).toLowerCase()+this.state.input.slice(1));
+function Searchbar() {
+    const [input, setInput] = useState('');
+    const [all, setAll] = useState([]);
+    const [showSuggestionsBox, setShowSuggestionsBox] = useState(true);
+    const [searchDisabled, setSearchDisabled] = useState(false);
+
+    const matchesInput = (s) => {
+        if (input) {
+            return  s.startsWith(input.charAt(0).toUpperCase()+input.slice(1)) ||
+                    s.startsWith(input.charAt(0).toLowerCase()+input.slice(1));
         }
         else {
-            return s.startsWith(this.state.input);
+            return s.startsWith(input);
         }
     }
-    search = (event) => {
+
+    const search = (event) => {
         event.preventDefault();
         let final=null;
-        this.state.all.forEach((value) => {
-            if (this.matches(value.username)) {
-                if (!final) {
-                    final=value;
-                }
+        for (let value of all) {
+            if (matchesInput(value.username)) {
+                final=value;
+                break;
             }
-        })
+        }
         if (final) {
             createNotification('success', 'Hello,', `We are taking you to ${final.username}'s profile`);
-            //console.log(final);
             setTimeout(()=>{
                 window.location.href = `/users/${final.id}`;
-            }, 1000)
+            }, 500)
         }
         else {
-            createNotification('danger', 'Sorry,', `User ${this.state.input} not found`);
+            createNotification('danger', 'Sorry,', `User ${input} not found`);
         }
     }
-    componentDidMount() {
+
+    useEffect(() => {
         getUsers()
-        .then( response => {
-            this.setState({
-                all: response.data,
-            })
+        .then(response => {
+            setAll(response.data);
         })
-        .catch(err => {
-            //console.log(err);
+        .catch(() => {
+            ;
         })
-        this.hideSuggestions();
+        hideSuggestions();        
+    }, [])
+
+    const showSuggestions = () => {
+        setShowSuggestionsBox(true);
+        setSearchDisabled(false);
     }
-    showSuggestions = () => {
-        //console.log("showing suggestions:");
-        const box = document.getElementById('suggestions-box');
-        box.style.display="block";
-        const button = document.getElementById('search-button');
-        button.disabled = false;
+
+    const hideSuggestions = () => {
+        setShowSuggestionsBox(false);
+        setSearchDisabled(true);
     }
-    hideSuggestions = () => {
-        //console.log("hiding suggestions");
-        const box = document.getElementById('suggestions-box');
-        box.style.display="none";
-        const button = document.getElementById('search-button');
-        button.disabled = true;
-    }
-    render() {
-        return(
-                <Form inline onSubmit={this.search} className="form-container">
-                    <OutsideClickHandler onOutsideClick={this.hideSuggestions} >
-                    <div className="flex-layout">
-                    <FormControl 
-                        style={{width: '250px'}}
-                        type="text" 
-                        placeholder="Search for a user..." 
-                        name="input" 
-                        value={this.state.input} 
-                        className="mr-sm-2" 
-                        onChange={this.handleInput} 
-                        onFocus={this.showSuggestions} />
-                    <Button id="search-button" variant="outline-dark" onClick={this.search}>Search</Button>
-                    </div>
-                    <div id="suggestions-box">
-                        {this.state.input.length!==0 && 
-                            this.state.all.map((value, index) => {
-                                if (this.matches(value.username)) {
-                                    return (
-                                        <a key={index} className="one-suggestion flex-layout" href={`/users/${value.id}`}>
-                                            <div className="user-photo-container-small">
-                                                    <img className="user-photo" src={value.photo} alt="user profile" />
-                                            </div>
-                                            <div className="owner-name">{value.username}</div>
-                                        </a>
-                                    )
-                                }
-                                else {
-                                    return(
-                                        <div key={index}></div>
-                                    )
-                                }
-                            })
-                        }
-                    </div>
-                    </OutsideClickHandler>
-                </Form>
-        )
-    }
+
+    return(
+        <Form inline onSubmit={search} className="form-container">
+            <OutsideClickHandler onOutsideClick={hideSuggestions} >
+            <div className="flex-layout">
+                <FormControl 
+                    style={{width: '250px'}}
+                    type="text" 
+                    placeholder="Search for a user..." 
+                    name="input" 
+                    value={input} 
+                    className="mr-sm-2"
+                    onChange={(event)=>setInput(event.target.value)}
+                    onFocus={showSuggestions} />
+                <Button id="search-button" disabled={searchDisabled} variant="outline-dark" onClick={search}>Search</Button>
+            </div>
+            {showSuggestionsBox &&
+                <div id="suggestions-box">
+                    {input.length!==0 && 
+                        all.map((value, index) => {
+                            if (matchesInput(value.username)) {
+                                return (
+                                    <a key={index} className="one-suggestion flex-layout" href={`/users/${value.id}`}>
+                                        <div className="user-photo-container-small">
+                                                <img className="user-photo" src={value.photo} alt="user profile" />
+                                        </div>
+                                        <div className="owner-name">{value.username}</div>
+                                    </a>
+                                )
+                            }
+                            else {
+                                return(
+                                    <div key={index}></div>
+                                )
+                            }
+                        })
+                    }
+                </div>          
+            }
+            </OutsideClickHandler>
+        </Form>
+    )
 }
 
 export default Searchbar;
