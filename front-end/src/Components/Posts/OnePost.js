@@ -1119,8 +1119,8 @@ class OnePost extends React.Component {
                             />
                         </MentionsInput>
                         <div className="flex-layout center-content">
-                            <button className="my-button pagi-button flex-item-small" onClick={this.saveText}>Save change</button>
-                            <button className="my-button pagi-button flex-item-small" onClick={this.discardText}>Discard change</button>
+                            <Button variant='primary' className="margin" onClick={this.saveText}>Save change</Button>
+                            <Button variant='warning' className="margin" onClick={this.discardText}>Discard change</Button>
                         </div>                       
                         {this.state.media &&
                             <div className="center-content">

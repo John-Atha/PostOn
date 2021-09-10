@@ -404,7 +404,7 @@ class UserPosts extends React.Component {
                 }
                 { this.state.userId===this.state.whose && !this.state.isUploading &&
                     <div className="new-post-container">
-                            <h5>Hello, what are you thinking?</h5>
+                            <h5>Hi, what's on your mind?</h5>
                             <h6>Photo</h6>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <input id="new-post-photo" type="file" accept="image/*, video/*"/>

@@ -1,106 +1,8 @@
 import React from 'react';
 import './Explore.css'
-import ProfileCard from '../Profile/ProfileCard';
-import { getUsers, getFollows, getFollowers, followUser, unfollowUser } from '../../api/api';
-import verified from '../../images/verified.png';
-import Button from 'react-bootstrap/esm/Button';
+import { getUsers, getFollows, getFollowers } from '../../api/api';
+import OneUserLine from '../Profile/OneUserLine';
 
-class OneUser extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            user: this.props.user,
-            logged: this.props.logged,
-            me: this.props.me,
-            error: null,
-            showCard: false,
-        }
-        this.follow = this.follow.bind(this);
-        this.unfollow = this.unfollow.bind(this);
-        this.cardShow = this.cardShow.bind(this);
-        this.cardHide = this.cardHide.bind(this);
-    }
-    cardShow = () => {
-        this.setState({
-            showCard: true,
-        })
-    }
-    cardHide = () => {
-        this.setState({
-            showCard: false,
-        })
-    }
-    follow = () => {
-        console.log(`follower id: ${this.props.me}`)
-        console.log(`followed id: ${this.state.user.id}`)
-        followUser(this.props.me, this.state.user.id)
-        .then(response => {
-            console.log(response);
-            this.props.updatePar();
-        })
-        .catch(err => {
-            console.log(err);
-            this.props.updatePar();
-        })
-    }
-    unfollow = () => {
-        unfollowUser(this.props.followId)
-        .then(response => {
-            console.log(response);
-            this.props.updatePar();
-        })
-        .catch(err => {
-            console.log(err);
-            this.props.updatePar();
-        })
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.user!==this.props.user || prevProps.followed!==this.props.followed || prevProps.following!==this.props.following) {
-            this.setState({
-                user: this.props.user,
-                logged: this.props.logged,
-            })
-        }
-    }
-    render() {
-        return (
-            <div className="one-user-line flex-layout">
-                <div className="flex-layout flex-item-small">
-                    <div className="user-photo-container-small">
-                            <img className="user-photo" src={this.state.user.photo} alt="user profile" />
-                    </div>
-                    <div className="owner-name"
-                        onMouseEnter={this.cardShow}
-                        onMouseLeave={this.cardHide}>
-                        {this.state.user.username}
-                        {this.state.user.verified===true &&
-                                <img className="verified-icon" src={verified} alt="verified" />
-                        }
-                        {this.state.showCard &&
-                            <ProfileCard id={this.state.user.id}
-                                    username={this.state.user.username}
-                                    moto={this.state.user.moto}
-                                    photo={this.state.user.photo}
-                                    position={"right-more"} 
-                                    verified={this.state.user.verified}/>
-                        }
-                    </div>
-                </div>
-                <div className="flex-item-smaller">
-                    {this.state.logged && !this.props.followed && !this.props.following && this.props.me!==this.props.user.id &&
-                        <Button style={{'width': '130px', 'position': 'absolute', 'right': '15px'}} className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow</Button>
-                    }
-                    {this.state.logged && !this.props.followed && this.props.following && this.props.me!==this.props.user.id &&
-                        <Button style={{'width': '130px', 'position': 'absolute', 'right': '15px'}} className="my-button un-follow-button pale-blue" onClick={this.follow}>Follow Back</Button>
-                    }
-                    {this.state.logged && this.props.followed && this.props.me!==this.props.user.id &&
-                        <Button style={{'width': '130px', 'position': 'absolute', 'right': '15px'}} className="my-button un-follow-button" onClick={this.unfollow}>UnFollow</Button>
-                    }
-                </div>
-            </div>
-        )
-    }
-}
 class ExploreScroll extends React.Component {
     constructor(props) {
         super(props);
@@ -267,7 +169,7 @@ class ExploreScroll extends React.Component {
                         if (value.id!==this.props.userId) {
                             if (this.state.followsList.includes(value.id)) {
                                 return (
-                                    <OneUser key={index}
+                                    <OneUserLine key={index}
                                              user={value}
                                              me={this.props.userId}
                                              logged={this.props.logged}
@@ -278,7 +180,7 @@ class ExploreScroll extends React.Component {
                             }
                             else if(!this.state.followsList.includes(value.id) && this.state.followersList.includes(value.id)) {
                                 return (
-                                    <OneUser key={index}
+                                    <OneUserLine key={index}
                                             user={value}
                                             me={this.props.userId} 
                                             logged={this.props.logged} 
@@ -289,7 +191,7 @@ class ExploreScroll extends React.Component {
                             }
                             else {
                                 return (
-                                    <OneUser key={index} 
+                                    <OneUserLine key={index} 
                                             user={value} 
                                             me={this.props.userId} 
                                             logged={this.props.logged} 
