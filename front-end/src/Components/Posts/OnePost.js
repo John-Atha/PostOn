@@ -638,17 +638,8 @@ class OnePost extends React.Component {
                     let sugg=suggest.username;
                     if (el.startsWith(`@[${sugg}]`)) {
                         matched = true;
-                        //console.log(`el: ${el}`)
                         let el2 = el.split(')')
-                        //console.log(`el parts: ${el2}`)
-                        let first = el2[0]
                         let dump = el2[1]
-                        //console.log(`first: ${first}`)
-                        //let username = first.split(']')[0].slice(2)
-                        //let id = first.split(']')[1].slice(1)
-                        //console.log(`username: ${suggest.username}`)
-                        //console.log(`id: ${suggest.id}`)
-                        //console.log(`dump: ${dump}`)
                         final_post_object.push({
                             "tag": {
                                 "username": suggest.username,

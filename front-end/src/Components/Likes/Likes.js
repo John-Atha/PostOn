@@ -96,7 +96,7 @@ class OneLike extends React.Component {
                     <Button variant='primary' style={{'maxWidth': '100px'}} onClick={this.follow}>Follow</Button>
                 }
                 {this.state.logged && !this.props.followed && this.props.following && this.props.me!==this.props.owner.id &&
-                    <Button variant='primary' style={{'maxWidth': '100px'}} onClick={this.follow}>Follow Back</Button>
+                    <Button variant='primary' style={{'maxWidth': '100px', 'fontSize': '0.8rem'}} onClick={this.follow}>Follow Back</Button>
                 }
                 {this.state.logged && this.props.followed && this.props.me!==this.props.owner.id &&
                     <Button variant='outline-primary' style={{'maxWidth': '100px'}} onClick={this.unfollow}>Unfollow</Button>

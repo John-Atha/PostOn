@@ -106,26 +106,14 @@ class NewComment extends React.Component {
         //console.log(s2);
         s3 = s3.flat();
         //console.log(s3);
-        let index=0;
         s3.forEach(el => {
             //console.log(el)
             if (el.startsWith('@')) {    
-                let matched = false;
                 this.state.usersList.forEach(suggest => {
                     let sugg=suggest.display;
                     if (el.startsWith(`@[${sugg}]`)) {
-                        matched = true;
-                        //console.log(`el: ${el}`)
                         let el2 = el.split(')')
-                        //console.log(`el parts: ${el2}`)
-                        let first = el2[0]
                         let dump = el2[1]
-                        //console.log(`first: ${first}`)
-                        //let username = first.split(']')[0].slice(2)
-                        //let id = first.split(']')[1].slice(1)
-                        //console.log(`username: ${suggest.display}`)
-                        //console.log(`id: ${suggest.id}`)
-                        //console.log(`dump: ${dump}`)
                         final_post_object.push({
                             "tag": {
                                 "username": suggest.display,
@@ -134,7 +122,6 @@ class NewComment extends React.Component {
                             },
                             "dump": dump,
                         })
-                        index++;
                     }
                 })
             }
@@ -748,17 +735,8 @@ class OneComment extends React.Component {
                     let sugg=suggest.username;
                     if (el.startsWith(`@[${sugg}]`)) {
                         matched = true;
-                        //console.log(`el: ${el}`)
                         let el2 = el.split(')')
-                        //console.log(`el parts: ${el2}`)
-                        let first = el2[0]
                         let dump = el2[1]
-                        //console.log(`first: ${first}`)
-                        //let username = first.split(']')[0].slice(2)
-                        //let id = first.split(']')[1].slice(1)
-                        //console.log(`username: ${suggest.username}`)
-                        //console.log(`id: ${suggest.id}`)
-                        //console.log(`dump: ${dump}`)
                         final_post_object.push({
                             "tag": {
                                 "username": suggest.username,
