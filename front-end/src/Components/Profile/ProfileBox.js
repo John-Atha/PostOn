@@ -1,102 +1,78 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './ProfileBox.css'
 import { getUser, getFollowersCount, getFollowsCount } from '../../api/api';
 
-class ProfileBox extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            userId: this.props.userId,
-            username: null,
-            photo: null,
-            email: null,
-            followers: null,
-            follows: null,
-        }
-        this.load = this.load.bind(this);
-        this.countFollows = this.countFollows.bind(this);
-        this.countFollowers = this.countFollowers.bind(this);
-        this.getUserInfo = this.getUserInfo.bind(this);
-    }
-    countFollows = () => {
-        getFollowsCount(this.state.userId)
+function ProfileBox(props) {
+    const [userId, setUserId] = useState(props.userId);
+    const [user, setUser] = useState(null);
+    const [followsCount, setFollowsCount] = useState(0);
+    const [followersCount, setFollowersCount] = useState(0);
+
+    const countFollows = () => {
+        getFollowsCount(userId)
         .then(response => {
-            //console.log(response);
-            this.setState({
-                follows: response.data.follows,
-            })
+            setFollowsCount(response.data.follows);
         })
-        .catch(err => {
-            //console.log(err);
-            this.setState({
-                follows: "-",
-            })
+        .catch(() => {
+            setFollowsCount(0)
         })
     }
-    countFollowers = () => {
-        getFollowersCount(this.state.userId)
+
+    const countFollowers = () => {
+        getFollowersCount(userId)
         .then(response => {
-            //console.log(response);
-            this.setState({
-                followers: response.data.followers,
-            })
+            setFollowersCount(response.data.followers);
         })
-        .catch(err => {
-            //console.log(err);
-            this.setState({
-                followers: "-",
-            })
+        .catch(() => {
+            setFollowersCount(0);
         })
     }
-    getUserInfo = () => {
-        getUser(this.state.userId)
+
+    const getUserInfo = () => {
+        getUser(userId)
         .then(response => {
-            //console.log(response);
-            this.setState({
-                username: response.data.username,
-                photo: response.data.photo,
-                email:response.data.email,
-            })
+            setUser(response.data);
         })
-        .catch(err => {
-            //console.log(err);
-            this.setState({
-                error: "Sorry, we could not find info for your account.",
-            })
+        .catch(() => {
+            ;
         })
     }
-    load = () => {
-        this.getUserInfo();
-        this.countFollowers();
-        this.countFollows();
+
+    const load = () => {
+        getUserInfo();
+        countFollowers();
+        countFollows();
     }
-    componentDidMount() {
-        this.load();
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.userId!==this.props.userId) {
-            this.load();
-        }
-        if (prevProps.update1!==this.props.update1 || prevProps.update2!==this.props.update2) {
-            this.countFollowers();
-            this.countFollows();
-        }
-    }
-    render() {
-        return (
-            <div className="profile-box">
-                <div className="flex-layout">
-                    <div className="user-photo-container-small">
-                            <img className="user-photo" src={this.state.photo} alt="user" />
-                    </div>
-                    <div className="owner-name">{this.state.username}</div>
+
+    useEffect(() => {
+        setUserId(props.userId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.userId])
+
+    useEffect(() => {
+        load();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userId])
+
+    useEffect(() => {
+        countFollows();
+        countFollowers();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.update1, props.update2])
+    
+    return (
+        <div className="profile-box">
+            <div className="flex-layout">
+                <div className="user-photo-container-small">
+                        <img className="user-photo" src={user ? user.photo : null} alt="user" />
                 </div>
-                <div className="one-user-line">Email: {this.state.email}</div>
-                <div className="one-user-line">Followers: {this.state.followers}</div>
-                <div className="one-user-line">Follows: {this.state.follows}</div>
+                <div className="owner-name">{ user ? user.username : null}</div>
             </div>
-        )
-    }
+            <div className="one-user-line">Email: {user ? user.email : null}</div>
+            <div className="one-user-line">Followers: {followersCount || '-'}</div>
+            <div className="one-user-line">Follows: {followsCount || '-'}</div>
+        </div>
+    )
 }
 
 export default ProfileBox;

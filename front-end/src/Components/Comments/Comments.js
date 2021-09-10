@@ -501,12 +501,10 @@ class CommentText extends React.Component {
                                     onMouseLeave={()=>this.cardHide(index)}>
                                     {value.tag.username}
                                     {this.state.showCard[index] &&
-                                        <ProfileCard id={value.tag.id}
-                                                username={value.tag.username}
-                                                moto={value.tag.moto}
-                                                photo={value.tag.photo}
-                                                verified={value.tag.verified}
-                                                position={"top-close"}/>
+                                        <ProfileCard 
+                                            user={value.tag}
+                                            position={"top-close"}
+                                        />
                                     }
                                 </div>
                                 <div>&nbsp;</div>
@@ -521,12 +519,10 @@ class CommentText extends React.Component {
                                     onMouseLeave={()=>this.cardHide(index)}>
                                     {value.tag.username}
                                     {this.state.showCard[index] &&
-                                        <ProfileCard id={value.tag.id}
-                                                username={value.tag.username}
-                                                moto={value.tag.moto}
-                                                photo={value.tag.photo}
-                                                verified={value.tag.verified}
-                                                position={"top-close"}/>
+                                        <ProfileCard
+                                            user={value.tag}
+                                            position={"top-close"}
+                                        />
                                     }
                                 </div>
                                 { value.dump==='\n' &&
@@ -1008,12 +1004,10 @@ class OneComment extends React.Component {
                                 <img className="verified-icon" src={verified} alt="verified" />
                             }
                             {this.state.showCard &&
-                                <ProfileCard id={this.state.comment.owner.id}
-                                        username={this.state.comment.owner.username}
-                                        moto={this.state.comment.owner.moto}
-                                        photo={this.state.comment.owner.photo}
-                                        verified={this.state.comment.owner.verified}
-                                        position={"top-close"}/>
+                                <ProfileCard 
+                                    user={this.state.comment.owner}
+                                    position={"top-close"}
+                                />
                             }
                         </div>
                         <div className="post-date comment-date">{commentDatetime}</div>
@@ -1041,13 +1035,11 @@ class OneComment extends React.Component {
 
                                 {this.state.likerSample.username}
                                 {this.state.showCard2 &&
-                                <ProfileCard id={this.state.likerSample.id}
-                                        username={this.state.likerSample.username}
-                                        moto={this.state.likerSample.moto}
-                                        photo={this.state.likerSample.photo}
-                                        verified={this.state.likerSample.verified}
-                                        position={"bottom"}/>
-                            }
+                                    <ProfileCard 
+                                        user={this.state.likerSample}
+                                        position={"bottom"}
+                                    />
+                                }
                             </div>
                         }
                         {!this.state.likesNum &&

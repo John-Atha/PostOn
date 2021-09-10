@@ -296,13 +296,10 @@ class PostText extends React.Component {
                                         onMouseLeave={()=>this.cardHide(index)}>
                                         {value.tag.username}
                                         {this.state.showCard[index] &&
-                                            <ProfileCard id={value.tag.id}
-                                                    username={value.tag.username}
-                                                    moto={value.tag.moto}
-                                                    photo={value.tag.photo}
-                                                    position={"top-close"}
-                                                    verified={value.tag.verified}
-                                                    />
+                                            <ProfileCard
+                                                user={value.tag}
+                                                position={"top-close"}
+                                            />
                                         }
                                     </div>
                                 )
@@ -315,12 +312,10 @@ class PostText extends React.Component {
                                             onMouseLeave={()=>this.cardHide(index)}>
                                             {value.tag.username}
                                             {this.state.showCard[index] &&
-                                                <ProfileCard id={value.tag.id}
-                                                        username={value.tag.username}
-                                                        moto={value.tag.moto}
-                                                        photo={value.tag.photo}
-                                                        position={"top-close"}
-                                                        verified={value.tag.verified} />
+                                                <ProfileCard 
+                                                    user={value.tag}
+                                                    position={"top-close"}
+                                                />
                                             }
                                         </div>
                                         { value.dump==='\n' &&
@@ -1057,12 +1052,10 @@ class OnePost extends React.Component {
                                 <img className="verified-icon" src={verified} alt="verified" />
                             }
                             {this.state.showCard &&
-                                <ProfileCard id={this.state.owner.id}
-                                     username={this.state.owner.username}
-                                     moto={this.state.owner.moto}
-                                     photo={this.state.owner.photo}
-                                     verified={this.state.owner.verified}
-                                     position={"right"} />
+                                <ProfileCard
+                                    user={this.state.owner}
+                                    position={"right"}
+                                />
                             }
                         </div>
                         <div className="post-date">{this.dateCalc(this.state.date)}</div>
@@ -1172,12 +1165,10 @@ class OnePost extends React.Component {
 
                                 {this.state.likerSample.username}
                                 {this.state.showCard2 &&
-                                    <ProfileCard id={this.state.likerSample.id}
-                                            username={this.state.likerSample.username}
-                                            moto={this.state.likerSample.moto}
-                                            photo={this.state.likerSample.photo}
-                                            verified={this.state.likerSample.verified}
-                                            position={"bottom"}/>
+                                    <ProfileCard
+                                        user={this.state.likerSample}
+                                        position={"bottom"}
+                                    />
                                 }
                             </div>
                         }

@@ -55,12 +55,10 @@ function OneUserLine(props) {
                         }
                 </div>
                 {showCard &&
-                    <ProfileCard id={user.id}
-                            username={user.username}
-                            moto={user.moto}
-                            photo={user.photo}
-                            verified={user.verified}
-                            position={props.case==='profile' ? "bottom" : 'right-more'} />
+                    <ProfileCard
+                        user={user}
+                        position={props.case==='profile' ? "bottom" : 'right-more'}
+                    />
                 }
             </div>
             {logged &&

@@ -77,12 +77,10 @@ class CommentAction extends React.Component {
                             onMouseLeave={this.cardHide}>
                             {" "+this.state.post.owner.username}
                             {this.state.showCard &&
-                                    <ProfileCard id={this.state.post.owner.id}
-                                        username={this.state.post.owner.username}
-                                        moto={this.state.post.owner.moto}
-                                        photo={this.state.post.owner.photo}
-                                        verified={this.state.post.owner.verified}
-                                        position={"right"} />
+                                    <ProfileCard
+                                        user={this.state.post.owner}
+                                        position={"right"}
+                                    />
                             }
                         </div>.
                     </div>
@@ -147,12 +145,10 @@ class PostLikeAction extends React.Component {
                             onMouseLeave={this.cardHide}>
                             {" "+this.state.post.owner.username}
                             {this.state.showCard &&
-                                    <ProfileCard id={this.state.post.owner.id}
-                                        username={this.state.post.owner.username}
-                                        moto={this.state.post.owner.moto}
-                                        photo={this.state.post.owner.photo}
-                                        verified={this.state.post.owner.verified}
-                                        position={"right"} />
+                                    <ProfileCard
+                                        user={this.state.post.owner}
+                                        position={"right"} 
+                                    />
                             }
                         </div>
                     </div>
@@ -214,12 +210,10 @@ class CommentLikeAction extends React.Component {
                             onMouseLeave={this.cardHide}>
                             {" "+this.state.comment.owner.username}
                             {this.state.showCard &&
-                                    <ProfileCard id={this.state.comment.owner.id}
-                                            username={this.state.comment.owner.username}
-                                            moto={this.state.comment.owner.moto}
-                                            photo={this.state.comment.owner.photo}
-                                            verified={this.state.comment.owner.verified}
-                                            position={"right"} />
+                                    <ProfileCard
+                                        user={this.state.comment.owner}
+                                        position={"right"}
+                                    />
                             }
                         </div>.
                     </div>
@@ -321,12 +315,10 @@ class FollowAction extends React.Component {
                                     onMouseLeave={this.cardHide}>
                             {" "+this.state.followed.username}
                             {this.state.showCard &&
-                                    <ProfileCard id={this.state.followed.id}
-                                            username={this.state.followed.username}
-                                            moto={this.state.followed.moto}
-                                            photo={this.state.followed.photo}
-                                            verified={this.state.followed.verified}
-                                            position={"right"} />
+                                    <ProfileCard
+                                        user={this.state.followed}
+                                        position={"right"}
+                                    />
                             }
                         </div>.
                     </div>
