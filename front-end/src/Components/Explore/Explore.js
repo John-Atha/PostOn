@@ -1,300 +1,179 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Explore.css'
-import ProfileCard from '../Profile/ProfileCard';
-import { getUsers, getFollows, getFollowers, followUser, unfollowUser } from '../../api/api';
-import verified from '../../images/verified.png';
+import { getUsers, getFollows, getFollowers } from '../../api/api';
 import Button from 'react-bootstrap/esm/Button';
+import OneUserLine from '../Profile/OneUserLine';
 
-class OneUser extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            user: this.props.user,
-            logged: this.props.logged,
-            me: this.props.me,
-            error: null,
-            showCard: false,
-        }
-        this.follow = this.follow.bind(this);
-        this.unfollow = this.unfollow.bind(this);
-        this.cardShow = this.cardShow.bind(this);
-        this.cardHide = this.cardHide.bind(this);
-    }
-    cardShow = () => {
-        this.setState({
-            showCard: true,
-        })
-    }
-    cardHide = () => {
-        this.setState({
-            showCard: false,
-        })
-    }
-    follow = () => {
-        //console.log(`follower id: ${this.props.me}`)
-        //console.log(`followed id: ${this.state.user.id}`)
-        followUser(this.props.me, this.state.user.id)
-        .then(response => {
-            //console.log(response);
-            this.props.updatePar();
-        })
-        .catch(err => {
-            //console.log(err);
-            this.props.updatePar();
-        })
-    }
-    unfollow = () => {
-        unfollowUser(this.props.followId)
-        .then(response => {
-            //console.log(response);
-            this.props.updatePar();
-        })
-        .catch(err => {
-            //console.log(err);
-            this.props.updatePar();
-        })
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.user!==this.props.user || prevProps.followed!==this.props.followed || prevProps.following!==this.props.following) {
-            this.setState({
-                user: this.props.user,
-                logged: this.props.logged,
-            })
-        }
-    }
-    render() {
-        return (
-            <div className="one-user-line flex-layout">
-                <div className="flex-layout flex-item-small">
-                    <div className="user-photo-container-small">
-                            <img className="user-photo" src={this.state.user.photo} alt="user profile" />
-                    </div>
-                    <div className="owner-name"
-                        onMouseEnter={this.cardShow}
-                        onMouseLeave={this.cardHide}>
-                        {this.state.user.username}
-                        {this.state.user.verified===true &&
-                                <img className="verified-icon" src={verified} alt="verified" />
-                        }
-                        {this.state.showCard &&
-                            <ProfileCard id={this.state.user.id}
-                                    username={this.state.user.username}
-                                    moto={this.state.user.moto}
-                                    photo={this.state.user.photo}
-                                    position={"right-more"} 
-                                    verified={this.state.user.verified}/>
-                        }
-                    </div>
-                </div>
-                <div className="flex-item-smaller">
-                    {this.state.logged && !this.props.followed && !this.props.following && this.props.me!==this.props.user.id &&
-                        <Button variant='primary' style={{'width': '100px'}} onClick={this.follow}>Follow</Button>
-                    }
-                    {this.state.logged && !this.props.followed && this.props.following && this.props.me!==this.props.user.id &&
-                        <Button variant='primary' style={{'width': '100px', 'fontSize':'0.5rem'}} onClick={this.follow}>Follow Back</Button>
-                    }
-                    {this.state.logged && this.props.followed && this.props.me!==this.props.user.id &&
-                        <Button variant='outline-primary' style={{'width': '100px'}} onClick={this.unfollow}>UnFollow</Button>
-                    }
-                </div>
-            </div>
-        )
-    }
-}
-class Explore extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            userId: this.props.userId,
-            logged: this.props.logged,
-            error: null,
-            start:1,
-            end:10,
-            usersList: [],
-            followsList: [],
-            followsObjIdList: [],
-            followersList: [],
-        }
-        this.first = true;
-        this.previousPage = this.previousPage.bind(this);
-        this.nextPage = this.nextPage.bind(this);
-        this.moveOn = this.moveOn.bind(this);
-        this.askUsers = this.askUsers.bind(this);
-        this.askFollows = this.askFollows.bind(this);
-        this.updateFollows = this.updateFollows.bind(this);
-    }
-    moveOn = () => {
+function Explore(props) {
+    const [userId, setUserId] = useState(props.userId);
+    const [error, setError] = useState(null);
+    const [start, setStart] = useState(1);
+    const [end, setEnd] = useState(10);
+    const [usersList, setUsersList] = useState([]);
+    const [followsList, setFollowsList] = useState([]);
+    const [followsObjIdList, setFollowsObjIdList] = useState([]);
+    const [followersList, setFollowersList] = useState([]);
+
+    let first = true;
+    
+    const moveOn = () => {
         window.scrollTo({
             top:0,
             left:0,
             behavior:'smooth'
         });
-        setTimeout(() => this.askUsers(), 1000);
+        askUsers();
     }
-    previousPage = () => {
-        setTimeout(this.setState({
-            start: this.state.start-10,
-            end: this.state.end-10,
-        }), 0)
-        this.moveOn();
+
+    const previousPage = () => {
+        setStart(start-10);
+        setEnd(end-10);
     }
-    nextPage = () => {
-        setTimeout(this.setState({
-            start: this.state.start+10,
-            end: this.state.end+10,
-        }), 0)
-        this.moveOn();
+
+    const nextPage = () => {
+        setStart(start+10);
+        setEnd(end+10);
     }
-    askFollows = () => {
-        setTimeout(()=>{
-            if (this.props.userId) {
-                getFollows(this.props.userId)
-                .then(response => {
-                    //console.log(response);
-                    let tempFollowsList = this.state.followsList;
-                    let tempFollowsObjIdList = this.state.followsObjIdList;
-                    response.data.forEach(el=> {
-                        if (!this.state.followsList.includes(el.followed.id)) {
-                            tempFollowsList.push(el.followed.id);
-                            tempFollowsObjIdList.push(el.id);
-                        }
-                    })
-                    this.setState({
-                        followsList: tempFollowsList,
-                        followsObjIdList: tempFollowsObjIdList,
-                    })
-                    //console.log("followsList: ");
-                    //console.log(tempFollowsList);
+
+    const askFollows = () => {
+        if (userId) {
+            getFollows(userId)
+            .then(response => {
+                let tempFollowsList = [];
+                let tempFollowsObjIdList = [];
+                response.data.forEach(el=> {
+                    tempFollowsList.push(el.followed.id);
+                    tempFollowsObjIdList.push(el.id);
                 })
-                .catch(err => {
-                    //console.log(err);
-                    //console.log("No more follows found for this user (as a follower).");
-                });
-                getFollowers(this.props.userId)
-                .then(response => {
-                    //console.log(response);
-                    let tempFollowersList = this.state.followersList;
-                    response.data.forEach(el=> {
-                        if (!this.state.followersList.includes(el.following.id)) {
-                            tempFollowersList.push(el.following.id);
-                        }
-                    })
-                    this.setState({
-                        followersList: tempFollowersList,
-                    })
-                    //console.log("followersList: ");
-                    //console.log(tempFollowersList);
-                })
-                .catch(err => {
-                    //console.log(err);
-                    //console.log("No more follows found for this user (as a follower).");
-                });
-            }
-        }, 100)
-    }
-    askUsers = () => {
-        getUsers(this.state.start, this.state.end)
-        .then(response => {
-            //console.log(response);
-            this.setState({
-                usersList: response.data,
+                setFollowsList(tempFollowsList);
+                setFollowsObjIdList(tempFollowsObjIdList);
             })
-            if(this.first) {
-                this.askFollows();
-                this.first = false;
+            .catch(() => {
+                ;
+            })
+            getFollowers(userId)
+            .then(response => {
+                let tempFollowersList = [];
+                response.data.forEach(el=> {
+                    tempFollowersList.push(el.following.id);
+                })
+                setFollowersList(tempFollowersList);
+            })
+            .catch(err => {
+                ;
+            });
+        }
+    }
+
+    const askUsers = () => {
+        getUsers(start, end)
+        .then(response => {
+            setUsersList(response.data);
+            if(first) {
+                askFollows();
+                first = false;
             }
         })
-        .catch(err => {
-            //console.log(err);
-            this.setState({
-                error: "No more users found",
-            })
+        .catch(() => {
+            setError("No more users found");
         })        
     }
-    updateFollows = () => {
-        this.setState({
-            followsList: [],
-            followsObjIdList: [],
-            followersList: [],
-        })
-        this.props.updateMyPar();
-        setTimeout(()=>{this.askFollows()}, 0);
+
+    const updateFollows = () => {
+        setFollowsList([]);
+        setFollowsObjIdList([]);
+        setFollowersList([]);
+        props.updateMyPar();
+        setTimeout(()=>{ askFollows() }, 500);
     }
-    componentDidMount() {
-        this.askUsers();
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.userId !==this.props.userId) {
-            //console.log(`Updated to user ${this.props.userId}`);
-            this.askUsers();
-            this.updateFollows();
-        }
-        if (prevProps.update1!==this.props.update1) {
-            //console.log("UPDATED");
-            this.updateFollows();
-        }
-    }
-    render() {
-        return(
-            <div className="explore-container center-content">
-                <h5>Explore</h5>
-                {
-                    this.state.usersList.length!==0 && this.state.usersList.map((value, index) => {
-                        //console.log(value);
-                        if (value.id!==this.props.userId) {
-                            if (this.state.followsList.includes(value.id)) {
-                                return (
-                                    <OneUser key={index}
-                                             user={value}
-                                             me={this.props.userId}
-                                             logged={this.props.logged}
-                                             followId={this.state.followsObjIdList[this.state.followsList.indexOf(value.id)]}
-                                             followed={true}
-                                             updatePar={this.updateFollows} />
-                                )
-                            }
-                            else if(!this.state.followsList.includes(value.id) && this.state.followersList.includes(value.id)) {
-                                return (
-                                    <OneUser key={index}
+
+    useEffect(() => {
+        setUserId(props.userId);
+    }, [props.userId])
+
+    useEffect(() => {
+        askUsers();
+    }, [userId])
+
+    useEffect(() => {
+        updateFollows();
+    }, [usersList])
+
+    useEffect(() => {
+        updateFollows();
+    }, [props.update1])
+
+    useEffect(() => {
+        moveOn();
+    }, [start, end])
+
+    return(
+        <div className="explore-container center-content">
+            <h5>Explore</h5>
+            {
+                usersList.length!==0 && usersList.map((value, index) => {
+                    if (value.id!==userId) {
+                        if (followsList.includes(value.id)) {
+                            return (
+                                <OneUserLine 
+                                            key={index}
                                             user={value}
-                                            me={this.props.userId} 
-                                            logged={this.props.logged} 
-                                            followed={false} 
-                                            following={true}
-                                            updatePar={this.updateFollows} />
-                                )    
-                            }
-                            else {
-                                return (
-                                    <OneUser key={index} 
-                                            user={value} 
-                                            me={this.props.userId} 
-                                            logged={this.props.logged} 
-                                            followed={false} 
-                                            following={false}
-                                            updatePar={this.updateFollows} />
-                                )    
-                            }
-                        }
-                        else {
-                            return(
-                                <div key={index}></div>
+                                            me={userId}
+                                            logged={props.logged}
+                                            followId={followsObjIdList[followsList.indexOf(value.id)]}
+                                            followed={true}
+                                            updatePar={updateFollows}
+                                            case='explore'
+                                />
                             )
                         }
-                        })
-                }
-                {this.state.usersList.length!==0 && 
-                    <div className="pagi-buttons-container flex-layout center-content">
-                        <Button variant='dark' disabled={this.state.start===1} className="flex-item-small margin" onClick={this.previousPage}>Previous</Button>
-                        <Button variant='dark' disabled={this.state.usersList.length<10} className="flex-item-small margin" onClick={this.nextPage}>Next</Button>
-                    </div>            
-                }
-                {!this.state.usersList.length!==0 &&
-                    <div className="error-message margin-top center-text">{this.state.error}</div>
-                }
-            </div>
-        )
-    }
+                        else if(!followsList.includes(value.id) && followersList.includes(value.id)) {
+                            return (
+                                <OneUserLine
+                                        key={index}
+                                        user={value}
+                                        me={userId} 
+                                        logged={props.logged} 
+                                        followed={false} 
+                                        following={true}
+                                        updatePar={updateFollows}
+                                        case='explore'
+                                />
+                            )    
+                        }
+                        else {
+                            return (
+                                <OneUserLine
+                                        key={index} 
+                                        user={value} 
+                                        me={userId} 
+                                        logged={props.logged} 
+                                        followed={false} 
+                                        following={false}
+                                        updatePar={updateFollows}
+                                        case='explore'
+                                />
+                            )    
+                        }
+                    }
+                    else {
+                        return(
+                            <div key={index}></div>
+                        )
+                    }
+                    })
+            }
+            {usersList.length!==0 && 
+                <div className="pagi-buttons-container flex-layout center-content">
+                    <Button variant='dark' disabled={start===1} className="flex-item-small margin" onClick={previousPage}>Previous</Button>
+                    <Button variant='dark' disabled={usersList.length<10} className="flex-item-small margin" onClick={nextPage}>Next</Button>
+                </div>            
+            }
+            {!usersList.length!==0 &&
+                <div className="error-message margin-top center-text">{error}</div>
+            }
+        </div>
+    )
 }
 
 export default Explore;

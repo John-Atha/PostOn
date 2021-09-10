@@ -88,7 +88,8 @@ function FollowBox(props) {
                                             logged={props.logged}
                                             followId={props.myFollowsObjIdList[props.myFollowsList.indexOf(value.followed.id)]}
                                             followed={true}
-                                            updatePar={props.updateMyFollows} />
+                                            updatePar={props.updateMyFollows}
+                                            case='profile' />
                             )
                         }
                         else if(!hisFollowsList.includes(value.followed.id) &&
@@ -100,7 +101,8 @@ function FollowBox(props) {
                                                     logged={props.logged}
                                                     followed={false}
                                                     following={true}
-                                                    updatePar={props.updateMyFollows} />
+                                                    updatePar={props.updateMyFollows}
+                                                    case='profile' />
                                     )
                         }
                         else {
@@ -111,7 +113,8 @@ function FollowBox(props) {
                                             logged={props.logged}
                                             followed={false}
                                             following={false}
-                                            updatePar={props.updateMyFollows} />
+                                            updatePar={props.updateMyFollows}
+                                            case='profile' />
                             )
                         }
                     })
@@ -140,12 +143,13 @@ function FollowBox(props) {
                             if(props.myFollowsList.includes(value.following.id)) {
                                 return (
                                     <OneUserLine key={index}
-                                                user={value.following}
-                                                me={props.me}
-                                                logged={props.logged}
-                                                followId={props.myFollowsObjIdList[props.myFollowsList.indexOf(value.following.id)]}
-                                                followed={true}
-                                                updatePar={props.updateMyFollows} />
+                                                 user={value.following}
+                                                 me={props.me}
+                                                 logged={props.logged}
+                                                 followId={props.myFollowsObjIdList[props.myFollowsList.indexOf(value.following.id)]}
+                                                 followed={true}
+                                                 updatePar={props.updateMyFollows}
+                                                 case='profile' />
                                 )
 
                             }
@@ -158,7 +162,8 @@ function FollowBox(props) {
                                                         logged={props.logged}
                                                         followed={false}
                                                         following={true}
-                                                        updatePar={props.updateMyFollows} />
+                                                        updatePar={props.updateMyFollows}
+                                                        case='profile' />
                                         )
                             }
                             else {
@@ -169,7 +174,8 @@ function FollowBox(props) {
                                                 logged={props.logged}
                                                 followed={false}
                                                 following={false}
-                                                updatePar={props.updateMyFollows} />
+                                                updatePar={props.updateMyFollows}
+                                                case='profile' />
                                 )
                             }
                         })

@@ -40,7 +40,7 @@ function OneUserLine(props) {
 
     return(
         <div className="one-like flex-layout center-content">
-            <div className="like-owner flex-item-small flex-layout center-content"                        
+            <div className="like-owner flex-item-small flex-layout"                        
                     onMouseEnter={()=>setShowCard(true)}
                     onMouseLeave={()=>setShowCard(false)}>
                 <div className="user-photo-container-small"
@@ -60,7 +60,7 @@ function OneUserLine(props) {
                             moto={user.moto}
                             photo={user.photo}
                             verified={user.verified}
-                            position={"bottom"} />
+                            position={props.case==='profile' ? "bottom" : 'right-more'} />
                 }
             </div>
             {logged &&
