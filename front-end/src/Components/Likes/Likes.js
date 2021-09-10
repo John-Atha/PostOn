@@ -1,357 +1,226 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Likes.css";
-import ProfileCard from  '../Profile/ProfileCard';
-import verified from '../../images/verified.png';
-import { getLikes, getFollowers, getFollows, followUser, unfollowUser } from '../../api/api';
+import { getLikes, getFollowers, getFollows } from '../../api/api';
 import OutsideClickHandler from 'react-outside-click-handler';
 import Button from "react-bootstrap/esm/Button";
+import OneUserLine from "../Profile/OneUserLine";
 
-class OneLike extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            owner: this.props.owner,
-            logged: this.props.logged,
-            showCard: false,
-        }
-        this.follow = this.follow.bind(this);
-        this.unfollow = this.unfollow.bind(this);
-        this.cardShow = this.cardShow.bind(this);
-        this.cardHide = this.cardHide.bind(this);
+function Likes(props) {
+    const [userId, setUserId] = useState(props.userId);
+    const [logged, setLogged] = useState(props.logged);
+    const [error, setError] = useState(null);
+    const [start, setStart] = useState(1);
+    const [end, setEnd] = useState(5);
+    const [likesList, setLikesList] = useState([]);
+    const [followsList, setFollowsList] = useState([]);
+    const [followsObjIdList, setFollowsObjIdList] = useState([]);
+    const [followersList, setFollowersList] = useState([]);
+    const [showMe, setShowMe] = useState(props.showMe);
+    const [kind, setKind] = useState(props.kinds[0]);
+    const [kinds, setKinds] = useState(props.kinds);
+
+
+    const changeKind = (event) => {
+        setKind(event.target.innerHTML);
+        setLikesList([]);
+        setStart(1);
+        setEnd(5);
+        setError(null);
     }
-    cardShow = () => {
-        this.setState({
-            mouseOutLink: false,
-            mouseOutCard: false,
-            showCard: true,
-        })
+
+    const previousPage = () => {
+        setLikesList([]);
+        setStart(start-5);
+        setEnd(end-5);
     }
-    cardHide = () => {
-        this.setState({
-            showCard: false,
-        })
+
+    const nextPage = () => {
+        setLikesList([]);
+        setStart(start+5);
+        setEnd(end+5);
     }
-    follow = () => {
-        //console.log(`follower id: ${this.props.me}`)
-        //console.log(`followed id: ${this.state.owner.id}`)
-        followUser(this.props.me, this.state.owner.id)
+
+    const askLikes = () => {
+        console.log('I am asking likes');
+        getLikes(start, end, props.id, props.on, kind)
         .then(response => {
-            //console.log(response);
-            this.props.updatePar();
+            setLikesList(response.data);
+            setError(null);
         })
-        .catch(err => {
-            //console.log(err);
-            this.props.updatePar();
+        .catch(() => {
+            setError(`No ${kind} reactions found.`)
         })
     }
-    unfollow = () => {
-        unfollowUser(this.props.followId)
+
+    const hide = (event) => {
+        event.preventDefault();
+        setShowMe(false);
+    }
+
+    useEffect(() => {
+        setUserId(props.userId);
+        setLogged(props.logged);
+        setShowMe(props.showMe);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.userId, props.logged])
+
+    useEffect(() => {
+        askFollows();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userId])
+
+    useEffect(() => {
+        setShowMe(props.showMe);
+        setFollowsList([]);
+        setFollowersList([]);
+        setFollowsObjIdList([]);
+        setTimeout(() => askFollows(), 500);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.followsUpd])
+
+    useEffect(() => {
+        askLikes();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [start])
+
+    useEffect(() => {
+        askLikes();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [kind])
+
+    useEffect(() => {
+        setKinds(props.kinds);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.kinds])
+
+
+    const askFollows = () => {
+        getFollows(userId)
         .then(response => {
-            //console.log(response);
-            this.props.updatePar();
-        })
-        .catch(err => {
-            //console.log(err);
-            this.props.updatePar();
-        })
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.owner!==this.props.owner || prevProps.followed!==this.props.followed || prevProps.following!==this.props.following) {
-            this.setState({
-                owner: this.props.owner,
-                logged: this.props.logged,
+            let tempFollowsList = [];
+            let tempFollowsObjIdList = [];
+            response.data.forEach(el=> {
+                tempFollowsList.push(el.followed.id);
+                tempFollowsObjIdList.push(el.id);
             })
-        }
+            setFollowsList(tempFollowsList);
+            setFollowsObjIdList(tempFollowsObjIdList);
+        })
+        .catch(() => {
+            ;
+        })
+        getFollowers(userId)
+        .then(response => {
+            let tempFollowersList = [];
+            response.data.forEach(el=> {
+                tempFollowersList.push(el.following.id);
+            })
+            setFollowersList(tempFollowersList);
+        })
+        .catch(() => {
+            ;
+        });
     }
-    render() {
-        return(
-            <div className="one-like flex-layout">
-                <div className="like-owner flex-item-small flex-layout center-content"
-                        onMouseEnter={this.cardShow}
-                        onMouseLeave={this.cardHide}>
 
-                    <div className="user-photo-container-small"
-                                    onMouseEnter={this.cardShow}
-                                    onMouseLeave={this.cardHide} >
-                        <img className="user-photo" src={this.state.owner.photo} alt="user profile" />
-                    </div>
-                    <div className="owner-name">
-                            {this.state.owner.username}
-                            {this.state.owner.verified===true &&
-                                <img className="verified-icon" src={verified} alt="verified" />
+    const updateFollows = () => {
+        setFollowsList([]);
+        setFollowsObjIdList([]);
+        setFollowersList([]);
+        setTimeout(()=>askFollows(), 500);
+        props.updateHome();
+    }
+
+
+    if (showMe) {
+        let classN = "likes-pop-up center-content";
+        if (props.on==="comment") {
+            classN = "likes-comments-pop-up center-content";
+        }
+        return (
+            <OutsideClickHandler onOutsideClick={hide}>
+                <div className={classN} style={{'paddingBottom': '5px'}}>
+                    <button className="close-button" onClick={hide}>X</button>
+                    {props.on==='comment' &&
+                        <h5>Likes</h5>
+                    }
+                    {props.on==='post' &&
+                        <div className="flex-layout center-content" style={{'marginBottom': '10px'}}>
+                            {kinds.map((value, index) => {
+                                return(
+                                    <Button variant={value===kind ? "success" : "outline-success"}
+                                            className="likes-kinds-buttons" 
+                                            key={index}
+                                            onClick={changeKind}>                                        
+                                        {value}
+                                    </Button>
+                                )
+                            })}
+                        </div>
+                    }
+                    {error && 
+                        <div className="error-message">
+                            No likes found...
+                        </div>
+                    }
+                    {likesList.length>0 &&
+                        likesList.map((value, index) => {
+                            if (followsList.includes(value.owner.id)) {
+                                return (
+                                    <OneUserLine key={index}
+                                            user={value.owner} 
+                                            me={userId}
+                                            logged={logged}
+                                            followId={followsObjIdList[followsList.indexOf(value.owner.id)]}
+                                            followed={true}
+                                            updatePar={updateFollows}
+                                            case='profile' />
+                                )
                             }
-                    </div>
+                            else if (!followsList.includes(value.owner.id) && followersList.includes(value.owner.id)) {
+                                return (
+                                    <OneUserLine key={index}
+                                            user={value.owner}
+                                            me={userId} 
+                                            logged={logged} 
+                                            followed={false} 
+                                            following={true}
+                                            updatePar={updateFollows}
+                                            case='profile' />
+                                )
+                            }
 
-                    {this.state.showCard &&
-                        <ProfileCard id={this.state.owner.id}
-                                username={this.state.owner.username}
-                                moto={this.state.owner.moto}
-                                photo={this.state.owner.photo}
-                                verified={this.state.owner.verified}
-                                position={"bottom"} />
+                            else {
+                                return (
+                                    <OneUserLine key={index}
+                                            user={value.owner}
+                                            me={userId} 
+                                            logged={logged} 
+                                            followed={false} 
+                                            following={false}
+                                            updatePar={updateFollows}
+                                            case='profile' />
+                                )
+                            }
+                        })
+                    }
+                    {likesList.length>0 &&
+                        <div className="pagi-buttons-container flex-layout center-content">
+                            {start !== 1 &&
+                                <Button variant='primary' className="margin" onClick={previousPage}>Previous</Button>                        
+                            }
+                            {likesList.length >= 5 &&
+                                <Button variant='primary' className="margin" onClick={nextPage}>Next</Button>                        
+                            }
+                        </div>
                     }
                 </div>
-                <div className="un-follow-button-container flex-item-small">
-                {this.state.logged && !this.props.followed && !this.props.following && this.props.me!==this.props.owner.id &&
-                    <Button variant='primary' style={{'maxWidth': '100px'}} onClick={this.follow}>Follow</Button>
-                }
-                {this.state.logged && !this.props.followed && this.props.following && this.props.me!==this.props.owner.id &&
-                    <Button variant='primary' style={{'maxWidth': '100px', 'fontSize': '0.8rem'}} onClick={this.follow}>Follow Back</Button>
-                }
-                {this.state.logged && this.props.followed && this.props.me!==this.props.owner.id &&
-                    <Button variant='outline-primary' style={{'maxWidth': '100px'}} onClick={this.unfollow}>Unfollow</Button>
-                }
-                </div>
-            </div>
+            </OutsideClickHandler>
         )
     }
-}
-class Likes extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            userId: this.props.userId,
-            logged: this.props.logged,
-            id: this.props.id,
-            error: null,
-            start: 1,
-            end: 5,
-            likesList: [],
-            on: this.props.on,
-            followsList: [],
-            followsObjIdList: [],
-            followersList: [],
-            showMe: this.props.showMe,
-            kind: this.props.kinds[0],
-            kinds: this.props.kinds,
-        }
-        this.hide = this.hide.bind(this);
-        this.previousPage = this.previousPage.bind(this);
-        this.nextPage = this.nextPage.bind(this);
-        this.moveOn = this.moveOn.bind(this);
-        this.askLikes = this.askLikes.bind(this);
-        this.disappear = this.disappear.bind(this);
-        this.askFollows = this.askFollows.bind(this);
-        this.updateFollows = this.updateFollows.bind(this);
-        this.changeKind = this.changeKind.bind(this);
-    }
-    changeKind = (event) => {
-        this.setState({
-            kind: event.target.innerHTML,
-            start: 1,
-            end: 5,
-            likesList: [],
-            error: null,
-        })
-        setTimeout(()=> {console.log(this.state.kind)}, 0);
-        /*Array.from(document.getElementsByClassName('likes-kinds-buttons')).forEach(el => {
-            el.style.color = localStorage.getItem('theme')==='light' ? 'black' : 'white';
-            el.style.borderBottomColor = localStorage.getItem('theme')==='light' ? 'black' : 'white';
-        })
-        event.target.style.color='green';
-        event.target.style.borderBottomColor='green';*/
-        this.askLikes();
-    }
-    disappear = (event) => {
-        event.target.parentElement.style.display = "none";
-    }
-    moveOn = () => {
-        setTimeout(() => this.askLikes(), 1000);
-    }
-    previousPage = () => {
-        setTimeout(this.setState({
-            start: this.state.start-5,
-            end: this.state.end-5,
-            likesList: [],
-        }), 0)
-        this.moveOn();
-    }
-    nextPage = () => {
-        setTimeout(this.setState({
-            start: this.state.start+5,
-            end: this.state.end+5,
-            likesList: [],
-        }), 0)
-        this.moveOn();
-    }
-    askLikes = () => {
-        setTimeout(()=> {
-        //console.log(`I am asking likes from ${this.state.start} to ${this.state.end}.`);
-        getLikes(this.state.start, this.state.end, this.state.id, this.state.on, this.state.kind)
-        .then(response => {
-            //console.log(response);
-            this.setState({
-                likesList: response.data,
-                error: null,
-            })
-            this.askFollows();
-        })
-        .catch(err => {
-            //console.log(err);
-            this.setState({
-                error: `No ${this.state.kind} reactions found.`
-            })
-        })}, 200);
-    }
-    hide = (event) => {
-        event.preventDefault();
-        this.setState({
-            showMe: false,
-        })
-    }
-    componentDidMount() {
-        this.askLikes();
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.userId!==this.props.userId || prevProps.followsUpd!==this.props.followsUpd) {
-            //console.log("I updated the follows list")
-            this.askLikes();
-            this.setState({
-                showMe: this.props.showMe,
-            })
-        }
-        if (prevProps.kinds!==this.props.kinds) {
-            this.setState({
-                kinds: this.props.kinds,
-            })
-        }
-    }
-    askFollows = () => {
-        setTimeout(()=>{
-            //console.log(`I am asking follows for user ${this.props.userId}`)
-            getFollows(this.props.userId)
-            .then(response => {
-                //console.log(response);
-                let tempFollowsList = [];
-                let tempFollowsObjIdList = [];
-                response.data.forEach(el=> {
-                        tempFollowsList.push(el.followed.id);
-                        tempFollowsObjIdList.push(el.id);
-                })
-                this.setState({
-                    followsList: tempFollowsList,
-                    followsObjIdList: tempFollowsObjIdList,
-                })
-                //console.log("followsList: ");
-                //console.log(tempFollowsList);
-                getFollowers(this.props.userId)
-                .then(response => {
-                    //console.log(response);
-                    let tempFollowersList = [];
-                    response.data.forEach(el=> {
-                            tempFollowersList.push(el.following.id);
-                    })
-                    this.setState({
-                        followersList: tempFollowersList,
-                    })
-                    //console.log("followersList: ");
-                    //console.log(tempFollowersList);
-                })
-                .catch(err => {
-                    //console.log(err);
-                    //console.log("No more follows found for this user (as a follower).");
-                });
-            })
-            .catch(err => {
-                //console.log(err);
-                //console.log("No more follows found for this user (as a follower).");
-            });
-        }, 1000)
-    }
-    updateFollows = () => {
-        this.setState({
-            followsList: [],
-            followsObjIdList: [],
-            followersList: [],
-        })
-        setTimeout(()=>{this.askFollows()}, 0);
-        this.props.updateHome();
-    }
-    render() {
-        if (this.state.showMe) {
-            let classN = "likes-pop-up center-content";
-            if (this.state.on==="comment") {
-                classN = "likes-comments-pop-up center-content";
-            }
-            return (
-                <OutsideClickHandler onOutsideClick={this.hide}>
-                    <div className={classN}>
-                        <button className="close-button" onClick={this.disappear}>X</button>
-                        {this.state.on==='comment' &&
-                            <h5>Likes</h5>
-                        }
-                        {this.state.on==='post' &&
-                            <div className="flex-layout center-content" style={{'marginBottom': '10px'}}>
-                                {this.state.kinds.map((value, index) => {
-                                    return(
-                                        <Button variant={value===this.state.kind ? "success" : "outline-success"}
-                                                className="likes-kinds-buttons" 
-                                                key={index}
-                                                onClick={this.changeKind}>                                        
-                                            {value}
-                                        </Button>
-                                    )
-                                })}
-                            </div>
-                        }
-                        {(this.state.error) && 
-                            <div className="error-message">
-                                No likes found...
-                            </div>
-                        }
-                        {this.state.likesList.length>0 &&
-                            this.state.likesList.map((value, index) => {
-                                if (this.state.followsList.includes(value.owner.id)) {
-                                    return (
-                                        <OneLike key={index}
-                                                owner={value.owner} 
-                                                me={this.props.userId}
-                                                logged={this.props.logged}
-                                                followId={this.state.followsObjIdList[this.state.followsList.indexOf(value.owner.id)]}
-                                                followed={true}
-                                                updatePar={this.updateFollows} />
-                                    )
-                                }
-                                else if (!this.state.followsList.includes(value.owner.id) && this.state.followersList.includes(value.owner.id)) {
-                                    return (
-                                        <OneLike key={index}
-                                                owner={value.owner}
-                                                me={this.props.userId} 
-                                                logged={this.props.logged} 
-                                                followed={false} 
-                                                following={true}
-                                                updatePar={this.updateFollows} />
-                                    )
-                                }
-
-                                else {
-                                    return (
-                                        <OneLike key={index}
-                                                owner={value.owner}
-                                                me={this.props.userId} 
-                                                logged={this.props.logged} 
-                                                followed={false} 
-                                                following={false}
-                                                updatePar={this.updateFollows} />
-                                    )
-                                }
-                            })
-                        }
-                        {this.state.likesList.length>0 &&
-                            <div className="pagi-buttons-container flex-layout center-content">
-                                <Button variant='primary' disabled={this.state.start===1}          className="margin" onClick={this.previousPage}>Previous</Button>
-                                <Button variant='primary' disabled={this.state.likesList.length<5} className="margin" onClick={this.nextPage}>Next</Button>
-                            </div>
-                        }
-                    </div>
-                </OutsideClickHandler>
-            )
-        }
-        else {
-            return (
-                <div></div>
-            )
-        }
+    else {
+        return (
+            null
+        )
     }
 }
 

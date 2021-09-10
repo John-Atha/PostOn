@@ -352,8 +352,12 @@ class MobileNavbar extends React.Component {
                                 }
                                 {this.state.notifList.length>0 &&
                                     <div className="pagi-buttons-container flex-layout center-content">
-                                            <Button variant='outline-primary' disabled={this.state.start===1}          className="flex-item-small margin" onClick={this.previousPage}>Previous</Button>
-                                            <Button variant='outline-primary' disabled={this.state.notifList.length<5} className="flex-item-small margin" onClick={this.nextPage}>Next</Button>
+                                        {this.state.start !== 1 &&
+                                            <Button variant='outline-primary' className="flex-item-small margin" onClick={this.previousPage}>Previous</Button>                                        
+                                        }
+                                        {this.state.notifList.length >= 5 &&
+                                            <Button variant='outline-primary' className="flex-item-small margin" onClick={this.nextPage}>Next</Button>                                        
+                                        }
                                     </div>
                                 }
                             </NavDropdown>

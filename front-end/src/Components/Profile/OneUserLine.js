@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from 'react';
 import '../../Pages/Profile/Profile.css';
-import ProfileCard from  '../../Components/Profile/ProfileCard';
+import ProfileCard from  './ProfileCard';
 import Button from 'react-bootstrap/esm/Button';
 import verified_img from '../../images/verified.png';
 import { followUser, unfollowUser } from '../../api/api';

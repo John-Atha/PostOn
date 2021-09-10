@@ -458,8 +458,12 @@ class Activity extends React.Component {
             </div>
             {this.state.actList.length!==0 &&
                 <div className="pagi-buttons-container flex-layout center-content">
-                    <Button variant='outline-primary' disabled={this.state.start===1}         className="margin" onClick={this.previousPage}>Previous</Button>
-                    <Button variant='outline-primary' disabled={this.state.actList.length<10} className="margin" onClick={this.nextPage}>Next</Button>
+                    {this.state.start !== 1 &&
+                        <Button variant='primary' className="margin" onClick={this.previousPage}>Previous</Button>                
+                    }
+                    {this.state.actList.length>=10 &&
+                        <Button variant='primary' className="margin" onClick={this.nextPage}>Next</Button>
+                    }
                 </div>
             }
             {!this.state.actList.length && this.state.logged &&

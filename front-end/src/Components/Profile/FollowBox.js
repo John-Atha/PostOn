@@ -182,8 +182,12 @@ function FollowBox(props) {
                     }
                     {hisFollowersList.length>0 &&
                         <div className="pagi-buttons-container flex-layout center-content">
-                            <Button variant='outline-primary' disabled={start===1}      className="margin" onClick={previousPage}>Previous</Button>
-                            <Button variant='outline-primary' disabled={followersError} className="margin" onClick={nextPage}>Next</Button>
+                            {start !== 1 &&
+                                <Button variant='outline-primary' className="margin" onClick={previousPage}>Previous</Button>                        
+                            }
+                            {!followersError &&
+                                <Button variant='outline-primary' className="margin" onClick={nextPage}>Next</Button>                            
+                            }
                         </div>
                     }            
                 </div>

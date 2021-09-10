@@ -170,11 +170,15 @@ function Explore(props) {
             }
             {usersList.length!==0 && 
                 <div className="pagi-buttons-container flex-layout center-content">
-                    <Button variant='dark' disabled={start===1} className="flex-item-small margin" onClick={previousPage}>Previous</Button>
-                    <Button variant='dark' disabled={usersList.length<10} className="flex-item-small margin" onClick={nextPage}>Next</Button>
+                    {start !== 1 &&
+                        <Button variant='dark' className="flex-item-small margin" onClick={previousPage}>Previous</Button>                
+                    }
+                    {usersList.length>=10 &&
+                        <Button variant='dark' className="flex-item-small margin" onClick={nextPage}>Next</Button>                
+                    }
                 </div>            
             }
-            {!usersList.length!==0 &&
+            {usersList.length === 0 &&
                 <div className="error-message margin-top center-text">{error}</div>
             }
         </div>
