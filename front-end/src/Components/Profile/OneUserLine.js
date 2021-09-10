@@ -66,13 +66,13 @@ function OneUserLine(props) {
             {logged &&
                 <div className="un-follow-button-container flex-item-small">
                 {!props.followed && !props.following && props.me!==props.user.id &&
-                    <Button variant='primary' className="my-button un-follow-button pale-blue" onClick={follow}>Follow</Button>
+                    <Button variant='primary' onClick={follow}>Follow</Button>
                 }
                 {!props.followed && props.following && props.me!==props.user.id &&
-                    <Button variant='primary' className="my-button un-follow-button pale-blue" onClick={follow}>Follow Back</Button>
+                    <Button variant='primary' style={{'fontSize': '0.8rem'}} onClick={follow}>Follow Back</Button>
                 }
                 {props.followed && props.me!==props.user.id &&
-                    <Button variant='outline-primary' className="my-button un-follow-button" onClick={unfollow}>Unfollow</Button>
+                    <Button variant='outline-primary' onClick={unfollow}>Unfollow</Button>
                 }
                 </div>
             }

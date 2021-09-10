@@ -3,6 +3,7 @@ import '../../Pages/Profile/Profile.css';
 import OutsideClickHandler from 'react-outside-click-handler';
 import OneUserLine from './OneUserLine';
 import { getFollowsPagi, getFollowersPagi } from '../../api/api';
+import Button from 'react-bootstrap/esm/Button';
 
 function FollowBox(props) {
     const [start, setStart] = useState(1);
@@ -35,16 +36,20 @@ function FollowBox(props) {
     const previousPage = () => {
         setStart(start-5);
         setEnd(end-5);
+        setFollowsError(null);
+        setFollowersError(null);
     }
 
     const nextPage = () => {
         setStart(start+5);
         setEnd(end+5);
+        setFollowsError(null);
+        setFollowersError(null);
     }
 
     const askHisFollows = () => {
         if (props.case==="follows") {
-            getFollowsPagi(props.userId, start, end)
+            getFollowsPagi(parseInt(props.userId), start, end)
             .then(response => {
                 setHisFollowsList(response.data);
                 setFollowsError(null);
@@ -54,7 +59,7 @@ function FollowBox(props) {
             });
         }
         else if (props.case==="followers") {
-            getFollowersPagi(props.userId, start, end)
+            getFollowersPagi(parseInt(props.userId), start, end)
             .then(response => {
                 setHisFollowersList(response.data);
             })
@@ -113,8 +118,8 @@ function FollowBox(props) {
                 }
                 {hisFollowsList.length>0 &&
                     <div className="pagi-buttons-container flex-layout center-content">
-                        <button disabled={start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={previousPage}>Previous</button>
-                        <button disabled={followsError} className="flex-item-small my-button pagi-button margin-top-small" onClick={nextPage}>Next</button>
+                        <Button variant='outline-primary' disabled={start===1}    className="margin" onClick={previousPage}>Previous</Button>
+                        <Button variant='outline-primary' disabled={followsError} className="margin" onClick={nextPage}>Next</Button>
                     </div>
                 }            
                 </div>
@@ -171,8 +176,8 @@ function FollowBox(props) {
                     }
                     {hisFollowersList.length>0 &&
                         <div className="pagi-buttons-container flex-layout center-content">
-                            <button disabled={start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={previousPage}>Previous</button>
-                            <button disabled={followersError} className="flex-item-small my-button pagi-button margin-top-small" onClick={nextPage}>Next</button>
+                            <Button variant='outline-primary' disabled={start===1}      className="margin" onClick={previousPage}>Previous</Button>
+                            <Button variant='outline-primary' disabled={followersError} className="margin" onClick={nextPage}>Next</Button>
                         </div>
                     }            
                 </div>

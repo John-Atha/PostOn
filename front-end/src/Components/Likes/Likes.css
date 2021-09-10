@@ -46,9 +46,11 @@
 }
 .likes-pop-up {
     top: 50%;
+    padding: 10px 2px;
 }
 .likes-comments-pop-up {
     bottom: 50px;
+    padding: 10px 2px;
 }
 .close-button {
     position: absolute;
@@ -59,4 +61,5 @@
 }
 .like-owner {
     position: relative;
+    font-size: 1.2rem;
 }

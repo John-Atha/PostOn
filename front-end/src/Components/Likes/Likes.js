@@ -275,13 +275,13 @@ class Likes extends React.Component {
             }
             return (
                 <OutsideClickHandler onOutsideClick={this.hide}>
-                    <div className={classN} >
+                    <div className={classN}>
                         <button className="close-button" onClick={this.disappear}>X</button>
                         {this.state.on==='comment' &&
                             <h5>Likes</h5>
                         }
                         {this.state.on==='post' &&
-                            <div className="flex-layout center-content">
+                            <div className="flex-layout center-content" style={{'marginBottom': '10px'}}>
                                 {this.state.kinds.map((value, index) => {
                                     return(
                                         <Button variant={value===this.state.kind ? "success" : "outline-success"}
@@ -339,8 +339,8 @@ class Likes extends React.Component {
                         }
                         {this.state.likesList.length>0 &&
                             <div className="pagi-buttons-container flex-layout center-content">
-                                <Button disabled={this.state.start===1} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.previousPage}>Previous</Button>
-                                <Button disabled={this.state.likesList.length<5} className="flex-item-small my-button pagi-button margin-top-small" onClick={this.nextPage}>Next</Button>
+                                <Button variant='primary' disabled={this.state.start===1}          className="margin" onClick={this.previousPage}>Previous</Button>
+                                <Button variant='primary' disabled={this.state.likesList.length<5} className="margin" onClick={this.nextPage}>Next</Button>
                             </div>
                         }
                     </div>
