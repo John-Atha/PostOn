@@ -89,22 +89,27 @@ function Explore(props) {
 
     useEffect(() => {
         setUserId(props.userId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.userId])
 
     useEffect(() => {
         askUsers();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [userId])
 
     useEffect(() => {
         updateFollows();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [usersList])
 
     useEffect(() => {
         updateFollows();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [props.update1])
 
     useEffect(() => {
         moveOn();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [start, end])
 
     return(
