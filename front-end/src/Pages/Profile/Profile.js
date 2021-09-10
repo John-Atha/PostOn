@@ -63,7 +63,7 @@ function Profile(props) {
     }
 
     const deleteAccount = () => {
-        UserDelete(props.userId)
+        UserDelete(parseInt(props.userId))
         .then(() => {
             createNotification('success', 'Goodbye,', 'Thank you for choosing us.')
             setTimeout(()=> {logout()}, 2000)
@@ -79,7 +79,7 @@ function Profile(props) {
             createNotification('danger', 'Sorry,', "You can't have an empty username");
         }
         else {
-            updateUser(props.userId, username, moto||"")
+            updateUser(parseInt(props.userId), username, moto||"")
             .then(() => {
                 createNotification('success', 'Hello,', "Profile updated successfully");
                 setUsername_init(username);
@@ -97,7 +97,7 @@ function Profile(props) {
             if (input.value) {
                 const bodyFormData = new FormData();
                 bodyFormData.append('image', input.files[0]);
-                updateUserPhoto(props.userId, bodyFormData)
+                updateUserPhoto(parseInt(props.userId), bodyFormData)
                 .then(response=> {
                     setPhoto(response.data.photo);
                     setEdit(response.data.edit);
@@ -151,7 +151,7 @@ function Profile(props) {
     }
 
     const follow = () => {
-        followUser(me, props.userId)
+        followUser(me, parseInt(props.userId))
         .then(() => {
             updateMyFollows();
         })
@@ -163,7 +163,7 @@ function Profile(props) {
     const unfollow = () => {
         let index = null;
         myFollowsList.forEach(el => {
-            if (el===props.userId) {
+            if (el===parseInt(props.userId)) {
                 index = myFollowsList.indexOf(el);
             }
         })
@@ -178,7 +178,7 @@ function Profile(props) {
     }
 
     const countFollowers = () => {
-        getFollowersCount(props.userId)
+        getFollowersCount(parseInt(props.userId))
         .then(response => {
             setFollowersNum(response.data.followers);
         })
@@ -188,7 +188,7 @@ function Profile(props) {
     }
 
     const countFollows = () => {
-        getFollowsCount(props.userId)
+        getFollowsCount(parseInt(props.userId))
         .then(response => {
             setFollowsNum(response.data.follows);
         })
@@ -213,7 +213,7 @@ function Profile(props) {
                 })
                 setMyFollowsList(tempFollowsList);
                 setMyFollowsObjIdList(tempFollowsObjIdList);
-                setIsFollowed(tempFollowsList.includes(props.userId));
+                setIsFollowed(tempFollowsList.includes(parseInt(props.userId)));
             })
             .catch(() => {
                 ;
@@ -228,7 +228,7 @@ function Profile(props) {
                     }
                 })
                 setMyFollowersList(tempFollowersList);
-                setIsFollowing(tempFollowersList.includes(props.userId));
+                setIsFollowing(tempFollowersList.includes(parseInt(props.userId)));
             })
             .catch(() => {
                 ;
@@ -248,7 +248,7 @@ function Profile(props) {
     }
 
     const getUserInfo = () => {
-        getUser(props.userId)
+        getUser(parseInt(props.userId))
         .then(response => {
             setUsername(response.data.username);
             setUsername_init(response.data.username);
@@ -343,19 +343,19 @@ function Profile(props) {
                                 {followsNum} follows
                             </Button>
                             <div>
-                            {logged && !isFollowed && !isFollowing && me!==props.userId &&
+                            {logged && !isFollowed && !isFollowing && me!==parseInt(props.userId) &&
                                 <Button variant='primary' className="margin-top-small" style={{width: '90%'}} onClick={follow}>Follow</Button>
                             }
-                            {logged && !isFollowed && isFollowing && me!==props.userId &&
+                            {logged && !isFollowed && isFollowing && me!==parseInt(props.userId) &&
                                 <Button variant='primary' className="margin-top" style={{width: '90%'}} onClick={follow}>Follow Back</Button>
                             }
-                            {logged && isFollowed && me!==props.userId &&
+                            {logged && isFollowed && me!==parseInt(props.userId) &&
                                 <Button variant='primary' className="margin-top-small" style={{width: '90%'}} onClick={unfollow}>Unfollow</Button>
                             }
-                            {logged && me===props.userId &&
-                                <Button variant='outline-warning' className="margin-top-small" style={{width: '90%'}} onClick={editProf}>Edit info</Button>               
+                            {logged && me===parseInt(props.userId) &&
+                                <Button variant='warning' className="margin-top-small" style={{width: '90%'}} onClick={editProf}>Edit info</Button>               
                             }
-                            {logged && me===props.userId &&
+                            {logged && me===parseInt(props.userId) &&
                                 <Button variant='danger' className="margin-top-small delete-account-button" style={{width: '90%', 'fontSize': '0.8rem'}} onClick={()=>setDeleteAcc(true)}>
                                     Delete account
                                 </Button>               
@@ -398,11 +398,11 @@ function Profile(props) {
                     <hr className="no-margin"></hr>
                     <h4 className="center-text">Posts</h4>
                     <hr className="no-margin"></hr>
-                    <UserPosts whose={props.userId} me={me} updateHome={updateMyFollows} updateMe={updateFlag} />
+                    <UserPosts whose={parseInt(props.userId)} me={me} updateHome={updateMyFollows} updateMe={updateFlag} />
                 </div>
                 }
                 {followsShow && !error &&
-                    <FollowBox  userId={props.userId}
+                    <FollowBox  userId={parseInt(props.userId)}
                                 me={me}
                                 logged={logged}
                                 case="follows"
@@ -414,7 +414,7 @@ function Profile(props) {
                                 updateMyFollows={updateMyFollows} />
                 }
                 {followersShow && !error &&
-                    <FollowBox  userId={props.userId}
+                    <FollowBox  userId={parseInt(props.userId)}
                                 me={me}
                                 logged={logged}
                                 case="followers"
