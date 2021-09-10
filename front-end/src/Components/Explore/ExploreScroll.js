@@ -1,219 +1,164 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Explore.css'
 import { getUsers, getFollows, getFollowers } from '../../api/api';
 import OneUserLine from '../Profile/OneUserLine';
 
-class ExploreScroll extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            userId: this.props.userId,
-            logged: this.props.logged,
-            error: null,
-            start:1,
-            end:20,
-            usersList: [],
-            followsList: [],
-            followsObjIdList: [],
-            followersList: [],
-        }
-        this.asked = [];
-        this.first = true;
-        this.nextPage = this.nextPage.bind(this);
-        this.moveOn = this.moveOn.bind(this);
-        this.askUsers = this.askUsers.bind(this);
-        this.askFollows = this.askFollows.bind(this);
-        this.updateFollows = this.updateFollows.bind(this);
-        this.checkScroll = this.checkScroll.bind(this);
-    }
-    checkScroll = () => {
-        //const container = document.getElementById('posts-cont');
-        ////console.log("I am checking scroll");
-        ////console.log(`${container.scrollHeight} - ${container.scrollTop} == ${container.clientHeight}`)
+function ExploreScroll(props) {
+    const [userId, setUserId] = useState(props.userId);
+    const [error, setError] = useState(null);
+    const [start, setStart] = useState(1);
+    const [end, setEnd] = useState(20);
+    const [usersList, setUsersList] = useState([]);
+    const [followsList, setFollowsList] = useState([]);
+    const [followsObjIdList, setFollowsObjIdList] = useState([]);
+    const [followersList, setFollowersList] = useState([]);
+    const [asked, setAsked] = useState([]);
+
+    const checkScroll = () => {
         console.log(`${window.scrollY>=0.1*document.body.offsetHeight}`);
-        if (window.scrollY>=0.1*document.body.offsetHeight && !this.state.nomore) {
-            ////console.log(`${container.scrollHeight} - ${container.scrollTop} == ${container.clientHeight}`);
-                if (!this.asked.includes(this.state.start)) {
-                    window.removeEventListener('scroll', this.checkScroll);
-                    setTimeout(()=>{window.addEventListener('scroll', this.checkScroll);}, 2000)                    
-                    this.asked.push(this.state.start);
-                    setTimeout(()=>{this.nextPage();}, 0);
-                }       
-                console.log(`asked:`);
-                console.log(this.asked);            
-            //console.log("reached bottom")
+        if (window.scrollY>=0.1*document.body.offsetHeight) {
+            if (!asked.includes(start)) {
+                window.removeEventListener('scroll', checkScroll);
+                setTimeout(()=>{window.addEventListener('scroll', checkScroll);}, 2000)
+                nextPage();
+            }
         }
     }
 
-    moveOn = () => {
-        /*window.scrollTo({
-            top:0,
-            left:0,
-            behavior:'smooth'
-        });*/
-        setTimeout(() => this.askUsers(), 1000);
+    const nextPage = () => {
+        setStart(start+20);
+        setEnd(end+20);
     }
-    nextPage = () => {
-        setTimeout(this.setState({
-            start: this.state.start+20,
-            end: this.state.end+20,
-        }), 0)
-        this.moveOn();
-    }
-    askFollows = () => {
-        setTimeout(()=>{
-            if (this.props.userId) {
-                getFollows(this.props.userId)
-                .then(response => {
-                    //console.log(response);
-                    let tempFollowsList = this.state.followsList;
-                    let tempFollowsObjIdList = this.state.followsObjIdList;
-                    response.data.forEach(el=> {
-                        if (!this.state.followsList.includes(el.followed.id)) {
-                            tempFollowsList.push(el.followed.id);
-                            tempFollowsObjIdList.push(el.id);
-                        }
-                    })
-                    this.setState({
-                        followsList: this.state.followsList.concat(tempFollowsList),
-                        followsObjIdList: this.state.followsObjIdList.concat(tempFollowsObjIdList),
-                    })
-                    //console.log("followsList: ");
-                    //console.log(tempFollowsList);
+
+    const askFollows = () => {
+        if (userId) {
+            getFollows(userId)
+            .then(response => {
+                let tempFollowsList = [];
+                let tempFollowsObjIdList = [];
+                response.data.forEach(el=> {
+                    tempFollowsList.push(el.followed.id);
+                    tempFollowsObjIdList.push(el.id);
                 })
-                .catch(err => {
-                    //console.log(err);
-                    //console.log("No more follows found for this user (as a follower).");
-                });
-                getFollowers(this.props.userId)
-                .then(response => {
-                    //console.log(response);
-                    let tempFollowersList = this.state.followersList;
-                    response.data.forEach(el=> {
-                        if (!this.state.followersList.includes(el.following.id)) {
-                            tempFollowersList.push(el.following.id);
-                        }
-                    })
-                    this.setState({
-                        followersList: tempFollowersList,
-                    })
-                    //console.log("followersList: ");
-                    //console.log(tempFollowersList);
+                setFollowsList(tempFollowsList);
+                setFollowsObjIdList(tempFollowsObjIdList);
+            })
+            .catch(() => {
+                ;
+            });
+            getFollowers(userId)
+            .then(response => {
+                let tempFollowersList = [];
+                response.data.forEach(el=> {
+                    tempFollowersList.push(el.following.id);
                 })
-                .catch(err => {
-                    //console.log(err);
-                    //console.log("No more follows found for this user (as a follower).");
-                });
-            }
-        }, 100)
-    }
-    askUsers = () => {
-        console.log(`I am asking users with start: ${this.state.start} and end: ${this.state.end}`);
-        getUsers(this.state.start, this.state.end)
-        .then(response => {
-            console.log(response);
-            this.setState({
-                usersList: this.state.usersList.concat(response.data),
+                setFollowersList(tempFollowersList);
             })
-            if(this.first) {
-                this.askFollows();
-                this.first = false;
-            }
-        })
-        .catch(err => {
-            console.log(err);
-            this.setState({
-                error: "No more users found",
-            })
-        })        
-    }
-    updateFollows = () => {
-        this.setState({
-            followsList: [],
-            followsObjIdList: [],
-            followersList: [],
-        })
-        this.props.updateMyPar();
-        setTimeout(()=>{this.askFollows()}, 0);
-    }
-    componentDidMount() {
-        window.addEventListener('scroll', this.checkScroll);
-        this.askUsers();
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.userId !==this.props.userId) {
-            //console.log(`Updated to user ${this.props.userId}`);
-            this.setState({
-                start: 1,
-                end: 20,
-                usersList: [],
-            })
-            this.askUsers();
-            this.updateFollows();
-        }
-        if (prevProps.update1!==this.props.update1) {
-            //console.log("UPDATED");
-            this.updateFollows();
+            .catch(() => {
+                ;
+            });
         }
     }
-    componentWillUnmount() {
-        window.removeEventListener('scroll', this.checkScroll);
+
+    const askUsers = () => {
+        if (!asked.includes(start)) {
+            getUsers(start, end)
+            .then(response => {
+                setUsersList(usersList.concat(response.data));
+                setAsked(asked.concat(start));
+            })
+            .catch(() => {
+                setError("No more users found");
+            })                
+        }
     }
-    render() {
-        return(
-            <div className="explore-page center-content">
-                <h5>Explore</h5>
-                {
-                    this.state.usersList.length!==0 && this.state.usersList.map((value, index) => {
-                        //console.log(value);
-                        if (value.id!==this.props.userId) {
-                            if (this.state.followsList.includes(value.id)) {
-                                return (
-                                    <OneUserLine key={index}
-                                             user={value}
-                                             me={this.props.userId}
-                                             logged={this.props.logged}
-                                             followId={this.state.followsObjIdList[this.state.followsList.indexOf(value.id)]}
-                                             followed={true}
-                                             updatePar={this.updateFollows} />
-                                )
-                            }
-                            else if(!this.state.followsList.includes(value.id) && this.state.followersList.includes(value.id)) {
-                                return (
-                                    <OneUserLine key={index}
+
+    const updateFollows = () => {
+        props.updateMyPar();
+        setTimeout(()=>{ askFollows() }, 500);
+    }
+
+    useEffect(() => {
+        window.addEventListener('scroll', checkScroll);
+        return () => {
+            window.removeEventListener('scroll', checkScroll);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    useEffect(() => {
+        setUserId(props.userId);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.userId])
+
+    useEffect(() => {
+        askFollows();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userId])
+
+    useEffect(() => {
+        askUsers();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userId, end])
+
+    useEffect(() => {
+        updateFollows();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.update1])
+
+
+    return(
+        <div className="explore-page center-content">
+            <h5>Explore</h5>
+            {
+                usersList.length!==0 && usersList.map((value, index) => {
+                    if (value.id!==userId) {
+                        if (followsList.includes(value.id)) {
+                            return (
+                                <OneUserLine key={index}
                                             user={value}
-                                            me={this.props.userId} 
-                                            logged={this.props.logged} 
-                                            followed={false} 
-                                            following={true}
-                                            updatePar={this.updateFollows} />
-                                )    
-                            }
-                            else {
-                                return (
-                                    <OneUserLine key={index} 
-                                            user={value} 
-                                            me={this.props.userId} 
-                                            logged={this.props.logged} 
-                                            followed={false} 
-                                            following={false}
-                                            updatePar={this.updateFollows} />
-                                )    
-                            }
-                        }
-                        else {
-                            return(
-                                <div key={index}></div>
+                                            me={userId}
+                                            logged={props.logged}
+                                            followId={followsObjIdList[followsList.indexOf(value.id)]}
+                                            followed={true}
+                                            updatePar={updateFollows} />
                             )
                         }
-                        })
-                }
-                {!this.state.usersList.length!==0 &&
-                    <div className="error-message margin-top center-text">{this.state.error}</div>
-                }
-            </div>
-        )
-    }
+                        else if(!followsList.includes(value.id) && followersList.includes(value.id)) {
+                            return (
+                                <OneUserLine key={index}
+                                        user={value}
+                                        me={userId} 
+                                        logged={props.logged} 
+                                        followed={false} 
+                                        following={true}
+                                        updatePar={updateFollows} />
+                            )    
+                        }
+                        else {
+                            return (
+                                <OneUserLine key={index} 
+                                        user={value} 
+                                        me={userId} 
+                                        logged={props.logged} 
+                                        followed={false} 
+                                        following={false}
+                                        updatePar={updateFollows} />
+                            )    
+                        }
+                    }
+                    else {
+                        return(
+                            <div key={index}></div>
+                        )
+                    }
+                    })
+            }
+            {!usersList.length!==0 &&
+                <div className="error-message margin-top center-text">{error}</div>
+            }
+        </div>
+    )
 }
 
 export default ExploreScroll;

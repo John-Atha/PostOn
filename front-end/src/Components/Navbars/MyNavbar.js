@@ -405,7 +405,7 @@ class MyNavbar extends React.Component {
                                     }
                                 </NavDropdown>
                             }
-                            <div style={{'margin-top': '6px'}} >
+                            <div style={{'marginTop': '6px'}} >
                                 <DarkModeToggle
                                     checked={this.state.theme==='dark'}
                                     onChange={()=>{if (this.state.theme==='light') this.goDark(); else this.goLight(); }}

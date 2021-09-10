@@ -35,7 +35,7 @@ function OneUserLine(props) {
         setUser(props.user);
         setLogged(props.logged);
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.user, props.followed, props.following])
+    }, [props.user, props.followed, props.following, props.logged])
 
 
     return(
