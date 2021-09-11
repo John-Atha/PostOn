@@ -203,13 +203,11 @@ function Profile(props) {
             
             getFollows(me)
             .then(response => {
-                let tempFollowsList = myFollowsList;
-                let tempFollowsObjIdList = myFollowsObjIdList;
+                let tempFollowsList = [];
+                let tempFollowsObjIdList = [];
                 response.data.forEach(el=> {
-                    if (!myFollowsList.includes(el.followed.id)) {
-                        tempFollowsList.push(el.followed.id);
-                        tempFollowsObjIdList.push(el.id);
-                    }
+                    tempFollowsList.push(el.followed.id);
+                    tempFollowsObjIdList.push(el.id);
                 })
                 setMyFollowsList(tempFollowsList);
                 setMyFollowsObjIdList(tempFollowsObjIdList);
@@ -221,11 +219,9 @@ function Profile(props) {
 
             getFollowers(me)
             .then(response => {
-                let tempFollowersList = myFollowersList;
+                let tempFollowersList = [];
                 response.data.forEach(el=> {
-                    if (!myFollowersList.includes(el.following.id)) {
-                        tempFollowersList.push(el.following.id);
-                    }
+                    tempFollowersList.push(el.following.id);
                 })
                 setMyFollowersList(tempFollowersList);
                 setIsFollowing(tempFollowersList.includes(parseInt(props.userId)));
@@ -233,6 +229,7 @@ function Profile(props) {
             .catch(() => {
                 ;
             });
+            
         }, 100)
     }
 

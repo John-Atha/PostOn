@@ -12,6 +12,9 @@ function FollowBox(props) {
     const [hisFollowersList, setHisFollowersList] = useState([]);
     const [followsError, setFollowsError] = useState(null);
     const [followersError, setFollowersError] = useState(null);
+    const [myFollowsList, setMyFollowsList] = useState(props.myFollowsList);
+    const [myFollowsObjIdList, setMyFollowsObjIdList] = useState(props.myFollowsObjIdList);
+    const [myFollowersList, setMyFollowersList] = useState(props.myFollowersList);
 
     useEffect(() => {
         askHisFollows();
@@ -22,6 +25,21 @@ function FollowBox(props) {
         askHisFollows();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [start, end])
+
+    useEffect(() => {
+        setMyFollowsList(props.myFollowsList);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.myFollowsList])
+
+    useEffect(() => {
+        setMyFollowsObjIdList(props.myFollowsObjIdList);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.myFollowsObjIdList])
+
+    useEffect(() => {
+        setMyFollowersList(props.myFollowersList);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.myFollowersList])
     
     const hide = (event) => {
         if (props.case==="follows") {
@@ -80,20 +98,20 @@ function FollowBox(props) {
                 }
                 {!followsError &&
                     hisFollowsList.map((value, index) => {
-                        if(props.myFollowsList.includes(value.followed.id)) {
+                        if(myFollowsList.includes(value.followed.id)) {
                             return (
                                 <OneUserLine key={index}
                                             user={value.followed}
                                             me={props.me}
                                             logged={props.logged}
-                                            followId={props.myFollowsObjIdList[props.myFollowsList.indexOf(value.followed.id)]}
+                                            followId={myFollowsObjIdList[myFollowsList.indexOf(value.followed.id)]}
                                             followed={true}
                                             updatePar={props.updateMyFollows}
                                             case='profile' />
                             )
                         }
                         else if(!hisFollowsList.includes(value.followed.id) &&
-                                    props.myFollowersList.includes(value.followed.id)) {
+                                    myFollowersList.includes(value.followed.id)) {
                                     return(
                                         <OneUserLine key={index}
                                                     user={value.followed}
@@ -121,8 +139,12 @@ function FollowBox(props) {
                 }
                 {hisFollowsList.length>0 &&
                     <div className="pagi-buttons-container flex-layout center-content">
-                        <Button variant='outline-primary' disabled={start===1}    className="margin" onClick={previousPage}>Previous</Button>
-                        <Button variant='outline-primary' disabled={followsError} className="margin" onClick={nextPage}>Next</Button>
+                        {start !== 1 && 
+                            <Button variant='outline-primary' className="margin" onClick={previousPage}>Previous</Button>                        
+                        }
+                        {!followsError &&
+                            <Button variant='outline-primary' className="margin" onClick={nextPage}>Next</Button>                        
+                        }
                     </div>
                 }            
                 </div>
@@ -140,21 +162,21 @@ function FollowBox(props) {
                     }
                     {!followsError &&
                         hisFollowersList.map((value, index) => {
-                            if(props.myFollowsList.includes(value.following.id)) {
+                            if(myFollowsList.includes(value.following.id)) {
                                 return (
                                     <OneUserLine key={index}
                                                  user={value.following}
                                                  me={props.me}
                                                  logged={props.logged}
-                                                 followId={props.myFollowsObjIdList[props.myFollowsList.indexOf(value.following.id)]}
+                                                 followId={myFollowsObjIdList[myFollowsList.indexOf(value.following.id)]}
                                                  followed={true}
                                                  updatePar={props.updateMyFollows}
                                                  case='profile' />
                                 )
 
                             }
-                            else if(!props.myFollowsList.includes(value.following.id) &&
-                                        props.myFollowersList.includes(value.following.id)) {
+                            else if(!myFollowsList.includes(value.following.id) &&
+                                        myFollowersList.includes(value.following.id)) {
                                         return(
                                             <OneUserLine key={index}
                                                         user={value.following}
