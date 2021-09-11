@@ -7,6 +7,7 @@ import Posts from "../../Components/Posts/Posts";
 import Explore from '../../Components/Explore/Explore';
 import Searchbar from '../../Components/Searchbar/Searchbar';
 import Spinner from 'react-bootstrap/esm/Spinner';
+import Media from '../../Components/Posts/Media';
 
 function Home(props) {
     const [userId, setUserId] = useState(null);
@@ -14,7 +15,10 @@ function Home(props) {
     const [update1, setUpdate1] = useState(1);
     const [update2, setUpdate2] = useState(1);
     const [updateColorsBetweenNavbars, setUpdateColorsBetweenNavbars] = useState(1);
-    
+    const [image, setImage] = useState(null);
+    const [video, setVideo] = useState(null);
+    const [showingFullScreenMedia, setShowingFullScreenMedia] = useState(false);
+
     useEffect(() => {
         isLogged()
         .then(response => {
@@ -64,6 +68,12 @@ function Home(props) {
             <MyNavbar updateMyColors = {updateColorsBetweenNavbars} />
             <Searchbar />
             <div className="main-home-container flex-layout">
+                {showingFullScreenMedia &&
+                    <Media 
+                        image={image}
+                        video={video}
+                        setShowing={setShowingFullScreenMedia} />                
+                }
                 <Explore 
                     userId={userId}
                     logged={logged}
@@ -72,7 +82,10 @@ function Home(props) {
                 />
                 <Posts
                     case={props.case}
-                    updateHome={updateHome} 
+                    updateHome={updateHome}
+                    setShowingMedia={setShowingFullScreenMedia}
+                    setImage={setImage}
+                    setVideo={setVideo}
                 />
             </div>
         </div>

@@ -13,6 +13,7 @@ import { getUser, updateUser, updateUserPhoto,
 import Searchbar from '../../Components/Searchbar/Searchbar';
 import { createNotification } from '../../createNotification';
 import Button from 'react-bootstrap/esm/Button';
+import Media from '../../Components/Posts/Media';
 
 function Profile(props) {
 
@@ -39,6 +40,9 @@ function Profile(props) {
     const [error, setError] = useState(null);
     const [username_error, setUsername_error] = useState(null);
     const [updateColorsBetweenNavbars, setUpdateColorsBetweenNavbars] = useState(1);
+    const [image, setImage] = useState(null);
+    const [video, setVideo] = useState(null);
+    const [showingFullScreenMedia, setShowingFullScreenMedia] = useState(false);
 
     const validateUsername = (str) => {
         let allowed = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 
@@ -303,6 +307,12 @@ function Profile(props) {
                 }
                 <MyNavbar updateMyColors = {updateColorsBetweenNavbars} />
                 <Searchbar />
+                {showingFullScreenMedia &&
+                    <Media 
+                        image={image}
+                        video={video}
+                        setShowing={setShowingFullScreenMedia} />                
+                }
                 {!error &&
                     <div className="profile-main center-content flex-layout">
                         <h3 className="profile-username" style={{'marginTop': '9px'}}>
@@ -391,12 +401,20 @@ function Profile(props) {
                 </div>
                 }
                 {!error &&
-                <div className="adjusted-width">
-                    <hr className="no-margin"></hr>
-                    <h4 className="center-text">Posts</h4>
-                    <hr className="no-margin"></hr>
-                    <UserPosts whose={parseInt(props.userId)} me={me} updateHome={updateMyFollows} updateMe={updateFlag} />
-                </div>
+                    <div className="adjusted-width">
+                        <hr className="no-margin"></hr>
+                        <h4 className="center-text">Posts</h4>
+                        <hr className="no-margin"></hr>
+                        <UserPosts
+                            whose={parseInt(props.userId)}
+                            me={me}
+                            updateHome={updateMyFollows}
+                            updateMe={updateFlag}
+                            setShowingMedia={setShowingFullScreenMedia}
+                            setImage={setImage}
+                            setVideo={setVideo}
+                        />
+                    </div>
                 }
                 {followsShow && !error &&
                     <FollowBox  userId={parseInt(props.userId)}

@@ -94,7 +94,7 @@ input {
     text-align: center;
 }
 .blur {
-    background: inherit;
+    background-color: rgba(213, 213, 213, 0.5);
     box-shadow: 0 8px 32px 0 var(--colorback);
     backdrop-filter: blur( 4px );
     -webkit-backdrop-filter: blur( 4px );

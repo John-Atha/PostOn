@@ -3,6 +3,7 @@ import MyNavbar from '../Components/Navbars/MyNavbar';
 import OnePost from '../Components/Posts/OnePost';
 import MobileNavbar from '../Components/Navbars/MobileNavbar';
 import { isLogged, getOnePost } from '../api/api';
+import Media from '../Components/Posts/Media';
 
 class OnePostPage extends React.Component {
     constructor(props) {
@@ -38,12 +39,20 @@ class OnePostPage extends React.Component {
             showCard2: false,
             error: null,
             updateColorsBetweenNavbars: 1,
+            showingFullScreenMedia: false,
         }
         this.checkLogged = this.checkLogged.bind(this);
         this.getPostInfo = this.getPostInfo.bind(this);
         this.deleteMe = this.deleteMe.bind(this);
         this.updateNavbarsColors = this.updateNavbarsColors.bind(this);
+        this.setShowingFullScreenMedia = this.setShowingFullScreenMedia.bind(this);
     }
+    setShowingFullScreenMedia = (val) => {
+        this.setState({
+            showingFullScreenMedia: val,
+        })
+    }
+
     deleteMe = () => {
         window.location.href="/";
     }
@@ -101,7 +110,14 @@ class OnePostPage extends React.Component {
                 }
                 <MyNavbar updateMyColors = {this.state.updateColorsBetweenNavbars} />
                 <div className="margin-top-smaller"></div>
-                { this.state.owner!==null &&
+                {this.state.owner!==null && this.state.showingFullScreenMedia &&
+                        <Media 
+                            image={this.state.media}
+                            video={this.state.video}
+                            setShowing={this.setShowingFullScreenMedia} />                
+                }
+                {this.state.owner!==null &&
+                
                     <OnePost userId={this.state.userId} 
                          logged={this.state.logged}
                          id={this.state.id}
@@ -112,7 +128,11 @@ class OnePostPage extends React.Component {
                          date={this.state.date}
                          updateHome={()=>{}}
                          updateParent={this.deleteMe}
-                         commentsShow={true} />
+                         commentsShow={true}
+                         setShowingMedia={this.setShowingFullScreenMedia}
+                         setImage={()=>{}}
+                         setVideo={()=>{}}
+                    />
                 }
             </div>
         )

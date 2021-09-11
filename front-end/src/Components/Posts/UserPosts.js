@@ -14,6 +14,7 @@ class UserPosts extends React.Component {
         super(props);
         this.state = {
             userId: this.props.me,
+            username: null,
             logged: false,
             error: null,
             postsList: [],
@@ -371,6 +372,7 @@ class UserPosts extends React.Component {
             this.setState({
                 logged: response.data.authenticated,
                 userId: response.data.id,
+                username: response.data.username,
             });
         })
         .catch(err => {
@@ -404,11 +406,11 @@ class UserPosts extends React.Component {
                 }
                 { this.state.userId===this.state.whose && !this.state.isUploading &&
                     <div className="new-post-container">
-                            <h5>Hi, what's on your mind?</h5>
-                            <h6>Photo</h6>
+                            <h5><i>Hi {this.state.username || ''}, what's on your mind?</i></h5>
+                            <h6><i>Photo</i></h6>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <input id="new-post-photo" type="file" accept="image/*, video/*"/>
-                            <h6 >Text</h6>
+                            <h6><i>Text</i></h6>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <MentionsInput name="newText" className="post-textarea-edit clean-style new-post" style={{width: '90%'}} value={this.state.newText} onChange={this.handleInput} onFocus={this.askTags}>
                                 <Mention
@@ -438,6 +440,9 @@ class UserPosts extends React.Component {
                                         updateHome={this.props.updateHome}
                                         updateParent={this.askPosts}
                                         user={true}
+                                        setShowingMedia={this.props.setShowingMedia}
+                                        setImage={this.props.setImage}
+                                        setVideo={this.props.setVideo}    
                             />
                         )
                     })}

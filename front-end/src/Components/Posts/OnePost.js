@@ -484,6 +484,8 @@ class OnePost extends React.Component {
         this.addTags = this.addTags.bind(this);
         this.preLike = this.preLike.bind(this);
         this.dateCalc = this.dateCalc.bind(this);
+        this.showImage = this.showImage.bind(this);
+        this.showVideo = this.showVideo.bind(this);
     }
     preLike = (kind) => {
         if (this.state.likeKind===kind) {
@@ -1033,9 +1035,17 @@ class OnePost extends React.Component {
             }        
         }
     }
+    showImage = () => {
+        this.props.setShowingMedia(true);
+        this.props.setImage(this.state.media);
+        this.props.setVideo(null);
+    }
+    showVideo = () => {
+        this.props.setShowingMedia(true);
+        this.props.setVideo(this.state.video);
+        this.props.setImage(null);
+    }
     render() {
-        //console.log("POST WITH TEXT")
-        //console.log(this.state.text)
         return(
             <div className={this.props.user ? "user-post-container" : "post-container"}>
                 <div className="flex-layout">
@@ -1088,12 +1098,12 @@ class OnePost extends React.Component {
                             }
                         </div>
                         {this.state.media &&
-                            <div className="center-content">
+                            <div className="center-content" onClick={this.showImage}>
                                     <img className="post-media" src={this.state.media} alt="media"/>
                             </div>
                         }
                         {this.state.video &&
-                            <div className="center-content">
+                            <div className="center-content" onClick={this.showVideo}>
                                 <video className="post-media" controls>
                                     <source src={this.state.video} />
                                     Sorry, we couldn't display this video.

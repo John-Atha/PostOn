@@ -14,6 +14,7 @@ class Posts extends React.Component {
         super(props);
         this.state = {
             userId: null,
+            username: null,
             logged: false,
             error: null,
             followingPosts: false,
@@ -112,7 +113,6 @@ class Posts extends React.Component {
         }, 200)
     }
 
-
     filterPost = (text) => {
         //console.log("users i see")
         //console.log(this.state.usersList)
@@ -179,6 +179,7 @@ class Posts extends React.Component {
             tagsToPost: final_post_object,
         })
     }
+
     handleInput = (event) => {
         const value = event.target.value;
         this.setState({
@@ -400,6 +401,7 @@ class Posts extends React.Component {
             this.setState({
                 logged: response.data.authenticated,
                 userId: response.data.id,
+                username: response.data.username,
                 add: true,
             });
             //this.askLikes();
@@ -425,11 +427,11 @@ class Posts extends React.Component {
                 }
                 {this.state.add && !this.state.isUploading &&
                     <div className="new-post-container">
-                        <h5>Hi, what's on your mind?</h5>
-                            <h6 className='margin-top-smaller'>Media</h6>
+                        <h5><i>Hi {this.state.username || ''}, what's on your mind?</i></h5>
+                            <h6 className='margin-top-smaller'><i>Media</i></h6>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <input id="new-post-photo" type="file" accept="image/*, video/*"/>
-                            <h6 className='margin-top-smaller'>Text</h6>
+                            <h6 className='margin-top-smaller'><i>Text</i></h6>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <MentionsInput name="newText" className="post-textarea-edit clean-style new-post" style={{width: '90%'}} value={this.state.newText} onChange={this.handleInput} onFocus={this.askTags}>
                                 <Mention
@@ -457,6 +459,9 @@ class Posts extends React.Component {
                                     logged={this.state.logged}
                                     updateHome={this.props.updateHome}
                                     updateParent={this.askPosts}
+                                    setShowingMedia={this.props.setShowingMedia}
+                                    setImage={this.props.setImage}
+                                    setVideo={this.props.setVideo}
                         />
                     )
                 })}
