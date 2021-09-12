@@ -17,18 +17,16 @@ function Media(props) {
     return (
         <OutsideClickHandler
             onOutsideClick={()=>props.setShowing(false)}>
-            <div className='media-pop-up-container blur'>
-                <div className='center-content'>
-                    {image &&
-                        <img className="media-pop-up" src={image} alt="post media"/>
-                    }
-                    {video &&
-                        <video className="media-pop-up" controls>
-                            <source src={video} />
-                            Sorry, we couldn't display this video.
-                        </video>
-                    }
-                </div>
+            <div className='media-pop-up-container blur center-content'>
+                {image &&
+                    <img className="media-pop-up" src={image} alt="post media"/>
+                }
+                {video &&
+                    <video className="media-pop-up" controls>
+                        <source src={video} />
+                        Sorry, we couldn't display this video.
+                    </video>
+                }
                 <button className='close-button'
                         style={{'fontSize': 'xx-large'}}
                         onClick={()=>props.setShowing(false)}>

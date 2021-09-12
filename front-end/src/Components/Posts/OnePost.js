@@ -486,6 +486,7 @@ class OnePost extends React.Component {
         this.dateCalc = this.dateCalc.bind(this);
         this.showImage = this.showImage.bind(this);
         this.showVideo = this.showVideo.bind(this);
+        //this.resize = this.resize.bind(this);
     }
     preLike = (kind) => {
         if (this.state.likeKind===kind) {
@@ -1045,6 +1046,23 @@ class OnePost extends React.Component {
         this.props.setVideo(this.state.video);
         this.props.setImage(null);
     }
+
+    /*resize = () => {
+        const mediaUrl = this.state.media || this.state.video;
+        const img = document.getElementById(mediaUrl);
+        if (!Array(img.classList).includes('resized')) {
+            const height = img.naturalHeight;
+            const width = img.naturalWidth;
+            img.classList.remove('post-media-square');
+            img.classList.add(height>1.3*width ? 'post-media-tall' : 'post-media-square');
+            img.classList.add('resized');
+            console.log(`height: ${height}, width: ${width} => ${height>1.3*width ? "post-media-tall" : "post-media-square"}`);    
+        }
+        else {
+            console.log('already resized');
+        }
+    }*/
+
     render() {
         return(
             <div className={this.props.user ? "user-post-container" : "post-container"}>
@@ -1099,12 +1117,22 @@ class OnePost extends React.Component {
                         </div>
                         {this.state.media &&
                             <div className="center-content" onClick={this.showImage}>
-                                    <img className="post-media" src={this.state.media} alt="media"/>
+                                    <img 
+                                        src={this.state.media}
+                                        alt="media"
+                                        className='post-media'
+                                        //onLoad={this.resize}
+                                        //id={this.state.media}
+                                    />
                             </div>
                         }
                         {this.state.video &&
                             <div className="center-content" onClick={this.showVideo}>
-                                <video className="post-media" controls>
+                                <video
+                                    className='post-media'
+                                    //onLoad={this.resize}
+                                    //id={this.state.video}
+                                    controls>
                                     <source src={this.state.video} />
                                     Sorry, we couldn't display this video.
                                 </video>
@@ -1127,12 +1155,23 @@ class OnePost extends React.Component {
                         </div>                       
                         {this.state.media &&
                             <div className="center-content">
-                                    <img className="post-media" src={this.state.media} alt="media"/>
+                                    <img 
+                                        //id={this.state.media}
+                                        src={this.state.media}
+                                        //onLoad={this.resize}
+                                        className="post-media"
+                                        alt="media"
+                                    />
                             </div>
                         }
                         {this.state.video &&
                             <div className="center-content">
-                                <video className="post-media" controls>
+                                <video 
+                                    //id={this.state.video}
+                                    //onLoad={this.resize}
+                                    className="post-media"
+                                    controls
+                                >
                                     <source src={this.state.video} />
                                     Sorry, we couldn't display this video.
                                 </video>
