@@ -149,7 +149,7 @@ def isLogged(request):
                     user.save()
                 except:
                     pass                
-            return JsonResponse({"authenticated": True, "id": request.user.id}, status=200)
+            return JsonResponse({"authenticated": True, "id": request.user.id, "username": request.user.username}, status=200)
         else:
             return JsonResponse({"authenticated": False}, status=401)
 
