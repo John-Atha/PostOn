@@ -2,7 +2,7 @@ import React from 'react';
 import MyNavbar from '../Components/Navbars/MyNavbar';
 import OnePost from '../Components/Posts/OnePost';
 import MobileNavbar from '../Components/Navbars/MobileNavbar';
-import { isLogged, getOnePost } from '../api/api';
+import { isLogged, getOnePost, getUser } from '../api/api';
 import Media from '../Components/Posts/Media';
 
 class OnePostPage extends React.Component {
@@ -10,8 +10,8 @@ class OnePostPage extends React.Component {
         super(props);
         this.state = {
             id: this.props.id,
-            userId: null,
             logged: false,
+            user: null,
             owner: null,
             media: null,
             video: null,
@@ -62,13 +62,24 @@ class OnePostPage extends React.Component {
             //console.log(response);
             this.setState({
                 logged: response.data.authenticated,
-                userId: response.data.id,
+            })
+            getUser(response.data.id)
+            .then(response => {
+                this.setState({
+                    user: response.data,
+                })
+            })
+            .catch(() => {
+                this.setState({
+                    logged: false,
+                    error: "Not logged in",
+                })
             })
         })
         .catch(err => {
             //console.log(err)
             this.setState({
-                error: "Not logged in"
+                error: "Not logged in",
             })
         }) 
     }
@@ -118,7 +129,7 @@ class OnePostPage extends React.Component {
                 }
                 {this.state.owner!==null &&
                 
-                    <OnePost userId={this.state.userId} 
+                    <OnePost user={this.state.user} 
                          logged={this.state.logged}
                          id={this.state.id}
                          owner={this.state.owner}

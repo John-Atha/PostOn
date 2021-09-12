@@ -1,6 +1,6 @@
 import React from "react";
 import "./Posts.css";
-import { getUsers, isLogged, getPosts, getUsersPosts, PostPostText,
+import { getUsers, getPosts, getUsersPosts, PostPostText,
          PostPostPhoto, deletePost, PostPostTag } from '../../api/api';
 import OnePost from '../Posts/OnePost';
 import arrow_icon from '../../images/arrow-up.png';
@@ -13,9 +13,8 @@ class Posts extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            userId: null,
-            username: null,
-            logged: false,
+            logged: props.user===null,
+            user: props.user,
             error: null,
             followingPosts: false,
             postsList: [],
@@ -395,7 +394,7 @@ class Posts extends React.Component {
     }
     componentDidMount() {
         window.addEventListener('scroll', this.checkScroll);
-        isLogged()
+        /*isLogged()
         .then(response => {
             //console.log(response);
             this.setState({
@@ -411,11 +410,19 @@ class Posts extends React.Component {
             this.setState({
                 error: err,
             })
-        })
+        })*/
         setTimeout(()=>this.askPosts(), 200);
     }
     componentWillUnmount() {
         window.removeEventListener('scroll', this.checkScroll);
+    }
+    componentDidUpdate(prevProps) {
+        if (prevProps.user !== this.props.user) {
+            this.setState({
+                user: this.props.user,
+                logged: this.props.user!==null,
+            })
+        }
     }
     render() {
         return(
@@ -425,9 +432,9 @@ class Posts extends React.Component {
                         <Spinner animation="border" role="status" variant='primary' />
                     </div>
                 }
-                {this.state.add && !this.state.isUploading &&
+                {this.state.logged && !this.state.isUploading &&
                     <div className="new-post-container">
-                        <h5><i>Hi {this.state.username || ''}, what's on your mind?</i></h5>
+                        <h5><i>Hi {this.state.user ? this.state.user.username : ''}, what's on your mind?</i></h5>
                             <h6 className='margin-top-smaller'><i>Media</i></h6>
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <input id="new-post-photo" type="file" accept="image/*, video/*"/>
@@ -455,8 +462,7 @@ class Posts extends React.Component {
                                     media={value.media}
                                     video={value.video}
                                     date={value.date}
-                                    userId={this.state.userId}
-                                    logged={this.state.logged}
+                                    user={this.state.user}
                                     updateHome={this.props.updateHome}
                                     updateParent={this.askPosts}
                                     setShowingMedia={this.props.setShowingMedia}

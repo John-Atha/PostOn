@@ -155,7 +155,7 @@ function Profile(props) {
     }
 
     const follow = () => {
-        followUser(me, parseInt(props.userId))
+        followUser(me?me.id:null, parseInt(props.userId))
         .then(() => {
             updateMyFollows();
         })
@@ -205,7 +205,7 @@ function Profile(props) {
         console.log('I am askMyFollows')
         setTimeout(()=>{
             
-            getFollows(me)
+            getFollows(me?me.id:null)
             .then(response => {
                 let tempFollowsList = [];
                 let tempFollowsObjIdList = [];
@@ -221,7 +221,7 @@ function Profile(props) {
                 ;
             })
 
-            getFollowers(me)
+            getFollowers(me?me.id:null)
             .then(response => {
                 let tempFollowersList = [];
                 response.data.forEach(el=> {
@@ -272,7 +272,13 @@ function Profile(props) {
         isLogged()
         .then(response => {
             setLogged(response.data.authenticated);
-            setMe(response.data.id);
+            getUser(response.data.id)
+            .then(response => {
+                setMe(response.data);
+            })
+            .catch(() => {
+                setLogged(false);
+            })
         })
         .catch(() => {
             ;
@@ -350,19 +356,19 @@ function Profile(props) {
                                 {followsNum} follows
                             </Button>
                             <div>
-                            {logged && !isFollowed && !isFollowing && me!==parseInt(props.userId) &&
+                            {logged && !isFollowed && !isFollowing && me.id!==parseInt(props.userId) &&
                                 <Button variant='primary' className="margin-top-small" style={{width: '90%'}} onClick={follow}>Follow</Button>
                             }
-                            {logged && !isFollowed && isFollowing && me!==parseInt(props.userId) &&
+                            {logged && !isFollowed && isFollowing && me.id!==parseInt(props.userId) &&
                                 <Button variant='primary' className="margin-top" style={{width: '90%'}} onClick={follow}>Follow Back</Button>
                             }
-                            {logged && isFollowed && me!==parseInt(props.userId) &&
+                            {logged && isFollowed && me.id!==parseInt(props.userId) &&
                                 <Button variant='primary' className="margin-top-small" style={{width: '90%'}} onClick={unfollow}>Unfollow</Button>
                             }
-                            {logged && me===parseInt(props.userId) &&
+                            {logged && me.id===parseInt(props.userId) &&
                                 <Button variant='warning' className="margin-top-small" style={{width: '90%'}} onClick={editProf}>Edit info</Button>               
                             }
-                            {logged && me===parseInt(props.userId) &&
+                            {logged && me.id===parseInt(props.userId) &&
                                 <Button variant='danger' className="margin-top-small delete-account-button" style={{width: '90%', 'fontSize': '0.8rem'}} onClick={()=>setDeleteAcc(true)}>
                                     Delete account
                                 </Button>               
@@ -407,7 +413,7 @@ function Profile(props) {
                         <hr className="no-margin"></hr>
                         <UserPosts
                             whose={parseInt(props.userId)}
-                            me={me}
+                            user={me}
                             updateHome={updateMyFollows}
                             updateMe={updateFlag}
                             setShowingMedia={setShowingFullScreenMedia}
@@ -418,7 +424,7 @@ function Profile(props) {
                 }
                 {followsShow && !error &&
                     <FollowBox  userId={parseInt(props.userId)}
-                                me={me}
+                                me={me.id}
                                 logged={logged}
                                 case="follows"
                                 myFollowsList={myFollowsList}
@@ -430,7 +436,7 @@ function Profile(props) {
                 }
                 {followersShow && !error &&
                     <FollowBox  userId={parseInt(props.userId)}
-                                me={me}
+                                me={me.id}
                                 logged={logged}
                                 case="followers"
                                 myFollowsList={myFollowsList}

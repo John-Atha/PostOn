@@ -7,8 +7,8 @@ import verified from '../../images/verified.png';
 import Likes from '../Likes/Likes';
 import { getUsers, getPostsComments, getLikesSample,
          getAllLikes, LikeComment, UnLikeComment,
-         DeleteComment, AddComment, getUser,
-         UserLikesComment, PostCommentTag } from '../../api/api';
+         DeleteComment, AddComment, UserLikesComment,
+         PostCommentTag } from '../../api/api';
 import ProfileCard from  '../Profile/ProfileCard';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { MentionsInput, Mention } from 'react-mentions';
@@ -19,10 +19,7 @@ class NewComment extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            userId: this.props.userId,
-            username: null,
-            photo: null,
-            verified: false,
+            user: this.props.user,
             logged: this.props.logged,
             text: "",
             firstFocus: true,
@@ -35,7 +32,7 @@ class NewComment extends React.Component {
         }
         this.handleInput = this.handleInput.bind(this);
         this.submit = this.submit.bind(this);
-        this.getUserInfo = this.getUserInfo.bind(this);
+        //this.getUserInfo = this.getUserInfo.bind(this);
         this.askTags = this.askTags.bind(this);
         this.filterComment = this.filterComment.bind(this);
         this.addTags = this.addTags.bind(this);
@@ -166,7 +163,7 @@ class NewComment extends React.Component {
     submit = (event) => {
         event.preventDefault();
         if (this.state.text.length) {
-            AddComment(this.state.userId, this.state.postId, this.state.text)
+            AddComment(this.state.user?this.state.user.id:null, this.state.postId, this.state.text)
             .then(response => {
                 //console.log(response);
                 this.props.updateComments();
@@ -189,42 +186,13 @@ class NewComment extends React.Component {
         
     }
 
-    getUserInfo = () => {
-        if (this.props.userId) {
-            getUser(this.props.userId)
-            .then(response => {
-                //console.log(response);
-                this.setState({
-                    username: response.data.username,
-                    photo: response.data.photo,
-                    verified: response.data.verified,
-                })
-            })
-            .catch(err => {
-                //console.log(err);
-                this.setState({
-                    error: "Not logged in."
-                })
-            })
-        }
-        else {
-            this.setState({
-                error: "Not logged in."
-            })
-        }
-    }
-
-    componentDidMount() {
-        this.getUserInfo();
-    }
     componentDidUpdate(prevProps) {
-        if (prevProps.userId!==this.props.userId ||
+        if (prevProps.user!==this.props.user ||
             prevProps.logged!==this.props.logged) {
                 this.setState({
-                    userId: this.props.userId,
+                    user: this.props.user,
                     logged: this.props.logged,
                 })
-                this.getUserInfo();            
             }
     }
 
@@ -234,11 +202,11 @@ class NewComment extends React.Component {
                 <div className="comment-box flex-item-expand">
                     <div className="flex-layout">
                         <div className="user-photo-container-small">
-                                <img className="user-photo" src={this.state.photo} alt="user profile" />
+                                <img className="user-photo" src={this.state.user.photo} alt="user profile" />
                         </div>
                         <div className="owner-name">
-                            {this.state.username}
-                            {this.state.verified===true &&
+                            {this.state.user.username}
+                            {this.state.user.verified===true &&
                                 <img className="verified-icon" src={verified} alt="verified" />
                             }    
                         </div>
@@ -919,6 +887,7 @@ class OneComment extends React.Component {
                     userId: this.props.userId,
                     logged: this.props.logged,
                     comment: this.props.comment,
+                    mine: this.props.comment.owner.id===this.props.userId,
                 })
                 if (!this.state.usersList.length) {
                     this.getUsernames();
@@ -1100,7 +1069,7 @@ class Comments extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            userId: this.props.userId,
+            user: this.props.user,
             logged: this.props.logged,
             postId: this.props.postId,
             start: 1,
@@ -1181,12 +1150,12 @@ class Comments extends React.Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (prevProps.userId!==this.props.userId ||
+        if (prevProps.user!==this.props.user ||
             prevProps.logged!==this.props.logged ||
             prevProps.postId!==this.props.postId ||
             prevProps.comments_error!==this.props.comments_error) {
                 this.setState({
-                    userId: this.props.userId,
+                    user: this.props.user,
                     logged: this.props.logged,
                     postId: this.props.postId,
                     comments_error: this.props.comments_error,
@@ -1205,12 +1174,12 @@ class Comments extends React.Component {
         if (this.state.how==="sample") {
             return (
                 <div className="all-comments-container center-content">
-                    <NewComment userId={this.state.userId}
+                    <NewComment user={this.state.user}
                                 logged={this.state.logged}
                                 postId={this.state.postId}
                                 updateComments={this.updateMe}/>
                     {this.state.commentSample!==null &&
-                                        <OneComment userId={this.state.userId}
+                                        <OneComment userId={this.state.user?this.state.user.id:null}
                                         logged={this.state.logged}
                                         comment={this.state.commentSample}
                                         updateParent={this.removeComment}
@@ -1227,7 +1196,7 @@ class Comments extends React.Component {
         else {
             return(
                 <div className="all-comments-container center-content">
-                    <NewComment userId={this.state.userId}
+                    <NewComment user={this.state.user}
                                 logged={this.state.logged}
                                 postId={this.state.postId}
                                 updateComments={this.updateMe}/>
@@ -1235,7 +1204,7 @@ class Comments extends React.Component {
                         this.state.commentsList.map((value, index) => {
                             //console.log(value);
                             return (
-                                <OneComment userId={this.state.userId}
+                                <OneComment userId={this.state.user?this.state.user.id:null}
                                             logged={this.state.logged}
                                             key={index}
                                             comment={value}

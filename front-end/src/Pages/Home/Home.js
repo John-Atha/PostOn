@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './Home.css';
 import MyNavbar from '../../Components/Navbars/MyNavbar';
 import MobileNavbar from '../../Components/Navbars/MobileNavbar';
-import { isLogged } from '../../api/api';
+import { isLogged, getUser } from '../../api/api';
 import Posts from "../../Components/Posts/Posts";
 import Explore from '../../Components/Explore/Explore';
 import Searchbar from '../../Components/Searchbar/Searchbar';
@@ -12,6 +12,7 @@ import Media from '../../Components/Posts/Media';
 function Home(props) {
     const [userId, setUserId] = useState(null);
     const [logged, setLogged] = useState(null);
+    const [user, setUser] = useState(null);
     const [update1, setUpdate1] = useState(1);
     const [update2, setUpdate2] = useState(1);
     const [updateColorsBetweenNavbars, setUpdateColorsBetweenNavbars] = useState(1);
@@ -29,6 +30,16 @@ function Home(props) {
             setLogged(false);
         })
     }, [])
+
+    useEffect(() => {
+        getUser(userId)
+        .then(response => {
+            setUser(response.data);
+        })
+        .catch(() => {
+            setUser(null);
+        })
+    }, [userId])
 
     const updateProfBox = () => {
         setUpdate2(update2+1);
@@ -86,6 +97,7 @@ function Home(props) {
                     setShowingMedia={setShowingFullScreenMedia}
                     setImage={setImage}
                     setVideo={setVideo}
+                    user={user}
                 />
             </div>
         </div>

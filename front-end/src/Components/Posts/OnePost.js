@@ -2,7 +2,7 @@ import React from "react";
 import "./Posts.css";
 import { getUsers, getPostsCommentsSample, UpdatePostLike, getLikesSample,
          LikePost, UnLikePost, editPost, deletePost, UserLikesPost,
-         isLogged, DelPostTags, PostPostTag } from '../../api/api';
+         DelPostTags, PostPostTag } from '../../api/api';
 import like_icon from '../../images/like.png';
 import liked_icon from '../../images/liked.png';
 import comment_icon from '../../images/comment.png';
@@ -416,8 +416,8 @@ class OnePost extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            userId: null,
-            logged: false,
+            user: this.props.user,
+            logged: this.props.user !== null,
             id: this.props.id,
             owner: this.props.owner,
             media: this.props.media,
@@ -475,7 +475,7 @@ class OnePost extends React.Component {
         this.preDelete = this.preDelete.bind(this);
         this.hideModal = this.hideModal.bind(this);
         this.checkLiked = this.checkLiked.bind(this);
-        this.checkLogged = this.checkLogged.bind(this);
+        //this.checkLogged = this.checkLogged.bind(this);
         this.filterPost = this.filterPost.bind(this);
         this.getUsernames = this.getUsernames.bind(this);
         this.askTags = this.askTags.bind(this);
@@ -672,7 +672,7 @@ class OnePost extends React.Component {
             textParts: final_post_object,
         })
     }
-    checkLogged = () => {
+    /*checkLogged = () => {
         isLogged()
         .then(response => {
             //console.log(response);
@@ -688,10 +688,10 @@ class OnePost extends React.Component {
                 error: "Not logged in"
             })
         })
-    }
+    }*/
     checkLiked = () => {
-        if (this.state.userId) {
-            UserLikesPost(this.state.userId, this.state.id)
+        if (this.state.user) {
+            UserLikesPost(this.state.user.id, this.state.id)
             .then(response => {
                 //console.log(response);
                 this.setState({
@@ -876,7 +876,7 @@ class OnePost extends React.Component {
                 })
             }
             else {
-                LikePost(this.state.userId, this.state.id, kind)
+                LikePost(this.state.user.id, this.state.id, kind)
                 .then(response => {
                     //console.log(response);
                     this.setState({
@@ -949,25 +949,25 @@ class OnePost extends React.Component {
         this.commentsSample();
     }
     componentDidMount() {
-        this.checkLogged();
+        //this.checkLogged();
         this.statsSample();
         this.getUsernames();
     }
     componentDidUpdate(prevProps) {
         if (prevProps.id!==this.props.id || 
             prevProps.logged!==this.props.logged || 
-            prevProps.userId!==this.props.userId || 
+            prevProps.user!==this.props.user || 
             prevProps.owner!==this.props.owner||
             prevProps.media!==this.props.media ||
             prevProps.video!==this.props.video ||
             prevProps.text!==this.props.text ||
             prevProps.date!==this.props.date) {
             //console.log("NEW POST!!")
-            this.checkLogged();
+            //this.checkLogged();
             this.setState({
                 id: this.props.id,
-                //logged: this.props.logged,
-                //userId: this.props.userId,
+                user: this.props.user,
+                logged: this.props.user!==null,
                 owner: this.props.owner,
                 media: this.props.media,
                 video: this.props.video,
@@ -1088,7 +1088,7 @@ class OnePost extends React.Component {
                         </div>
                         <div className="post-date">{this.dateCalc(this.state.date)}</div>
                     </div>
-                    {this.state.userId===this.state.owner.id &&
+                    {(this.state.user?this.state.user.id:null)===this.state.owner.id &&
                         <div className="center-content flex-layout edit-action-container">
                             <button className="flex-layout button-as-link margin-right-small edit-action" onClick={this.editText}>
                                     <img className="like-icon-small" src={edit_icon} alt="edit"/>
@@ -1333,7 +1333,7 @@ class OnePost extends React.Component {
                 </div>
                 {this.state.likesShow &&
                     <Likes id={this.state.id}
-                        userId={this.state.userId}
+                        userId={this.state.user?this.state.user.id:null}
                         logged={this.state.logged}
                         on={"post"}
                         liked={this.state.liked}
@@ -1345,7 +1345,7 @@ class OnePost extends React.Component {
                 }
                 <hr className="no-margin"></hr>
                 {this.state.commentsShow &&
-                    <Comments userId={this.state.userId}
+                    <Comments user={this.state.user}
                             postId={this.state.id}
                             logged={this.state.logged}
                             how={"sample"}

@@ -13,9 +13,8 @@ class UserPosts extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            userId: this.props.me,
-            username: null,
-            logged: false,
+            logged: this.props.user !== null,
+            user: this.props.user,
             error: null,
             postsList: [],
             start: 1,
@@ -366,7 +365,7 @@ class UserPosts extends React.Component {
     }
     componentDidMount() {
         window.addEventListener('scroll', this.checkScroll);
-        isLogged()
+        /*isLogged()
         .then(response => {
             //console.log(response);
             this.setState({
@@ -380,16 +379,17 @@ class UserPosts extends React.Component {
             this.setState({
                 error: err,
             })
-        })
+        })*/
         setTimeout(()=>this.askPosts(), 200);
     }
     componentDidUpdate(prevProps) {
         if (prevProps.updateMe!==this.props.updateMe) {
             this.askPosts();
         }
-        if (prevProps.me!==this.props.me) {
+        if (prevProps.user!==this.props.user) {
             this.setState({
-                userId: this.props.me,
+                user: this.props.user,
+                logged: this.props.user !== null,
             })
         }
     }
@@ -404,7 +404,7 @@ class UserPosts extends React.Component {
                         <Spinner animation="border" role="status" variant='primary' />
                     </div>
                 }
-                { this.state.userId===this.state.whose && !this.state.isUploading &&
+                { (this.state.user?this.state.user.id:null)===this.state.whose && !this.state.isUploading &&
                     <div className="new-post-container">
                             <h5><i>Hi {this.state.username || ''}, what's on your mind?</i></h5>
                             <h6><i>Photo</i></h6>
@@ -435,8 +435,7 @@ class UserPosts extends React.Component {
                                         media={value.media}
                                         video={value.video}
                                         date={value.date}
-                                        userId={this.state.userId}
-                                        logged={this.state.logged}
+                                        user={this.state.user}
                                         updateHome={this.props.updateHome}
                                         updateParent={this.askPosts}
                                         user={true}
