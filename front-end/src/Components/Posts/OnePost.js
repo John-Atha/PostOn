@@ -1127,7 +1127,7 @@ class OnePost extends React.Component {
                             </div>
                         }
                         {this.state.video &&
-                            <div className="center-content" onClick={this.showVideo}>
+                            <div className="center-content">
                                 <video
                                     className='post-media'
                                     //onLoad={this.resize}
