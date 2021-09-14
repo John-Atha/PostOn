@@ -82,7 +82,8 @@ function MyNavbar(props) {
         .then(() => {
             createNotification('success', 'Hello,', 'Notifications marked succesffully');
             setNotifList([]);
-            setStart(1);
+            if (start===1) getNotif();
+            else setStart(1);
         })
         .catch(() => {
             createNotification('danger', 'Sorry,', 'Could not mark all as read');

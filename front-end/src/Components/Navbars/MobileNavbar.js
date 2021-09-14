@@ -95,7 +95,8 @@ function MobileNavbar(props) {
         readAllNotifications(userId)
         .then(() => {
             setNotifList([]);
-            setStart(1);
+            if (start===1) getNotif();
+            else setStart(1);
             createNotification('success', 'Hello,', 'Notifications marked succesffully');
         })
         .catch(() => {
@@ -184,6 +185,7 @@ function MobileNavbar(props) {
     }
 
     const getNotif = (x="") => {
+        console.log(`I am asking notifications from ${start}`)
         getNotifications(userId, start, start+5)
         .then(response => {
             console.log(response);
