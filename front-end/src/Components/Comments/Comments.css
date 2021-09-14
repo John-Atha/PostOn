@@ -48,6 +48,7 @@
     width: 80%;
     height: 40px;
     padding: 3px;
+    border-color: #b7b7b8;
 }
 .delete-icon {
     width: 21px;
@@ -55,6 +56,7 @@
 }
 .comment-textarea__input {
     color: var(--lettersColor);
+    border-color: #007bff;
 }
 .comment-textarea__suggestions {
     background-color: var(--color2) !important;

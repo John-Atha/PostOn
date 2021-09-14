@@ -7,7 +7,7 @@ import like_icon from '../../images/like.png';
 import liked_icon from '../../images/liked.png';
 import comment_icon from '../../images/comment.png';
 import edit_icon from '../../images/edit.png';
-import delete_icon from '../../images/delete-icon.png';
+import delete_icon from '../../images/delete-blue.png';
 import verified from '../../images/verified.png';
 import Likes from '../Likes/Likes';
 import Comments from '../Comments/Comments';
@@ -1092,11 +1092,11 @@ class OnePost extends React.Component {
                         <div className="center-content flex-layout edit-action-container">
                             <button className="flex-layout button-as-link margin-right-small edit-action" onClick={this.editText}>
                                     <img className="like-icon-small" src={edit_icon} alt="edit"/>
-                                    <div>Edit</div>
+                                    <div style={{'color': '#007bff'}}>Edit</div>
                             </button>
                             <button className="flex-layout button-as-link edit-action" onClick={this.preDelete}>
                                     <img className="like-icon-small" src={delete_icon} alt="delete"/>
-                                    <div>Delete</div>
+                                    <div style={{'color': '#007bff'}}>Delete</div>
                             </button>
                         </div>
                     }
@@ -1151,7 +1151,7 @@ class OnePost extends React.Component {
                         </MentionsInput>
                         <div className="flex-layout center-content">
                             <Button variant='primary' className="margin" onClick={this.saveText}>Save change</Button>
-                            <Button variant='warning' className="margin" onClick={this.discardText}>Discard change</Button>
+                            <Button variant='outline-primary' className="margin" onClick={this.discardText}>Discard change</Button>
                         </div>                       
                         {this.state.media &&
                             <div className="center-content">

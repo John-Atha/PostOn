@@ -356,20 +356,20 @@ function Profile(props) {
                                 {followsNum} follows
                             </Button>
                             <div>
-                            {logged && !isFollowed && !isFollowing && me.id!==parseInt(props.userId) &&
+                            {me && !isFollowed && !isFollowing && me.id!==parseInt(props.userId) &&
                                 <Button variant='primary' className="margin-top-small" style={{width: '90%'}} onClick={follow}>Follow</Button>
                             }
-                            {logged && !isFollowed && isFollowing && me.id!==parseInt(props.userId) &&
+                            {me && !isFollowed && isFollowing && me.id!==parseInt(props.userId) &&
                                 <Button variant='primary' className="margin-top" style={{width: '90%'}} onClick={follow}>Follow Back</Button>
                             }
-                            {logged && isFollowed && me.id!==parseInt(props.userId) &&
+                            {me && isFollowed && me.id!==parseInt(props.userId) &&
                                 <Button variant='primary' className="margin-top-small" style={{width: '90%'}} onClick={unfollow}>Unfollow</Button>
                             }
-                            {logged && me.id===parseInt(props.userId) &&
-                                <Button variant='warning' className="margin-top-small" style={{width: '90%'}} onClick={editProf}>Edit info</Button>               
+                            {me && me.id===parseInt(props.userId) &&
+                                <Button variant='primary' className="margin-top-small" style={{width: '90%'}} onClick={editProf}>Edit info</Button>               
                             }
-                            {logged && me.id===parseInt(props.userId) &&
-                                <Button variant='danger' className="margin-top-small delete-account-button" style={{width: '90%', 'fontSize': '0.8rem'}} onClick={()=>setDeleteAcc(true)}>
+                            {me && me.id===parseInt(props.userId) &&
+                                <Button variant='outline-danger' className="margin-top-small delete-account-button" style={{width: '90%', 'fontSize': '0.8rem'}} onClick={()=>setDeleteAcc(true)}>
                                     Delete account
                                 </Button>               
                             }
@@ -398,8 +398,8 @@ function Profile(props) {
                             <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
                             <input id="new_profile_photo" type="file" accept="image/*" />
                             <div className="flex-layout margin-top-smaller">
-                                <Button variant='success' className="margin" style={{margin: '1%'}} onClick={saveChanges}>Save</Button>
-                                <Button variant='warning' className="margin" style={{margin: '1%'}} onClick={discardChanges}>Cancel</Button>
+                                <Button variant='primary' className="margin" style={{margin: '1%'}} onClick={saveChanges}>Save</Button>
+                                <Button variant='outline-primary' className="margin" style={{margin: '1%'}} onClick={discardChanges}>Cancel</Button>
                             </div>
                         </div>
                     </div>

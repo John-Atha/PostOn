@@ -449,7 +449,7 @@ class Posts extends React.Component {
                             </MentionsInput>
                             <div className="flex-layout margin-top-smaller">
                                 <Button variant='primary' className="margin" onClick={this.addPost}>Publish</Button>
-                                <Button variant='warning' className="margin" onClick={this.clearAdd}>Clear</Button>
+                                <Button variant='outline-primary' className="margin" onClick={this.clearAdd}>Clear</Button>
                             </div>
                     </div>
                 }

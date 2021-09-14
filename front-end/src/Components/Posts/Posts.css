@@ -262,7 +262,6 @@
     right: 0;
     margin-right: 7px;
     font-size: small;
-    background-color: var(--greyOnDarkOnly);
     padding: 1%;
     border-radius: 6px;
 }

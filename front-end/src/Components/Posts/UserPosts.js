@@ -1,6 +1,6 @@
 import React from "react";
 import "./Posts.css";
-import { getUsers, isLogged, getUsersPosts, PostPostText,
+import { getUsers, getUsersPosts, PostPostText,
          PostPostPhoto, deletePost, PostPostTag } from '../../api/api';
 import arrow_icon from '../../images/arrow-up.png';
 import OnePost from '../Posts/OnePost';
@@ -421,7 +421,7 @@ class UserPosts extends React.Component {
                             </MentionsInput>
                             <div className="flex-layout margin-top-smaller">
                                 <Button variant='primary' className="margin" onClick={this.addPost}>Publish</Button>
-                                <Button variant='warning' className="margin" onClick={this.clearAdd}>Clear</Button>
+                                <Button variant='outline-primary' className="margin" onClick={this.clearAdd}>Clear</Button>
                             </div>
                     </div>
                 }
@@ -438,7 +438,7 @@ class UserPosts extends React.Component {
                                         user={this.state.user}
                                         updateHome={this.props.updateHome}
                                         updateParent={this.askPosts}
-                                        user={true}
+                                        logged={this.state.user!==null}
                                         setShowingMedia={this.props.setShowingMedia}
                                         setImage={this.props.setImage}
                                         setVideo={this.props.setVideo}    

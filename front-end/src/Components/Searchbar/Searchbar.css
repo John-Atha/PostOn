@@ -26,8 +26,6 @@
 }
 #search-button {
   margin-left: 2px;
-  color: var(--lettersColor);
-  border: 2px solid var(--grey);
 }
 
 .form-control {
