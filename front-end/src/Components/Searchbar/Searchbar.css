@@ -5,8 +5,9 @@
   width: 250px;
   background-color: var(--white);
   border-radius: 0px;
-  border: 1px solid var(--grey);
+  border: 1px solid;
   z-index: 2;
+  border-color: #007bff;
 }
 .one-suggestion {
   color: var(--grey);
@@ -27,7 +28,14 @@
 #search-button {
   margin-left: 2px;
 }
-
+.search-input, .search-input:focus {
+  border: 1px solid #007bff !important;
+  background-color: var(--colorback);
+  color: var(--lettersColor);
+}
+.search-input::placeholder {
+  color: var(--lettersColor);
+}
 .form-control {
   border: 1px solid var(--grey);
 }

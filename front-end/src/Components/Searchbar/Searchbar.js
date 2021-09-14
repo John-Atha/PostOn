@@ -69,12 +69,12 @@ function Searchbar() {
             <OutsideClickHandler onOutsideClick={hideSuggestions} >
             <div className="flex-layout">
                 <FormControl 
-                    style={{width: '250px', 'borderColor': '#007bff'}}
+                    style={{width: '250px'}}
                     type="text" 
                     placeholder="Search for a user..." 
                     name="input" 
                     value={input} 
-                    className="mr-sm-2"
+                    className="mr-sm-2 search-input"
                     onChange={(event)=>setInput(event.target.value)}
                     onFocus={showSuggestions} />
                 <Button id="search-button" disabled={searchDisabled} variant="outline-primary" onClick={search}>Search</Button>
