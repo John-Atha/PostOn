@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./MyNavbar.css";
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
@@ -9,7 +9,7 @@ import notif_icon_white from '../../images/notif_white.png';
 import stats_icon from '../../images/stats.png';
 import stats_icon_white from '../../images/stats_white.png';
 import logo from '../../images/logo192.png';
-import logout from '../../images/logout.png';
+import logout_img from '../../images/logout.png';
 import logout_white from '../../images/logout_white.png';
 import DarkModeToggle from "react-dark-mode-toggle";
 import Modal from 'react-bootstrap/Modal';
@@ -18,50 +18,22 @@ import explore from '../../images/follow_posts.png';
 import explore_white from '../../images/follow_posts_white.png';
 import { createNotification } from '../../createNotification';
 
-class MyNavbar extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            userId: null,
-            username: null,
-            photo: null,
-            logged: false,
-            error: null,
-            notifList: [],
-            start: 1,
-            end: 5,
-            theme: localStorage.getItem('theme') || 'light',
-            unread: 0,
-            showLogoutModal : false,
-        }
-        this.logout = this.logout.bind(this);
-        this.getNotif = this.getNotif.bind(this);
-        this.linkGen = this.linkGen.bind(this);
-        this.textGen = this.textGen.bind(this);
-        this.categorize = this.categorize.bind(this);
-        this.dateShow = this.dateShow.bind(this);
-        this.previousPage = this.previousPage.bind(this);
-        this.nextPage = this.nextPage.bind(this);
-        this.moveOn = this.moveOn.bind(this);
-        this.format = this.format.bind(this);
-        this.markAllRead = this.markAllRead.bind(this);
-        this.markOneAsRead = this.markOneAsRead.bind(this);
-        this.colorsUpdate = this.colorsUpdate.bind(this);
-        this.goDark = this.goDark.bind(this);
-        this.goLight = this.goLight.bind(this);
-        this.reloadAll = this.reloadAll.bind(this);
-        this.logoutModalShow = this.logoutModalShow.bind(this);
-        this.updateColorsFromMobileNav = this.updateColorsFromMobileNav.bind(this);
+function MyNavbar(props) {
+    const [userId, setUserId] = useState(null);
+    const [username, setUsername] = useState(null);
+    const [photo, setPhoto] = useState(null);
+    const [logged, setLogged] = useState(false);
+    const [notifList, setNotifList] = useState([]);
+    const [start, setStart] = useState(1);
+    const [theme, setTheme] = useState(localStorage.getItem('theme') || 'light');
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const [unreadNotifications, setUnreadNotifications] = useState(0);
+    
+    const updateColorsFromMobileNav = () => {
+        if (localStorage.getItem('theme')==='light') goLight(); else goDark();
     }
-    updateColorsFromMobileNav = () => {
-        if (localStorage.getItem('theme')==='light') this.goLight(); else this.goDark();
-    }
-    logoutModalShow = () => {
-        this.setState({
-            showLogoutModal: true,
-        })
-    }
-    reloadAll = () => {
+    
+    const reloadAll = () => {
         window.scrollTo({
             top:0,
             left:0,
@@ -69,86 +41,70 @@ class MyNavbar extends React.Component {
         });
         setTimeout(()=>{window.location.href='/';}, 20);
     }
-    markOneAsRead = (notif) => {
+    
+    const markOneAsRead = (notif) => {
         let category = "";
-        switch(this.categorize(notif)) {
+        switch(categorize(notif)) {
             case "comment":
-                //console.log("marking the comment as read")
                 category="comments"
                 break;
             case "commentlike":
-                //console.log("marking the like on comment as read")
                 category="likecomments"
                 break;
             case "follow":
-                //console.log("marking the follow as read")
                 category="follows"
                 break;
             case "postMention":
-                //console.log("marking the post mention as read")
                 category="posts_mentions"
                 break;
             case "commentMention":
-                //console.log("marking the comment mention as read")
                 category="comments_mentions"
                 break;
             default:
-                //console.log("marking the like on the post as read")
                 category="likes"   
         }
+        
         markAsRead(notif.id, category)
-        .then(response=>{
-            //console.log(response);
+        .then(()=>{
             createNotification("success", "OK", "Notification marked as read");
         })
-        .catch(err => {
-            //console.log(err);
+        .catch(() => {
             createNotification("danger", "Sorry", "Could not mark notification as read");
         })
         setTimeout(()=>{
-            window.location.href=this.linkGen(notif)
+            window.location.href = linkGen(notif)
         }, 1000)
     }
-    markAllRead = () => {
-        //console.log(this.state.userId)
+
+    const markAllRead = () => {
         createNotification('warning', 'Hello,', 'Wait for us to mark them all as read');
-        readAllNotifications(this.state.userId)
-        .then(response => {
-            //console.log(response);
-            this.getNotif("mark");
+        readAllNotifications(userId)
+        .then(() => {
             createNotification('success', 'Hello,', 'Notifications marked succesffully');
+            setNotifList([]);
+            setStart(1);
         })
-        .catch(err => {
-            //console.log(err);
+        .catch(() => {
             createNotification('danger', 'Sorry,', 'Could not mark all as read');
         })
     }
-    moveOn = () => {
-        setTimeout(() => this.getNotif(), 1000);
+    
+    const previousPage = () => {
+        setStart(start-5);
     }
-    previousPage = () => {
-        setTimeout(this.setState({
-            start: this.state.start-5,
-            end: this.state.end-5,
-            likesList: [],
-        }), 0)
-        this.moveOn();
+
+    const nextPage = () => {
+        setStart(start+5);
     }
-    nextPage = () => {
-        setTimeout(this.setState({
-            start: this.state.start+5,
-            end: this.state.end+5,
-            likesList: [],
-        }), 0)
-        this.moveOn();
-    }
-    dateShow = (date) => {
+
+    const dateShow = (date) => {
         let datetime = date.replace('T', ' ').replace('Z', '').split(' ')
         let day = datetime[0]
         let time = datetime[1].substring(0, 8)
         return `${day} ${time}`
     }
-    format = (str) => {
+    
+    const format = (str) => {
         if (str.length>15) {
             return str.slice(0, 15)+"..."
         }
@@ -156,7 +112,8 @@ class MyNavbar extends React.Component {
             return str;
         }
     }
-    categorize = (notif) => {
+    
+    const categorize = (notif) => {
         if (notif.post && notif.text) {
             return "comment";
         }
@@ -176,99 +133,94 @@ class MyNavbar extends React.Component {
             return "postlike";
         }
     }
-    linkGen = (notif) => {
-        let link="/users/2";
-        if (this.categorize(notif)==="comment") {
+    
+    const linkGen = (notif) => {
+        let link="#";
+        if (categorize(notif)==="comment") {
             link=`/posts/${notif.post.id}`;
         }
-        else if (this.categorize(notif)==="commentlike") {
+        else if (categorize(notif)==="commentlike") {
             link=`/posts/${notif.comment.post.id}`;
         }
-        else if (this.categorize(notif)==="follow") {
+        else if (categorize(notif)==="follow") {
             link=`/users/${notif.following.id}`;
         }
-        else if (this.categorize(notif)==="postMention") {
+        else if (categorize(notif)==="postMention") {
             link=`/posts/${notif.post.id}`;
         }
-        else if (this.categorize(notif)==="commentMention") {
+        else if (categorize(notif)==="commentMention") {
             link=`/posts/${notif.comment.post.id}`;
         }
-        else if (this.categorize(notif)==="postlike") {
+        else if (categorize(notif)==="postlike") {
             link=`/posts/${notif.post.id}`;
         }
         return link;
     }
-    textGen = (notif) => {
+
+    const textGen = (notif) => {
         let text = "notification";
         const reg = /[(][1-9]*[)]/;
-        if (this.categorize(notif)==="comment") {
-            text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} commented on your post:\n${this.format(notif.text).replaceAll('@[', '').replaceAll(']', '').replace(reg, ' ')}`;
+        if (categorize(notif)==="comment") {
+            text=`On ${dateShow(notif.date)},\n${notif.owner.username} commented on your post:\n${format(notif.text).replaceAll('@[', '').replaceAll(']', '').replace(reg, ' ')}`;
         }
-        else if (this.categorize(notif)==="commentlike") {
-            text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} liked your comment:\n${this.format(notif.comment.text).replaceAll('@[', '').replaceAll(']', '').replace(reg, ' ')}`;
+        else if (categorize(notif)==="commentlike") {
+            text=`On ${dateShow(notif.date)},\n${notif.owner.username} liked your comment:\n${format(notif.comment.text).replaceAll('@[', '').replaceAll(']', '').replace(reg, ' ')}`;
         }
-        else if (this.categorize(notif)==="follow") {
-            text=`On ${this.dateShow(notif.date)},\n${notif.following.username} asked to follow you.`;
+        else if (categorize(notif)==="follow") {
+            text=`On ${dateShow(notif.date)},\n${notif.following.username} asked to follow you.`;
         }
-        else if (this.categorize(notif)==="postlike") {
-            text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} reacted on one of your posts`;
+        else if (categorize(notif)==="postlike") {
+            text=`On ${dateShow(notif.date)},\n${notif.owner.username} reacted on one of your posts`;
         }
-        else if (this.categorize(notif)==="postMention") {
-            text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} mentioned you in a post`;
+        else if (categorize(notif)==="postMention") {
+            text=`On ${dateShow(notif.date)},\n${notif.owner.username} mentioned you in a post`;
         }
-        else if (this.categorize(notif)==="commentMention") {
-            text=`On ${this.dateShow(notif.date)},\n${notif.owner.username} mentioned you in a comment:\n${this.format(notif.comment.text).replaceAll('@[', '').replaceAll(']', '').replace(reg, ' ')}`;
+        else if (categorize(notif)==="commentMention") {
+            text=`On ${dateShow(notif.date)},\n${notif.owner.username} mentioned you in a comment:\n${format(notif.comment.text).replaceAll('@[', '').replaceAll(']', '').replace(reg, ' ')}`;
         }
         return text;
     }
-    getNotif = (x="") => {
-        getNotifications(this.state.userId, this.state.start, this.state.end)
+
+    const getNotif = (x="") => {
+        console.log(`I am asking for notifications from ${start} to ${start+5}`);
+        getNotifications(userId, start, start+5)
         .then(response => {
-            //console.log(response);
-            this.setState({
-                notifList: response.data,
-            })
+            setNotifList(response.data);
             let unread = 0;
             response.data.forEach(notif => {
                 if (!notif.seen) {
                     unread++;
                 }
             })
-            /*if ((window.location.href.endsWith(".com/") || window.location.href.endsWith(".com") ||
-                window.location.href.endsWith(".com/following") || window.location.href.endsWith(".com/following/")) &&
-                this.state.start===1 && x!=="mark" && unread>0) {
-                    createNotification('success', 'Hello,', `You have more than ${unread} new notifications`)
-                }*/
-            this.setState({
-                unread: unread,
-            })
+            setUnreadNotifications(unread);
         })
-        .catch(err => {
-            //console.log(err);
+        .catch(() => {
+            ;
         })
     }
-    logout = () => {
+
+    const logout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('refresh');
         window.location.href="/";
     }
-    goDark = () => {
+
+    const goDark = () => {
         localStorage.setItem('theme', 'dark');
-        this.setState({
-            theme: 'dark',
-        })
-        setTimeout(()=>{this.colorsUpdate();}, 200);
+        setTheme('dark');
+        //setTimeout(()=>{colorsUpdate();}, 200);
     }
-    goLight = () => {
+
+    const goLight = () => {
         localStorage.setItem('theme', 'light');
-        this.setState({
-            theme: 'light',
-        })
-        setTimeout(()=>{this.colorsUpdate();}, 200);
+        setTheme('light');
+        //setTimeout(()=>{colorsUpdate();}, 200);
     }
-    colorsUpdate = () => {
+
+    const colorsUpdate = () => {
         const root = document.getElementById('root');
-        if (this.state.theme==="light") {
+        console.log(`I am going ${theme}`)
+        if (theme==="light") {
             root.classList.remove('dark');
             root.classList.add('light');
         }
@@ -277,217 +229,229 @@ class MyNavbar extends React.Component {
             root.classList.add('dark');
         }
     }
-    componentDidMount() {
-        this.colorsUpdate();
+
+    useEffect(() => {
         isLogged()
         .then(response => {
-            //console.log(response);
-            this.setState({
-                logged: response.data.authenticated,
-                userId: response.data.id, 
-            })
-            this.getNotif();
+            setLogged(response.data.authenticated);
+            setUserId(response.data.id);
             getOneUser(response.data.id)
             .then(response => {
-                //console.log(response);
-                this.setState({
-                    username: response.data.username,
-                    photo: response.data.photo,
-                })
+                setUsername(response.data.username);
+                setPhoto(response.data.photo);
+            })
+            .catch(() => {
+                ;
             })
         })
-        .catch(err => {
-            //console.log(err);
-            this.setState({
-                error: err,
-            })
-        })
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.updateMyColors !== this.props.updateMyColors) {
-            console.log('I am changing colors')
-            this.updateColorsFromMobileNav();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
+
+    useEffect(() => {
+        colorsUpdate();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [theme])
+
+    useEffect(() => {
+        if (userId) {
+            getNotif();
         }
-    }
-    render(){
-        if (window.innerWidth >= 500) {
-            return(
-                <Navbar bg="light" expand="sm" sticky="top">
-                    <Navbar.Brand href="/">PostOn</Navbar.Brand>
-                    <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                    <Navbar.Collapse id="basic-navbar-nav">
-                        <Nav className="mr-auto">
-                            {this.state.logged &&
-                                <Nav.Link href={`/users/${this.state.userId}`}>{this.state.username}</Nav.Link>
-                            }
-                            {!this.state.logged && 
-                                <div className="error-message" style={{'marginTop': '8px', 'marginRight': '5px'}}>Not logged in</div>
-                            }
-                            {!this.state.logged &&
-                                <Nav.Link href="/">Posts</Nav.Link>
-                            }
-                            {this.state.logged &&
-                                <NavDropdown title="Posts" id="basic-nav-dropdown">
-                                    <NavDropdown.Item href="/">All Posts</NavDropdown.Item>
-                                    <NavDropdown.Item href="/following">Following's Posts</NavDropdown.Item>
-                                </NavDropdown>        
-                            }   
-                            {this.state.logged && 
-                                <NavDropdown title={<img className="navbar-icon2"
-                                             src={this.state.theme==='light' ? stats_icon : stats_icon_white}
-                                             alt="statistics" />
-                                             }
-                                             id="basic-nav-dropdown">
-                                    <NavDropdown.Item href="/stats/personal">My statistics</NavDropdown.Item>
-                                    <NavDropdown.Item href="/stats/general">General statistics</NavDropdown.Item>
-                                    <NavDropdown.Item href="/activity">Activity</NavDropdown.Item>
-                                </NavDropdown>
-                            }
-                            {!this.state.logged &&
-                                <Nav.Link href="/stats/general">General statistics</Nav.Link>
-                            }
-                        </Nav>
-                        <Nav>
-                        {this.state.logged && 
-                                <NavDropdown 
-                                    className="pull-left pull-up"
-                                    style={{'height': this.state.unread>0 ? '10px' : 'auto'}}
-                                    title={
-                                        this.state.unread>0 ?
-                                            <div style={{'height': '15px'}} className="flex-layout">
-                                            <img className="navbar-icon2"
-                                                 src={this.state.theme==='light' ? notif_icon : notif_icon_white}
-                                                 alt="notifications" />
-                                                <div className="notif-counter">{this.state.unread===5?`${this.state.unread}+` : this.state.unread}</div>
-                                            </div>
-                                        :
-                                        <img className="navbar-icon2"
-                                            src={this.state.theme==='light' ? notif_icon : notif_icon_white}
-                                            alt="notifications" />
-                                   }
-                                    id="basic-nav-dropdown">
-                                    {this.state.notifList.length!==0 && 
-                                        <div className="center-content">
-                                            <Button variant='outline-primary' onClick={this.markAllRead}>Mark all as read</Button>
-                                        </div>
-                                    }
-                                    <div className="notif-container">
-                                        {this.state.notifList.map((value, index) => {
-                                            if (value.seen) {
-                                                return(
-                                                    <NavDropdown.Item className="notif with-whitespace seen" 
-                                                                    key={index} 
-                                                                    href={this.linkGen(value)}>
-                                                            {this.textGen(value)}
-                                                    </NavDropdown.Item>
-                                                )
-                                            }
-                                            else {
-                                                return(
-                                                    <NavDropdown.Item className="notif with-whitespace not-seen" 
-                                                                    key={index}>
-                                                            <div onClick={()=>this.markOneAsRead(value)}>
-                                                                {this.textGen(value)}
-                                                            </div>
-                                                    </NavDropdown.Item>
-                                                )
-                                            }
-                                        })}
-                                    </div>
-                                    {!this.state.notifList.length && 
-                                        <div style={{padding: '1% 4%'}} className="error-message">No notifications found</div>
-                                    }
-                                    {this.state.notifList.length>0 &&
-                                        <div className="pagi-buttons-container flex-layout center-content">
-                                            {this.state.start !== 1 &&
-                                                <Button variant='outline-primary' className="flex-item-small margin" onClick={this.previousPage}>Previous</Button>                                        
-                                            }
-                                            {this.state.notifList.length >=5 &&
-                                                <Button variant='outline-primary' className="flex-item-small margin" onClick={this.nextPage}>Next</Button>                                        
-                                            }
-                                        </div>
-                                    }
-                                </NavDropdown>
-                            }
-                            <div style={{'marginTop': '6px'}} >
-                                <DarkModeToggle
-                                    checked={this.state.theme==='dark'}
-                                    onChange={()=>{if (this.state.theme==='light') this.goDark(); else this.goLight(); }}
-                                    size={70}
-                                />
-                            </div>
-                            {!this.state.logged &&
-                                <Nav.Link href="/login">Login</Nav.Link>
-                            }
-                            {this.state.logged && 
-                                <Nav.Link href="#"
-                                          onClick={this.logoutModalShow}>
-                                    <input type='image'
-                                           style={{'marginTop': '5px'}}
-                                           className="navbar-icon2"
-                                           src={this.state.theme==='light' ? logout : logout_white}
-                                           alt="logout" />
-                                </Nav.Link>
-                            }
-                        </Nav>
-                        {this.state.showLogoutModal &&
-                            <Modal.Dialog style={{'top': '10px', 'position': 'absolute', 'right': '0'}}>
-                                <Modal.Header>
-                                <Modal.Title style={{'color': 'black'}}>Logout</Modal.Title>
-                                </Modal.Header>
-                                <Modal.Body style={{'color': 'black'}}>
-                                <p>Are you sure you want to logout?</p>
-                                </Modal.Body>
-                                <Modal.Footer>
-                                <Button variant="secondary" onClick={()=>{this.setState({showLogoutModal: false,});}}>No, I changed my mind</Button>
-                                <Button variant="primary" onClick={this.logout}>Log out</Button>
-                                </Modal.Footer>
-                            </Modal.Dialog>
-                        }
-                    </Navbar.Collapse>
-                </Navbar>
-            )
-        }
-        else {
-            return(
-                <Navbar bg="light" fixed="bottom" className="center-content" style={{'height': '50px'}}>
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [start]);
+
+    useEffect(() => {
+        getNotif();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userId])
+
+    useEffect(() => {
+        updateColorsFromMobileNav();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.updateMyColors])
+
+    
+    if (window.innerWidth >= 500) {
+        return(
+            <Navbar bg="light" expand="sm" sticky="top">
+                <Navbar.Brand href="/">PostOn</Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="mr-auto">
-                        <Nav.Link href="#" onClick={this.reloadAll} style={{'width': '25vw'}}><img className="navbar-photo" src={logo} alt="logo" /></Nav.Link>
-                        <Nav.Link href='/explore' style={{'width': '25vw'}}>
-                            <img className="navbar-photo2"
-                                 src={this.state.theme==='light' ? explore : explore_white}
-                                 alt='explore' />
-                        </Nav.Link>
-                        {this.state.logged && 
-                            <NavDropdown drop='up' className="center-content" style={{'width': '25vw'}} title={
-                                <img className="navbar-photo2"
-                                     src={this.state.theme==='light'?stats_icon:stats_icon_white}
-                                     alt="statistics" />}
-                                id="basic-nav-dropdown">
+                        {logged &&
+                            <Nav.Link href={`/users/${userId}`}>{username}</Nav.Link>
+                        }
+                        {!logged && 
+                            <div className="error-message" style={{'marginTop': '8px', 'marginRight': '5px'}}>Not logged in</div>
+                        }
+                        {!logged &&
+                            <Nav.Link href="/">Posts</Nav.Link>
+                        }
+                        {logged &&
+                            <NavDropdown title="Posts" id="basic-nav-dropdown">
+                                <NavDropdown.Item href="/">All Posts</NavDropdown.Item>
+                                <NavDropdown.Item href="/following">Following's Posts</NavDropdown.Item>
+                            </NavDropdown>        
+                        }   
+                        {logged && 
+                            <NavDropdown title={<img className="navbar-icon2"
+                                            src={theme==='light' ? stats_icon : stats_icon_white}
+                                            alt="statistics" />
+                                            }
+                                            id="basic-nav-dropdown">
                                 <NavDropdown.Item href="/stats/personal">My statistics</NavDropdown.Item>
                                 <NavDropdown.Item href="/stats/general">General statistics</NavDropdown.Item>
                                 <NavDropdown.Item href="/activity">Activity</NavDropdown.Item>
                             </NavDropdown>
                         }
-                        {!this.state.logged &&
-                            <Nav.Link href="/stats/general" className="center-content" style={{'width': '25vw'}}>
-                                <img className="navbar-photo2"
-                                    src={this.state.theme==='light' ? stats_icon : stats_icon_white}
-                                    alt="statistics" />
+                        {!logged &&
+                            <Nav.Link href="/stats/general">General statistics</Nav.Link>
+                        }
+                    </Nav>
+                    <Nav>
+                    {logged && 
+                            <NavDropdown 
+                                className="pull-left pull-up"
+                                style={{'height': unreadNotifications>0 ? '10px' : 'auto'}}
+                                title={
+                                    unreadNotifications>0 ?
+                                        <div style={{'height': '15px'}} className="flex-layout">
+                                        <img className="navbar-icon2"
+                                                src={theme==='light' ? notif_icon : notif_icon_white}
+                                                alt="notifications" />
+                                            <div className="notif-counter">{unreadNotifications===5?`${unreadNotifications}+` : unreadNotifications}</div>
+                                        </div>
+                                    :
+                                    <img className="navbar-icon2"
+                                        src={theme==='light' ? notif_icon : notif_icon_white}
+                                        alt="notifications" />
+                                }
+                                id="basic-nav-dropdown">
+                                {notifList.length!==0 && 
+                                    <div className="center-content">
+                                        <Button variant='outline-primary' onClick={markAllRead}>Mark all as read</Button>
+                                    </div>
+                                }
+                                <div className="notif-container">
+                                    {notifList.map((value, index) => {
+                                        if (value.seen) {
+                                            return(
+                                                <NavDropdown.Item className="notif with-whitespace seen" 
+                                                                key={index} 
+                                                                href={linkGen(value)}>
+                                                        {textGen(value)}
+                                                </NavDropdown.Item>
+                                            )
+                                        }
+                                        else {
+                                            return(
+                                                <NavDropdown.Item className="notif with-whitespace not-seen" 
+                                                                key={index}>
+                                                        <div onClick={()=>markOneAsRead(value)}>
+                                                            {textGen(value)}
+                                                        </div>
+                                                </NavDropdown.Item>
+                                            )
+                                        }
+                                    })}
+                                </div>
+                                {!notifList.length && 
+                                    <div style={{padding: '1% 4%'}} className="error-message">No notifications found</div>
+                                }
+                                {notifList.length>0 &&
+                                    <div className="pagi-buttons-container flex-layout center-content">
+                                        {start !== 1 &&
+                                            <Button variant='outline-primary' className="flex-item-small margin" onClick={previousPage}>Previous</Button>                                        
+                                        }
+                                        {notifList.length >=5 &&
+                                            <Button variant='outline-primary' className="flex-item-small margin" onClick={nextPage}>Next</Button>                                        
+                                        }
+                                    </div>
+                                }
+                            </NavDropdown>
+                        }
+                        <div style={{'marginTop': '6px'}} >
+                            <DarkModeToggle
+                                checked={theme==='dark'}
+                                onChange={()=>{if (theme==='light') goDark(); else goLight(); }}
+                                size={70}
+                            />
+                        </div>
+                        {!logged &&
+                            <Nav.Link href="/login">Login</Nav.Link>
+                        }
+                        {logged && 
+                            <Nav.Link href="#"
+                                        onClick={()=>setShowLogoutModal(true)}>
+                                <input type='image'
+                                        style={{'marginTop': '5px'}}
+                                        className="navbar-icon2"
+                                        src={theme==='light' ? logout_img : logout_white}
+                                        alt="logout" />
                             </Nav.Link>
                         }
-                        {this.state.logged &&
-                            <Nav.Link href={`/users/${this.state.userId}`} className="center-content" style={{'width': '25vw'}}><img className="navbar-photo" src={this.state.photo} alt="profile" /></Nav.Link>
-                        }
-                        {!this.state.logged && 
-                            <div className="error-message center-content" style={{'marginTop': '12px', 'marginLeft': '-10px', 'fontSize': '15px','width': '25vw'}}>Not logged in</div>
-                        }        
                     </Nav>
+                    {showLogoutModal &&
+                        <Modal.Dialog style={{'top': '10px', 'position': 'absolute', 'right': '0'}}>
+                            <Modal.Header>
+                            <Modal.Title style={{'color': 'black'}}>Logout</Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body style={{'color': 'black'}}>
+                            <p>Are you sure you want to logout?</p>
+                            </Modal.Body>
+                            <Modal.Footer>
+                            <Button variant="secondary" onClick={()=>setShowLogoutModal(false)}>No, I changed my mind</Button>
+                            <Button variant="primary" onClick={logout}>Log out</Button>
+                            </Modal.Footer>
+                        </Modal.Dialog>
+                    }
                 </Navbar.Collapse>
             </Navbar>
-            )
-        }
+        )
+    }
+    else {
+        return(
+            <Navbar bg="light" fixed="bottom" className="center-content" style={{'height': '50px'}}>
+            <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="mr-auto">
+                    <Nav.Link href="#" onClick={reloadAll} style={{'width': '25vw'}}><img className="navbar-photo" src={logo} alt="logo" /></Nav.Link>
+                    <Nav.Link href='/explore' style={{'width': '25vw'}}>
+                        <img className="navbar-photo2"
+                                src={theme==='light' ? explore : explore_white}
+                                alt='explore' />
+                    </Nav.Link>
+                    {logged && 
+                        <NavDropdown drop='up' className="center-content" style={{'width': '25vw'}} title={
+                            <img className="navbar-photo2"
+                                    src={theme==='light'?stats_icon:stats_icon_white}
+                                    alt="statistics" />}
+                            id="basic-nav-dropdown">
+                            <NavDropdown.Item href="/stats/personal">My statistics</NavDropdown.Item>
+                            <NavDropdown.Item href="/stats/general">General statistics</NavDropdown.Item>
+                            <NavDropdown.Item href="/activity">Activity</NavDropdown.Item>
+                        </NavDropdown>
+                    }
+                    {!logged &&
+                        <Nav.Link href="/stats/general" className="center-content" style={{'width': '25vw'}}>
+                            <img className="navbar-photo2"
+                                src={theme==='light' ? stats_icon : stats_icon_white}
+                                alt="statistics" />
+                        </Nav.Link>
+                    }
+                    {logged &&
+                        <Nav.Link href={`/users/${userId}`} className="center-content" style={{'width': '25vw'}}>
+                            <img className="navbar-photo" src={photo} alt="profile" />
+                        </Nav.Link>
+                    }
+                    {!logged && 
+                        <div className="error-message center-content" 
+                             style={{'marginTop': '12px', 'marginLeft': '-10px', 'fontSize': '15px','width': '25vw'}}>
+                                Not logged in
+                        </div>
+                    }        
+                </Nav>
+            </Navbar.Collapse>
+        </Navbar>
+        )
     }
 }
 
