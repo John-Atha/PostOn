@@ -429,12 +429,7 @@ class UserPosts extends React.Component {
                     {this.state.postsList.map((value, index) => {
                         return(
                             <OnePost key={index}
-                                        id={value.id}
-                                        owner={value.owner}
-                                        text={value.text}
-                                        media={value.media}
-                                        video={value.video}
-                                        date={value.date}
+                                        post={value}
                                         user={this.state.user}
                                         updateHome={this.props.updateHome}
                                         updateParent={this.askPosts}

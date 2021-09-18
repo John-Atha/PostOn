@@ -57,7 +57,8 @@
     .react-player {
         position: relative !important;
         width: 90vw !important;
-        height: 60vh !important; 
+        height: 60vh !important;
+        margin-bottom: 10px;
     }
 }
 @media only screen and (min-width:450px) {
@@ -90,6 +91,7 @@
     }
     .player-wrapper {
         width: 100%;
+        margin-bottom: 10px;
     }
     .react-player {
         position: relative !important;
@@ -98,6 +100,7 @@
         height: auto; 
         margin-left: auto;
         margin-right: auto;
+        margin-bottom: 10px;
     }
 
 }
@@ -328,9 +331,10 @@
 }
 .player-wrapper {
     height: auto; 
+    margin-bottom: 10px;
 }
 .react-player > div {
-    position: absolute; 
+    position: absolute;
 }
 .up-button {
     position: fixed;

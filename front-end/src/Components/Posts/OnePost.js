@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Posts.css";
 import { getUsers, getPostsCommentsSample, UpdatePostLike, getLikesSample,
          LikePost, UnLikePost, editPost, deletePost, UserLikesPost,
@@ -14,534 +14,89 @@ import Comments from '../Comments/Comments';
 import ProfileCard from '../Profile/ProfileCard';
 import OutsideClickHandler from 'react-outside-click-handler';
 import { MentionsInput, Mention } from 'react-mentions';
-import ReactPlayer from 'react-player';
 import { createNotification } from '../../createNotification';
 import Button from "react-bootstrap/esm/Button";
+import PostText from './PostText';
+import PostTextNoTags from './PostTextNoTags';
 
-class PostTextNoTags extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            text: this.props.text,
-            parts: [],
-            iframes: [],
-        }
-        this.filter1 = this.filter1.bind(this);
-        this.filter2 = this.filter2.bind(this);
-        this.isUrl = this.isUrl.bind(this);
-    }
-    filter1 = () => {
-        let s3 = [];
-        let s2 = this.state.text.split(' ');
-        for (let i=0; i<s2.length; i++) {
-            s2[i]+=' ';
-        }
-        //console.log("after fixing spaces")
-        //console.log(s2)
-        for (let i=0; i<s2.length; i++) {
-            if (s2[i]!==[' ']) {
-                //console.log("sublist")
-                //console.log(s2[i])
-                let subList = s2[i].split('\n');
-                //console.log(subList)
-                if (subList.length>1) {
-                    for (let j=0; j<subList.length-1; j++) {
-                        if (!subList[j].endsWith('\n')) {
-                            subList[j]+='\n';
-                        }    
-                        s3.push(subList[j]);
-                    }
-                    s3.push(subList[subList.length-1])
-                }
-                else {
-                    s3.push(subList);
-                }
-            }
-        }
-        //console.log("BROKEN LIST")
-        //console.log(s2);
-        s3 = s3.flat();
-        //console.log(s3);
-        this.setState({
-            parts: s3,
-        })    
-        setTimeout(()=>{this.filter2();}, 500);
-    }
-    filter2 = () => {
-        let copy = this.state.parts.slice()
-        let iframesTemp = [];
-        copy.forEach(el => {
-            //console.log(`checking ${el} from iframing`)
-            if (el.includes("https") && (el.includes("youtu.be") || el.includes("youtube"))) {
-                //console.log("is is an iframe")    
-                /*if (el.endsWith(' ') || el.endsWith('\n')) {
-                        iframesTemp.push(el.slice(el.length-12, el.length-2));
-                }
-                else {*/
-                    iframesTemp.push(el);
-                //}
-            }
-            if (el!=='\n' && el!==' ') {
-                if (el.endsWith('\n')) {
-                    let index = copy.indexOf(el);
-                    copy[index] = [el.slice(0, el.length-1), '\n']                
-                }
-                else if (el.endsWith(' ')) {
-                    let index = copy.indexOf(el);
-                    copy[index] = [el.slice(0, el.length-1), ' ']                 
-                }    
-            }
-        })
-        this.setState({
-            parts: copy.flat(),
-            iframes: [],
-        })
-        //console.log("final filtered:")
-        //console.log(copy.flat())
-        this.setState({
-            iframes: iframesTemp,
-        })
-        //console.log("iframes found:")
-        //console.log(this.state.iframes)
-        //console.log(iframesTemp)
-    }
-    componentDidMount() {
-        this.filter1();
-        //console.log("mou hrthe text:")
-        //console.log(this.state.text)
+function OnePost(props) {
 
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.text!==this.props.text) {
-            this.setState({
-                text: this.props.text,
-            })
-            this.filter1();
-        }
-    }
-    isUrl = (str) => {
-        return str.startsWith("https://") || str.startsWith("http://");
-    }
-    render() {
-        //console.log("I am a post with no tags and parts:")
-        //console.log(this.state.parts);
-        if (!(this.state.parts.length===1 && this.state.parts[0]===" ") && this.state.parts.length) {
-            //console.log("I have length")
-            return(
-                <div style={{'width': '100%'}}>
-                    <div className="flex-layout with-whitespace">
-                        {this.state.parts.map((value, index) => {
-                        //console.log(`part: ${value}`)
-                            if (this.isUrl(value)) {
-                                //console.log("I am a url")
-                                    return(
-                                        <a style={{'marginRight': '4px'}} key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" 
-                                        href={(value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0, value.length-1) : value}>{value}</a>
-                                    )
-                            }
-                            else if (value==='\n') {
-                                //console.log("I am a new line")
-                                return(
-                                    <div key={index} className="break"></div>
-                                )
-                            }
-                            else if (value === ' ') {
-                                return null
-                            }
-                            else {
-                                //console.log("I am a real string")
-                                return(
-                                    <div style={{'marginRight': '4px'}} key={index}>{value}</div>
-                                )
-                            }
-                        })}
-                    </div>
-                    <div className="player-wrapper margin-top-small center-content">
-                        {this.state.iframes.map((value, index) => {
-                            return(
-                                <ReactPlayer url={value} key={index} className="react-player"/>
-                            )
-                        })}
-                    </div>
-                </div>
-            )
-        }
-        /*if (false) {
-            return(
-                <div>oo</div>
-            )
-        }*/
-        else {
-            return(
-                <div>aaa</div>
-            )
-        }
-    }
-}
+    const [user, setUser] = useState(props.user);
+    const [logged, setLogged] = useState(props.user!==null);
+    const [post, setPost] = useState(props.post);
+    const [text, setText] = useState(props.post.text);
+    const [textInit, setTextInit] = useState(props.post.text);
+    const [liked, setLiked] = useState(false);
+    const [likeId, setLikeId] = useState(null);
+    const [likesNum, setLikesNum] = useState(0);
+    const [likeKind, setLikeKind] = useState(null);
+    const [likesKinds, setLikesKinds] = useState([]);
+    const [commentsNum, setCommentsNum] = useState(0);
+    const [followsUpd, setFollowsUpd] = useState(0);
+    const [likerSample, setLikerSample] = useState({username: "Loading..."});
+    const [commentSample, setCommentSample] = useState({owner: { username: "Loading..."} });
+    const [commentsError, setCommentsError] = useState(null);
+    const [showingLikes, setShowingLikes] = useState(false);
+    const [showingComments, setShowingComments] = useState(true);
+    const [editting, setEditting] = useState(false);
+    const [showingCard, setShowingCard] = useState(false);
+    const [showingCard2, setShowingCard2] = useState(false);
+    const [showingModal, setShowingModal] = useState(false);
+    const [textParts, setTextParts] = useState([]);
+    const [usersList, setUsersList] = useState([]);
+    const [usersList2, setUsersList2] = useState([]);
+    const [firstFocus, setFirstFocus] = useState(true);
+    const [showingReactions, setShowingReactions] = useState(false);
 
-class PostText extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            parts: this.props.parts,
-            showCard: [],
-            iframes: [],
-        }
-        this.cardShow = this.cardShow.bind(this);
-        this.cardHide = this.cardHide.bind(this);
-        this.updateList = this.updateList.bind(this);
-        this.isUrl = this.isUrl.bind(this);
-    }
-    isUrl = (str) => {
-        return str.startsWith("https://") || str.startsWith("http://");
-    }
-    cardShow = (i) => {
-        let temp = this.state.showCard.slice()
-        temp[i] = true
-        this.setState({
-            showCard: temp,
-        })
-    }
-    cardHide = (i) => {
-        let temp = this.state.showCard.slice()
-        temp[i] = false
-            this.setState({
-                showCard: temp,
-            })
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.parts!==this.props.parts) {
-            //console.log("my props where updated to:")
-            //console.log(this.props.parts);
-            this.setState({
-                parts: [],
-            })
-            setTimeout( ()=> {
-                this.setState({
-                    parts: this.props.parts,
-                });
-                this.updateList();    
-            }, 100)
-        }
-    }
-    componentDidMount() {
-        if (this.state.parts.length) {
-            if (this.state.parts[this.state.parts.length-1].tag) {
-                if (this.state.parts[this.state.parts.length-1].tag.index) {
-                    for (let i=0; i<this.state.parts[this.state.parts.length-1].tag.index; i++) {
-                        this.state.showCard.push(false);
-                    }
-                }
-            }
-        }
-        this.updateList();
-    }
-
-    updateList = () => {
-        let additions = []
-        let counter = 0
-        let iframesTemp = [];
-        for (let i=0; i<this.state.parts.length; i++) {
-            if (this.state.parts[i].tag.id && this.state.parts[i].dump==='\n') {
-                //console.log(`found one at index ${i}:`)
-                //console.log(this.state.parts[i]);
-                additions.push(i+counter+1);
-                counter++;
-            }
-        }
-        let copy=this.state.parts.slice();
-        copy.forEach(el => {
-            //console.log(`checking ${el} from iframing`)
-            if (el.dump.includes("https") && (el.dump.includes("youtu.be") || el.dump.includes("youtube"))) {
-                //console.log("is is an iframe")    
-                /*if (el.endsWith(' ') || el.endsWith('\n')) {
-                        iframesTemp.push(el.slice(el.length-12, el.length-2));
-                }
-                else {*/
-                    iframesTemp.push(el.dump);
-                //}
-            }
-        })
-        //let copy = this.state.parts.slice();
-        additions.forEach(index => {
-            copy.splice(index, 0, {"tag": {}, "dump": "\n"});
-        })
-        this.setState({
-            parts: copy,
-            iframes: [],
-        })
-        //console.log("NEW PARTS")
-        //console.log(copy);
-        this.setState({
-            iframes: iframesTemp,
-        })
-        //console.log("iframes found:")
-        //console.log(this.state.iframes)
-        //console.log(iframesTemp)
-    }
-
-    render() {
-        //console.log(this.state.parts);
-        if (this.state.parts.length) {
-            //console.log(`I am a post with parts:`)
-            //console.log(this.state.parts)
-            return (
-                <div style={{'width': '100%'}}>
-                    <div className="flex-layout with-whitespace">
-                        {this.state.parts.map((value, index) => {
-                            if (value.tag.id && !value.dump) {
-                                return(
-                                    <div key={index} style={{'marginRight': '4px'}} className="owner-name tag"
-                                        onMouseEnter={()=>this.cardShow(index)}
-                                        onMouseLeave={()=>this.cardHide(index)}>
-                                        {value.tag.username}
-                                        {this.state.showCard[index] &&
-                                            <ProfileCard
-                                                user={value.tag}
-                                                position={"top-close"}
-                                            />
-                                        }
-                                    </div>
-                                )
-                            }
-                            else if (value.tag.id && value.dump){
-                                return(
-                                    <div key={index} className="flex-layout with-whitespace">
-                                        <div className="owner-name tag" style={{'marginRight': '4px'}}
-                                            onMouseEnter={()=>this.cardShow(index)}
-                                            onMouseLeave={()=>this.cardHide(index)}>
-                                            {value.tag.username}
-                                            {this.state.showCard[index] &&
-                                                <ProfileCard 
-                                                    user={value.tag}
-                                                    position={"top-close"}
-                                                />
-                                            }
-                                        </div>
-                                        { value.dump==='\n' &&
-                                            <div className="break"></div>
-                                        }
-                                        { value.dump!=='\n' && value.dump!==' ' &&
-                                            <div>
-                                                {value.dump}
-                                            </div>
-                                        }  
-                                    </div>
-                                )
-                            }
-                            else {
-                                let text = value.dump;
-                                if (text.endsWith('\n')) {
-                                    text = text.split('\n');
-                                    //console.log("text to be shown:")
-                                    //console.log(text);
-                                    return(
-                                        text.map((value, index)=> {
-                                            //console.log("text value:")
-                                            //console.log(value);
-                                            if (value==="") {
-                                                return(
-                                                    <div key={String(index)+String(value)}
-                                                        className="break">
-                                                    </div>
-                                                )
-                                            }
-                                            else {
-                                                if (this.isUrl(value)) {
-                                                    //console.log("i am a url with tags")
-                                                    return(
-                                                        <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" style={{'marginRight': '4px'}}
-                                                        href={(value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0,value.length-1) : value}>{value}</a>
-                                                    )
-                                                }
-                                                else {
-                                                    return(
-                                                        <div style={{'marginRight': '4px'}} key={String(index)+String(value)}>
-                                                            {value}
-                                                        </div>
-                                                    )   
-                                                }
-                                            }
-                                        })
-                                    )
-                                }
-                                else if (text.includes('\n')) {
-                                    text = text.split('\n');
-                                    return(
-                                        <div key={index} style={{'marginRight': '4px'}}>
-                                            {value.dump}
-                                        </div>
-                                    )
-                                }
-                                else {
-                                    if (this.isUrl(value.dump)) {
-                                        //console.log("I am a url with tags")
-                                        return(
-                                            <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" style={{'marginRight': '4px'}}
-                                            href={(value.dump.endsWith(' ') || value.dump.endsWith('\n')) ? value.dump.slice(0,value.dump.length-1) : value.dump}>{value.dump}</a>
-                                        )
-                                    }
-                                    else {
-                                        return(
-                                            <div key={index}>
-                                                {value.dump}
-                                            </div>
-                                        )    
-                                    }
-                                }
-                            }
-                        })}
-                    </div>
-                    <div className="player-wrapper margin-top-small center-content">
-                        {this.state.iframes.map((value, index) => {
-                            return(
-                                <ReactPlayer url={value} key={index} className="react-player"/>
-                            )
-                        })}
-                    </div>
-                </div>
-            )
+    const preLike = (kind) => {
+        if (likeKind===kind) {
+            postUnLike();
         }
         else {
-            //console.log("No parts")
-            return(
-                <div></div>
-            )
+            postLike(kind);
         }
+        setShowingReactions(false);
     }
 
-}
+    const updateTags = () => {
+        removeTags();
+        addTags();
+    }
+    
+    const removeTags = () => {
+        DelPostTags(post.id)
+        .then(()=> {
+            ;
+        })
+        .catch(() => {
+            ;
+        })
+    }
 
-class OnePost extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            user: this.props.user,
-            logged: this.props.user !== null,
-            id: this.props.id,
-            owner: this.props.owner,
-            media: this.props.media,
-            video: this.props.video,
-            text: this.props.text,
-            text_init :this.props.text,
-            date: this.props.date,
-            liked: false,
-            likeId: null,
-            likesNum: 0,
-            likeKind: null,
-            likesKinds: [],
-            commentsNum: 0,
-            followsUpd: 0,
-            likerSample: {
-                username: "Loading...",
-            },
-            commentSample: {
-                owner: {
-                    username: "Loading..."
-                },
-            },
-            likes_error: null,
-            comments_error: null,
-            likesShow: false,
-            commentsShow: true,
-            edit: false,
-            showCard: false,
-            showCard2: false,
-            delete: false,
-            showModal: false,
-            textParts: [],
-            usersList: [],
-            usersList2: [],
-            hasTag: false,
-            firstFocus: true,
-            showReactions: false,
-        }
-        this.likesSample = this.likesSample.bind(this);
-        this.commentsSample = this.commentsSample.bind(this);
-        this.statsSample = this.statsSample.bind(this);
-        this.showLikes = this.showLikes.bind(this);
-        this.showHideComments = this.showHideComments.bind(this);
-        this.postLike = this.postLike.bind(this);
-        this.postUnLike = this.postUnLike.bind(this);
-        this.saveText = this.saveText.bind(this);
-        this.discardText = this.discardText.bind(this);
-        this.editText = this.editText.bind(this);
-        this.handleInput = this.handleInput.bind(this);
-        this.cardShow = this.cardShow.bind(this);
-        this.cardHide = this.cardHide.bind(this);
-        this.cardShow2 = this.cardShow2.bind(this);
-        this.cardHide2 = this.cardHide2.bind(this);
-        this.postDelete = this.postDelete.bind(this);
-        this.preDelete = this.preDelete.bind(this);
-        this.hideModal = this.hideModal.bind(this);
-        this.checkLiked = this.checkLiked.bind(this);
-        //this.checkLogged = this.checkLogged.bind(this);
-        this.filterPost = this.filterPost.bind(this);
-        this.getUsernames = this.getUsernames.bind(this);
-        this.askTags = this.askTags.bind(this);
-        this.updateTags = this.updateTags.bind(this);
-        this.removeTags = this.removeTags.bind(this);
-        this.addTags = this.addTags.bind(this);
-        this.preLike = this.preLike.bind(this);
-        this.dateCalc = this.dateCalc.bind(this);
-        this.showImage = this.showImage.bind(this);
-        this.showVideo = this.showVideo.bind(this);
-        //this.resize = this.resize.bind(this);
-    }
-    preLike = (kind) => {
-        if (this.state.likeKind===kind) {
-            this.postUnLike();
-        }
-        else {
-            //console.log(`I am reacting with ${kind}.`)
-            this.postLike(kind);
-        }
-        this.setState({
-            showReactions: false,
-        })
-    }
-    updateTags = () => {
-        //console.log("I am updating the tags");
-        this.removeTags();
-        setTimeout(()=>{this.addTags();}, 1000);
-    }
-    removeTags = () => {
-        //console.log("I am removing the old tags")
-        DelPostTags(this.state.id)
-        .then(response=> {
-            //console.log(response);
-        })
-        .catch(err => {
-            //console.log(err);
-        })
-    }
-    addTags = () => {
-        //console.log("I am adding the new tags")
-        this.state.textParts.forEach(obj => {
+    const addTags = () => {
+        textParts.forEach(obj => {
             if (obj.tag.id) {
                 let object = {
                     "mentioned": {
                         "id":  obj.tag.id,
                     }
                 }
-                PostPostTag(this.state.id, object)
-                .then(response => {
-                    //console.log(response);
+                PostPostTag(post.id, object)
+                .then(() => {
+                    ;
                 })
-                .catch(err => {
-                    //console.log(err);
+                .catch(() => {
+                    ;
                 })
             }
         })
     }
-    askTags = () => {
-        if (this.state.firstFocus) {
-            this.setState({
-                firstFocus: false,
-            })
+
+    const askTags = () => {
+        if (firstFocus) {
+            setFirstFocus(false);
             getUsers()
             .then(response => {
-                //console.log(response);
                 let tempL = [];
                 response.data.forEach(el => {
                     tempL.push({
@@ -550,23 +105,18 @@ class OnePost extends React.Component {
                         "verified": el.verified,
                     })
                 })
-                this.setState({
-                    usersList2: tempL,
-                })
+                setUsersList2(tempL);
             })
-            .catch(err => {
-                //console.log(err);
+            .catch(() => {
+                ;
             })
         }
     }
-    getUsernames = () => {
-        if (this.state.text.includes('@[')) {
-            this.setState({
-                hasTag: true,
-            })
+
+    const getUsernames = () => {
+        if (text.includes('@[')) {
             getUsers()
             .then(response => {
-                //console.log(response);
                 let tempUsersList = [];
                 response.data.forEach(el => {
                     tempUsersList.push({
@@ -576,63 +126,53 @@ class OnePost extends React.Component {
                         "moto": el.moto,
                     })
                 })
-                this.setState({
-                    usersList: tempUsersList,
-                })
-                setTimeout(()=>{this.filterPost();}, 500)
+                setUsersList(tempUsersList);
             })
-            .catch(err => {
-                //console.log(err);
+            .catch(() => {
+                ;
             })    
         }
     }
-    filterPost = () => {
-        //console.log("users i see")
-        //console.log(this.state.usersList)
-        //console.log("i am filter post");
-        let post_text = this.state.text;
-        //console.log("initial text")
-        let final_post_object = [];
+
+    const filterPost = () => {
+        let post_text = textInit;
         let s3 = [];
         post_text = post_text.replaceAll(")@", ") @");
-        //console.log(post_text);
-        //let s2 = post_text.trim().split(/\s+/);
+        // split on spaces
         let s2 = post_text.split(' ');
+        s2 = s2.filter((word, index) => {
+            return word!=='' && word!==' '
+        })
+        // split and add on new lines
         for (let i=0; i<s2.length; i++) {
-            s2[i]+=' ';
-        }
-        //console.log("after fixing spaces")
-        //console.log(s2)
-        for (let i=0; i<s2.length; i++) {
-            if (s2[i]!==[' ']) {
-                //console.log("sublist")
-                //console.log(s2[i])
-                let subList = s2[i].split('\n');
-                //console.log(subList)
-                if (subList.length>1) {
-                    for (let j=0; j<subList.length-1; j++) {
-                        if (!subList[j].endsWith('\n')) {
-                            subList[j]+='\n';
-                        }    
-                        s3.push(subList[j]);
-                    }
-                    s3.push(subList[subList.length-1])
-                }
-                else {
-                    s3.push(subList);
-                }
+            if (s2[i]==='\n') {
+                s3.push('\n');
             }
+            else if (s2[i].includes('\n')) {
+                let subList = s2[i].split('\n');
+                subList = subList.map(word => {
+                    if (word==='') return '\n';
+                    return word;
+                })
+                let index = 0;
+                while (index<subList.length-1) {
+                    if (subList[index]!=='\n' && subList[index+1]!=='\n') {
+                        subList.splice(index+1, 0, '\n');
+                    }
+                    index++;
+                }
+                s3 = s3.concat(subList);    
+            }
+            else {
+                s3.push(s2[i]);
+            }            
         }
-        //console.log("BROKEN LIST")
-        //console.log(s2);
-        s3 = s3.flat();
-        //console.log(s3);
+        const final_post_object = [];
         let index=0;
         s3.forEach(el => {
-            //console.log(el)
-            if (el.startsWith('@')) {    
+            if (el.startsWith('@')) {  
                 let matched = false;
-                this.state.usersList.forEach(suggest => {
+                usersList.forEach(suggest => {
                     let sugg=suggest.username;
                     if (el.startsWith(`@[${sugg}]`)) {
                         matched = true;
@@ -646,6 +186,7 @@ class OnePost extends React.Component {
                                 "photo": suggest.photo,
                                 "moto": suggest.moto,
                                 "verified": suggest.verified,
+                                "test": "test",
                             },
                             "dump": dump,
                         })
@@ -666,324 +207,212 @@ class OnePost extends React.Component {
                 })
             }
         })
-        //console.log("FINAL COMMENT:")
-        //console.log(final_post_object)
-        this.setState({
-            textParts: final_post_object,
-        })
+        setTextParts([])
+        setTimeout(()=>setTextParts(final_post_object), 100);
     }
+
     /*checkLogged = () => {
         isLogged()
         .then(response => {
-            //console.log(response);
-            this.setState({
-                logged: response.data.authenticated,
-                userId: response.data.id,
-            })
-            setTimeout(()=>{this.checkLiked();},500);
+            setLogged(response.data.authenticated);
+            setUserId(response.data.id);
+            setTimeout(()=>{checkLiked();},500);
         })
-        .catch(err => {
-            //console.log(err)
-            this.setState({
-                error: "Not logged in"
-            })
+        .catch(() => {
+            setError("Not logged in");
         })
     }*/
-    checkLiked = () => {
-        if (this.state.user) {
-            UserLikesPost(this.state.user.id, this.state.id)
+
+    const checkLiked = () => {
+        if (user) {
+            UserLikesPost(user.id, post.id)
             .then(response => {
                 //console.log(response);
-                this.setState({
-                    liked: response.data.likes,
-                    likeId: response.data.id,
-                    likeKind: response.data.kind,
-                })
+                setLiked(response.data.likes);
+                setLikeId(response.data.id);
+                setLikeKind(response.data.kind);
             })
-            .catch(err => {
-                //console.log(err);
-                this.setState({
-                    liked: false,
-                    likeId: null,
-                    likeKind: null,
-                })
+            .catch(() => {
+                setLiked(false);
+                setLikeId(null);
+                setLikeKind(null);
             })
         }
         else {
-            this.setState({
-                liked: false,
-                likeId: null,
-                likeKind: null,
-            })
+            setLiked(false);
+            setLikeId(null);
+            setLikeKind(null);
         }
     }
-    preDelete = () => {
-        //console.log("Chose to delete")
-        this.setState({
-            showModal: true,
-        })
+
+    const hideModal = () => {
+        setShowingModal(false);
     }
-    hideModal = () => {
-        this.setState({
-            showModal: false,
-        })
-    }
-    postDelete = () => {
-        deletePost(this.state.id)
-        .then(response => {
-            //console.log(response);
-            this.setState({
-                delete: true,
-            })
+
+    const postDelete = () => {
+        deletePost(post.id)
+        .then(() => {
             createNotification("success", "Hello,", "Post deleted successfully")
-            this.hideModal();
-            this.props.updateParent("restart");
+            hideModal();
+            props.updateParent("restart");
         })
-        .catch(err => {
-            //console.log(err);
-            this.hideModal();
+        .catch(() => {
+            hideModal();
             createNotification("danger", "Sorry,", "We couldn't delete your post")
         })
     }
-    cardShow2 = () => {
-        this.setState({
-            showCard2: true,
-        })
-    }
-    cardHide2 = () => {
-            this.setState({
-                showCard2: false,
-            })
-    }
-    cardShow = () => {
-        this.setState({
-            mouseOutLink: false,
-            mouseOutCard: false,
-            showCard: true,
-        })
-    }
-    cardHide = () => {
-        this.setState({
-            showCard: false,
-        })
-    }
-    discardText = () => {
-        this.setState({
-            edit: false,
-            text: this.state.text_init,
-        })
+
+    const discardText = () => {
+        setEditting(false);
+        setText(textInit);
         createNotification('warning', 'Hello,', 'Changes discarded successfully');
     }
-    saveText = () => {
-        if (!this.state.text.length) {
+
+    const saveText = () => {
+        if (!text.length) {
             createNotification('warning', 'Sorry', 'You can\'t have an empty post' )
         }
         else {
-            editPost(this.state.id, this.state.text)
-            .then(response => {
-                //console.log(response);
-                this.setState({
-                    edit: false,
-                    text_init: this.state.text,
-                })
-                //console.log(`new text: ${this.state.text}`)
+            editPost(post.id, text)
+            .then(() => {
+                setEditting(false);
+                setTextInit(text);
                 createNotification('success', 'Hello,', 'Post changed succesffully');
-                if (this.state.text.includes("@[")) {
-                    this.filterPost()
-                    setTimeout(()=>{this.updateTags();}, 1000);
+                if (text.includes("@[")) {
+                    setTimeout(()=>{updateTags();}, 100);
                 }
                 else {
-                    this.getUsernames();
-                    this.removeTags();
+                    getUsernames();
+                    removeTags();
                 }
             })
-            .catch(err => {
-                //console.log(err);
+            .catch(() => {
                 createNotification('danger', 'Sorry,', 'Post could not be updated');
             })
         }
     }
-    editText = () => {
-        this.setState({
-            edit: true,
+
+    const postUnLike = () => {
+        UnLikePost(likeId)
+        .then(() => {
+            setLiked(false);
+            setLikeId(null);
+            setLikeKind(null);
+            likesSample();
         })
-    }
-    handleInput  = (event) => {
-        const value = event.target.value;
-        this.setState({
-            text: value,
-        })
-        //console.log(`text: ${value}`)
-    }
-    postUnLike = () => {
-        /*getAllLikes(1, this.state.id, "post")
-        .then(response => {
-            //console.log(response);
-            response.data.forEach(like => {
-                if(like.owner.id===this.state.userId) {
-                    UnLikePost(like.id)
-                    .then(response => {
-                        //console.log(response);
-                        this.setState({
-                            liked: false,
-                        })    
-                        this.likesSample();
-                    })
-                    .catch(err => {
-                        //console.log(err);
-                    })
-                }
-            })
-        })
-        .catch(err => {
-            //console.log(err);
-            this.setState({
-                liked: false,
-            })    
-            this.likesSample();
-        })*/
-        UnLikePost(this.state.likeId)
-        .then(response => {
-            //console.log(response);
-            this.setState({
-                liked: false,
-                likeId: null,
-                likeKind: null,
-            });
-            this.likesSample();
-        })
-        .catch(err => {
-            //console.log(err);
+        .catch(() => {
+            ;
         })               
     }
-    postLike = (kind) => {
-        if (!this.state.logged) {
+
+    const postLike = (kind) => {
+        if (!logged) {
             createNotification('danger', 'Sorry', 'You have to create an account to like a post')
         }
         else {
-            if (this.state.liked) {
-                UpdatePostLike(this.state.likeId, kind)
+            if (liked) {
+                UpdatePostLike(likeId, kind)
                 .then(response=> {
-                    //console.log(response);
-                    this.setState({
-                        liked: true,
-                        likeKind: response.data.kind,
-                    })
-                    this.likesSample();
+                    setLiked(true);
+                    setLikeKind(response.data.kind);
+                    likesSample();
                 })
-                .catch(err => {
-                    //console.log(err);
+                .catch(() => {
+                    ;
                 })
             }
             else {
-                LikePost(this.state.user.id, this.state.id, kind)
+                LikePost(user.id, post.id, kind)
                 .then(response => {
-                    //console.log(response);
-                    this.setState({
-                        liked: true,
-                        likeId: response.data.id,
-                        likeKind: response.data.kind,
-                    })
-                    this.likesSample();
+                    setLiked(true);
+                    setLikeId(response.data.id);
+                    setLikeKind(response.data.kind);
+                    likesSample();
                 })
-                .catch(err => {
-                    //console.log(err);
+                .catch(() => {
+                    ;
                 })      
             }
         }
     }
-    showLikes = (event) => {
-        this.setState({
-            likesShow: true,
-            followsUpd: this.state.followsUpd+1,
-        })
+
+    const showLikes = (event) => {
+        setShowingLikes(true);
+        setFollowsUpd(followsUpd+1);
     }
-    showHideComments = () => {
-        this.setState({
-            commentsShow: !this.state.commentsShow,
-        })
+
+    const showHideComments = () => {
+        setShowingComments(!showingComments)
     }
-    commentsSample = () => {
+
+    const commentsSample = () => {
         //console.log("I am one-post class, I was called by my child")
-        setTimeout(()=> {}, 5000);
         //console.log("I am taking comments sample.");
-        getPostsCommentsSample(this.props.id)
+        getPostsCommentsSample(post.id)
         .then(response => {
             //console.log(response);
-            this.setState({
-                commentsNum: response.data.comments,
-                commentSample: response.data["one-comment"],
-            })
+            setCommentsNum(response.data.comments);
+            setCommentSample(response.data["one-comment"]);
         })
-        .catch(err => {
-            //console.log(err);
-            this.setState({
-                commentsNum: 0,
-                comments_error: "No comments found",
-                commentSample: null,
-            })
+        .catch(() => {
+            setCommentsNum(0);
+            setCommentsError("No comments found");
+            setCommentSample(null);
         })
     }
-    likesSample = () => {
-        setTimeout(()=> {}, 1000);
-        getLikesSample(this.props.id, "post")
+
+    const likesSample = () => {
+        getLikesSample(post.id, "post")
         .then(response => {
-            //console.log(response);
-            this.setState({
-                likesNum: response.data.likes,
-                likerSample: response.data["one-liker"],
-                likesKinds: response.data.kinds,
-            })
+            setLikesNum(response.data.likes);
+            setLikerSample(response.data["one-liker"]);
+            setLikesKinds(response.data.kinds);
         })
-        .catch(err => {
-            //console.log(err);
-            this.setState({
-                likesNum: 0,
-                likes_error: "No likes found",
-                likesKinds: [],
-            })
+        .catch(() => {
+            setLikesNum(0);
+            setLikesKinds([]);
         })
     }
-    statsSample = () => {
-        this.likesSample();
-        this.commentsSample();
+
+    const statsSample = () => {
+        likesSample();
+        commentsSample();
     }
-    componentDidMount() {
-        //this.checkLogged();
-        this.statsSample();
-        this.getUsernames();
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.id!==this.props.id || 
-            prevProps.logged!==this.props.logged || 
-            prevProps.user!==this.props.user || 
-            prevProps.owner!==this.props.owner||
-            prevProps.media!==this.props.media ||
-            prevProps.video!==this.props.video ||
-            prevProps.text!==this.props.text ||
-            prevProps.date!==this.props.date) {
-            //console.log("NEW POST!!")
-            //this.checkLogged();
-            this.setState({
-                id: this.props.id,
-                user: this.props.user,
-                logged: this.props.user!==null,
-                owner: this.props.owner,
-                media: this.props.media,
-                video: this.props.video,
-                text: this.props.text,
-                text_init: this.props.text,
-                date: this.props.date,
-            })
-            this.statsSample();
-            this.checkLiked();
-            if (!this.state.usersList.length) {
-                this.getUsernames();
-            }
+  
+    useEffect(() => {
+        setUser(props.user);
+        setLogged(props.user!==null);
+        if (post) {
+            checkLiked();
         }
-    }
-    dateCalc = () => {
-        const d = new Date(this.state.date);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.user])
+
+    useEffect(() => {
+        setPost(props.post);
+        setText(props.post.text);
+        setTextInit(props.post.text);
+        if (!usersList.length) {
+            getUsernames();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.post])
+
+    useEffect(() => {
+        statsSample();
+        if (user) {
+            checkLiked();
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [post])
+
+    useEffect(() => {
+        filterPost();
+    }, [usersList, textInit])
+
+        
+    const dateCalc = () => {
+        const d = new Date(post.date);
         const now = new Date();
         const diff = new Date(now.getTime()-d.getTime())
         const years = diff.getFullYear()-1970
@@ -1036,19 +465,21 @@ class OnePost extends React.Component {
             }        
         }
     }
-    showImage = () => {
-        this.props.setShowingMedia(true);
-        this.props.setImage(this.state.media);
-        this.props.setVideo(null);
+    
+    const showImage = () => {
+        props.setShowingMedia(true);
+        props.setImage(post.media);
+        props.setVideo(null);
     }
-    showVideo = () => {
-        this.props.setShowingMedia(true);
-        this.props.setVideo(this.state.video);
-        this.props.setImage(null);
-    }
+    
+    /*const showVideo = () => {
+        props.setShowingMedia(true);
+        props.setVideo(post.video);
+        props.setImage(null);
+    }*/
 
-    /*resize = () => {
-        const mediaUrl = this.state.media || this.state.video;
+    /*const resize = () => {
+        const mediaUrl = post.media || post.video;
         const img = document.getElementById(mediaUrl);
         if (!Array(img.classList).includes('resized')) {
             const height = img.naturalHeight;
@@ -1063,317 +494,315 @@ class OnePost extends React.Component {
         }
     }*/
 
-    render() {
-        return(
-            <div className={this.props.user ? "user-post-container" : "post-container"}>
-                <div className="flex-layout">
-                    <div className="user-photo-container"
-                                    onMouseEnter={this.cardShow}
-                                    onMouseLeave={this.cardHide} >
-                        <img className="user-photo" src={this.state.owner.photo} alt="user" />
+    return(
+        <div className={props.user ? "user-post-container" : "post-container"}>
+            <div className="flex-layout">
+                <div className="user-photo-container"
+                                onMouseEnter={()=>setShowingCard(true)}
+                                onMouseLeave={()=>setShowingCard(false)} >
+                    <img className="user-photo" src={post.owner.photo} alt="user" />
+                </div>
+                <div onMouseEnter={()=>setShowingCard(true)}
+                            onMouseLeave={()=>setShowingCard(false)}>
+                    <div className="owner-name">
+                        {post.owner.username}
+                        {post.owner.verified===true &&
+                            <img className="verified-icon" src={verified} alt="verified" />
+                        }
+                        {showingCard &&
+                            <ProfileCard
+                                user={post.owner}
+                                position={"right"}
+                            />
+                        }
                     </div>
-                    <div onMouseEnter={this.cardShow}
-                             onMouseLeave={this.cardHide}>
-                        <div className="owner-name">
-                            {this.state.owner.username}
-                            {this.state.owner.verified===true &&
-                                <img className="verified-icon" src={verified} alt="verified" />
-                            }
-                            {this.state.showCard &&
-                                <ProfileCard
-                                    user={this.state.owner}
-                                    position={"right"}
+                    <div className="post-date">{dateCalc(post.date)}</div>
+                </div>
+                {(user?user.id:null)===post.owner.id &&
+                    <div className="center-content flex-layout edit-action-container">
+                        <button className="flex-layout button-as-link margin-right-small edit-action" onClick={()=>setEditting(true)}>
+                                <img className="like-icon-small" src={edit_icon} alt="edit"/>
+                                <div style={{'color': '#007bff'}}>Edit</div>
+                        </button>
+                        <button className="flex-layout button-as-link edit-action" onClick={()=>setShowingModal(true)}>
+                                <img className="like-icon-small" src={delete_icon} alt="delete"/>
+                                <div style={{'color': '#007bff'}}>Delete</div>
+                        </button>
+                    </div>
+                }
+            </div>
+            <hr className="no-margin"></hr>
+            {!editting &&
+                <div className="post-body">
+                    <div className="post-text flex-layout with-whitespace">
+                        {text.includes('@[') && textParts.length!==0 &&
+                            <PostText parts={textParts} />
+                        }
+                        {!text.includes('@[') && text.length!==0 &&
+                            <PostTextNoTags text={text} />
+                        }
+                        {!text.length &&
+                            <div></div>
+                        }
+                    </div>
+                    {post.media &&
+                        <div className="center-content" onClick={showImage}>
+                                <img 
+                                    src={post.media}
+                                    alt="media"
+                                    className='post-media'
+                                    //onLoad={resize}
+                                    //id={post.media}
                                 />
-                            }
                         </div>
-                        <div className="post-date">{this.dateCalc(this.state.date)}</div>
-                    </div>
-                    {(this.state.user?this.state.user.id:null)===this.state.owner.id &&
-                        <div className="center-content flex-layout edit-action-container">
-                            <button className="flex-layout button-as-link margin-right-small edit-action" onClick={this.editText}>
-                                    <img className="like-icon-small" src={edit_icon} alt="edit"/>
-                                    <div style={{'color': '#007bff'}}>Edit</div>
-                            </button>
-                            <button className="flex-layout button-as-link edit-action" onClick={this.preDelete}>
-                                    <img className="like-icon-small" src={delete_icon} alt="delete"/>
-                                    <div style={{'color': '#007bff'}}>Delete</div>
-                            </button>
+                    }
+                    {post.video &&
+                        <div className="center-content">
+                            <video
+                                className='post-media'
+                                //onLoad={resize}
+                                //id={post.video}
+                                controls>
+                                <source src={post.video} />
+                                Sorry, we couldn't display this video.
+                            </video>
+                        </div>
+                    }
+                </div>       
+            }
+            {editting &&
+                <div className="post-body">
+                    <MentionsInput className="post-textarea-edit margin-top-smaller" name="text" value={text} onChange={(event)=>setText(event.target.value)} onFocus={askTags}>
+                        <Mention
+                                trigger="@"
+                                data={usersList2}
+                                className="mention-suggestions"
+                        />
+                    </MentionsInput>
+                    <div className="flex-layout center-content">
+                        <Button variant='primary' className="margin" onClick={saveText}>Save change</Button>
+                        <Button variant='outline-primary' className="margin" onClick={discardText}>Discard change</Button>
+                    </div>                       
+                    {post.media &&
+                        <div className="center-content">
+                                <img 
+                                    //id={post.media}
+                                    src={post.media}
+                                    //onLoad={resize}
+                                    className="post-media"
+                                    alt="media"
+                                />
+                        </div>
+                    }
+                    {post.video &&
+                        <div className="center-content">
+                            <video 
+                                //id={post.video}
+                                //onLoad={resize}
+                                className="post-media"
+                                controls
+                            >
+                                <source src={post.video} />
+                                Sorry, we couldn't display this video.
+                            </video>
                         </div>
                     }
                 </div>
-                <hr className="no-margin"></hr>
-                {!this.state.edit &&
-                    <div className="post-body">
-                        <div className="post-text flex-layout with-whitespace">
-                            {this.state.text.includes('@[') && this.state.textParts.length!==0 &&
-                                <PostText parts={this.state.textParts} />
-                            }
-                            {!this.state.text.includes('@[') && this.state.text.length!==0 &&
-                                <PostTextNoTags text={this.state.text} />
-                            }
-                            {!this.state.text.length &&
-                                <div></div>
+            }
+            <hr className="no-margin"></hr>
+            <div className="stats-sample flex-layout">
+                <div className="likes-sample flex-layout">
+                    {likesNum===0 &&
+                        <div style={{'marginTop': '5px'}}>&#128077;</div>
+                    }
+                    {likesKinds.includes('like') &&
+                        <div style={{'marginTop': '5px'}}>&#128077;</div>
+                    }
+                    {likesKinds.includes('haha') &&
+                        <div style={{'marginTop': '5px'}}>&#128514;</div>
+                    }
+                    {likesKinds.includes('love') &&
+                        <div style={{'marginTop': '5px'}}>&#10084;&#65039;</div>
+                    }
+                    {likesKinds.includes('liquid') &&
+                        <div style={{'marginTop': '5px'}}>💦</div>
+                    }
+                    {likesKinds.includes('sad') &&
+                        <div style={{'marginTop': '5px'}}>&#128546;</div>
+                    }
+                    {likesKinds.includes('dislike') &&
+                        <div style={{'marginTop': '5px'}}>&#128078;</div>
+                    }
+                    {likesNum>1 &&
+                        <button className="liker-sample button-as-link-grey" onClick={showLikes}>{likerSample.username} and {likesNum-1} more</button>
+                    }
+                    {likesNum===1 &&
+                        <div className="liker-sample button-as-link-grey"
+                            style={{'marginTop': '7px'}}
+                            onMouseEnter={()=>setShowingCard2(true)}
+                            onMouseLeave={()=>setShowingCard2(false)}>
+
+                            {likerSample.username}
+                            {showingCard2 &&
+                                <ProfileCard
+                                    user={likerSample}
+                                    position={"bottom"}
+                                />
                             }
                         </div>
-                        {this.state.media &&
-                            <div className="center-content" onClick={this.showImage}>
-                                    <img 
-                                        src={this.state.media}
-                                        alt="media"
-                                        className='post-media'
-                                        //onLoad={this.resize}
-                                        //id={this.state.media}
-                                    />
-                            </div>
-                        }
-                        {this.state.video &&
-                            <div className="center-content">
-                                <video
-                                    className='post-media'
-                                    //onLoad={this.resize}
-                                    //id={this.state.video}
-                                    controls>
-                                    <source src={this.state.video} />
-                                    Sorry, we couldn't display this video.
-                                </video>
-                            </div>
-                        }
-                    </div>       
-                }
-                {this.state.edit &&
-                    <div className="post-body">
-                        <MentionsInput className="post-textarea-edit margin-top-smaller" name="text" value={this.state.text} onChange={this.handleInput} onFocus={this.askTags}>
-                            <Mention
-                                    trigger="@"
-                                    data={this.state.usersList2}
-                                    className="mention-suggestions"
-                            />
-                        </MentionsInput>
-                        <div className="flex-layout center-content">
-                            <Button variant='primary' className="margin" onClick={this.saveText}>Save change</Button>
-                            <Button variant='outline-primary' className="margin" onClick={this.discardText}>Discard change</Button>
-                        </div>                       
-                        {this.state.media &&
-                            <div className="center-content">
-                                    <img 
-                                        //id={this.state.media}
-                                        src={this.state.media}
-                                        //onLoad={this.resize}
-                                        className="post-media"
-                                        alt="media"
-                                    />
-                            </div>
-                        }
-                        {this.state.video &&
-                            <div className="center-content">
-                                <video 
-                                    //id={this.state.video}
-                                    //onLoad={this.resize}
-                                    className="post-media"
-                                    controls
-                                >
-                                    <source src={this.state.video} />
-                                    Sorry, we couldn't display this video.
-                                </video>
-                            </div>
-                        }
-                    </div>
-                }
-                <hr className="no-margin"></hr>
-                <div className="stats-sample flex-layout">
-                    <div className="likes-sample flex-layout">
-                        {this.state.likesNum===0 &&
-                            <div style={{'marginTop': '5px'}}>&#128077;</div>
-                        }
-                        {this.state.likesKinds.includes('like') &&
-                            <div style={{'marginTop': '5px'}}>&#128077;</div>
-                        }
-                        {this.state.likesKinds.includes('haha') &&
-                            <div style={{'marginTop': '5px'}}>&#128514;</div>
-                        }
-                        {this.state.likesKinds.includes('love') &&
-                            <div style={{'marginTop': '5px'}}>&#10084;&#65039;</div>
-                        }
-                        {this.state.likesKinds.includes('liquid') &&
-                            <div style={{'marginTop': '5px'}}>💦</div>
-                        }
-                        {this.state.likesKinds.includes('sad') &&
-                            <div style={{'marginTop': '5px'}}>&#128546;</div>
-                        }
-                        {this.state.likesKinds.includes('dislike') &&
-                            <div style={{'marginTop': '5px'}}>&#128078;</div>
-                        }
-                        {this.state.likesNum>1 &&
-                            <button className="liker-sample button-as-link-grey" onClick={this.showLikes}>{this.state.likerSample.username} and {this.state.likesNum-1} more</button>
-                        }
-                        {this.state.likesNum===1 &&
-                            <div className="liker-sample button-as-link-grey"
-                                style={{'marginTop': '7px'}}
-                                onMouseEnter={this.cardShow2}
-                                onMouseLeave={this.cardHide2}>
-
-                                {this.state.likerSample.username}
-                                {this.state.showCard2 &&
-                                    <ProfileCard
-                                        user={this.state.likerSample}
-                                        position={"bottom"}
-                                    />
-                                }
-                            </div>
-                        }
-                        {!this.state.likesNum &&
-                            <button disabled={true} className="liker-sample button-as-link-grey">0</button>
-                        }
-                    </div>
-                    <div className="comments-sample flex-layout">
-                        <div>&#9997;</div>
-                        {this.state.commentsNum>1 &&
-                            <button className="likes-sample-num button-as-link-grey" onClick={this.showHideComments}>{this.state.commentSample.owner.username} and {this.state.commentsNum-1} more</button>
-                        }
-                        {this.state.commentsNum===1 &&
-                            <button className="likes-sample-num button-as-link-grey" onClick={this.showHideComments}>{this.state.commentSample.owner.username}</button>
-                        }
-                        {!this.state.commentsNum &&
-                            <button disabled={true} className="likes-sample-num button-as-link-grey">0</button>
-                        }
-                    </div>
+                    }
+                    {!likesNum &&
+                        <button disabled={true} className="liker-sample button-as-link-grey">0</button>
+                    }
                 </div>
-                <hr className="no-margin"></hr>
-                <div className="post-actions center-content flex-layout">
-                <OutsideClickHandler
-                    onOutsideClick={()=>{this.setState({showReactions: false})}}>
-                    <div className="center-content margin-side" 
-                         style={{'position': 'relative', 'minWidth': '100px'}}>
-                        {!this.state.liked &&
-                            <button 
-                                onClick={()=>{this.setState({showReactions: true})}}
-                                className="likes-action flex-layout button-as-link">
-                                    <img className="like-icon" src={like_icon} alt="like-icon"/>
-                                    <div>Like</div>
+                <div className="comments-sample flex-layout">
+                    <div>&#9997;</div>
+                    {commentsNum>1 && commentSample &&
+                        <button className="likes-sample-num button-as-link-grey" onClick={showHideComments}>{commentSample.owner.username} and {commentsNum-1} more</button>
+                    }
+                    {commentsNum===1 && commentSample &&
+                        <button className="likes-sample-num button-as-link-grey" onClick={showHideComments}>{commentSample.owner.username}</button>
+                    }
+                    {!commentsNum &&
+                        <button disabled={true} className="likes-sample-num button-as-link-grey">0</button>
+                    }
+                </div>
+            </div>
+            <hr className="no-margin"></hr>
+            <div className="post-actions center-content flex-layout">
+            <OutsideClickHandler
+                onOutsideClick={()=>{setShowingReactions(false)}}>
+                <div className="center-content margin-side" 
+                        style={{'position': 'relative', 'minWidth': '100px'}}>
+                    {!liked &&
+                        <button 
+                            onClick={()=>setShowingReactions(true)}
+                            className="likes-action flex-layout button-as-link">
+                                <img className="like-icon" src={like_icon} alt="like-icon"/>
+                                <div>Like</div>
+                        </button>
+                    }
+                    {liked && likeKind==="like" &&
+                        <button 
+                            onClick={()=>setShowingReactions(true)}
+                            className="likes-action flex-layout button-as-link">
+                                <img className="like-icon" src={liked_icon} alt="liked-icon"/>
+                                <div className="blue-color">Liked</div>
+                        </button>
+                    }
+                    {liked && likeKind==="haha" &&
+                        <button 
+                            onClick={()=>setShowingReactions(true)}
+                            className="likes-action flex-layout button-as-link">
+                                <div>&#128514;</div>
+                                <div style={{'color': '#edaf11'}}>Haha</div>
+                        </button>
+                    }         
+                    {liked && likeKind==="love" &&
+                        <button 
+                            onClick={()=>setShowingReactions(true)}
+                            className="likes-action flex-layout button-as-link">
+                                <div>&#10084;&#65039;</div>
+                                <div style={{'color': 'red'}}>Love</div>
+                        </button>
+                    }
+                    {liked && likeKind==="liquid" &&
+                        <button 
+                            onClick={()=>setShowingReactions(true)}
+                            className="likes-action flex-layout button-as-link">
+                                <div>💦</div>
+                                <div style={{'color': '#05b4ff'}}>Liquid</div>
+                        </button>
+                    }  
+                    {liked && likeKind==="sad" &&
+                        <button 
+                            onClick={()=>setShowingReactions(true)}
+                            className="likes-action flex-layout button-as-link">
+                                <div>&#128546;</div>
+                                <div style={{'color': '#065a96'}}>Sad</div>
+                        </button>
+                    }
+                    {liked && likeKind==="dislike" &&
+                        <button 
+                            onClick={()=>setShowingReactions(true)}
+                            className="likes-action flex-layout button-as-link">
+                                <div>&#128078;</div>
+                                <div style={{'color': '#b08415'}}>Disliked</div>
+                        </button>
+                    }
+                    {showingReactions && 
+                        <div className="reactions-box flex-layout center-content">
+                            <button className="react-choice likes-action" onClick={()=>{preLike('like')}}>
+                            <div>&#128077;</div>
                             </button>
-                        }
-                        {this.state.liked && this.state.likeKind==="like" &&
-                            <button 
-                                onClick={()=>{this.setState({showReactions: true})}}
-                                className="likes-action flex-layout button-as-link">
-                                    <img className="like-icon" src={liked_icon} alt="liked-icon"/>
-                                    <div className="blue-color">Liked</div>
-                            </button>
-                        }
-                        {this.state.liked && this.state.likeKind==="haha" &&
-                            <button 
-                                onClick={()=>{this.setState({showReactions: true})}}
-                                className="likes-action flex-layout button-as-link">
-                                    <div>&#128514;</div>
-                                    <div style={{'color': '#edaf11'}}>Haha</div>
-                            </button>
-                        }         
-                        {this.state.liked && this.state.likeKind==="love" &&
-                            <button 
-                                onClick={()=>{this.setState({showReactions: true})}}
-                                className="likes-action flex-layout button-as-link">
-                                    <div>&#10084;&#65039;</div>
-                                    <div style={{'color': 'red'}}>Love</div>
-                            </button>
-                        }
-                        {this.state.liked && this.state.likeKind==="liquid" &&
-                            <button 
-                                onClick={()=>{this.setState({showReactions: true})}}
-                                className="likes-action flex-layout button-as-link">
-                                    <div>💦</div>
-                                    <div style={{'color': '#05b4ff'}}>Liquid</div>
-                            </button>
-                        }  
-                        {this.state.liked && this.state.likeKind==="sad" &&
-                            <button 
-                                onClick={()=>{this.setState({showReactions: true})}}
-                                className="likes-action flex-layout button-as-link">
-                                    <div>&#128546;</div>
-                                    <div style={{'color': '#065a96'}}>Sad</div>
-                            </button>
-                        }
-                        {this.state.liked && this.state.likeKind==="dislike" &&
-                            <button 
-                                onClick={()=>{this.setState({showReactions: true})}}
-                                className="likes-action flex-layout button-as-link">
-                                    <div>&#128078;</div>
-                                    <div style={{'color': '#b08415'}}>Disliked</div>
-                            </button>
-                        }
-                        {this.state.showReactions && 
-                            <div className="reactions-box flex-layout center-content">
-                                <button className="react-choice likes-action" onClick={()=>{this.preLike('like')}}>
-                                <div>&#128077;</div>
-                                </button>
-                                <button className="react-choice likes-action" onClick={()=>{this.preLike('haha')}}>
-                                    <div>&#128514;</div>
-                                </button>   
-                                <button className="react-choice likes-action" onClick={()=>{this.preLike('love')}}>
-                                    <div>&#10084;&#65039;</div>
-                                </button>   
-                                <button className="react-choice likes-action" onClick={()=>{this.preLike('liquid')}}>
-                                    <div>💦</div>
-                                </button>   
-                                <button className="react-choice likes-action" onClick={()=>{this.preLike('sad')}}>
-                                    <div>&#128546;</div>
-                                </button>   
-                                <button className="react-choice likes-action" onClick={()=>{this.preLike('dislike')}}>
-                                    <div>&#128078;</div>
-                                </button>   
-                            </div>
-                        }                                
+                            <button className="react-choice likes-action" onClick={()=>{preLike('haha')}}>
+                                <div>&#128514;</div>
+                            </button>   
+                            <button className="react-choice likes-action" onClick={()=>{preLike('love')}}>
+                                <div>&#10084;&#65039;</div>
+                            </button>   
+                            <button className="react-choice likes-action" onClick={()=>{preLike('liquid')}}>
+                                <div>💦</div>
+                            </button>   
+                            <button className="react-choice likes-action" onClick={()=>{preLike('sad')}}>
+                                <div>&#128546;</div>
+                            </button>   
+                            <button className="react-choice likes-action" onClick={()=>{preLike('dislike')}}>
+                                <div>&#128078;</div>
+                            </button>   
+                        </div>
+                    }                                
+                </div>
+            </OutsideClickHandler>
+                <div className="center-content margin-side">
+                    <button className="comments-action flex-layout button-as-link" onClick={showHideComments}>
+                        <img className="comment-icon" src={comment_icon} alt="comment-icon"/>
+                            <div>Comment</div>
+                    </button>
+                </div>
+            </div>
+            {showingLikes &&
+                <Likes id={post.id}
+                    userId={user?user.id:null}
+                    logged={logged}
+                    on={"post"}
+                    liked={liked}
+                    updateHome={props.updateHome}
+                    followsUpd={followsUpd}
+                    showMe={true}
+                    kinds={likesKinds}
+                />
+            }
+            <hr className="no-margin"></hr>
+            {showingComments &&
+                <Comments user={user}
+                        postId={post.id}
+                        logged={logged}
+                        how={"sample"}
+                        sample={commentSample}
+                        comments_error={commentsError}
+                        updateParent={commentsSample}
+                        updateHome={props.updateHome}
+                        followsUpd={followsUpd}
+                        reTakeSample={commentsSample}
+                />
+            }
+            {showingModal && 
+                <OutsideClickHandler onOutsideClick={hideModal}>
+                    <div className="posts-pop-up box-colors center-content">
+                        <div className="message center-content">
+                            Are you sure you want delete this post?<br></br>
+                        </div>
+                        <div className="modal-buttons-container center-content margin-top-small">
+                            <Button variant="primary" className="margin" onClick={hideModal}>No, I changed my mind</Button>
+                            <Button variant="danger" className="margin" onClick={postDelete}>Yes, delete anyway</Button>                                        
+                        </div>
                     </div>
                 </OutsideClickHandler>
-                    <div className="center-content margin-side">
-                        <button className="comments-action flex-layout button-as-link" onClick={this.showHideComments}>
-                            <img className="comment-icon" src={comment_icon} alt="comment-icon"/>
-                                <div>Comment</div>
-                        </button>
-                    </div>
-                </div>
-                {this.state.likesShow &&
-                    <Likes id={this.state.id}
-                        userId={this.state.user?this.state.user.id:null}
-                        logged={this.state.logged}
-                        on={"post"}
-                        liked={this.state.liked}
-                        updateHome={this.props.updateHome}
-                        followsUpd={this.state.followsUpd}
-                        showMe={true}
-                        kinds={this.state.likesKinds}
-                    />
-                }
-                <hr className="no-margin"></hr>
-                {this.state.commentsShow &&
-                    <Comments user={this.state.user}
-                            postId={this.state.id}
-                            logged={this.state.logged}
-                            how={"sample"}
-                            sample={this.state.commentSample}
-                            comments_error={this.state.comments_error}
-                            updateParent={this.commentsSample}
-                            updateHome={this.props.updateHome}
-                            followsUpd={this.state.followsUpd}
-                            reTakeSample={this.commentsSample}
-                    />
-                }
-                {this.state.showModal && 
-                    <OutsideClickHandler onOutsideClick={this.hideModal}>
-                        <div className="posts-pop-up box-colors center-content">
-                            <div className="message center-content">
-                                Are you sure you want delete this post?<br></br>
-                            </div>
-                            <div className="modal-buttons-container center-content margin-top-small">
-                                <Button variant="primary" className="margin" onClick={this.hideModal}>No, I changed my mind</Button>
-                                <Button variant="danger" className="margin" onClick={this.postDelete}>Yes, delete anyway</Button>                                        
-                            </div>
-                        </div>
-                    </OutsideClickHandler>
-                }                
-                
-            </div>
-        )
-    }
+            }                
+            
+        </div>
+    )
 }
 
 export default OnePost;

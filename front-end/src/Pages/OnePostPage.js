@@ -131,12 +131,14 @@ class OnePostPage extends React.Component {
                 
                     <OnePost user={this.state.user} 
                          logged={this.state.logged}
-                         id={this.state.id}
-                         owner={this.state.owner}
-                         media={this.state.media}
-                         video={this.state.video}
-                         text={this.state.text}
-                         date={this.state.date}
+                         post={{
+                            id: this.state.id,
+                            owner: this.state.owner,
+                            text: this.state.text,
+                            media: this.state.media,
+                            video: this.state.video,
+                            date: this.state.date,
+                         }}
                          updateHome={()=>{}}
                          updateParent={this.deleteMe}
                          commentsShow={true}
