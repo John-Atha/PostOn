@@ -135,31 +135,41 @@ def dailyStatsExport(items):
             result[day] = result[day]+1
         return result
 
-def filterUserFollowings(user_id):
-    try:
-        user = User.objects.get(id=user_id)
-        follows = user.follows.all()
-        seen_users = set()
-        for follow in follows:
-            if follow.followed.id in seen_users:
-                follow.delete()
-                continue
-            seen_users.add(follow.followed.id)
-    except User.DoesNotExist:
-        pass
+def filterUserFollowings(user):
+    follows = user.follows.all()
+    seen_users = set()
+    for follow in follows:
+        if follow.followed.id in seen_users:
+            follow.delete()
+            continue
+        seen_users.add(follow.followed.id)
 
-def filterUserFollowers(user_id):
-    try:
-        user = User.objects.get(id=user_id)
-        follows = user.followers.all()
-        seen_users = set()
-        for follow in follows:
-            if follow.following.id in seen_users:
-                follow.delete()
-                continue
-            seen_users.add(follow.following.id)
-    except User.DoesNotExist:
-        pass
+def filterUserFollowers(user):
+    follows = user.followers.all()
+    seen_users = set()
+    for follow in follows:
+        if follow.following.id in seen_users:
+            follow.delete()
+            continue
+        seen_users.add(follow.following.id)
+
+def filterPostLikes(post):
+    likes = Like.objects.filter(post=post)
+    seen_users = set()
+    for like in likes:
+        if like.owner.id in seen_users:
+            like.delete()
+            continue
+        seen_users.add(like.owner.id)
+
+def filterCommentLikes(comment):
+    likes = LikeComment.objects.filter(comment=comment)
+    seen_users = set()
+    for like in likes:
+        if like.owner.id in seen_users:
+            like.delete()
+            continue
+        seen_users.add(like.owner.id)
 
 @api_view(['Get'])
 def isLogged(request):
@@ -543,7 +553,7 @@ def UserFollows(request, id):
     if request.method=="GET":
         try:
             user = User.objects.get(id=id)
-            filterUserFollowings(id)
+            filterUserFollowings(user)
             follows = user.follows.order_by('-date')
             result = paginate(request.GET.get("start"), request.GET.get("end"), follows)
             try:
@@ -563,7 +573,7 @@ def UserFollowers(request, id):
     if request.method=="GET":
         try:
             user = User.objects.get(id=id)
-            filterUserFollowers(id)
+            filterUserFollowers(user)
             follows = user.followers.order_by('-date')
             result = paginate(request.GET.get("start"), request.GET.get("end"), follows)
             try:
@@ -1274,6 +1284,7 @@ def OnePostLikes(request, id, kind="like"):
             post = Post.objects.get(id=id)
         except Post.DoesNotExist:
             return JsonResponse({"error": "Invalid post id."}, status=400)
+        filterPostLikes(post)
         likes = Like.objects.filter(post=post).filter(kind=kind).order_by('-date')
         result = paginate(request.GET.get("start"), request.GET.get("end"), likes)
         try:
@@ -1383,6 +1394,7 @@ def OneCommentLikes(request, id):
             comment = Comment.objects.get(id=id)
         except Comment.DoesNotExist:
             return JsonResponse({"error": "Invalid comment id."}, status=400)
+        filterCommentLikes(comment)
         likes = LikeComment.objects.filter(comment=comment)
         result = paginate(request.GET.get("start"), request.GET.get("end"), likes)
         try:
