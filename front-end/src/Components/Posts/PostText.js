@@ -58,7 +58,7 @@ function PostText(props) {
     }
 
     const updateShowingCards = () => {
-        console.log(`I am a text with tags and parts:`, parts);
+        //console.log(`I am a text with tags and parts:`, parts);
         const tempShowCard = [];
         if (parts.length) {
             if (parts[parts.length-1].tag) {
@@ -88,8 +88,8 @@ function PostText(props) {
 
         //console.log(parts);
         if (parts.length) {
-            console.log(`I am a renderring post with parts:`)
-            console.log(parts)
+            //console.log(`I am a renderring post with parts:`)
+            //console.log(parts)
             return (
                 <div style={{'width': '100%'}}>
                     <div className="flex-layout with-whitespace">

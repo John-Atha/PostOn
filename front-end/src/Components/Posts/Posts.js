@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import "./Posts.css";
 import { getUsers, getPosts, getUsersPosts, PostPostText,
          PostPostPhoto, deletePost, PostPostTag } from '../../api/api';
@@ -9,69 +9,42 @@ import { createNotification } from '../../createNotification';
 import Button from "react-bootstrap/esm/Button";
 import Spinner from 'react-bootstrap/esm/Spinner';
 
-class Posts extends React.Component {
-    constructor(props){
-        super(props);
-        this.state = {
-            logged: props.user===null,
-            user: props.user,
-            error: null,
-            followingPosts: false,
-            postsList: [],
-            start: 1,
-            end: 10,
-            case: this.props.case,
-            whose: this.props.whose,
-            add: false,
-            newText: "",
-            isUploading: false,
-            usersList: [],
-            firstFocus: true,
-            tagsToPost: [],
-            newId: null,
-            nomore: false,
-        }
-        this.asked = [];
-        this.previousPage = this.previousPage.bind(this);
-        this.nextPage = this.nextPage.bind(this);
-        this.moveOn = this.moveOn.bind(this);
-        this.askPosts = this.askPosts.bind(this);
-        this.addPost = this.addPost.bind(this);
-        this.clearAdd = this.clearAdd.bind(this);
-        this.handleInput = this.handleInput.bind(this);
-        this.askTags = this.askTags.bind(this);
-        this.filterPost = this.filterPost.bind(this);
-        this.addTags = this.addTags.bind(this);
-        this.checkScroll = this.checkScroll.bind(this);
-    }
+function Posts(props) {
 
-    checkScroll = () => {
-        //const container = document.getElementById('posts-cont');
-        ////console.log("I am checking scroll");
-        ////console.log(`${container.scrollHeight} - ${container.scrollTop} == ${container.clientHeight}`)
-            //console.log(`${window.scrollY>=0.7*document.body.offsetHeight}`);
-            if (window.scrollY>=0.5*document.body.offsetHeight && !this.state.nomore) {
-                ////console.log(`${container.scrollHeight} - ${container.scrollTop} == ${container.clientHeight}`);
-                    if (!this.asked.includes(this.state.start)) {
-                        window.removeEventListener('scroll', this.checkScroll);
-                        setTimeout(()=>{window.addEventListener('scroll', this.checkScroll);}, 2000)                    
-                        this.asked.push(this.state.start);
-                        setTimeout(()=>{this.nextPage();}, 0);
-                    }       
-                    //console.log(`asked:`);
-                    //console.log(this.asked);            
-                //console.log("reached bottom")
+    const [user, setUser] = useState(props.user);
+    const [postsList, setPostsList] = useState([]);
+    const [start, setStart] = useState(1);
+    const [newText, setNewText] = useState("");
+    const [isUploading, setIsUploading] = useState(false);
+    const [usersList, setUsersList] = useState([]);
+    const [firstFocus, setFirstFocus] = useState(true);
+    const [tagsToPost, setTagsToPost] = useState([]);
+    const [newId, setNewId] = useState(null);
+    const [nomore, setNomore] = useState(false);
+    const [asked, setAsked] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const [restarted, setRestarted] = useState(false);
+
+    const checkScroll = () => {
+            if (isLoading) return;
+            console.log(`${window.scrollY>=0.5*document.body.offsetHeight}`);
+            if (window.scrollY>=0.5*document.body.offsetHeight && !nomore) {
+                //! if (!asked.includes(start)) {
+                    //window.removeEventListener('scroll', checkScroll);
+                    //setTimeout(()=>{window.addEventListener('scroll', checkScroll);}, 2000)                    
+                    //console.log(`@@@ I am ask trying with start: ${start}`);
+                    //if (!asked.includes(start)) setAsked(asked.concat(start));
+                //}
+                setStart(start+10);
+                //console.log(`@@@ I will update start from ${start} to ${start+10}`);
             }
     }
 
-    askTags = () => {
-        if (this.state.firstFocus) {
-            this.setState({
-                firstFocus: false,
-            })
+    const askTags = () => {
+        if (firstFocus) {
+            setFirstFocus(false);
             getUsers()
             .then(response => {
-                //console.log(response);
                 let tempL = [];
                 response.data.forEach(el => {
                     tempL.push({
@@ -79,84 +52,75 @@ class Posts extends React.Component {
                         "display": el.username,
                     })
                 })
-                this.setState({
-                    usersList: tempL,
-                })
+                setUsersList(tempL);
             })
-            .catch(err => {
-                //console.log(err);
+            .catch(() => {
+                ;
             })
         }
     }
 
-    addTags = (text) => {
-        // gets post id from: this.state.newId
-        // gets tagsList from: this.state.tagsToPost
-        this.filterPost(text);
-        setTimeout(()=> {
-            this.state.tagsToPost.forEach(obj => {
-                let id = obj.tag.id;
-                let object = {
-                    "mentioned": {
-                        "id": id,
-                    }
-                }
-                PostPostTag(this.state.newId, object)
-                .then(response => {
-                    //console.log(response);
-                })
-                .catch(err => {
-                    //console.log(err);
-                })
-            })
-        }, 200)
-    }
-
-    filterPost = (text) => {
-        //console.log("users i see")
-        //console.log(this.state.usersList)
-        //console.log("i am filter post");
-        let post_text = text;
-        //console.log("initial text")
-        let final_post_object = [];
-        let s3 = [];
-        post_text = post_text.replaceAll(")@", ") @");
-        //console.log(post_text);
-        //let s2 = post_text.trim().split(/\s+/);
-        let s2 = post_text.split(' ');
-        for (let i=0; i<s2.length; i++) {
-            s2[i]+=' ';
-        }
-        //console.log("after fixing spaces")
-        //console.log(s2)
-        for (let i=0; i<s2.length; i++) {
-            if (s2[i]!==[' ']) {
-                //console.log("sublist")
-                //console.log(s2[i])
-                let subList = s2[i].split('\n');
-                //console.log(subList)
-                if (subList.length>1) {
-                    for (let j=0; j<subList.length-1; j++) {
-                        if (!subList[j].endsWith('\n')) {
-                            subList[j]+='\n';
-                        }    
-                        s3.push(subList[j]);
-                    }
-                    s3.push(subList[subList.length-1])
-                }
-                else {
-                    s3.push(subList);
+    const addTags = () => {
+        // gets post id from: newId
+        // gets tagsList from: tagsToPost
+        tagsToPost.forEach(obj => {
+            let id = obj.tag.id;
+            let object = {
+                "mentioned": {
+                    "id": id,
                 }
             }
+            PostPostTag(newId, object)
+            .then(() => {
+                ;
+            })
+            .catch(() => {
+                ;
+            })
+        })
+    }
+
+    const filterPost = () => {
+        let post_text = newText;
+        let s3 = [];
+        post_text = post_text.replaceAll(")@", ") @");
+
+        // split on spaces
+        let s2 = post_text.split(' ');
+        s2 = s2.filter((word, index) => {
+            return word!=='' && word!==' '
+        })
+
+        // split and add on new lines
+        for (let i=0; i<s2.length; i++) {
+            if (s2[i]==='\n') {
+                s3.push('\n');
+            }
+            else if (s2[i].includes('\n')) {
+                let subList = s2[i].split('\n');
+                subList = subList.map(word => {
+                    if (word==='') return '\n';
+                    return word;
+                })
+                let index = 0;
+                while (index<subList.length-1) {
+                    if (subList[index]!=='\n' && subList[index+1]!=='\n') {
+                        subList.splice(index+1, 0, '\n');
+                    }
+                    index++;
+                }
+                s3 = s3.concat(subList);    
+            }
+            else {
+                s3.push(s2[i]);
+            }            
         }
-        //console.log("BROKEN LIST")
-        //console.log(s2);
-        s3 = s3.flat();
-        //console.log(s3);
+
+        // collect tags to post
+        const final_post_object = [];
         s3.forEach(el => {
-            //console.log(el)
             if (el.startsWith('@')) {    
-                this.state.usersList.forEach(suggest => {
+                usersList.forEach(suggest => {
                     let sugg=suggest.display;
                     if (el.startsWith(`@[${sugg}]`)) {
                         let el2 = el.split(')')
@@ -172,80 +136,57 @@ class Posts extends React.Component {
                 })
             }
         })
-        //console.log("Tags to post:")
-        //console.log(final_post_object)
-        this.setState({
-            tagsToPost: final_post_object,
-        })
+        setTagsToPost(final_post_object);
     }
 
-    handleInput = (event) => {
-        const value = event.target.value;
-        this.setState({
-            newText: value,
-        })
-        //console.log(`new text: ${this.state.newText}`);
-    }
-    clearAdd = () => {
-        this.setState({
-            newText: "",
-        })
+    const clearAdd = () => {
+        setNewText("");
         const input = document.getElementById('new-post-photo');
-        input.type=''
-        input.type='file'             
+        input.value='';            
         createNotification('warning', 'Hello,', 'Publsh was cancelled');
     }
-    addPost = () => {
+
+    const addPost = () => {
         //console.log("I am add post")
         const input = document.getElementById('new-post-photo');
         let img = null;
         if (input.files.length) {
             img = input.files[0];
-            //console.log(img);
         }
-        if (!this.state.newText.length && !input.files.length) {
+        if (!newText.length && !input.files.length) {
             createNotification('danger', 'Sorry,', 'You cannot create an empty post.')
         }
         else {
             createNotification('success', 'Please wait,', 'We are uploading your post.')
-            this.setState({
-                isUploading: true,
-            });
+            setIsUploading(true);
             // if no text is given
-            if (!this.state.newText.length) {
+            if (!newText.length) {
                 // just create the post with empty text
-                PostPostText(this.state.newText)
+                PostPostText(newText)
                 .then(response => {
-                    //console.log(response);
-                    // then post the photo (has to be there, else the first "if" would have stopped the process)
+                    // then post the photo
                     let postId = response.data.id;
                     var bodyFormData = new FormData();
                     bodyFormData.append('image', img);
                     PostPostPhoto(postId, bodyFormData)
                     // if photo posted successfully
-                    .then(response => {
-                        //console.log(response);
-                        let prevText = this.state.newText;
-                        this.setState({
-                            newText: "",
-                            newId: postId,
-                            isUploading: false,
-                        })
+                    .then(() => {
+                        filterPost();
+                        setNewText("");
+                        setNewId(postId);
+                        setIsUploading(false);
+                        setTagsToPost([]);
                         const input = document.getElementById('new-post-photo');
-                        input.type=''
-                        input.type='file'             
-                        setTimeout(()=>{this.addTags(prevText);}, 1000)
-                        this.askPosts("restart");
+                        input.value=''
+                        askPosts("restart");
                         createNotification('success', 'Hello,', 'Post published successfully.');
 
                     })
                     // else post has to be deleted (it only has an empty text)
                     .catch(err => {
                         //console.log(err);
-                        this.setState({
-                            newText: "",
-                            isUploading: false,
-                        })
+                        setNewText("");
+                        setIsUploading(false);
                         deletePost(postId)
                         .then(response => {
                             //console.log(response);
@@ -257,16 +198,15 @@ class Posts extends React.Component {
                     })
                 })
                 // could not create post => return err
-                .catch(err => {
+                .catch(() => {
                     //console.log(err);
                     createNotification('danger', 'Sorry,', "We couldn't publish your post")
-                    this.setState({
-                        isUploading: false,
-                    })
+                    setIsUploading(false);
+                    setTagsToPost([]);
                 })
             }
             else {
-                PostPostText(this.state.newText)
+                PostPostText(newText)
                 .then(response => {
                     //console.log(response);
                     if(input.files.length) {
@@ -275,222 +215,192 @@ class Posts extends React.Component {
                         bodyFormData.append('image', img);
                         PostPostPhoto(postId, bodyFormData)
                         // if photo posted successfully
-                        .then(response => {
-                            //console.log(response);
-                            let prevText = this.state.newText;
-                            this.setState({
-                                newText: "",
-                                newId: postId,
-                                isUploading: false,
-                            })
-                            setTimeout(()=>{this.addTags(prevText);}, 1000)
-                            this.askPosts("restart");
+                        .then(() => {
+                            filterPost();
+                            setNewText("");
+                            setNewId(postId);
+                            setIsUploading(false);
+                            setTagsToPost([]);
+                            askPosts("restart");
                             createNotification('success', 'Hello,', 'Post published successfully.');
                         })
                         // else post has to be deleted
-                        .catch(err => {
-                            //console.log(err);
-                            this.setState({
-                                newText: "",
-                                isUploading: false,
-                            })
+                        .catch(() => {
+                            setNewText("");
+                            setIsUploading(false);
+                            setTagsToPost([]);
                             deletePost(postId)
-                            .then(response => {
-                                //console.log(response);
+                            .then(() => {
+                                ;
                             })
-                            .catch(err => {
-                                //console.log(err);
+                            .catch(() => {
+                                ;
                             })
                             createNotification('danger', 'Sorry,', "We couldn't publish your post")
                         })
                     }
                     else {
-                        let prevText = this.state.newText;
-                        this.setState({
-                            newText: "",
-                            newId: response.data.id,
-                            isUploading: false,
-                        })
-                        setTimeout(()=>{this.addTags(prevText);}, 1000)
-                        this.askPosts("restart");
+                        filterPost();
+                        setNewText("");
+                        setNewId(response.data.id);
+                        setIsUploading(false);
+                        setTagsToPost([]);
+                        askPosts("restart");
                         createNotification('success', 'Hello,', 'Post published successfully.');
                     }
                 })
                 // could not create post => return err
                 .catch(err => {
-                    //console.log(err);
-                    this.setState({
-                        isUploading: false,
-                    })
+                    setIsUploading(false);
+                    setTagsToPost([]);
                     createNotification('danger', 'Sorry,', "We couldn't publish your post")
                 })
             }
         }
     }
-    moveOn = () => {
-        setTimeout(() => this.askPosts(), 500);
-    }
-    previousPage = () => {
-        setTimeout(this.setState({
-            start: this.state.start-10,
-            end: this.state.end-10,
-        }), 0)
-        this.moveOn();
-    }
-    nextPage = () => {
-        setTimeout(this.setState({
-            start: this.state.start+10,
-            end: this.state.end+10,
-        }), 0)
-        this.moveOn();
-        //setTimeout(()=>this.askLikes(), 750);
-    }
-    askPosts = (how="") => {
+    
+    const askPosts = (how="") => {
+        setIsLoading(true);
         if (how==="restart") {
-            this.asked=[];
-            this.setState({
-                start: 1,
-                end: 10,
-                postsList: [],
-                nomore: false,
-            })
-        }        
-        setTimeout(()=> {
-        //console.log(`I asm ask posts with: start=${this.state.start} and asked=${this.asked}`)
-        if (this.state.whose) {
-            getUsersPosts(this.state.whose, this.state.start, this.state.end)
-            .then(response => {
-                //console.log(response);
-                this.setState({
-                    postsList: this.state.postsList.concat(response.data),
-                    nomore: false,
-                })
-                //console.log(this.state.postsList)
-            })
-            .catch(err => {
-                //console.log(err);
-                this.setState({
-                    nomore: true,
-                })
-            })
+            //console.log(`@@@ I asm ask posts restart`)
+            setAsked([]);
+            setPostsList([]);
+            setNomore(false);
+            if (start!==1) setStart(1);
+            else setRestarted(!restarted);
+            return
         }
-        else {
-            getPosts(this.state.start, this.state.end, this.state.case)
-            .then(response => {
-                //console.log(response);
-                this.setState({
-                    postsList: this.state.postsList.concat(response.data),
-                    nomore: false,
+        //console.log(`@@@ I asm ask posts with: start=${start} and asked=${asked}`)
+        if (!asked.includes(start)) {
+            if (props.whose) {
+                getUsersPosts(props.whose, start, start+9)
+                .then(response => {
+                    setPostsList(postsList.concat(response.data));
+                    setNomore(false);
+                    setIsLoading(false);
+                    setAsked(asked.concat(start));
                 })
-                //console.log(this.state.postsList)
-            })
-            .catch(err => {
-                //console.log(err);
-                this.setState({
-                    nomore: true,
+                .catch(() => {
+                    setNomore(true);
                 })
-            })
-        }}, 1000)
-    }
-    componentDidMount() {
-        window.addEventListener('scroll', this.checkScroll);
-        /*isLogged()
-        .then(response => {
-            //console.log(response);
-            this.setState({
-                logged: response.data.authenticated,
-                userId: response.data.id,
-                username: response.data.username,
-                add: true,
-            });
-            //this.askLikes();
-        })
-        .catch(err => {
-            //console.log(err);
-            this.setState({
-                error: err,
-            })
-        })*/
-        setTimeout(()=>this.askPosts(), 200);
-    }
-    componentWillUnmount() {
-        window.removeEventListener('scroll', this.checkScroll);
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.user !== this.props.user) {
-            this.setState({
-                user: this.props.user,
-                logged: this.props.user!==null,
-            })
+            }
+            else {
+                getPosts(start, start+9, props.case)
+                .then(response => {
+                    setPostsList(postsList.concat(response.data));
+                    setNomore(false);
+                    setIsLoading(false);
+                    setAsked(asked.concat(start));
+                })
+                .catch(() => {
+                    setNomore(true);
+                })
+            }
         }
     }
-    render() {
-        return(
-            <div className="posts-container padding-bottom flex-item">
-                {this.state.isUploading &&
-                    <div style={{'marginBottom': '15px'}} className='center-content margin-top'>
-                        <Spinner animation="border" role="status" variant='primary' />
-                    </div>
-                }
-                {this.state.logged && !this.state.isUploading &&
-                    <div className="new-post-container">
-                        <h5><i>Hi {this.state.user ? this.state.user.username : ''}, what's on your mind?</i></h5>
-                            <h6 className='margin-top-smaller'><i>Media</i></h6>
-                            <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
-                            <input id="new-post-photo" type="file" accept="image/*, video/*"/>
-                            <h6 className='margin-top-smaller'><i>Text</i></h6>
-                            <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
-                            <MentionsInput name="newText" className="post-textarea-edit clean-style new-post" style={{width: '90%'}} value={this.state.newText} onChange={this.handleInput} onFocus={this.askTags}>
-                                <Mention
-                                    trigger="@"
-                                    data={this.state.usersList}
-                                    className="mention-suggestions"
-                                />
-                            </MentionsInput>
-                            <div className="flex-layout margin-top-smaller">
-                                <Button variant='primary' className="margin" onClick={this.addPost}>Publish</Button>
-                                <Button variant='outline-primary' className="margin" onClick={this.clearAdd}>Clear</Button>
-                            </div>
-                    </div>
-                }
-                {this.state.postsList.map((value, index) => {
-                    return(
-                        <OnePost key={index}
-                                    post={value}
-                                    user={this.state.user}
-                                    updateHome={this.props.updateHome}
-                                    updateParent={this.askPosts}
-                                    setShowingMedia={this.props.setShowingMedia}
-                                    setImage={this.props.setImage}
-                                    setVideo={this.props.setVideo}
-                        />
-                    )
-                })}
-                {!this.state.postsList.length && this.state.nomore &&
-                    <div className="error-message margin-top center-text">Oops, no posts found..</div>
-                }
-                {!this.state.postsList.length && !this.state.nomore &&
-                    <div className='center-content margin-top'>
-                        <Spinner animation="border" role="status" variant='primary' />
-                    </div>
-                }
-                {window.innerWidth>=500 &&
-                    <input type="image" 
-                        onClick={ ()=>{      
-                            window.scrollTo({
-                                top:0,
-                                left:0,
-                                behavior:'smooth'
-                            })}
-                        }
-                        className="up-button"
-                        src={arrow_icon}
-                        alt="top-page">
-                    </input>
-                }
-            </div>
-        )
-    }
+    
+    useEffect(() => {
+        setUser(props.user);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.user])
+
+    useEffect(() => {
+        window.addEventListener('scroll', checkScroll);
+        return () => {
+            window.removeEventListener('scroll', checkScroll);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isLoading])
+
+    useEffect(() => {
+        if (tagsToPost.length) addTags();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [tagsToPost])
+
+    useEffect(() => {
+        //console.log(`@@@ Start updated to ${start}`)
+        askPosts();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [start])
+
+    useEffect(() => {
+        askPosts();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [restarted])
+
+    useEffect(() => {
+        askPosts("restart");
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.updateMe])
+
+
+    
+    return(
+        <div className={props.whose ? "user-posts-container padding-bottom" : "posts-container padding-bottom flex-item"}
+             style={props.whose ? {paddingTop: '50px', marginTop: '5px'} : {}}>
+            {isUploading &&
+                <div style={{'marginBottom': '15px'}} className='center-content margin-top'>
+                    <Spinner animation="border" role="status" variant='primary' />
+                </div>
+            }
+            {user && !isUploading && (props.whose ? props.whose===user.id : true) &&
+                <div className="new-post-container">
+                    <h5><i>Hi {user.username}, what's on your mind?</i></h5>
+                        <h6 className='margin-top-smaller'><i>Media</i></h6>
+                        <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
+                        <input id="new-post-photo" type="file" accept="image/*, video/*"/>
+                        <h6 className='margin-top-smaller'><i>Text</i></h6>
+                        <hr style={{'marginTop': '0%','marginBottom': '1%'}}></hr>
+                        <MentionsInput name="newText" className="post-textarea-edit clean-style new-post" style={{width: '90%'}} value={newText} onChange={(event)=>setNewText(event.target.value)} onFocus={askTags}>
+                            <Mention
+                                trigger="@"
+                                data={usersList}
+                                className="mention-suggestions"
+                            />
+                        </MentionsInput>
+                        <div className="flex-layout margin-top-smaller">
+                            <Button variant='primary' className="margin" onClick={addPost}>Publish</Button>
+                            <Button variant='outline-primary' className="margin" onClick={clearAdd}>Clear</Button>
+                        </div>
+                </div>
+            }
+            {postsList.map((value, index) => {
+                return(
+                    <OnePost key={index}
+                            post={value}
+                            user={user}
+                            updateHome={props.updateHome}
+                            updateParent={askPosts}
+                            setShowingMedia={props.setShowingMedia}
+                            setImage={props.setImage}
+                            setVideo={props.setVideo}
+                    />
+                )
+            })}
+            {!postsList.length && nomore &&
+                <div className="error-message margin-top center-text">Oops, no posts found..</div>
+            }
+            {!postsList.length && !nomore &&
+                <div className='center-content margin-top'>
+                    <Spinner animation="border" role="status" variant='primary' />
+                </div>
+            }
+            {window.innerWidth>=500 &&
+                <input type="image" 
+                    onClick={ ()=>{      
+                        window.scrollTo({
+                            top:0,
+                            left:0,
+                            behavior:'smooth'
+                        })}
+                    }
+                    className="up-button"
+                    src={arrow_icon}
+                    alt="top-page">
+                </input>
+            }
+        </div>
+    )
 }
 
 export default Posts;

@@ -3,7 +3,7 @@ import './Profile.css';
 import OutsideClickHandler from 'react-outside-click-handler';
 import MyNavbar from '../../Components/Navbars/MyNavbar';
 import MobileNavbar from '../../Components/Navbars/MobileNavbar';
-import UserPosts from '../../Components/Posts/UserPosts';
+import Posts from '../../Components/Posts/Posts';
 import FollowBox from '../../Components/Profile/FollowBox';
 import verified_img from '../../images/verified.png';
 import { getUser, updateUser, updateUserPhoto,
@@ -104,8 +104,8 @@ function Profile(props) {
                 updateUserPhoto(parseInt(props.userId), bodyFormData)
                 .then(response=> {
                     setPhoto(response.data.photo);
-                    setEdit(response.data.edit);
-                    setUpdateFlag(response.data.updateFlag);
+                    setEdit(false);
+                    setUpdateFlag(updateFlag+1);
                     input.value = "";
                     createNotification('success', 'Hello,', "Profile photo updated successfully");
                 })
@@ -202,7 +202,6 @@ function Profile(props) {
     }
 
     const askMyFollows = () => {
-        console.log('I am askMyFollows')
         setTimeout(()=>{
             
             getFollows(me?me.id:null)
@@ -411,7 +410,7 @@ function Profile(props) {
                         <hr className="no-margin"></hr>
                         <h4 className="center-text">Posts</h4>
                         <hr className="no-margin"></hr>
-                        <UserPosts
+                        <Posts
                             whose={parseInt(props.userId)}
                             user={me}
                             updateHome={updateMyFollows}

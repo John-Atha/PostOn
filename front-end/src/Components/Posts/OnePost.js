@@ -382,11 +382,15 @@ function OnePost(props) {
     useEffect(() => {
         setUser(props.user);
         setLogged(props.user!==null);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [props.user])
+
+    useEffect(() => {
         if (post) {
             checkLiked();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [props.user])
+    }, [user])
 
     useEffect(() => {
         setPost(props.post);
@@ -408,6 +412,7 @@ function OnePost(props) {
 
     useEffect(() => {
         filterPost();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [usersList, textInit])
 
         
