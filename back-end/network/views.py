@@ -135,6 +135,32 @@ def dailyStatsExport(items):
             result[day] = result[day]+1
         return result
 
+def filterUserFollowings(user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        follows = user.follows.all()
+        seen_users = set()
+        for follow in follows:
+            if follow.followed.id in seen_users:
+                follow.delete()
+                continue
+            seen_users.add(follow.followed.id)
+    except User.DoesNotExist:
+        pass
+
+def filterUserFollowers(user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        follows = user.followers.all()
+        seen_users = set()
+        for follow in follows:
+            if follow.following.id in seen_users:
+                follow.delete()
+                continue
+            seen_users.add(follow.following.id)
+    except User.DoesNotExist:
+        pass
+
 @api_view(['Get'])
 def isLogged(request):
     if request.method!="GET":
@@ -517,6 +543,7 @@ def UserFollows(request, id):
     if request.method=="GET":
         try:
             user = User.objects.get(id=id)
+            filterUserFollowings(id)
             follows = user.follows.order_by('-date')
             result = paginate(request.GET.get("start"), request.GET.get("end"), follows)
             try:
@@ -536,6 +563,7 @@ def UserFollowers(request, id):
     if request.method=="GET":
         try:
             user = User.objects.get(id=id)
+            filterUserFollowers(id)
             follows = user.followers.order_by('-date')
             result = paginate(request.GET.get("start"), request.GET.get("end"), follows)
             try:
