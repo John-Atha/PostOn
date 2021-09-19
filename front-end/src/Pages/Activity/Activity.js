@@ -1,446 +1,87 @@
-import React from 'react';
-import ProfileCard from '../../Components/Profile/ProfileCard';
+import React, { useState, useEffect } from 'react';
 import {isLogged, getActivity} from '../../api/api';
 import './Activity.css';
 import MyNavbar from '../../Components/Navbars/MyNavbar';
 import MobileNavbar from '../../Components/Navbars/MobileNavbar';
 import Searchbar from '../../Components/Searchbar/Searchbar';
 import Button from 'react-bootstrap/esm/Button';
+import CommentAction from '../../Components/Activity/CommentAction';
+import PostLikeAction from '../../Components/Activity/PostLikeAction';
+import CommentLikeAction from '../../Components/Activity/CommentLikeAction';
+import PostAction from '../../Components/Activity/PostAction';
+import FollowAction from '../../Components/Activity/FollowAction';
+import Spinner from 'react-bootstrap/esm/Spinner';
 
-const dateShow = (date) => {
-    let datetime = date.replace('T', ' ').replace('Z', '').split(' ')
-    let day = datetime[0]
-    let time = datetime[1].substring(0, 8)
-    return `${day} ${time}`
-}
-const format = (str) => {
-    if (str.length>15) {
-        return str.slice(0, 15)+"..."
-    }
-    else {
-        return str;
-    }
-}
+function Activity() {
+    const [userId, setUserId] = useState(null);
+    const [actionsList, setActionsList] = useState([]);
+    const [start, setStart] = useState(1);
+    const [error, setError] = useState(false);
+    const [updateColorsBetweenNavbars, setUpdateColorsBetweenNavbars] = useState(1);
 
-class CommentAction extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            owner: this.props.action.owner,
-            post: this.props.action.post,
-            text: this.props.action.text,
-            date: this.props.action.date,
-            showCard: false,
-        }
-        this.cardShow = this.cardShow.bind(this);
-        this.cardHide = this.cardHide.bind(this);
-    }
-    cardShow = () => {
-        this.setState({
-            mouseOutLink: false,
-            mouseOutCard: false,
-            showCard: true,
-        })
-    }
-    cardHide = () => {
-        this.setState({
-            showCard: false,
-        })
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.action!==this.props.action) {
-                this.setState({
-                    owner: this.props.action.owner,
-                    post: this.props.action.post,
-                    date: this.props.action.date,
-                    text: this.props.action.test,
-                })
-            }
-    }
-
-    render() {
-        return(
-            <div className="one-activity-container">
-                {this.state.post && this.state.text && this.state.date && this.state.owner &&
-                    <div className="description flex-layout">
-                        <div className="with-whitespace">
-                            On {dateShow(this.state.date)}, you commented on a
-                        </div>
-                        <a href={`/posts/${this.state.post.id}`} className="with-whitespace">
-                            {" post "}
-                        </a>
-                        <div>
-                            of user 
-                        </div>
-                        <div className="as-link with-whitespace"
-                            onMouseEnter={this.cardShow}
-                            onMouseLeave={this.cardHide}>
-                            {" "+this.state.post.owner.username}
-                            {this.state.showCard &&
-                                    <ProfileCard
-                                        user={this.state.post.owner}
-                                        position={"right"}
-                                    />
-                            }
-                        </div>.
-                    </div>
-                }
-                {this.state.post && this.state.text && this.state.date && this.state.owner &&
-                    <div className="margin-top-smaller">
-                        {format(this.state.text)}
-                    </div>
-                }
-            </div>
-        )
-    }
-}
-class PostLikeAction extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            owner: this.props.action.owner,
-            post: this.props.action.post,
-            date: this.props.action.date,
-        }
-        this.cardShow = this.cardShow.bind(this);
-        this.cardHide = this.cardHide.bind(this);
-    }
-    cardShow = () => {
-        this.setState({
-            mouseOutLink: false,
-            mouseOutCard: false,
-            showCard: true,
-        })
-    }
-    cardHide = () => {
-        this.setState({
-            showCard: false,
-        })
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.action!==this.props.action) {
-                this.setState({
-                    owner: this.props.action.owner,
-                    post: this.props.action.post,
-                    date: this.props.action.date,
-                })
-            }
-    }
-    render() {
-        return(
-            <div className="one-activity-container">
-                {this.state.post && this.state.owner && this.state.date &&
-                    <div className="description flex-layout">
-                        <div className="with-whitespace">
-                            On {dateShow(this.state.date)}, you reacted on a
-                        </div>
-                        <a href={`/posts/${this.state.post.id}`} className="with-whitespace">
-                            {" post "}
-                        </a>
-                        <div>
-                            of user 
-                        </div>
-                        <div className="as-link with-whitespace"
-                            onMouseEnter={this.cardShow}
-                            onMouseLeave={this.cardHide}>
-                            {" "+this.state.post.owner.username}
-                            {this.state.showCard &&
-                                    <ProfileCard
-                                        user={this.state.post.owner}
-                                        position={"right"} 
-                                    />
-                            }
-                        </div>
-                    </div>
-                }
-            </div>
-        )
-    }
-}
-class CommentLikeAction extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            owner: this.props.action.owner,
-            comment: this.props.action.comment,
-            date: this.props.action.date,
-            showCard: false,
-        }
-        this.cardShow = this.cardShow.bind(this);
-        this.cardHide = this.cardHide.bind(this);
-    }
-    cardShow = () => {
-        this.setState({
-            mouseOutLink: false,
-            mouseOutCard: false,
-            showCard: true,
-        })
-    }
-    cardHide = () => {
-        this.setState({
-            showCard: false,
-        })
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.action!==this.props.action) {
-                this.setState({
-                    owner: this.props.action.owner,
-                    comment: this.props.action.comment,
-                    date: this.props.action.date,
-                })
-            }
-    }
-
-    render() {
-        return(
-            <div className="one-activity-container">
-                {this.state.owner && this.state.comment && this.state.date &&
-                    <div className="description flex-layout">
-                        <div className="with-whitespace">
-                            On {dateShow(this.state.date)}, you liked a
-                        </div>
-                        <a href={`/posts/${this.state.comment.post.id}`} className="with-whitespace">
-                            {" comment "}
-                        </a>
-                        <div>
-                            of user 
-                        </div>
-                        <div className="as-link with-whitespace"
-                            onMouseEnter={this.cardShow}
-                            onMouseLeave={this.cardHide}>
-                            {" "+this.state.comment.owner.username}
-                            {this.state.showCard &&
-                                    <ProfileCard
-                                        user={this.state.comment.owner}
-                                        position={"right"}
-                                    />
-                            }
-                        </div>.
-                    </div>
-                }
-                {this.state.owner && this.state.comment && this.state.date &&
-                    <div className="margin-top-smaller">
-                        {format(this.state.comment.text)}
-                    </div>
-                }
-            </div>
-        )
-    }
-}
-class PostAction extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            owner: this.props.action.owner,
-            post: this.props.action,
-            date: this.props.action.date,
-        }
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.action!==this.props.action) {
-                //console.log("post updated")
-                this.setState({
-                    owner: this.props.action.owner,
-                    post: this.props.action.post,
-                    date: this.props.action.date,
-                })
-            }
-    }
-
-    render() {
-        return(
-            <div className="one-activity-container">
-                {this.state.owner && this.state.post && this.state.date &&
-                    <div className="description flex-layout">
-                        <div className="with-whitespace">
-                            On {dateShow(this.state.date)}, you uploaded a
-                        </div>
-                        {this.state.post!==null &&
-                            <a href={`/posts/${this.state.post.id}`} className="with-whitespace">
-                                {" post "}.
-                            </a>
-                        }
-                    </div>
-                }
-            </div>
-        )
-    }
-}
-class FollowAction extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            owner: this.props.action.following,
-            followed: this.props.action.followed,
-            date: this.props.action.date,
-            showCard: false,
-        }
-        this.cardShow = this.cardShow.bind(this);
-        this.cardHide = this.cardHide.bind(this);
-    }
-    cardShow = () => {
-        this.setState({
-            mouseOutLink: false,
-            mouseOutCard: false,
-            showCard: true,
-        })
-    }
-    cardHide = () => {
-        this.setState({
-            showCard: false,
-        })
-    }
-    componentDidUpdate(prevProps) {
-        if (prevProps.action.followed!==this.props.action.followed ||
-            prevProps.action.following!==this.props.action.following ||
-            prevProps.action.date!==this.props.action.date) {
-                this.setState({
-                    owner: this.props.action.following,
-                    followed: this.props.action.followed,
-                    date: this.props.action.date,
-                })
-            }
-    }
-
-    render() {
-        return(
-            <div className="one-activity-container">
-                {this.state.owner && this.state.followed && this.state.date && 
-                    <div className="description flex-layout">
-                        <div className="with-whitespace">
-                            On {dateShow(this.state.date)}, you followed the user
-                        </div>
-                        <div className="as-link with-whitespace"
-                                    onMouseEnter={this.cardShow}
-                                    onMouseLeave={this.cardHide}>
-                            {" "+this.state.followed.username}
-                            {this.state.showCard &&
-                                    <ProfileCard
-                                        user={this.state.followed}
-                                        position={"right"}
-                                    />
-                            }
-                        </div>.
-                    </div>
-                }
-            </div>
-        )
-    }
-}
-class Activity extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            userId: null,
-            logged: null,
-            actList: [],
-            start: 1,
-            end: 10,
-            error: null,
-            updateColorsBetweenNavbars: 1,
-        }
-        this.askActivity = this.askActivity.bind(this);
-        this.previousPage = this.previousPage.bind(this);
-        this.nextPage = this.nextPage.bind(this);
-        this.moveOn = this.moveOn.bind(this);
-        this.updateNavbarsColors = this.updateNavbarsColors.bind(this);
-    }
-    moveOn = () => {
-        window.scrollTo({
-            top:0,
-            left:0,
-            behavior:'smooth'
-        });
-        setTimeout(() => this.askActivity(), 500);
-    }
-    previousPage = () => {
-        setTimeout(this.setState({
-            start: this.state.start-10,
-            end: this.state.end-10,
-        }), 0)
-        this.moveOn();
-    }
-    nextPage = () => {
-        setTimeout(this.setState({
-            start: this.state.start+10,
-            end: this.state.end+10,
-        }), 0)
-        this.moveOn();
-    }
-    askActivity = () => {
-        //console.log(`I am asking activity from ${this.state.start} to ${this.state.end}`)
-        getActivity(this.state.userId, this.state.start, this.state.end)
+    const askActivity = () => {
+        //console.log(`I am asking activity from ${start} to ${start+9}`)
+        getActivity(userId, start, start+9)
         .then(response=> {
-            //console.log(response);
-            this.setState({
-                actList: response.data,
-            })
+            setActionsList(response.data);
+            setError(false);
         })
-        .catch(err => {
-            //console.log(err);
-            this.setState({
-                error: "No more activity found",
-            })
+        .catch(() => {
+            setError(true);
         })
     }
-    componentDidMount() {
+
+    useEffect(() => {
         isLogged()
         .then(response => {
-            //console.log(response);
-            this.setState({
-                logged: response.data.authenticated,
-                userId: response.data.id,
-            })
-            setTimeout(()=>{this.askActivity();}, 0);
+           setUserId(response.data.id);
+           setError(false);
         })
-        .catch(err => {
-            //console.log(err)
-            this.setState({
-                error: "Not logged in"
-            })
+        .catch(() => {
+            setError(true);
         })
+    }, [])
+
+    useEffect(() => {
+        askActivity();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userId])
+
+    
+    const updateNavbarsColors = () => {
+        setUpdateColorsBetweenNavbars(updateColorsBetweenNavbars+1);
     }
-    updateNavbarsColors = () => {
-        this.setState({
-            updateColorsBetweenNavbars: this.state.updateColorsBetweenNavbars+1,
-        })
-    }
-    render() {
-        return (
+
+    return (
         <div className="all-page" style={{'paddingBottom': '55px'}}>
             {window.innerWidth<500 &&
-                <MobileNavbar updateColors={()=>{this.updateNavbarsColors();}} />
+                <MobileNavbar updateColors={()=>{updateNavbarsColors();}} />
             }
-            <MyNavbar updateMyColors = {this.state.updateColorsBetweenNavbars} />
+            <MyNavbar updateMyColors = {updateColorsBetweenNavbars} />
             <Searchbar />
             <div className="main-activity-container flex-layout">
-                {this.state.actList.map((value, index) => {
+                {actionsList.map((value, index) => {
                     if (value.post && value.text) {
-                        //console.log("comment-action")
                         return(
                             <CommentAction key={index} action={value} />
                         )
                     }
                     else if (value.comment) {
-                        //console.log("comment-like-action")
                         return(
                             <CommentLikeAction key={index} action={value} />
                         )
                     }
                     else if (value.text || value.media) {
-                        //console.log("post-action")
                         return(
                             <PostAction key={index} action={value} />
                         ) 
                     }
                     else if (value.following) {
-                        //console.log("follow-action")
                         return(
                             <FollowAction key={index} action={value} />
                         ) 
                     }
                     else {
-                        //console.log("post-like-action")
                         return(
                             <PostLikeAction key={index} action={value} />
                         )
@@ -448,25 +89,29 @@ class Activity extends React.Component {
 
                 })}
             </div>
-            {this.state.actList.length!==0 &&
+            {actionsList.length!==0 &&
                 <div className="pagi-buttons-container flex-layout center-content">
-                    {this.state.start !== 1 &&
-                        <Button variant='primary' className="margin" onClick={this.previousPage}>Previous</Button>                
+                    {start !== 1 &&
+                        <Button variant='primary' className="margin" onClick={()=>setStart(start-10)}>Previous</Button>                
                     }
-                    {this.state.actList.length>=10 &&
-                        <Button variant='primary' className="margin" onClick={this.nextPage}>Next</Button>
+                    {actionsList.length>=10 &&
+                        <Button variant='primary' className="margin" onClick={()=>setStart(start+10)}>Next</Button>
                     }
                 </div>
             }
-            {!this.state.actList.length && this.state.logged &&
+            {!actionsList.length && !error &&
+                <div style={{'marginBottom': '15px'}} className='center-content margin-top'>
+                    <Spinner animation="border" role="status" variant='primary' />
+                </div>
+            }
+            {!actionsList.length && userId!==null && error &&
                 <div className="error-message margin-top center-text">Oops, no activity found..</div>
             }
-            {!this.state.logged &&
+            {!userId && error &&
                 <div className="error-message margin-top center-text">You have to create an account to keep track of your activity.</div>
             }
         </div>
-        )
-    }
+    )
 }
 
 export default Activity;

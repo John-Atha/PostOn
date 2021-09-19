@@ -1,58 +1,45 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { isLogged } from '../api/api';
 import ExploreScroll from '../Components/Explore/ExploreScroll';
 import MyNavbar from '../Components/Navbars/MyNavbar';
 import MobileNavbar from '../Components/Navbars/MobileNavbar';
 import Searchbar from '../Components/Searchbar/Searchbar';
 
-class ExplorePage extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            userId: null,
-            logged: false,
-            updateColorsBetweenNavbars: 1,
-        }
-        this.updateNavbarsColors = this.updateNavbarsColors.bind(this);
-    }
+function ExplorePage() {
+    const [userId, setUserId] = useState(null);
+    const [updateColorsBetweenNavbars, setUpdateColorsBetweenNavbars] = useState(1);
 
-    componentDidMount() {
+    useEffect(() => {
         isLogged()
-        .then(response => {
-            console.log(response);
-            this.setState({
-                userId: response.data.id,
-                logged: true,
-            })
+        .then((response) => {
+            setUserId(response.data.id);
         })
-        .catch(err => {
-            console.log(err);
-            this.setState({
-                userId: null,
-                logged: false,
-            })
+        .catch(() => {
+            ;
         })
-    }
-    updateNavbarsColors = () => {
-        this.setState({
-            updateColorsBetweenNavbars: this.state.updateColorsBetweenNavbars+1,
-        })
+    }, [])
+
+    const updateNavbarsColors = () => {
+        setUpdateColorsBetweenNavbars(updateColorsBetweenNavbars+1)
     }
 
-    render() {
-        return(
-            <div className="all-page">
-                { window.innerWidth<500 &&
-                    <MobileNavbar updateColors={()=>{this.updateNavbarsColors();}} />
-                }
-                <MyNavbar updateMyColors = {this.state.updateColorsBetweenNavbars} />
-                <Searchbar />
-                <div className="main-home-container flex-layout" style={{'paddingBottom': '50px'}}>
-                    <ExploreScroll userId={this.state.userId} logged={this.state.logged} updateMyPar={()=>{}} case='single-page'/>
-                </div>
+    return(
+        <div className="all-page">
+            { window.innerWidth<500 &&
+                <MobileNavbar updateColors={()=>{updateNavbarsColors();}} />
+            }
+            <MyNavbar updateMyColors = {updateColorsBetweenNavbars} />
+            <Searchbar />
+            <div className="main-home-container flex-layout" style={{'paddingBottom': '50px'}}>
+                <ExploreScroll
+                    userId={userId}
+                    logged={userId!==null}
+                    updateMyPar={()=>{}}
+                    case='single-page'
+                />
             </div>
-        )
-    }
+        </div>
+    )
 
 }
 
