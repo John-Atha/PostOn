@@ -186,21 +186,23 @@ function MobileNavbar(props) {
 
     const getNotif = (x="") => {
         console.log(`I am asking notifications from ${start}`)
-        getNotifications(userId, start, start+5)
-        .then(response => {
-            console.log(response);
-            setNotifList(response.data);
-            let unread = 0;
-            response.data.forEach(notif => {
-                if (!notif.seen) {
-                    unread++;
-                }
+        if (userId) {
+            getNotifications(userId, start, start+5)
+            .then(response => {
+                console.log(response);
+                setNotifList(response.data);
+                let unread = 0;
+                response.data.forEach(notif => {
+                    if (!notif.seen) {
+                        unread++;
+                    }
+                })
+                setUnreadNotifications(unread);
             })
-            setUnreadNotifications(unread);
-        })
-        .catch(() => {
-            ;
-        })
+            .catch(() => {
+                ;
+            })
+        }
     }
 
     useEffect(() => {

@@ -26,6 +26,10 @@ h1,h2,h3,h4,h5 {
 hr {
     background-color: var(--hrcolor);
 }
+.comments-pop-up hr, .likes-pop-up hr, .likes-comments-pop-up hr, .follows-pop-up hr, .posts-pop-up hr, .delete-pop-up hr{
+    background-color: var(--lettersColor);
+}
+
 .main-home-container, .profile-main, .all-page {
     background-color: var(--colorback);
 }
@@ -54,12 +58,13 @@ hr {
     --profInfoColor: grey;
     --notifcolor2: #cadfed;
     --postsContainerColorBack: rgb(235, 234, 234);
+    --popupbackground: white;
 }
 
 #root.dark {
     --color2: #4d4b4b;
-    --colorback: rgba(0, 0, 0, 0.989);
-    --boxback: rgb(4, 4, 4);
+    --colorback: #0b0a0a;
+    --boxback: rgba(0, 0, 0, 0.989);
     --color3: rgb(14, 14, 14);
     --blue: rgb(0, 94, 255);
     --blue2: rgb(0, 94, 255);
@@ -69,17 +74,18 @@ hr {
     --unfollowgrey: rgb(250, 249, 249);
     --white: white;
     --notifseen: rgb(247, 244, 244);
-    --postActionColor: rgb(4, 4, 4);
-    --statsSampleColor: rgb(4, 4, 4);
+    --postActionColor: var(--boxback);
+    --statsSampleColor: var(--boxback);
     --lettersColor: white;
     --lettersColor2: rgb(229, 226, 226);
     --greyOnDarkOnly: rgb(214, 211, 211);
     --hrcolor: rgb(21, 20, 20);
-    --commentback: #0b0a0a;
+    --commentback: var(--colorback);
     --profInfoColor: black;
     --notifcolor2: white;
     --postsContainerColorBack: inherit;
     --userphotoback: grey;
+    --popupbackground: #4d4b4b;
 }
 
 

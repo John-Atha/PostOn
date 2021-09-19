@@ -157,6 +157,7 @@ function Likes(props) {
                             })}
                         </div>
                     }
+                    <hr />
                     {error && 
                         <div className="error-message">
                             No likes found...

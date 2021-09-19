@@ -91,7 +91,9 @@ function FollowBox(props) {
         return(
             <OutsideClickHandler onOutsideClick={hide} >
                 <div className="follows-pop-up center-content">
-                {(followsError) && 
+                <h4>Follows</h4>
+                <hr/>
+                {followsError && 
                     <div className="error-message">
                         {followsError}
                     </div>
@@ -142,7 +144,7 @@ function FollowBox(props) {
                         {start !== 1 && 
                             <Button variant='outline-primary' className="margin" onClick={previousPage}>Previous</Button>                        
                         }
-                        {!followsError &&
+                        {!followsError && hisFollowsList.length===5 &&
                             <Button variant='outline-primary' className="margin" onClick={nextPage}>Next</Button>                        
                         }
                     </div>
@@ -155,12 +157,14 @@ function FollowBox(props) {
         return(
             <OutsideClickHandler onOutsideClick={hide}>
                 <div className="follows-pop-up center-content">
-                    {(followersError) && 
+                    <h4>Followers</h4>
+                    <hr/>
+                    {followersError && 
                         <div className="error-message">
                             {followersError}
                         </div>
                     }
-                    {!followsError &&
+                    {!followersError &&
                         hisFollowersList.map((value, index) => {
                             if(myFollowsList.includes(value.following.id)) {
                                 return (
@@ -207,7 +211,7 @@ function FollowBox(props) {
                             {start !== 1 &&
                                 <Button variant='outline-primary' className="margin" onClick={previousPage}>Previous</Button>                        
                             }
-                            {!followersError &&
+                            {!followersError && hisFollowersList.length===5 &&
                                 <Button variant='outline-primary' className="margin" onClick={nextPage}>Next</Button>                            
                             }
                         </div>

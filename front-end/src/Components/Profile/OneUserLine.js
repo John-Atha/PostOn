@@ -40,7 +40,7 @@ function OneUserLine(props) {
 
     return(
         <div className="one-like flex-layout center-content">
-            <div className="like-owner flex-item-small flex-layout"                        
+            <div className="like-owner flex-layout"                        
                     onMouseEnter={()=>setShowCard(true)}
                     onMouseLeave={()=>setShowCard(false)}>
                 <div className="user-photo-container-small"
@@ -62,15 +62,18 @@ function OneUserLine(props) {
                 }
             </div>
             {logged &&
-                <div className="un-follow-button-container flex-item-small">
+                <div 
+                    className="un-follow-button-container flex-item-small"
+                    style={{'textAlign': 'right'}}
+                >
                 {!props.followed && !props.following && props.me!==props.user.id &&
-                    <Button variant='primary' onClick={follow}>Follow</Button>
+                    <Button className='margin' style={{'width': '100%', 'maxWidth': '100px'}} variant='primary' onClick={follow}>Follow</Button>
                 }
                 {!props.followed && props.following && props.me!==props.user.id &&
-                    <Button variant='primary' style={{'fontSize': '0.8rem'}} onClick={follow}>Follow Back</Button>
+                    <Button className='margin' style={{'width': '100%', 'maxWidth': '100px'}} variant='primary' style={{'fontSize': '0.8rem'}} onClick={follow}>Follow Back</Button>
                 }
                 {props.followed && props.me!==props.user.id &&
-                    <Button variant='outline-primary' onClick={unfollow}>Unfollow</Button>
+                    <Button className='margin' style={{'width': '100%', 'maxWidth': '100px'}} variant='outline-primary' onClick={unfollow}>Unfollow</Button>
                 }
                 </div>
             }

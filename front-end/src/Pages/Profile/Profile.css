@@ -73,10 +73,10 @@
     z-index: 1;
     top: 150px;
     position: absolute;
-    background-color: var(--color3);
+    background-color: var(--colorback);
     min-height: min-content;
-    border-radius: 7px;
-    padding: 2% 1%;
+    border: 3px solid var(--lettersColor);
+    border-radius: 5px;
     animation:
         pop-up-appearing 1s;
 }

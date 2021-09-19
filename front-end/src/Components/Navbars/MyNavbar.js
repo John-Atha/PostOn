@@ -184,20 +184,22 @@ function MyNavbar(props) {
 
     const getNotif = (x="") => {
         console.log(`I am asking for notifications from ${start} to ${start+5}`);
-        getNotifications(userId, start, start+5)
-        .then(response => {
-            setNotifList(response.data);
-            let unread = 0;
-            response.data.forEach(notif => {
-                if (!notif.seen) {
-                    unread++;
-                }
+        if (userId) {
+            getNotifications(userId, start, start+5)
+            .then(response => {
+                setNotifList(response.data);
+                let unread = 0;
+                response.data.forEach(notif => {
+                    if (!notif.seen) {
+                        unread++;
+                    }
+                })
+                setUnreadNotifications(unread);
             })
-            setUnreadNotifications(unread);
-        })
-        .catch(() => {
-            ;
-        })
+            .catch(() => {
+                ;
+            })
+        }
     }
 
     const logout = () => {
