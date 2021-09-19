@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Posts.css";
 import ReactPlayer from 'react-player';
+import { isUrl, isYoutubeVideo } from '../../methods';
 
 function PostTextNoTags(props) {
 
@@ -46,7 +47,7 @@ function PostTextNoTags(props) {
     const addIframes = (copy) => {
         let iframesTemp = [];
         copy.forEach(el => {
-            if (el.includes("https") && (el.includes("youtu.be") || el.includes("youtube"))) {
+            if (isYoutubeVideo(el)) {
                 iframesTemp.push(el);
             }
         })
@@ -56,10 +57,6 @@ function PostTextNoTags(props) {
         console.log(copy)
         console.log("iframes found:")
         console.log(iframesTemp)*/
-    }
-
-    const isUrl = (str) => {
-        return str.startsWith("https://") || str.startsWith("http://");
     }
     
     useEffect(() => {
@@ -77,10 +74,17 @@ function PostTextNoTags(props) {
                 <div className="flex-layout with-whitespace">
                     {parts.map((value, index) => {
                         if (isUrl(value)) {
-                                return(
-                                    <a style={{'marginRight': '4px'}} key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" 
-                                    href={value}>{value}</a>
-                                )
+                            const val = (value.endsWith(' ') || value.endsWith('\n')) ? value.slice(0,value.length-1) : value;
+                            return(
+                                <a key={index} 
+                                    target="_blank" 
+                                    rel="noreferrer noopener" 
+                                    className="post-url with-whitespace" 
+                                    style={{'marginRight': '4px'}}
+                                    href={val.includes('//') ? val : `//${val}`}>
+                                        {val}
+                                </a>
+                            )
                         }
                         else if (value==='\n') {
                             return(

@@ -2,16 +2,12 @@ import React, { useState, useEffect} from "react";
 import "./Posts.css";
 import ProfileCard from '../Profile/ProfileCard';
 import ReactPlayer from 'react-player';
+import { isUrl, isYoutubeVideo } from '../../methods';
 
 function PostText(props) {
     const [parts, setParts] = useState(props.parts);
     const [showCard, setShowCard] = useState([]);
     const [iframes, setIframes] = useState([]);
-
-    
-    const isUrl = (str) => {
-        return str.startsWith("https://") || str.startsWith("http://");
-    }
 
     const cardShow = (i) => {
         let temp = showCard.slice()
@@ -41,7 +37,7 @@ function PostText(props) {
         //let copy=parts.slice();
         copy.forEach(el => {
             //console.log(`checking ${el} from iframing`)
-            if (el.dump.includes("https") && (el.dump.includes("youtu.be") || el.dump.includes("youtube"))) {
+            if (isYoutubeVideo(el.dump)) {
                 iframesTemp.push(el.dump);
             }
         })
@@ -128,11 +124,19 @@ function PostText(props) {
                                         { value.dump==='\n' &&
                                             <div className="break"></div>
                                         }
-                                        { value.dump!=='\n' && value.dump!==' ' &&
+                                        { value.dump!=='\n' && value.dump!==' ' && isUrl(value.dump) &&
+                                            <a rel='noopener noreferrer'
+                                               target='_blank'
+                                               href={value.dump.includes('//') ? value.dump : '//'+value.dump}
+                                               key={index}>
+                                                {value}
+                                            </a>                                        
+                                        }
+                                        { value.dump!=='\n' && value.dump!==' ' && !isUrl(value.dump) &&
                                             <div>
                                                 {value.dump}
                                             </div>
-                                        }  
+                                        }
                                     </div>
                                 )
                             }
@@ -144,9 +148,16 @@ function PostText(props) {
                                     )
                                 }
                                 if (isUrl(value.dump)) {
+                                    const val = (value.dump.endsWith(' ') || value.dump.endsWith('\n')) ? value.dump.slice(0,value.dump.length-1) : value.dump;
                                     return(
-                                        <a key={index} target="_blank" rel="noreferrer noopener" className="post-url with-whitespace" style={{'marginRight': '4px'}}
-                                        href={(value.dump.endsWith(' ') || value.dump.endsWith('\n')) ? value.dump.slice(0,value.dump.length-1) : value.dump}>{value.dump}</a>
+                                        <a key={index} 
+                                           target="_blank" 
+                                           rel="noreferrer noopener" 
+                                           className="post-url with-whitespace" 
+                                           style={{'marginRight': '4px'}}
+                                           href={val.includes('//') ? val : `//${val}`}>
+                                               {val}
+                                        </a>
                                     )
                                 }
                                 else {
