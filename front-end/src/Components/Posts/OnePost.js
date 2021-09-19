@@ -186,7 +186,6 @@ function OnePost(props) {
                                 "photo": suggest.photo,
                                 "moto": suggest.moto,
                                 "verified": suggest.verified,
-                                "test": "test",
                             },
                             "dump": dump,
                         })
@@ -782,8 +781,6 @@ function OnePost(props) {
             {showingComments &&
                 <Comments user={user}
                         postId={post.id}
-                        logged={logged}
-                        how={"sample"}
                         sample={commentSample}
                         comments_error={commentsError}
                         updateParent={commentsSample}
@@ -795,9 +792,10 @@ function OnePost(props) {
             {showingModal && 
                 <OutsideClickHandler onOutsideClick={hideModal}>
                     <div className="posts-pop-up box-colors center-content">
-                        <div className="message center-content">
-                            Are you sure you want delete this post?<br></br>
-                        </div>
+                        <h5 className="message center-content">
+                            Are you sure you want delete this post?
+                        </h5>
+                        <hr />
                         <div className="modal-buttons-container center-content margin-top-small">
                             <Button variant="primary" className="margin" onClick={hideModal}>No, I changed my mind</Button>
                             <Button variant="danger" className="margin" onClick={postDelete}>Yes, delete anyway</Button>                                        

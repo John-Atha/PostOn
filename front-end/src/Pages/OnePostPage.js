@@ -4,12 +4,13 @@ import OnePost from '../Components/Posts/OnePost';
 import MobileNavbar from '../Components/Navbars/MobileNavbar';
 import { isLogged, getOnePost, getUser } from '../api/api';
 import Media from '../Components/Posts/Media';
+import Spinner from 'react-bootstrap/esm/Spinner';
 
 class OnePostPage extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            id: this.props.id,
+            id: parseInt(this.props.id),
             logged: false,
             user: null,
             owner: null,
@@ -116,7 +117,7 @@ class OnePostPage extends React.Component {
     render() {
         return(
             <div className="all-page" style={{'paddingBottom': '100px'}}>
-                { window.innerWidth<500 &&
+                {window.innerWidth<500 &&
                     <MobileNavbar updateColors={()=>{this.updateNavbarsColors();}} />
                 }
                 <MyNavbar updateMyColors = {this.state.updateColorsBetweenNavbars} />
@@ -128,7 +129,6 @@ class OnePostPage extends React.Component {
                             setShowing={this.setShowingFullScreenMedia} />                
                 }
                 {this.state.owner!==null &&
-                
                     <OnePost user={this.state.user} 
                          logged={this.state.logged}
                          post={{
@@ -146,6 +146,14 @@ class OnePostPage extends React.Component {
                          setImage={()=>{}}
                          setVideo={()=>{}}
                     />
+                }
+                {this.state.error &&
+                    <div className='error-message center-content margin'>{this.state.error}</div>
+                }
+                {!this.state.owner && !this.state.error &&
+                    <div style={{'marginBottom': '15px'}} className='center-content margin-top'>
+                        <Spinner animation="border" role="status" variant='primary' />
+                    </div>
                 }
             </div>
         )

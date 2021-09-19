@@ -18,8 +18,6 @@ function Posts(props) {
     const [isUploading, setIsUploading] = useState(false);
     const [usersList, setUsersList] = useState([]);
     const [firstFocus, setFirstFocus] = useState(true);
-    const [tagsToPost, setTagsToPost] = useState([]);
-    const [newId, setNewId] = useState(null);
     const [nomore, setNomore] = useState(false);
     const [asked, setAsked] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -60,9 +58,7 @@ function Posts(props) {
         }
     }
 
-    const addTags = () => {
-        // gets post id from: newId
-        // gets tagsList from: tagsToPost
+    const addTags = (tagsToPost, postId) => {
         tagsToPost.forEach(obj => {
             let id = obj.tag.id;
             let object = {
@@ -70,7 +66,7 @@ function Posts(props) {
                     "id": id,
                 }
             }
-            PostPostTag(newId, object)
+            PostPostTag(postId, object)
             .then(() => {
                 ;
             })
@@ -80,7 +76,7 @@ function Posts(props) {
         })
     }
 
-    const filterPost = () => {
+    const filterPost = (postId) => {
         let post_text = newText;
         let s3 = [];
         post_text = post_text.replaceAll(")@", ") @");
@@ -136,7 +132,7 @@ function Posts(props) {
                 })
             }
         })
-        setTagsToPost(final_post_object);
+        addTags(final_post_object, postId);
     }
 
     const clearAdd = () => {
@@ -171,11 +167,9 @@ function Posts(props) {
                     PostPostPhoto(postId, bodyFormData)
                     // if photo posted successfully
                     .then(() => {
-                        filterPost();
+                        filterPost(postId);
                         setNewText("");
-                        setNewId(postId);
                         setIsUploading(false);
-                        setTagsToPost([]);
                         const input = document.getElementById('new-post-photo');
                         input.value=''
                         askPosts("restart");
@@ -202,7 +196,6 @@ function Posts(props) {
                     //console.log(err);
                     createNotification('danger', 'Sorry,', "We couldn't publish your post")
                     setIsUploading(false);
-                    setTagsToPost([]);
                 })
             }
             else {
@@ -216,11 +209,9 @@ function Posts(props) {
                         PostPostPhoto(postId, bodyFormData)
                         // if photo posted successfully
                         .then(() => {
-                            filterPost();
+                            filterPost(postId);
                             setNewText("");
-                            setNewId(postId);
                             setIsUploading(false);
-                            setTagsToPost([]);
                             askPosts("restart");
                             createNotification('success', 'Hello,', 'Post published successfully.');
                         })
@@ -228,7 +219,6 @@ function Posts(props) {
                         .catch(() => {
                             setNewText("");
                             setIsUploading(false);
-                            setTagsToPost([]);
                             deletePost(postId)
                             .then(() => {
                                 ;
@@ -240,11 +230,9 @@ function Posts(props) {
                         })
                     }
                     else {
-                        filterPost();
+                        filterPost(response.data.id);
                         setNewText("");
-                        setNewId(response.data.id);
                         setIsUploading(false);
-                        setTagsToPost([]);
                         askPosts("restart");
                         createNotification('success', 'Hello,', 'Post published successfully.');
                     }
@@ -252,7 +240,6 @@ function Posts(props) {
                 // could not create post => return err
                 .catch(err => {
                     setIsUploading(false);
-                    setTagsToPost([]);
                     createNotification('danger', 'Sorry,', "We couldn't publish your post")
                 })
             }
@@ -313,11 +300,6 @@ function Posts(props) {
     }, [isLoading])
 
     useEffect(() => {
-        if (tagsToPost.length) addTags();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [tagsToPost])
-
-    useEffect(() => {
         //console.log(`@@@ Start updated to ${start}`)
         askPosts();
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -337,7 +319,7 @@ function Posts(props) {
     
     return(
         <div className={props.whose ? "user-posts-container padding-bottom" : "posts-container padding-bottom flex-item"}
-             style={props.whose ? {paddingTop: '50px', marginTop: '5px'} : {}}>
+             style={!props.whose ? {paddingTop: '50px', marginTop: '5px'} : {paddingTop: '0px'}}>
             {isUploading &&
                 <div style={{'marginBottom': '15px'}} className='center-content margin-top'>
                     <Spinner animation="border" role="status" variant='primary' />

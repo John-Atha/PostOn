@@ -70,7 +70,7 @@ function OneUserLine(props) {
                     <Button className='margin' style={{'width': '100%', 'maxWidth': '100px'}} variant='primary' onClick={follow}>Follow</Button>
                 }
                 {!props.followed && props.following && props.me!==props.user.id &&
-                    <Button className='margin' style={{'width': '100%', 'maxWidth': '100px'}} variant='primary' style={{'fontSize': '0.8rem'}} onClick={follow}>Follow Back</Button>
+                    <Button className='margin' style={{'width': '100%', 'maxWidth': '100px', 'fontSize': '0.8rem'}} variant='primary' onClick={follow}>Follow Back</Button>
                 }
                 {props.followed && props.me!==props.user.id &&
                     <Button className='margin' style={{'width': '100%', 'maxWidth': '100px'}} variant='outline-primary' onClick={unfollow}>Unfollow</Button>
