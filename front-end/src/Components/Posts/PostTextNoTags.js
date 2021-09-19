@@ -45,18 +45,16 @@ function PostTextNoTags(props) {
     }
     
     const addIframes = (copy) => {
-        let iframesTemp = [];
-        copy.forEach(el => {
-            if (isYoutubeVideo(el)) {
-                iframesTemp.push(el);
-            }
-        })
-        setIframes([]);
-        setIframes(iframesTemp);
-        /*console.log(`final filtered of ${text}:`)
-        console.log(copy)
-        console.log("iframes found:")
-        console.log(iframesTemp)*/
+        if (!props.isComment) {
+            let iframesTemp = [];
+            copy.forEach(el => {
+                if (isYoutubeVideo(el)) {
+                    iframesTemp.push(el);
+                }
+            })
+            setIframes([]);
+            setIframes(iframesTemp);  
+        }
     }
     
     useEffect(() => {
@@ -98,13 +96,15 @@ function PostTextNoTags(props) {
                         }
                     })}
                 </div>
-                <div className="player-wrapper margin-top-small center-content">
-                    {iframes.map((value, index) => {
-                        return(
-                            <ReactPlayer url={value} key={index} className="react-player"/>
-                        )
-                    })}
-                </div>
+                {!props.isComment && 
+                    <div className="player-wrapper margin-top-small center-content">
+                        {iframes.map((value, index) => {
+                            return(
+                                <ReactPlayer url={value} key={index} className="react-player"/>
+                            )
+                        })}
+                    </div>            
+                }
             </div>
         )
     }

@@ -34,13 +34,14 @@ function PostText(props) {
                 counter++;
             }
         }
-        //let copy=parts.slice();
-        copy.forEach(el => {
-            //console.log(`checking ${el} from iframing`)
-            if (isYoutubeVideo(el.dump)) {
-                iframesTemp.push(el.dump);
-            }
-        })
+        if (props.isComment) {
+            copy.forEach(el => {
+                //console.log(`checking ${el} from iframing`)
+                if (isYoutubeVideo(el.dump)) {
+                    iframesTemp.push(el.dump);
+                }
+            })
+        }
         additions.forEach(index => {
             copy.splice(index, 0, {"tag": {}, "dump": "\n"});
         })
@@ -170,13 +171,15 @@ function PostText(props) {
                             }
                         })}
                     </div>
-                    <div className="player-wrapper margin-top-small center-content">
-                        {iframes.map((value, index) => {
-                            return(
-                                <ReactPlayer style={{'marginBottom': '3px'}} url={value} key={index} className="react-player"/>
-                            )
-                        })}
-                    </div>
+                    {!props.isComment &&
+                        <div className="player-wrapper margin-top-small center-content">
+                            {iframes.map((value, index) => {
+                                return(
+                                    <ReactPlayer style={{'marginBottom': '3px'}} url={value} key={index} className="react-player"/>
+                                )
+                            })}
+                        </div>            
+                    }
                 </div>
             )
         }
